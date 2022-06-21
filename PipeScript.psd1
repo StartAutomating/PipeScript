@@ -1,5 +1,5 @@
 ﻿@{
-    ModuleVersion     = '0.0.1'
+    ModuleVersion     = '0.0.2'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -16,6 +16,19 @@
             LicenseURI = 'https://github.com/StartAutomating/PipeScript/blob/main/LICENSE'
 
             Tags = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
+            ReleaseNotes = @'
+## 0.0.2
+* New Transpilers:
+  * .>ValidatePlatform (#58)
+  * .>ValidatePropertyName (#59)
+  * .>Inline.ObjectiveC (#60)
+* Transpiler Fixes
+  * .>VBN now supports -Position (#57)
+* GitHub Action Bugfix (#55)
+---
+## 0.0.1
+Initial Commit.
+'@
         }
     }
 }
