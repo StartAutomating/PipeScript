@@ -110,7 +110,7 @@ if ($PipeScript) {
         Out-Host
 }
 
-$PipeScriptTook = [Datetime]::Now - $PipeScriptScriptStart
+$PipeScriptTook = [Datetime]::Now - $PipeScriptStart
 "::set-output name=PipeScriptRuntime::$($PipeScriptScriptTook.TotalMilliseconds)" | Out-Host
 
 $BuildPipeScriptStart = [DateTime]::Now

@@ -15,7 +15,11 @@ $Mandatory,
 
 [Alias('VFP')]
 [switch]
-$ValueFromPipeline
+$ValueFromPipeline,
+
+# The position of the parameter.
+[int]
+$Position
 )
 
 $paramOptions = @(    
@@ -24,7 +28,7 @@ $paramOptions = @(
     }
     if ($ParameterSet) {
         "ParameterSetName='$($ParameterSet.Replace("'","''"))'"
-    }
+    }    
     "ValueFromPipelineByPropertyName"
     if ($ValueFromPipeline) {
         "ValueFromPipeline"
