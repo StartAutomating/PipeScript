@@ -4,6 +4,6 @@
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
     AliasesToExport   = '*'
-    # FormatsToProcess  = 'PipeScript.format.ps1xml'
-    # TypesToProcess    = 'PipeScript.types.ps1xml'
+    FormatsToProcess  = 'PipeScript.format.ps1xml'
+    TypesToProcess    = 'PipeScript.types.ps1xml'
 }
