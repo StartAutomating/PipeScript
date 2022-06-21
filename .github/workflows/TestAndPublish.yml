@@ -485,14 +485,6 @@ jobs:
               }
           }
           } @Parameters
-  BuildPipeScript: 
-    runs-on: ubuntu-latest
-    if: ${{ success() }}
-    steps: 
-      - name: Check out repository
-        uses: actions/checkout@v2
-      - name: BuildPipeScript
-        uses: StartAutomating/PipeScript@main
   HelpOut: 
     runs-on: ubuntu-latest
     if: ${{ success() }}
