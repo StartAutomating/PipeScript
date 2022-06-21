@@ -10,4 +10,12 @@
     CompanyName='Start-Automating'
     Copyright='2022 Start-Automating'
     Author='James Brundage'
+    PrivateData = @{
+        PSData = @{
+            ProjectURI = 'https://github.com/StartAutomating/PipeScript'
+            LicenseURI = 'https://github.com/StartAutomating/PipeScript/blob/main/LICENSE'
+
+            Tags = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
+        }
+    }
 }
