@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-16"?>
+<!-- Generated with EZOut 1.8.6: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
+<Types>
+  <Type>
+    <Name>PipeScript</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>PipeScriptType</Name>
+        <GetScriptBlock>
+                        if ($this.Source -match '\.psx\.ps1{0,1}$') {
+    "Transpiler"
+}
+elseif ($this.Source -match "\.ps1{0,1}\.(?&lt;ext&gt;[^.]+$)") {
+    "SourceGenerator"
+}
+elseif ($this.Source) {
+    "PipeScriptFile"
+}
+else {
+    "Function"
+}
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+</Types>
