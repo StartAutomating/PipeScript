@@ -11,7 +11,6 @@ if ($PipeScriptLoaded) {
     "::error:: PipeScript not loaded" |Out-Host
 }
 
-Save-MarkdownHelp -Module PipeScript -OutputPath $wikiPath -ScriptPath 'Transpilers' -ReplaceScriptName '\.psx\.ps1$' -ReplaceScriptNameWith "-Transpiler" -SkipCommandType Alias -PassThru -IncludeTopic *.help.txt  -IncludeExtension @() |
-    Add-Member -Name CommitMessage -MemberType ScriptProperty  -value { "Updating $($this.Name) [skip ci]" } -Force -PassThru
+Save-MarkdownHelp -Module PipeScript -ReplaceScriptName '\.psx\.ps1$' -SkipCommandType Alias -PassThru -IncludeTopic *.help.txt  -IncludeExtension @()
 
 Pop-Location
