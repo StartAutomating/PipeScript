@@ -17,6 +17,12 @@
 
             Tags = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
+## 0.0.3
+* Adding Inline Python Support (#63)
+* Adding [OutputFile] transpiler (#64)
+* Building PipeScript with PipeScript (#54)
+---
+
 ## 0.0.2
 * New Transpilers:
   * .>ValidatePlatform (#58)
