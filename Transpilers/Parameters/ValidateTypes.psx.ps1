@@ -42,7 +42,12 @@ param(
 # TypeNames will be treated first as real types, then as exact matches, then as wildcards, and then as regular expressions.
 [Parameter(Mandatory,Position=0)]
 [string[]]
-$TypeName
+$TypeName,
+
+# The variable that will be validated.
+[Parameter(ValueFromPipeline,ParameterSetName='VariableExpressionAST')]
+[Management.Automation.Language.VariableExpressionAST]
+$VariableAST
 )
 
 
@@ -90,7 +95,14 @@ $checkTypes
 if (-not `$isTypeOk) {
     throw "Unexpected type '`$(@(`$thisType)[0])'.  Must be '$($typeName -join "','")'."
 }
+return `$true
 })]
-param()
+$(
+    if ($psCmdlet.ParameterSetName -eq 'Parameter') {
+        'param()'
+    } else {
+        '$' + $VariableAST.variablePath.ToString()
+    }
+)
 "@)
 }

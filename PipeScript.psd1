@@ -1,5 +1,5 @@
 ﻿@{
-    ModuleVersion     = '0.0.2'
+    ModuleVersion     = '0.0.3'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -18,8 +18,17 @@
             Tags = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
 ## 0.0.3
-* Adding Inline Python Support (#63)
-* Adding [OutputFile] transpiler (#64)
+* New Transpilers:
+  * .>ValidateExtension (#64)
+  * .>OutputFile (#53)
+* Inline PipeScript Support for New Languages
+  * Python (#63)
+  * PHP (#67)
+  * Razor (#68)
+* Bugfixes / improvements:
+  * Plugged Invoke-PipeScript Parameter Leak (#69)
+  * .>ValidateTypes transpiler now returns true (#65)
+  * .>ValidateTypes transpiler now can apply to a [VariableExpressionAST] (#66)
 * Building PipeScript with PipeScript (#54)
 ---
 

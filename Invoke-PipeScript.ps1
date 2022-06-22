@@ -377,10 +377,10 @@
 
             # Check that the AttributeSyntaxTree is not a real type (return if it is)
             $attributeType = $AttributeSyntaxTree.TypeName.GetReflectionType()
-            if ($attributeType) { return $AttributeSyntaxTree }
+            if ($attributeType) { return }
 
             # Check that the typename is not [Ordered] (return if it is).
-            if ($AttributeSyntaxTree.TypeName.Name -eq 'ordered') { return $AttributeSyntaxTree }
+            if ($AttributeSyntaxTree.TypeName.Name -eq 'ordered') { return }
 
             # Create a collection for stringified arguments.
             $stringArguments = @()
@@ -393,6 +393,7 @@
                     $AttributeSyntaxTree.TypeName.Name
                 }
 
+            # See if we could find a transpiler that fits.
             $foundTranspiler  = 
                 if ($InputObject) {
                     Get-Transpiler -TranspilerName "$transpilerStepName" -CouldPipe $InputObject | 
@@ -400,46 +401,64 @@
                 } else {
                     Get-Transpiler -TranspilerName "$transpilerStepName"
                 }
-
+            
+            # Collect all of the arguments of the attribute, in the order they were specified.
             $argsInOrder = @(
                 @($AttributeSyntaxTree.PositionalArguments) + @($AttributeSyntaxTree.NamedArguments) | Sort-Object { $_.Extent.StartOffset})
 
+            
+            # Now we need to map each of those arguments into either named or positional arguments.
             foreach ($attributeArg in $argsInOrder) {
+                # Named arguments are fairly straightforward:                                
                 if ($attributeArg -is [Management.Automation.Language.NamedAttributeArgumentAst]) {
                     $argName = $attributeArg.ArgumentName
                     $argAst  = $attributeArg.Argument
                     $parameter[$argName] =
-                        if ($argName -eq $argAst) {
-                            $true
-                        } elseif ($argAst.Value) {
-                            $argAst.Value.ToString()
-                        } 
+                        if ($argName -eq $argAst) { # If the argument is the name,
+                            $true # treat it as a [switch] parameter.
+                        }
+                        # If the argument value was an ScriptBlockExpression
                         elseif ($argAst -is [Management.Automation.Language.ScriptBlockExpressionAST]) {
+                            # Turn it into a [ScriptBlock]
                             $argScriptBlock = [ScriptBlock]::Create($argAst.Extent.ToString() -replace '^\{' -replace '\}$')
+                            # If the Transpiler had a parameter that took a [ScriptBlock] or [ScriptBlock[]]
                             if ($foundTranspiler.parameters.$argName.ParameterType -eq [ScriptBlock] -or 
                                 $foundTranspiler.parameters.$argName.ParameterType -eq [ScriptBlock[]]) {
-                                $argScriptBlock
-                            } elseif ($SafeScriptBlockAttributeEvaluation) {
+                                $argScriptBlock # pass the [ScriptBlock] directly.
+                            }
+                            # Now here is where things get a bit more interesting:
+                            # If the parameter type _was not_ a [ScriptBlock], we can evaluate the [ScriptBlock] to create a real value
+                            # If we want to do this "safely", we can pass -SafeScriptBlockAttributeEvaluation
+                            elseif ($SafeScriptBlockAttributeEvaluation) {
+                                # Which will run the [ScriptBlock] inside of a data block, thus preventing it from running commands.
                                 & ([ScriptBlock]::Create("data {$argScriptBlock}"))
                             } else {
+                                # Otherwise, we want to run the [ScriptBlock] directly.
                                 & ([ScriptBlock]::Create("$argScriptBlock"))
                             }
                         }
+                        elseif ($argAst.Value) {
+                            $argAst.Value.ToString()
+                        }                        
                         else {
                             $argAst.Extent.ToString()
                         }                        
                 } else {
-                    foreach ($eachParameter in $foundTranspiler.Parameters.Values) {
-                        $eachParameter
-                    }
+                    # If we are a positional parameter, for the moment:
                     if ($parameter.Count) {
+                        # add it to the last named parameter.
                         $parameter[@($parameter.Keys)[-1]] = @() + $parameter[@($parameter.Keys)[-1]] + $attributeArg.Value.ToString()
                     } else {
+                        # Or add it to the list of string arguments.
                         $stringArguments += "$($attributeArg.Value)"
                     }
+
+                    # We _should_ get more intelligent over time here.
+                    # See [the GitHub Issue](https://github.com/StartAutomating/PipeScript/issues/70) for more details.
                 }
             }                
 
+            # If we have found a transpiler, run it.
             if ($foundTranspiler) {
                 $ArgumentList += $stringArguments
                 if ($InputObject) {
@@ -490,11 +509,11 @@
             # Determine if the -Command is a real type.
             $realType = $Command.TypeName.GetReflectionType()
             if ($realType) {
-                # If it is, return the connstraint unmodified.
-                return $command
+                # If it is, return.
+                return
             }
             # Next, make sure it's not ```[ordered]``` (return it if is)
-            if ($command.TypeName.Name -eq 'ordered') { return $command }
+            if ($command.TypeName.Name -eq 'ordered') { return}
             
             # Determine the name of the transpiler step.
             $transpilerStepName  = 
