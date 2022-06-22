@@ -19,7 +19,7 @@
 #>
 [ValidateScript({
     $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.ts)$') {
+    if ($cmdInfo.Source -match '\.ts$') {
         return $true
     }
     return $false    
