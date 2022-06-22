@@ -90,6 +90,7 @@ $checkTypes
 if (-not `$isTypeOk) {
     throw "Unexpected type '`$(@(`$thisType)[0])'.  Must be '$($typeName -join "','")'."
 }
+return `$true
 })]
 param()
 "@)
