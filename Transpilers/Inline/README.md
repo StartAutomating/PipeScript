@@ -1,6 +1,6 @@
 This directory contains Inline PipeScript transpilers for several languages.
 
-PipeScript can currently be embedded in 21 languages.
+PipeScript can currently be embedded in 22 languages.
 
 Transpilers in this directory should be named ```Inline.NameOfLanguage.psx.ps1```.
 Each file should handle one and only one language (better explicit than terse).
@@ -15,6 +15,7 @@ Transpilers should call ```.>PipeScript.Inline``` to simplify and standarize pro
 |[CSharp](Inline.CSharp.psx.ps1)        |[C# Inline PipeScript Transpiler.](Inline.CSharp.psx.ps1)            |
 |[CSS](Inline.CSS.psx.ps1)              |[CSS Inline PipeScript Transpiler.](Inline.CSS.psx.ps1)              |
 |[Go](Inline.Go.psx.ps1)                |[Go PipeScript Transpiler.](Inline.Go.psx.ps1)                       |
+|[HLSL](Inline.HLSL.psx.ps1)            |[HLSL Inline PipeScript Transpiler.](Inline.HLSL.psx.ps1)            |
 |[HTML](Inline.HTML.psx.ps1)            |[HTML PipeScript Transpiler.](Inline.HTML.psx.ps1)                   |
 |[Java](Inline.Java.psx.ps1)            |[Java Inline PipeScript Transpiler.](Inline.Java.psx.ps1)            |
 |[JavaScript](Inline.JavaScript.psx.ps1)|[JavaScript Inline PipeScript Transpiler.](Inline.JavaScript.psx.ps1)|
