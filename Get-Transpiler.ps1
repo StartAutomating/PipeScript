@@ -1,4 +1,4 @@
-#region Piecemeal [ 0.2.9 ] : Easy Extensible Plugins for PowerShell
+#region Piecemeal [ 0.3.1 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
 # Install-Piecemeal -ExtensionNoun 'Transpiler' -ExtensionPattern '\.psx\.ps1' -ExtensionTypeName 'PipeScript.Transpiler' -OutputPath '.\Get-Transpiler.ps1'
@@ -54,7 +54,7 @@ function Get-Transpiler
     If provided, will treat -TranspilerName as a wildcard.
     This will return any extension whose name, displayname, or aliases are like the -TranspilerName.
 
-    If the extension has an Alias with a regular expression literal, then extension name will be valid if that regular expression matches.
+    If the extension has an Alias with a regular expression literal (```'/Expression/'```) then the -TranspilerName will be valid if that regular expression matches.
     #>
     [Parameter(ValueFromPipelineByPropertyName)]
     [switch]
@@ -65,7 +65,7 @@ function Get-Transpiler
     If provided, will treat -TranspilerName as a regular expression.
     This will return any extension whose name, displayname, or aliases match the -TranspilerName.
     
-    If the extension has an Alias with a regular expression literal, then extension name will be valid if that regular expression matches.
+    If the extension has an Alias with a regular expression literal (```'/Expression/'```) then the -TranspilerName will be valid if that regular expression matches.
     #>
     [Parameter(ValueFromPipelineByPropertyName)]
     [switch]
@@ -118,6 +118,11 @@ function Get-Transpiler
     [Alias('NoMandatoryDynamicParameters')]
     [switch]
     $NoMandatoryDynamicParameter,
+
+    # If set, will require a [Runtime.CompilerServices.Extension()] attribute to be considered an extension.
+    [Parameter(ValueFromPipelineByPropertyName)]
+    [switch]
+    $RequireTranspilerAttribute,
 
     # If set, will validate this input against [ValidateScript], [ValidatePattern], [ValidateSet], and [ValidateRange] attributes found on an extension.
     [Parameter(ValueFromPipelineByPropertyName)]
@@ -237,8 +242,6 @@ function Get-Transpiler
                     $ExecutionContext.SessionState.InvokeCommand.GetCommand($in, 'Function,ExternalScript,Application')
                 }
 
-            $hasExtensionAttribute = $false
-
             $extCmd.PSObject.Methods.Add([psscriptmethod]::new('GetExtendedCommands', {
 
                 $extendedCommandNames = @(
@@ -275,8 +278,20 @@ function Get-Transpiler
 
             $null = $extCmd.GetExtendedCommands()
 
-            $inheritanceLevel = [ComponentModel.InheritanceLevel]::Inherited
-            if (-not $hasExtensionAttribute -and $RequireTranspilerAttribute) { return }
+            $inheritanceLevel = [ComponentModel.InheritanceLevel]::Inherited            
+
+            $extCmd.PSObject.Methods.Add([psscriptmethod]::New('GetHelpField', {
+                param([Parameter(Mandatory)]$Field)
+                foreach ($match in [Regex]::new("
+                        \.(?<Field>$Field)                   # Field Start
+                        \s{0,}                               # Optional Whitespace
+                        (?<Content>(.|\s)+?(?=(\.\w+|\#\>))) # Anything until the next .\field or end of the comment block
+                        ", 'IgnoreCase,IgnorePatternWhitespace', [Timespan]::FromSeconds(1)).Matches(
+                            $this.ScriptBlock
+                    )) {
+                    $match.Groups["Content"].Value -replace '[\s\r\n]+$' -replace '^[\s\r\n]+'
+                }
+            }))
 
             $extCmd.PSObject.Properties.Add([PSNoteProperty]::new('InheritanceLevel', $inheritanceLevel))
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
@@ -285,6 +300,23 @@ function Get-Transpiler
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
                 'Attributes', {$this.ScriptBlock.Attributes}
             ))
+
+
+            $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
+                'Category', {
+                    foreach ($attr in $this.ScriptBlock.Attributes) {
+                        if ($attr -is [Reflection.AssemblyMetaDataAttribute] -and
+                            $attr.Key -eq 'Category') {
+                            $attr.Value
+                        }
+                        elseif ($attr -is [ComponentModel.CategoryAttribute]) {
+                            $attr.Category
+                        }
+                    }
+                    
+                }
+            ))
+
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
                 'Rank', {
                     foreach ($attr in $this.ScriptBlock.Attributes) {
@@ -296,32 +328,35 @@ function Get-Transpiler
                     return 0
                 }
             ))
-            $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
-                'Description',
-                {
-                    # From ?<PowerShell_HelpField> in Irregular (https://github.com/StartAutomating/Irregular)
-                    [Regex]::new('
-                        \.(?<Field>Description)              # Field Start
-                        \s{0,}                               # Optional Whitespace
-                        (?<Content>(.|\s)+?(?=(\.\w+|\#\>))) # Anything until the next .\field or end of the comment block
-                        ', 'IgnoreCase,IgnorePatternWhitespace', [Timespan]::FromSeconds(1)).Match(
-                            $this.ScriptBlock
-                    ).Groups["Content"].Value
+            
+            $extCmd.PSObject.Properties.Add([psscriptproperty]::new(
+                'Metadata', {
+                    $Metadata = [Ordered]@{}
+                    foreach ($attr in $this.ScriptBlock.Attributes) {
+                        if ($attr -is [Reflection.AssemblyMetaDataAttribute]) {
+                            if ($Metadata[$attr.Key]) {
+                                $Metadata[$attr.Key] = @($Metadata[$attr.Key]) + $attr.Value
+                            } else {
+                                $Metadata[$attr.Key] = $attr.Value
+                            }                            
+                        }
+                    }
+                    return $Metadata
                 }
             ))
 
+            $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
+                'Description', { @($this.GetHelpField("Description"))[0] }
+            ))
 
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
-                'Synopsis', {
-                # From ?<PowerShell_HelpField> in Irregular (https://github.com/StartAutomating/Irregular)
-                [Regex]::new('
-                    \.(?<Field>Synopsis)                 # Field Start
-                    \s{0,}                               # Optional Whitespace
-                    (?<Content>(.|\s)+?(?=(\.\w+|\#\>))) # Anything until the next .\field or end of the comment block
-                    ', 'IgnoreCase,IgnorePatternWhitespace', [Timespan]::FromSeconds(1)).Match(
-                        $this.ScriptBlock
-                ).Groups["Content"].Value
-            }))
+                'Synopsis', { @($this.GetHelpField("Synopsis"))[0] }))
+
+            $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
+                'Examples', { $this.GetHelpField("Example") }))
+
+            $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
+                'Links', { $this.GetHelpField("Link") }))
 
             $extCmd.PSObject.Methods.Add([psscriptmethod]::new('Validate', {
                 param(
@@ -803,7 +838,7 @@ function Get-Transpiler
                 } else {
                     "(?>$($TranspilerPattern -join '|'))"
                 }
-            ), 'IgnorePatternWhitespace', '00:00:01')
+            ), 'IgnoreCase,IgnorePatternWhitespace', '00:00:01')
 
         #region Find Extensions
         $loadedModules = @(Get-Module)
@@ -885,5 +920,5 @@ function Get-Transpiler
         }
     }
 }
-#endregion Piecemeal [ 0.2.9 ] : Easy Extensible Plugins for PowerShell
+#endregion Piecemeal [ 0.3.1 ] : Easy Extensible Plugins for PowerShell
 
