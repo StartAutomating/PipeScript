@@ -3,10 +3,7 @@ This directory and it's subdirectories contain syntax changes that enable common
 ~~~PipeScript{
     [PSCustomObject]@{
         Table = Get-Transpiler -TranspilerPath $pwd |
-            Select-Object DisplayName, @{
-                Name='Synopsis'
-                Expression= { $_.Synopsis -replace '[\s\r\n]+$' }
-            }, @{
+            Select-Object DisplayName, Synopsis, @{
                 Name='Link'
                 Expression = { $_.Name }
             }
