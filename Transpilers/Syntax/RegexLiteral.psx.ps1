@@ -1,4 +1,12 @@
 <#
+.SYNOPSIS
+    Regex Literal Transpiler
+.DESCRIPTION
+    Allows for Regex Literals within PipeScript.
+
+    Regex Literals are strings enclosed within slashes.
+
+    The ending slash may be followed by ```[Text.RegularExpressions.RegexOptions]```.
 .Example
     {
         '/[a|b]/'
@@ -8,8 +16,7 @@
         "/[$a|$b]/"
     } | .>PipeScript
 .EXAMPLE
-    {
-        @'
+    {@'
 /
 # Heredocs Regex literals will have IgnorePatternWhitespace by default, which allows comments
 ^ # Match the string start
