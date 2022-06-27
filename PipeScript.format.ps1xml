@@ -48,12 +48,15 @@
         $thisObject.Table | &amp; ${PipeScript_Format-Markdown}
     }
     elseif ($thisObject.InputObject) {
-        $thisObject.InputObject | &amp; ${PipeScript_Format-Markdown}
+        $thisObject | &amp; ${PipeScript_Format-Markdown} -InputObject { $thisObject.InputObject }
+    }
+    elseif ($thisObject.Heading -and ($thisObject.Code -or $this.CodeLanguage)) {
+        $thisObject | &amp; ${PipeScript_Format-Markdown}
     }
     elseif ($thisObject.psobject.Properties.Length) {
         $thisObject | &amp; ${PipeScript_Format-Markdown}
     } else {
-        ''
+        "$thisObject"
     }    
 </ScriptBlock>
               </ExpressionBinding>
