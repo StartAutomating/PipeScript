@@ -98,25 +98,33 @@ process {
                         # If we find an end block, the next section becomes code
                                                 
                         $scriptToCreate = @(
-                            if ($Begin) { $Begin}
-                            $fileText.Substring($absoluteStart, 
+                            if ($Begin) { $Begin }
+                            $AddForeach =
+                                $(
+                                    if ($ForeachObject) {
+                                        '|' + [Environment]::NewLine
+                                        @(foreach ($foreachStatement in $ForeachObject) {
+                                            if ($foreachStatement.Ast.ProcessBlock -or $foreachStatement.Ast.BeginBlock) {
+                                                ". {$ForeachStatement}"
+                                            } elseif ($foreachStatement.Ast.EndBlock.Statements -and 
+                                                $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements[0].CommandElements -and
+                                                $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements[0].CommandElements.Value -in 'Foreach-Object', '%') {
+                                                "$ForeachStatement"
+                                            } else {
+                                                "Foreach-Object {$ForeachStatement}"
+                                            }
+                                        }) -join (' |' + [Environment]::NewLine)
+                                    }
+                                )
+                            $Statement = $fileText.Substring($absoluteStart, 
                                 $index - $absoluteStart - $foundSpots[$spotIndex + 1].Groups["PSEnd"].Length
-                            ) + $(
-                                if ($ForeachObject) {
-                                    '|' + [Environment]::NewLine
-                                    @(foreach ($foreachStatement in $ForeachObject) {
-                                        if ($foreachStatement.Ast.ProcessBlock -or $foreachStatement.Ast.BeginBlock) {
-                                            ". {$ForeachStatement}"
-                                        } elseif ($foreachStatement.Ast.EndBlock.Statements -and 
-                                            $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements[0].CommandElements -and
-                                            $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements[0].CommandElements.Value -in 'Foreach-Object', '%') {
-                                            "$ForeachStatement"
-                                        } else {
-                                            "Foreach-Object {$ForeachStatement}"
-                                        }
-                                    }) -join (' |' + [Environment]::NewLine)
-                                }
                             )
+                            if ($AddForeach) {
+                                "@($Statement)" + $AddForeach.Trim()
+                            } else {
+                                $Statement
+                            }
+                            
                             if ($End) { $end}
                             ) -join [Environment]::Newline
                         [scriptblock]::Create($scriptToCreate)
