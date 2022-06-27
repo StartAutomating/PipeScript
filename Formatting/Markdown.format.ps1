@@ -12,6 +12,6 @@ Write-FormatView -TypeName Markdown -Action {
     elseif ($thisObject.psobject.Properties.Length) {
         $thisObject | Format-Markdown
     } else {
-        ''
+        "$thisObject"
     }    
 }
