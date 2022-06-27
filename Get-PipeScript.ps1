@@ -1,4 +1,4 @@
-#region Piecemeal [ 0.3.1 ] : Easy Extensible Plugins for PowerShell
+#region Piecemeal [ 0.3.2 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
 # Install-Piecemeal -ExtensionNoun 'PipeScript' -ExtensionPattern '\.psx\.ps1{0,1}$','\.ps1{0,1}\.(?<ext>[^.]+$)','\.ps1{0,1}$' -ExtensionTypeName 'PipeScript' -OutputPath '.\Get-PipeScript.ps1'
@@ -278,18 +278,31 @@ function Get-PipeScript
 
             $null = $extCmd.GetExtendedCommands()
 
-            $inheritanceLevel = [ComponentModel.InheritanceLevel]::Inherited            
+            $inheritanceLevel = [ComponentModel.InheritanceLevel]::Inherited
+
+            $extCmd.PSObject.Properties.Add([psscriptproperty]::New('BlockComments', {
+                [Regex]::New("                   
+                \<\# # The opening tag
+                (?<Block> 
+                    (?:.|\s)+?(?=\z|\#>) # anything until the closing tag
+                )
+                \#\> # the closing tag
+                ", 'IgnoreCase,IgnorePatternWhitespace', '00:00:01').Matches($this.ScriptBlock)
+            }))
 
             $extCmd.PSObject.Methods.Add([psscriptmethod]::New('GetHelpField', {
                 param([Parameter(Mandatory)]$Field)
-                foreach ($match in [Regex]::new("
+                foreach ($block in $this.BlockComments) {
+                    foreach ($match in [Regex]::new("
                         \.(?<Field>$Field)                   # Field Start
-                        \s{0,}                               # Optional Whitespace
+                        [\s-[\r\n]]{0,}                      # Optional Whitespace
+                        [\r\n]+                              # newline
                         (?<Content>(.|\s)+?(?=(\.\w+|\#\>))) # Anything until the next .\field or end of the comment block
                         ", 'IgnoreCase,IgnorePatternWhitespace', [Timespan]::FromSeconds(1)).Matches(
-                            $this.ScriptBlock
-                    )) {
-                    $match.Groups["Content"].Value -replace '[\s\r\n]+$' -replace '^[\s\r\n]+'
+                            $block.Value
+                        )) {
+                        $match.Groups["Content"].Value -replace '[\s\r\n]+$'
+                    }                    
                 }
             }))
 
@@ -346,11 +359,11 @@ function Get-PipeScript
             ))
 
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
-                'Description', { @($this.GetHelpField("Description"))[0] }
+                'Description', { @($this.GetHelpField("Description"))[0] -replace '^\s+' }
             ))
 
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
-                'Synopsis', { @($this.GetHelpField("Synopsis"))[0] }))
+                'Synopsis', { @($this.GetHelpField("Synopsis"))[0] -replace '^\s+' }))
 
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
                 'Examples', { $this.GetHelpField("Example") }))
@@ -920,5 +933,5 @@ function Get-PipeScript
         }
     }
 }
-#endregion Piecemeal [ 0.3.1 ] : Easy Extensible Plugins for PowerShell
+#endregion Piecemeal [ 0.3.2 ] : Easy Extensible Plugins for PowerShell
 
