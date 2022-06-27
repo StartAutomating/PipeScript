@@ -13,9 +13,7 @@ This directory and it's subdirectories contain syntax changes that enable common
 # Examples
 
 ~~~PipeScript{
-    $transpilers = Get-Transpiler -TranspilerPath $pwd
-
-    @(foreach ($transpiler in $transpilers) {
+    @(foreach ($transpiler in Get-Transpiler -TranspilerPath $pwd) {
         $examples = @($transpiler.Examples)
         if (-not $examples) { continue }
         for ($exampleNumber = 1; $exampleNumber -le $examples.Length; $exampleNumber++) {
@@ -34,4 +32,4 @@ This directory and it's subdirectories contain syntax changes that enable common
 ~~~
 
 
-
+[source](README.ps1.md)
