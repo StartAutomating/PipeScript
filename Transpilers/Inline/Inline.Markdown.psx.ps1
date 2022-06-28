@@ -54,9 +54,9 @@ begin {
         (?<=(?>[\r\n]+){1})[\s-[\r\n]]{0,3}(?>```|~~~) 
     ){1}(?>[\.\<\>]{2}|PipeScript)\s{0,}\{\s{0,}' 
     $endComment   = '\}(?>[\.\<\>]{2}|PipeScript){0,1}(?>
-        (?>```|~~~)
+        \s{0,}(?>[\r\n]+){1}\s{0,3}(?>```|~~~)        
         |
-        \s{0,}(?>[\r\n]+){1}\s{0,3}(?>```|~~~)
+        (?>```|~~~)
     )
     '
     
@@ -64,17 +64,27 @@ begin {
     # * EndRegex       ```$whitespace + '}' + $EndComment```
     $endRegex   = "(?<PSEnd>${endComment})"
 
+    $ReplacablePattern = [Regex]::New("
+# Match the PipeScript Start
+$startRegex
+# Match until the PipeScript end.  This will be PipeScript
+(?<PipeScript>
+(?:.|\s){0,}?(?=\z|$endRegex)
+)
+# Then Match the PipeScript End
+$endRegex
+    ", 'IgnoreCase, IgnorePatternWhitespace', '00:00:05')
+
     $sourcePattern  = [Regex]::New("(?>$(
         $startRegex, $endRegex -join ([Environment]::NewLine + '|' + [Environment]::NewLine)
     ))", "IgnoreCase, IgnorePatternWhitespace", "00:00:05")
+
+
 }
 
 process {
     
-    $fileInfo = $commandInfo.Source -as [IO.FileInfo]
-    $fileText      = [IO.File]::ReadAllText($fileInfo.Fullname)
-
-    .>PipeScript.Inline -SourceFile $CommandInfo.Source -SourceText $fileText -SourcePattern $sourcePattern -ForeachObject {
+    $foreachMarkdownOutput = {
         process {
             if ($_ -is [string]) {
                 $_
@@ -87,5 +97,14 @@ process {
                 $markdownObject | Out-String -Width 1kb
             }
         }
+    }
+
+    $fileInfo = $commandInfo.Source -as [IO.FileInfo]
+    $fileText      = [IO.File]::ReadAllText($fileInfo.Fullname)
+
+    if ($ReplacablePattern) {
+        .>PipeScript.Inline -SourceFile $CommandInfo.Source -SourceText $fileText -Replace $ReplacablePattern -ForeachObject $foreachMarkdownOutput
+    } else {
+        .>PipeScript.Inline -SourceFile $CommandInfo.Source -SourceText $fileText -SourcePattern $sourcePattern -ForeachObject $foreachMarkdownOutput
     }
 }

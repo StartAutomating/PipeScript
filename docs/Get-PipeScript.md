@@ -55,7 +55,10 @@ If provided, will get PipeScript that extend a given command
 ---
 #### **PipeScriptName**
 
-The name of an extension
+The name of an extension.
+By default, this will match any extension command whose name, displayname, or aliases exactly match the name.
+
+If the extension has an Alias with a regular expression literal (```'/Expression/'```) then the -PipeScriptName will be valid if that regular expression matches.
 
 
 
@@ -66,6 +69,9 @@ The name of an extension
 #### **Like**
 
 If provided, will treat -PipeScriptName as a wildcard.
+This will return any extension whose name, displayname, or aliases are like the -PipeScriptName.
+
+If the extension has an Alias with a regular expression literal (```'/Expression/'```) then the -PipeScriptName will be valid if that regular expression matches.
 
 
 
@@ -76,6 +82,9 @@ If provided, will treat -PipeScriptName as a wildcard.
 #### **Match**
 
 If provided, will treat -PipeScriptName as a regular expression.
+This will return any extension whose name, displayname, or aliases match the -PipeScriptName.
+
+If the extension has an Alias with a regular expression literal (```'/Expression/'```) then the -PipeScriptName will be valid if that regular expression matches.
 
 
 
@@ -161,6 +170,16 @@ Implies -DynamicParameter.
 
 If set, will return the dynamic parameters of all PipeScript for a given command, with all mandatory parameters marked as optional.
 Implies -DynamicParameter.  Does not actually prevent the parameter from being Mandatory on the Extension.
+
+
+
+|Type          |Requried|Postion|PipelineInput        |
+|--------------|--------|-------|---------------------|
+|```[Switch]```|false   |named  |true (ByPropertyName)|
+---
+#### **RequirePipeScriptAttribute**
+
+If set, will require a [Runtime.CompilerServices.Extension()] attribute to be considered an extension.
 
 
 
@@ -268,7 +287,7 @@ Extension
 ---
 ### Syntax
 ```PowerShell
-Get-PipeScript [[-PipeScriptPath] <String>] [-Force] [[-CommandName] <String[]>] [[-PipeScriptName] <String[]>] [-Like] [-Match] [-DynamicParameter] [-CouldRun] [[-CouldPipe] <PSObject>] [-Run] [-Stream] [[-DynamicParameterSetName] <String>] [[-DynamicParameterPositionOffset] <Int32>] [-NoMandatoryDynamicParameter] [[-ValidateInput] <PSObject>] [-AllValid] [[-ParameterSetName] <String>] [[-Parameter] <IDictionary>] [-SteppablePipeline] [-Help] [[-ParameterHelp] <String[]>] [-Example] [-FullHelp] [<CommonParameters>]
+Get-PipeScript [[-PipeScriptPath] <String>] [-Force] [[-CommandName] <String[]>] [[-PipeScriptName] <String[]>] [-Like] [-Match] [-DynamicParameter] [-CouldRun] [[-CouldPipe] <PSObject>] [-Run] [-Stream] [[-DynamicParameterSetName] <String>] [[-DynamicParameterPositionOffset] <Int32>] [-NoMandatoryDynamicParameter] [-RequirePipeScriptAttribute] [[-ValidateInput] <PSObject>] [-AllValid] [[-ParameterSetName] <String>] [[-Parameter] <IDictionary>] [-SteppablePipeline] [-Help] [[-ParameterHelp] <String[]>] [-Example] [-FullHelp] [<CommonParameters>]
 ```
 ---
 

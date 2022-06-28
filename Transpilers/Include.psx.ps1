@@ -12,6 +12,10 @@
         [Include("Invoke-PipeScript")]
         param()
     } | .>PipeScript
+.EXAMPLE
+    {
+        [Include('*-*.ps1')]$psScriptRoot        
+    } | .>PipeScript
 #>
 param(
 # The File Path to Include
@@ -28,14 +32,18 @@ $AsByte,
 $VariableAst
 )
 
+# Determine the command we would be including (relative to the current path)
 $includingCommand = $ExecutionContext.SessionState.InvokeCommand.GetCommand($FilePath, 'All')
-if (-not $includingCommand) {
-    Write-Error "Could not resolve $($FilePath)"
-    return
+if (-not $includingCommand) { # if we could not determine the command, we may need to error out.
+    if (-not $FilePath.Contains('*')) {
+        Write-Error "Could not resolve $($FilePath)"
+        return
+    }
 }
 
 function IncludeFileContents {
     param($FilePath)
+    process {
     if ($AsByte) {
         [ScriptBlock]::Create(
         "@'" + [Environment]::NewLine + 
@@ -57,9 +65,10 @@ function IncludeFileContents {
         )
     
     }
+    }
 }
 
-$includedScript, $assignable = 
+$includedScript = 
     if ($includingCommand -is [Management.Automation.CmdletInfo]) {
         Write-Error "Cannot Include Cmdlets"
         return
@@ -104,7 +113,7 @@ function $($includingCommand.Name) {
 }
 "@)
         
-    } else {
+    } elseif ($includingCommand) {
         IncludeFileContents $includingCommand.Source    
     }
 
@@ -116,6 +125,13 @@ if ($psCmdlet.ParameterSetName -eq 'ScriptBlock' -or
         $includedScript
     }
     
-} elseif ($VariableAst.VariablePath) {    
-    [ScriptBlock]::Create("$($VariableAst.VariablePath) = $IncludedScript")
+} elseif ($VariableAst.VariablePath -and $includingCommand) {    
+    [ScriptBlock]::Create("$($VariableAst) = $IncludedScript")
+} elseif ($VariableAst.VariablePath -notmatch '^null$') {
+    [ScriptBlock]::Create(@"
+foreach (`$file in (Get-ChildItem -Path "$($VariableAst)" -Filter "$FilePath" -Recurse)) {
+    if (`$file.Extension -ne '.ps1') { continue }
+    . `$file.FullName
+}        
+"@)
 }

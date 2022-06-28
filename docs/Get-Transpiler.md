@@ -71,7 +71,7 @@ If the extension has an Alias with a regular expression literal (```'/Expression
 If provided, will treat -TranspilerName as a wildcard.
 This will return any extension whose name, displayname, or aliases are like the -TranspilerName.
 
-If the extension has an Alias with a regular expression literal, then extension name will be valid if that regular expression matches.
+If the extension has an Alias with a regular expression literal (```'/Expression/'```) then the -TranspilerName will be valid if that regular expression matches.
 
 
 
@@ -84,7 +84,7 @@ If the extension has an Alias with a regular expression literal, then extension 
 If provided, will treat -TranspilerName as a regular expression.
 This will return any extension whose name, displayname, or aliases match the -TranspilerName.
 
-If the extension has an Alias with a regular expression literal, then extension name will be valid if that regular expression matches.
+If the extension has an Alias with a regular expression literal (```'/Expression/'```) then the -TranspilerName will be valid if that regular expression matches.
 
 
 
@@ -170,6 +170,16 @@ Implies -DynamicParameter.
 
 If set, will return the dynamic parameters of all Transpiler for a given command, with all mandatory parameters marked as optional.
 Implies -DynamicParameter.  Does not actually prevent the parameter from being Mandatory on the Extension.
+
+
+
+|Type          |Requried|Postion|PipelineInput        |
+|--------------|--------|-------|---------------------|
+|```[Switch]```|false   |named  |true (ByPropertyName)|
+---
+#### **RequireTranspilerAttribute**
+
+If set, will require a [Runtime.CompilerServices.Extension()] attribute to be considered an extension.
 
 
 
@@ -277,7 +287,7 @@ Extension
 ---
 ### Syntax
 ```PowerShell
-Get-Transpiler [[-TranspilerPath] <String>] [-Force] [[-CommandName] <String[]>] [[-TranspilerName] <String[]>] [-Like] [-Match] [-DynamicParameter] [-CouldRun] [[-CouldPipe] <PSObject>] [-Run] [-Stream] [[-DynamicParameterSetName] <String>] [[-DynamicParameterPositionOffset] <Int32>] [-NoMandatoryDynamicParameter] [[-ValidateInput] <PSObject>] [-AllValid] [[-ParameterSetName] <String>] [[-Parameter] <IDictionary>] [-SteppablePipeline] [-Help] [[-ParameterHelp] <String[]>] [-Example] [-FullHelp] [<CommonParameters>]
+Get-Transpiler [[-TranspilerPath] <String>] [-Force] [[-CommandName] <String[]>] [[-TranspilerName] <String[]>] [-Like] [-Match] [-DynamicParameter] [-CouldRun] [[-CouldPipe] <PSObject>] [-Run] [-Stream] [[-DynamicParameterSetName] <String>] [[-DynamicParameterPositionOffset] <Int32>] [-NoMandatoryDynamicParameter] [-RequireTranspilerAttribute] [[-ValidateInput] <PSObject>] [-AllValid] [[-ParameterSetName] <String>] [[-Parameter] <IDictionary>] [-SteppablePipeline] [-Help] [[-ParameterHelp] <String[]>] [-Example] [-FullHelp] [<CommonParameters>]
 ```
 ---
 

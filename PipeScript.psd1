@@ -1,5 +1,5 @@
 ﻿@{
-    ModuleVersion     = '0.0.3'
+    ModuleVersion     = '0.0.4'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -17,6 +17,20 @@
 
             Tags = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
+## 0.0.4
+* New Transpilers:
+  * .>RegexLiteral (#77)
+* Improved Transpilers:
+  * .>PipeScript.Inline now supports -ReplacePattern (#84)
+  * .>Include now supports wildcards (#81)
+* Inline PipeScript Support for New Languages
+  * ATOM (#79)
+  * Bicep (#73)
+  * HLSL (#76)
+  * Perl / POD (#74)
+  * RSS (#80)
+
+---
 ## 0.0.3
 * New Transpilers:
   * .>ValidateExtension (#64)
