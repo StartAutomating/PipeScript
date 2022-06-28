@@ -46,14 +46,14 @@ $ReplacePattern,
 # This indicates the beginning of what should be considered PipeScript.
 # An expression will match everything until -EndPattern
 [Parameter(Mandatory,ParameterSetName='SourceStartAndEnd')]
-[Alias('Start','StartRegex')]
+[Alias('StartRegex')]
 [Regex]
 $StartPattern,
 
 # The End Pattern
 # This indicates the end of what should be considered PipeScript.
 [Parameter(Mandatory,ParameterSetName='SourceStartAndEnd')]
-[Alias('End','EndRegex')]
+[Alias('EndRegex')]
 [Regex]
 $EndPattern,
 
