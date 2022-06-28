@@ -74,18 +74,6 @@ begin {
     $startRegex = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $endRegex   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
-
-
-    $ReplacablePattern = [Regex]::New("
-    # Match the PipeScript Start
-    $startRegex
-    # Match until the PipeScript end.  This will be PipeScript
-    (?<PipeScript>
-    (?:.|\s){0,}?(?=\z|$endRegex)
-    )
-    # Then Match the PipeScript End
-    $endRegex
-        ", 'IgnoreCase, IgnorePatternWhitespace', '00:00:10')
 }
 
 process {
@@ -93,5 +81,5 @@ process {
     $fileInfo = $commandInfo.Source -as [IO.FileInfo]
     $fileText      = [IO.File]::ReadAllText($fileInfo.Fullname)
 
-    .>PipeScript.Inline -SourceFile $CommandInfo.Source -SourceText $fileText -ReplacePattern $ReplacablePattern    
+    .>PipeScript.Inline -SourceFile $CommandInfo.Source -SourceText $fileText -StartPattern $startRegex -EndPattern $endRegex
 }

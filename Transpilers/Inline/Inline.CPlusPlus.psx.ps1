@@ -40,15 +40,11 @@ begin {
     $startRegex = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $endRegex   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
-
-    $sourcePattern  = [Regex]::New("(?>$(
-        $startRegex, $endRegex -join ([Environment]::NewLine + '|' + [Environment]::NewLine)
-    ))", "IgnoreCase, IgnorePatternWhitespace", "00:00:05")
 }
 
 process {
     $fileInfo = $commandInfo.Source -as [IO.FileInfo]
     $fileText      = [IO.File]::ReadAllText($fileInfo.Fullname)
     
-    .>PipeScript.Inline -SourceFile $CommandInfo.Source -SourceText $fileText -SourcePattern $sourcePattern
+    .>PipeScript.Inline -SourceFile $CommandInfo.Source -SourceText $fileText -StartPattern $startRegex -EndPattern $endRegex
 }

@@ -53,10 +53,6 @@ begin {
     
     $startRegex = "(?<PSStart>${startComment})"    
     $endRegex   = "(?<PSEnd>${endComment})"
-
-    $sourcePattern  = [Regex]::New("(?>$(
-        $startRegex, $endRegex -join ([Environment]::NewLine + '|' + [Environment]::NewLine)
-    ))", "IgnoreCase, IgnorePatternWhitespace", "00:00:05")
 }
 
 process {
@@ -64,5 +60,5 @@ process {
     $fileInfo = $commandInfo.Source -as [IO.FileInfo]
     $fileText      = [IO.File]::ReadAllText($fileInfo.Fullname)
 
-    .>PipeScript.Inline -SourceFile $CommandInfo.Source -SourceText $fileText -SourcePattern $sourcePattern
+    .>PipeScript.Inline -SourceFile $CommandInfo.Source -SourceText $fileText -StartPattern $startRegex -EndPattern $endRegex
 }
