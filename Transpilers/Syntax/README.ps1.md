@@ -16,19 +16,12 @@ This directory and it's subdirectories contain syntax changes that enable common
         $examples = @($transpiler.Examples)
         if (-not $examples) { continue }
         for ($exampleNumber = 1; $exampleNumber -le $examples.Length; $exampleNumber++) {
-            "## $($transpiler.DisplayName) Example $($exampleNumber)" + 
-                [Environment]::Newline + 
-                [Environment]::Newline + 
-                "~~~PowerShell" +
-                [Environment]::Newline + 
-                $examples[$exampleNumber - 1] +
-                [Environment]::Newline + 
-                "~~~" +
-                [Environment]::Newline
+            @("## $($transpiler.DisplayName) Example $($exampleNumber)", 
+                [Environment]::Newline,
+                "~~~PowerShell",                
+                $examples[$exampleNumber - 1],                
+                "~~~") -join [Environment]::Newline
         }        
     }) -join ([Environment]::Newline * 2)
 }
 ~~~
-
-
-[source](README.ps1.md)
