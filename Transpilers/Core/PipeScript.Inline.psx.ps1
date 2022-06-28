@@ -8,12 +8,7 @@
 
     Inline PipeScript will be embedded within the file (usually in comments).
 
-    Anything encountered in a source generator file can be either:
-
-    * A Literal String (written directly in the underlying source language)
-    * A Script Block (written in PowerShell or PipeScript)
-
-    This Transpiler takes a sequence of literal strings and script blocks, and constructs the source generation script.
+    If a Regular Expression can match each section, then the content in each section can be replaced.
 #>
 param(
 # A list of source sections
@@ -24,6 +19,7 @@ $SourceSection,
 # A string containing the text contents of the file
 [Parameter(Mandatory,ParameterSetName='SourceTextAndPattern')]
 [Parameter(Mandatory,ParameterSetName='SourceTextReplace')]
+[Parameter(Mandatory,ParameterSetName='SourceStartAndEnd')]
 [string]
 $SourceText,
 
@@ -46,7 +42,23 @@ $SourcePattern,
 [regex]
 $ReplacePattern,
 
+# The Start Pattern.
+# This indicates the beginning of what should be considered PipeScript.
+# An expression will match everything until -EndPattern
+[Parameter(Mandatory,ParameterSetName='SourceStartAndEnd')]
+[Alias('Start','StartRegex')]
+[Regex]
+$StartPattern,
+
+# The End Pattern
+# This indicates the end of what should be considered PipeScript.
+[Parameter(Mandatory,ParameterSetName='SourceStartAndEnd')]
+[Alias('End','EndRegex')]
+[Regex]
+$EndPattern,
+
 [Parameter(ParameterSetName='SourceTextReplace')]
+[Parameter(ParameterSetName='SourceStartAndEnd')]
 [Alias('Replacer')]
 [ScriptBlock]
 $ReplacementEvaluator,
@@ -54,6 +66,8 @@ $ReplacementEvaluator,
 # If set, will not transpile script blocks.
 [Parameter(ParameterSetName='SourceTextAndPattern')]
 [Parameter(ParameterSetName='SourceSections')]
+[Parameter(ParameterSetName='SourceStartAndEnd')]
+[Parameter(ParameterSetName='SourceTextReplace')]
 [switch]
 $NoTranspile,
 
@@ -61,6 +75,7 @@ $NoTranspile,
 [Parameter(ParameterSetName='SourceTextAndPattern')]
 [Parameter(ParameterSetName='SourceSections')]
 [Parameter(ParameterSetName='SourceTextReplace')]
+[Parameter(ParameterSetName='SourceStartAndEnd')]
 [string]
 $SourceFile,
 
@@ -68,6 +83,7 @@ $SourceFile,
 [Parameter(ParameterSetName='SourceTextAndPattern')]
 [Parameter(ParameterSetName='SourceSections')]
 [Parameter(ParameterSetName='SourceTextReplace')]
+[Parameter(ParameterSetName='SourceStartAndEnd')]
 [ScriptBlock]
 $Begin,
 
@@ -75,6 +91,7 @@ $Begin,
 [Parameter(ParameterSetName='SourceTextAndPattern')]
 [Parameter(ParameterSetName='SourceSections')]
 [Parameter(ParameterSetName='SourceTextReplace')]
+[Parameter(ParameterSetName='SourceStartAndEnd')]
 [Alias('Process')]
 [ScriptBlock]
 $ForeachObject,
@@ -83,6 +100,7 @@ $ForeachObject,
 [Parameter(ParameterSetName='SourceTextAndPattern')]
 [Parameter(ParameterSetName='SourceSections')]
 [Parameter(ParameterSetName='SourceTextReplace')]
+[Parameter(ParameterSetName='SourceStartAndEnd')]
 [ScriptBlock]
 $End
 )
@@ -92,7 +110,22 @@ begin {
 }
 
 process {
-    if ($psCmdlet.ParameterSetName -eq 'SourceTextReplace') {
+    $psParameterSet = $psCmdlet.ParameterSetName
+    if ($psParameterSet -eq 'SourceStartAndEnd') {
+        $ReplacePattern = [Regex]::New("
+    # Match the PipeScript Start
+    $StartPattern
+    # Match until the PipeScript end.  This will be PipeScript
+    (?<PipeScript>
+    (?:.|\s){0,}?(?=\z|$endPattern)
+    )
+    # Then Match the PipeScript End
+    $EndPattern
+        ", 'IgnoreCase, IgnorePatternWhitespace', '00:00:10')
+        $psParameterSet = 'SourceTextReplace'
+    }
+
+    if ($psParameterSet -eq 'SourceTextReplace') {
         $fileText      = $SourceText
         if (-not $PSBoundParameters["ReplacementEvaluator"]) {
             $ReplacementEvaluator = {
@@ -168,7 +201,7 @@ process {
         return $ReplacePattern.Replace($fileText, $ReplacementEvaluator)
     }
 
-    if ($psCmdlet.ParameterSetName -eq 'SourceTextAndPattern') {
+    if ($psParameterSet -eq 'SourceTextAndPattern') {
 
         $fileText      = $SourceText        
         $foundSpots    = @($SourcePattern.Matches($fileText))
