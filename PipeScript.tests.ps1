@@ -17,6 +17,34 @@ describe PipeScript {
         }
     }
 
+    context 'Inline PipeScript' {
+        it 'Can be embedded in another language (to transmute source code or documents)' {
+            .> {
+                $CSharpLiteral = @'
+        namespace TestProgram/*{Get-Random}*/ {
+            public static class Program {
+                public static string Hello() {
+                    string helloMessage = /*{
+                        '"hello"', '"hello world"', '"hey there"', '"howdy"' | Get-Random
+                    }*/ string.Empty; 
+                    return helloMessage;
+                }
+            }
+        }    
+'@
+        
+                [OutputFile(".\HelloWorld.ps1.cs")]$CSharpLiteral
+            }
+        
+            $AddedFile = .> .\HelloWorld.ps1.cs
+            $addedType = Add-Type -TypeDefinition (Get-Content $addedFile.FullName -Raw) -PassThru
+            $addedType::Hello() | Should -belike 'H*'
+
+            Remove-Item .\HelloWorld.ps1.cs
+            Remove-Item $AddedFile.FullName 
+        }
+    }
+
     it 'Can transpile a scriptblock that is preceeded by the name of a transpiler' {
         Invoke-PipeScript -ScriptBlock {
             [bash]{param($msg = 'hello world') $msg}
