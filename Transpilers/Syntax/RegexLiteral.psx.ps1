@@ -22,7 +22,7 @@
 
     # This will become:
 
-    [regex]::new("[$a|$b]", 'IgnoreCase'
+    [regex]::new("[$a|$b]", 'IgnoreCase')
 .EXAMPLE
     {
 @'
@@ -34,9 +34,18 @@
 '@
     } | .>PipeScript
 
+    # This will become:
+
+    [regex]::new(@'
+# Heredocs Regex literals will have IgnorePatternWhitespace by default, which allows comments
+^ # Match the string start
+(?<indent>\s{0,1})
+'@, 'IgnorePatternWhitespace,IgnoreCase')    
+
 .EXAMPLE
+    $Keywords = "looking", "for", "these", "words"
+
     {
-        $Keywords = "looking", "for", "these", "words"
 @"
 /
 # Double quoted heredocs can still contain variables
@@ -46,6 +55,16 @@ $($Keywords -join '|') # followed by keywords
 /
 "@
     } | .>PipeScript
+
+
+    # This will become:
+
+    [regex]::new(@"
+# Double quoted heredocs can still contain variables
+[\s\p{P}]{0,1}         # Whitespace or punctuation
+$($Keywords -join '|') # followed by keywords
+[\s\p{P}]{0,1}         # followed by whitespace or punctuation
+"@, 'IgnorePatternWhitespace,IgnoreCase')
 #>
 [ValidatePattern(@'
 ^                             # Start anchor
