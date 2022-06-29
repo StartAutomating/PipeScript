@@ -8,7 +8,7 @@
 #>
 [ValidateScript({
     $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.(?>xml|xaml)$') {
+    if ($cmdInfo.Source -match '\.(?>xml|xaml|ps1xml)$') {
         return $true
     }
     return $false    
