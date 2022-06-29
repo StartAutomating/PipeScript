@@ -1,5 +1,5 @@
-﻿@{
-    ModuleVersion     = '0.0.4'
+@{
+    ModuleVersion     = '0.0.5'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -17,6 +17,19 @@
 
             Tags = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
+## 0.0.5
+* New Language Features:
+  * PipedAssignment (#88)
+* Command Fixes:
+  * Invoke-PipeScript now defaults unmapped files to treating them as PowerShell / PipeScript (#86)
+* Improved Transpilers:
+  * .>PipeScript.Inline now supports -StartPattern/-EndPattern (#85)
+  * Inline Transpilers now use -StartPattern/-EndPattern (#85)
+* Inline PipeScript Support for New Languages
+  * .>Inline.PSD1 (#89)
+  * .>Inline.XML now handles .PS1XML (#91)
+---
+
 ## 0.0.4
 * New Transpilers:
   * .>RegexLiteral (#77)
