@@ -13,10 +13,6 @@
     # This will become:
 
     $Collection = $Collection | Where-Object Name -match $pattern
-.EXAMPLE
-    {
-        $Collection |=| Where-Object Name -match $Pattern | Foreach-Object { $_.Name }
-    } | .>PipeScript
 #>
 [ValidateScript({
     $ast = $_
