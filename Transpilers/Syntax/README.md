@@ -22,6 +22,21 @@ This directory and it's subdirectories contain syntax changes that enable common
     $Collection = $Collection | Where-Object Name -match $pattern
 ~~~
 
+## PipedAssignment Example 2
+
+
+~~~PowerShell
+    {
+        $Collection |=| Where-Object Name -match $pattern | Select-Object -ExpandProperty Name
+    } | .>PipeScript
+
+    # This will become
+
+    $Collection = $Collection |
+            Where-Object Name -match $pattern |
+            Select-Object -ExpandProperty Name
+~~~
+
 ## RegexLiteral Example 1
 
 
