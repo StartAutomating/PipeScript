@@ -13,6 +13,16 @@
     # This will become:
 
     $Collection = $Collection | Where-Object Name -match $pattern
+.EXAMPLE
+    {
+        $Collection |=| Where-Object Name -match $pattern | Select-Object -ExpandProperty Name
+    } | .>PipeScript
+
+    # This will become
+
+    $Collection = $Collection |
+            Where-Object Name -match $pattern |
+            Select-Object -ExpandProperty Name
 #>
 [ValidateScript({
     $ast = $_
