@@ -1,12 +1,34 @@
 This directory and it's subdirectories contain syntax changes that enable common programming scenarios in PowerShell and PipeScript.
 
 
-|DisplayName                         |Synopsis                                        |
-|------------------------------------|------------------------------------------------|
-|[RegexLiteral](RegexLiteral.psx.ps1)|[Regex Literal Transpiler](RegexLiteral.psx.ps1)|
+|DisplayName                               |Synopsis                                              |
+|------------------------------------------|------------------------------------------------------|
+|[PipedAssignment](PipedAssignment.psx.ps1)|[Piped Assignment Transpiler](PipedAssignment.psx.ps1)|
+|[RegexLiteral](RegexLiteral.psx.ps1)      |[Regex Literal Transpiler](RegexLiteral.psx.ps1)      |
 
 
 
+
+## PipedAssignment Example 1
+
+
+~~~PowerShell
+    {
+        $Collection |=| Where-Object Name -match $Pattern
+    } | .>PipeScript
+
+    # This will become:
+
+    $Collection = $Collection | Where-Object Name -match $pattern
+~~~
+
+## PipedAssignment Example 2
+
+
+~~~PowerShell
+    {
+        $Collection |=| Where-Object Name -match $Pattern | Foreach-Object { $_
+~~~
 
 ## RegexLiteral Example 1
 
