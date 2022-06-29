@@ -44,6 +44,10 @@ This directory and it's subdirectories contain syntax changes that enable common
     {
         '/[a|b]/'
     } | .>PipeScript
+
+    # This will become:
+
+    [regex]::new('[a|b]', 'IgnoreCase')
 ~~~
 
 ## RegexLiteral Example 2
@@ -53,13 +57,18 @@ This directory and it's subdirectories contain syntax changes that enable common
     {
         "/[$a|$b]/"
     } | .>PipeScript
+
+    # This will become:
+
+    [regex]::new("[$a|$b]", 'IgnoreCase'
 ~~~
 
 ## RegexLiteral Example 3
 
 
 ~~~PowerShell
-    {@'
+    {
+@'
 /
 # Heredocs Regex literals will have IgnorePatternWhitespace by default, which allows comments
 ^ # Match the string start
@@ -75,7 +84,7 @@ This directory and it's subdirectories contain syntax changes that enable common
 ~~~PowerShell
     {
         $Keywords = "looking", "for", "these", "words"
-        @"
+@"
 /
 # Double quoted heredocs can still contain variables
 [\s\p{P}]{0,1}         # Whitespace or punctuation
