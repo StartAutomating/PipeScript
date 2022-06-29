@@ -253,7 +253,8 @@
                 # predetermine the output path 
                 $outputPath = $($Command.Source -replace $IsSourceGenerator, '.${ext}')
                 # and attempt to find a transpiler.
-                $foundTranspiler = Get-Transpiler -CouldPipe $Command
+                $foundTranspiler = Get-Transpiler -CouldPipe $Command -ValidateInput $Command -ErrorAction Ignore
+                    
 
                 # Push into the location of the file, so the current working directory will be accurate for any inline scripts.
                 Push-Location ($command.Source | Split-Path)
@@ -261,31 +262,25 @@
                 # Get the output from the source generator.
                 $pipescriptOutput =
                     if ($foundTranspiler) { # If we found transpilers
-                        foreach ($ft in $foundTranspiler)  {
-                            if ($(
-                                $eap = $ErrorActionPreference
-                                $ErrorActionPreference = 'ignore'
-                                # ensure they are valid
-                                $ft.ExtensionCommand.Validate($Command, $true)
-                                $ErrorActionPreference = $eap
-                            )) {
-                                # and run the transpiler.
+                        foreach ($ft in $foundTranspiler)  {                            
+                            # run them.
 
-                                $null =
-                                    New-Event -SourceIdentifier 'PipeScript.SourceGenerator.Start' -MessageData ([PSCustomObject][Ordered]@{
-                                        Transpiler = $ft.ExtensionCommand
-                                        SourcePath = $command.Source
-                                    })
+                            $null =
+                                New-Event -SourceIdentifier 'PipeScript.SourceGenerator.Start' -MessageData ([PSCustomObject][Ordered]@{
+                                    Transpiler = $ft.ExtensionCommand
+                                    SourcePath = $command.Source
+                                })
 
-                                $transpilerOutput = $command | & $ft.ExtensionCommand
+                            $transpilerOutput = $command | & $ft.ExtensionCommand
 
-                                $null =
-                                    New-Event -SourceIdentifier 'PipeScript.SourceGenerator.Stop' -MessageData ([PSCustomObject][Ordered]@{
-                                        Transpiler       = $ft.ExtensionCommand
-                                        TranspilerOutput = $transpilerOutput
-                                        SourcePath       = $command.Source
-                                    })
-                                
+                            $null =
+                                New-Event -SourceIdentifier 'PipeScript.SourceGenerator.Stop' -MessageData ([PSCustomObject][Ordered]@{
+                                    Transpiler       = $ft.ExtensionCommand
+                                    TranspilerOutput = $transpilerOutput
+                                    SourcePath       = $command.Source
+                                })
+                            
+                            $transpilerOutput = 
                                 # If the transpiler returned a [ScriptBlock]
                                 if ($transpilerOutput -is [Scriptblock]) {
                                     # recursively invoke.
@@ -295,9 +290,13 @@
                                     # otherwise, return the output of the transpiler.
                                     $transpilerOutput
                                 }
-                                break
+                            
+                            # If the transpiler had output,
+                            if ($transpilerOutput) {
+                                $transpilerOutput # use that output 
+                                break             # and stop processing additional transpilers.
                             }
-                        }
+                        }                        
                     } else {
                         # If we did not find a transpiler, treat the source code as PipeScript/PowerShell.
                         $fileScriptBlock =
@@ -317,8 +316,12 @@
                             }
 
                         if (-not $fileScriptBlock) { return }
-                        $InvokePipeScriptParameters.Command = $fileScriptBlock
-                        Invoke-PipeScript @InvokePipeScriptParameters
+                        if ($command.Source -match '\.psm{0,1}1{0,1}$') {
+                            $fileScriptBlock
+                        } else {
+                            $InvokePipeScriptParameters.Command = $fileScriptBlock
+                            Invoke-PipeScript @InvokePipeScriptParameters
+                        }                        
                     }
 
                 # Now that the source generator has finished running, we can Pop-Location.
