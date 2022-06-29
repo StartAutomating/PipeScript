@@ -11,12 +11,21 @@
     {
         '/[a|b]/'
     } | .>PipeScript
+
+    # This will become:
+
+    [regex]::new('[a|b]', 'IgnoreCase')
 .EXAMPLE
     {
         "/[$a|$b]/"
     } | .>PipeScript
+
+    # This will become:
+
+    [regex]::new("[$a|$b]", 'IgnoreCase'
 .EXAMPLE
-    {@'
+    {
+@'
 /
 # Heredocs Regex literals will have IgnorePatternWhitespace by default, which allows comments
 ^ # Match the string start
@@ -28,7 +37,7 @@
 .EXAMPLE
     {
         $Keywords = "looking", "for", "these", "words"
-        @"
+@"
 /
 # Double quoted heredocs can still contain variables
 [\s\p{P}]{0,1}         # Whitespace or punctuation
