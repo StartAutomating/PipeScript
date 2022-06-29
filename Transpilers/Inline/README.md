@@ -1,6 +1,6 @@
 This directory contains Inline PipeScript transpilers for several languages.
 
-PipeScript can currently be embedded in 24 languages.
+PipeScript can currently be embedded in 25 languages or file types.
 
 Transpilers in this directory should be named ```Inline.NameOfLanguage.psx.ps1```.
 Each file should handle one and only one language (better explicit than terse).
@@ -26,6 +26,7 @@ Transpilers should call ```.>PipeScript.Inline``` to simplify and standarize pro
 |[OpenSCAD](Inline.OpenSCAD.psx.ps1)    |[OpenSCAD Inline PipeScript Transpiler.](Inline.OpenSCAD.psx.ps1)    |
 |[Perl](Inline.Perl.psx.ps1)            |[Perl Inline PipeScript Transpiler.](Inline.Perl.psx.ps1)            |
 |[PHP](Inline.PHP.psx.ps1)              |[PHP PipeScript Transpiler.](Inline.PHP.psx.ps1)                     |
+|[PSD1](Inline.PSD1.psx.ps1)            |[PSD1 Inline PipeScript Transpiler.](Inline.PSD1.psx.ps1)            |
 |[Python](Inline.Python.psx.ps1)        |[Python Inline PipeScript Transpiler.](Inline.Python.psx.ps1)        |
 |[Razor](Inline.Razor.psx.ps1)          |[Razor Inline PipeScript Transpiler.](Inline.Razor.psx.ps1)          |
 |[RSS](Inline.RSS.psx.ps1)              |[RSS Inline PipeScript Transpiler.](Inline.RSS.psx.ps1)              |

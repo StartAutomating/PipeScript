@@ -21,7 +21,7 @@ When this is the case it is common for the transpiler to add a ```[ValidateScrip
 |[ValidatePlatform](ValidatePlatform.psx.ps1)        |[Validates the Platform](ValidatePlatform.psx.ps1)                   |
 |[ValidatePropertyName](ValidatePropertyName.psx.ps1)|[Validates Property Names](ValidatePropertyName.psx.ps1)             |
 |[ValidateTypes](ValidateTypes.psx.ps1)              |[Validates if an object is one or more types.](ValidateTypes.psx.ps1)|
-|[VBN](VBN.psx.ps1)                                  |[ValueFromPipline Shorthand](VBN.psx.ps1)                            |
+|[VBN](VBN.psx.ps1)                                  |[ValueFromPiplineByPropertyName Shorthand](VBN.psx.ps1)              |
 |[VFP](VFP.psx.ps1)                                  |[ValueFromPipline Shorthand](VFP.psx.ps1)                            |
 
 

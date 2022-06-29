@@ -1,6 +1,6 @@
 This directory contains Inline PipeScript transpilers for several languages.
 
-PipeScript can currently be embedded in ```.>{@(Get-Transpiler -TranspilerPath $pwd).Count}<.``` languages.
+PipeScript can currently be embedded in ```.>{@(Get-Transpiler -TranspilerPath $pwd).Count}<.``` languages or file types.
 
 Transpilers in this directory should be named ```Inline.NameOfLanguage.psx.ps1```.
 Each file should handle one and only one language (better explicit than terse).

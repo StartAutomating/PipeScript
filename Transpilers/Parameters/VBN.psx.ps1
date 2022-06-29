@@ -1,18 +1,21 @@
 <#
 .SYNOPSIS
-    ValueFromPipline Shorthand
+    ValueFromPiplineByPropertyName Shorthand
 .DESCRIPTION
-      This is syntax shorthand to create [Parameter] attributes that take ValueFromPipelineByPropertyName.
+    This is syntax shorthand to create [Parameter] attributes that take ValueFromPipelineByPropertyName.
 #>
 [Alias('VFPBPN')]
 param(
+# The name of the parameter set
 [Alias('ParameterSetName')]
 [string]
 $ParameterSet,
 
+# If set, the parameter will be Mandatory.
 [switch]
 $Mandatory,
 
+# If set, the parameter will also take value from Pipeline
 [Alias('VFP')]
 [switch]
 $ValueFromPipeline,

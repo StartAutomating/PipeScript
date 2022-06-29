@@ -1,19 +1,19 @@
 <#
 .SYNOPSIS
-    Bicep Inline PipeScript Transpiler.
+    PSD1 Inline PipeScript Transpiler.
 .DESCRIPTION
-    Transpiles Bicep with Inline PipeScript into Bicep.
+    Transpiles PSD1 with Inline PipeScript into PSD1.
 
-    Multiline comments blocks like ```/*{}*/``` will be treated as blocks of PipeScript.
+    Multiline comments blocks enclosed with {} will be treated as Blocks of PipeScript.
 
-    Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
+    Multiline comments can be preceeded or followed by single-quoted strings, which will be ignored.
 
     * ```''```
     * ```{}```
 #>
 [ValidateScript({
     $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.bicep$') {
+    if ($cmdInfo.Source -match '\.psd1$') {
         return $true
     }
     return $false
@@ -26,15 +26,19 @@ $CommandInfo
 
 begin {
     # We start off by declaring a number of regular expressions:
-    $startComment = '/\*' # * Start Comments ```\*```
-    $endComment   = '\*/' # * End Comments   ```/*```
+    $startComment = '<\#' # * Start Comments ```\*```
+    $endComment   = '\#>' # * End Comments   ```/*```
     $Whitespace   = '[\s\n\r]{0,}'
-    # * IgnoredContext 
-    $IgnoredContext = "(?<ignore>(?>$("''", "\{\}" -join '|'))\s{0,}){0,1}"
+    # * IgnoredContext (single-quoted strings)
+    $IgnoredContext = "
+    (?<ignore>
+        (?>'((?:''|[^'])*)')
+        [\s - [ \r\n ] ]{0,}
+    ){0,1}"
     # * StartRegex     ```$IgnoredContext + $StartComment + '{' + $Whitespace```
-    $startRegex = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
+    $startRegex = [Regex]::New("(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)", 'IgnorePatternWhitespace')
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
-    $endRegex   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    $endRegex   = "(?<PSEnd>$Whitespace\}${endComment}[\s-[\r\n]]{0,}${IgnoredContext})"
 }
 
 process {
