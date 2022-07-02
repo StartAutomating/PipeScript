@@ -68,6 +68,7 @@ process {
             $astReplacements[$pipeline] =  [ScriptBlock]::Create("`$null = $pipeline")
         }
     }
-    $astReplacements
+
+    Update-PipeScript -ScriptBlock $ScriptBlock -AstReplacement $astReplacements
     # @{AstReplacement=$astReplacements}    
 }
