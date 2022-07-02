@@ -1,13 +1,14 @@
-﻿foreach ($file in Get-ChildItem -LiteralPath $PSScriptRoot -Filter *-*.ps1) {
-    . $file.Fullname
-}
+foreach ($file in (Get-ChildItem -Path "$psScriptRoot" -Filter "*-*" -Recurse)) {
+    if ($file.Extension -ne '.ps1') { continue }
+    . $file.FullName
+}        
 
 $aliasNames = @()
 foreach ($transpilerCmd in Get-Transpiler) {
     $aliasNames += ".>$($transpilerCmd.DisplayName)"
     Set-Alias ".>$($transpilerCmd.DisplayName)" Use-PipeScript
     $aliasNames += ".<$($transpilerCmd.DisplayName)>"
-    Set-Alias ".<$($transpilerCmd.DisplayName)>" Use-PipeScript    
+    Set-Alias ".<$($transpilerCmd.DisplayName)>" Use-PipeScript
 }
 
 foreach ($cmd in $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function', $true)) {
