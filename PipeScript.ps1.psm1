@@ -1,7 +1,4 @@
-foreach ($file in (Get-ChildItem -Path "$psScriptRoot" -Filter "*-*" -Recurse)) {
-    if ($file.Extension -ne '.ps1') { continue }
-    . $file.FullName
-}        
+﻿[Include('*-*')]$psScriptRoot
 
 $aliasNames = @()
 foreach ($transpilerCmd in Get-Transpiler) {

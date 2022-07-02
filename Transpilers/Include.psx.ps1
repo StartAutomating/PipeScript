@@ -130,8 +130,9 @@ if ($psCmdlet.ParameterSetName -eq 'ScriptBlock' -or
 } elseif ($VariableAst.VariablePath -notmatch '^null$') {
     [ScriptBlock]::Create(@"
 foreach (`$file in (Get-ChildItem -Path "$($VariableAst)" -Filter "$FilePath" -Recurse)) {
-    if (`$file.Extension -ne '.ps1') { continue }
+    if (`$file.Extension -ne '.ps1')      { continue }  # Skip if the extension is not .ps1
+    if (`$file.Name -match '\.ps1\.ps1$') { continue }  # Skip if the file is a source generator.
     . `$file.FullName
-}        
+}
 "@)
 }

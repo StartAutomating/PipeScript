@@ -60,7 +60,14 @@ function Join-PipeScript
         }
     }
 
-    end {        
+    end {
+        if ($SkipBlockType) {
+            foreach ($skipBlock in $SkipBlockType) {
+                if ($blockType -contains $skipBlock) {
+                    $blockType = $BlockType -ne $skipBlock
+                }
+            }
+        }
         $AllScriptBlocks  = @(
         foreach ($toMerge in $AllScriptBlocks) {
             if ($toMerge.Ast.body) {
@@ -72,13 +79,13 @@ function Join-PipeScript
 
 
         $mergedScript = @(
-            if ($SkipBlockType -notcontains 'using') {
+            if ($BlockType -contains 'using') {
                 foreach ($usingStatement in $AllScriptBlocks.Ast.UsingStatements) {
                     $usingStatement.Extent.ToString()
                 }                
             }
 
-            if ($SkipBlockType -notcontains 'requires') {
+            if ($BlockType -contains 'requires') {
                 foreach ($requirement in $AllScriptBlocks.Ast.ScriptRequirements) {
                     if ($requirement.RequirementPSVersion) {
                         "#requires -Version $($requirement.RequirementPSVersion)"
@@ -110,7 +117,7 @@ function Join-PipeScript
                 }
             }
 
-            if ($SkipBlockType -notcontains 'param') {
+            if ($BlockType -contains 'param') {
                 foreach ($combined in $AllScriptBlocks.Ast.ParamBlock) {
                     if (-not $combined.Parent.Extent) { continue }
                     $combined.Parent.Extent.ToString().Substring(0, $combined.Extent.StartOffset)
@@ -119,7 +126,7 @@ function Join-PipeScript
             # Start the param block
             
             $alreadyIncludedParameter = [Ordered]@{}
-            if ($SkipBlockType -notcontains 'param') {
+            if ($BlockType -contains 'param') {
                 if (@($AllScriptBlocks.Ast.ParamBlock) -ne $null) {
                     ' ' * (@(@($AllScriptBlocks.Ast.ParamBlock) -ne $null)[0] | MeasureIndent) + "param("
                 }                    
@@ -168,7 +175,7 @@ function Join-PipeScript
                 }            
             }
 
-            if ($SkipBlockType -notcontains 'dynamicParam') {
+            if ($BlockType -contains 'dynamicParam') {
                 $blocks = @($AllScriptBlocks.Ast.DynamicParamBlock)
                 if ($blocks -ne $null) {
                     $blockOpen = $false
@@ -187,7 +194,7 @@ function Join-PipeScript
             
 
             
-            if ($SkipBlockType -notcontains 'begin') {  # If there were begin blocks,
+            if ($BlockType -contains 'begin') {  # If there were begin blocks,
                 $blocks = @($AllScriptBlocks.Ast.BeginBlock)
                 if ($blocks -ne $null) {
                     $blockOpen = $false
@@ -204,7 +211,7 @@ function Join-PipeScript
                 }                
             }
 
-            if ($SkipBlockType -notcontains 'process') {  # If there were process blocks
+            if ($BlockType -contains 'process') {  # If there were process blocks
                 $blocks = @($AllScriptBlocks.Ast.ProcessBlock)
                 if ($blocks -ne $null) {
                     $blockOpen = $false
@@ -221,7 +228,7 @@ function Join-PipeScript
                 }
             }
 
-            if ($SkipBlockType -notcontains 'end') {
+            if ($BlockType -contains 'end') {
                 # If there were end blcoks declared
                 
                 $blocks = @($AllScriptBlocks.Ast.EndBlock)
