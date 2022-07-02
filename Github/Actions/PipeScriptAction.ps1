@@ -56,7 +56,7 @@ $PSD1Found = Get-ChildItem -Recurse -Filter "*.psd1" | Where-Object Name -eq 'Pi
 
 if ($PSD1Found) {
     $PipeScriptModulePath = $PSD1Found
-    Import-Module $psd1Path -Force -PassThru | Out-Host
+    Import-Module $PSD1Found -Force -PassThru | Out-Host
 } elseif ($env:GITHUB_ACTION_PATH) {
     $PipeScriptModulePath = Join-Path $env:GITHUB_ACTION_PATH 'PipeScript.psd1'
     if (Test-path $PipeScriptModulePath) {
