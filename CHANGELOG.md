@@ -1,3 +1,13 @@
+## 0.0.6:
+* New Transpilers:
+  * ValidateScriptBlock
+* Improved Transpilers:
+  * [Include] not including source generators (#96)
+* PipeScript.psm1 is now build with PipeScript (#95)
+* Join-PipeScript:  Fixing -BlockType (#97)
+* GitHub Action will now look for PipeScript.psd1 in the workspace first (#98)
+---
+
 ## 0.0.5
 * New Language Features:
   * PipedAssignment (#88)
