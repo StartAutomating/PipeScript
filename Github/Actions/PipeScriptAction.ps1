@@ -52,10 +52,15 @@ $($gitHubEvent | ConvertTo-Json -Depth 100)
 ::endgroup::
 "@ | Out-Host
 
-if ($env:GITHUB_ACTION_PATH) {
+$PSD1Found = Get-ChildItem -Recurse -Filter "*.psd1" | Where-Object Name -eq 'PipeScript.psd1' | Select-Object -First 1
+
+if ($PSD1Found) {
+    $PipeScriptModulePath = $PSD1Found
+    Import-Module $psd1Path -Force -PassThru | Out-Host
+} elseif ($env:GITHUB_ACTION_PATH) {
     $PipeScriptModulePath = Join-Path $env:GITHUB_ACTION_PATH 'PipeScript.psd1'
     if (Test-path $PipeScriptModulePath) {
-        Import-Module $PipeScriptModulePath -Force -PassThru | Out-String
+        Import-Module $PipeScriptModulePath -Force -PassThru | Out-Host
     } else {
         throw "PipeScript not found"
     }

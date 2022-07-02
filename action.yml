@@ -48,10 +48,10 @@ runs:
       shell: pwsh
       env: 
         SkipBuild: ${{inputs.SkipBuild}}
-        CommitMessage: ${{inputs.CommitMessage}}
-        PipeScript: ${{inputs.PipeScript}}
-        UserEmail: ${{inputs.UserEmail}}
         UserName: ${{inputs.UserName}}
+        CommitMessage: ${{inputs.CommitMessage}}
+        UserEmail: ${{inputs.UserEmail}}
+        PipeScript: ${{inputs.PipeScript}}
       run: |
         $Parameters = @{}
         $Parameters.PipeScript = ${env:PipeScript}
@@ -120,10 +120,15 @@ runs:
         ::endgroup::
         "@ | Out-Host
         
-        if ($env:GITHUB_ACTION_PATH) {
+        $PSD1Found = Get-ChildItem -Recurse -Filter "*.psd1" | Where-Object Name -eq 'PipeScript.psd1' | Select-Object -First 1
+        
+        if ($PSD1Found) {
+            $PipeScriptModulePath = $PSD1Found
+            Import-Module $psd1Path -Force -PassThru | Out-Host
+        } elseif ($env:GITHUB_ACTION_PATH) {
             $PipeScriptModulePath = Join-Path $env:GITHUB_ACTION_PATH 'PipeScript.psd1'
             if (Test-path $PipeScriptModulePath) {
-                Import-Module $PipeScriptModulePath -Force -PassThru | Out-String
+                Import-Module $PipeScriptModulePath -Force -PassThru | Out-Host
             } else {
                 throw "PipeScript not found"
             }
