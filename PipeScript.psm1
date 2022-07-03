@@ -1,19 +1,26 @@
 foreach ($file in (Get-ChildItem -Path "$psScriptRoot" -Filter "*-*" -Recurse)) {
     if ($file.Extension -ne '.ps1')      { continue }  # Skip if the extension is not .ps1
-    if ($file.Name -match '\.ps1\.ps1$') { continue }  # Skip if the file is a source generator.
+    if ($file.Name -match '\.[^\.]\.ps1$') { continue }  # Skip if the file is an unrelated file.
     . $file.FullName
 }
 
-$aliasNames = @()
-foreach ($transpilerCmd in Get-Transpiler) {
-    $aliasNames += ".>$($transpilerCmd.DisplayName)"
-    Set-Alias ".>$($transpilerCmd.DisplayName)" Use-PipeScript
-    $aliasNames += ".<$($transpilerCmd.DisplayName)>"
-    Set-Alias ".<$($transpilerCmd.DisplayName)>" Use-PipeScript
-}
+$transpilerNames = Get-Transpiler | Select-Object -ExpandProperty DisplayName
+$aliasList +=
+    
+    @(foreach ($alias in @($transpilerNames)) {
+        Set-Alias ".>$alias" "Use-PipeScript" -PassThru:$True
+    })
+    
+
+$aliasList +=
+    
+    @(foreach ($alias in @($transpilerNames)) {
+        Set-Alias ".<$alias>" "Use-PipeScript" -PassThru:$True
+    })
+    
 
 $MyModule = $MyInvocation.MyCommand.ScriptBlock.Module
-$aliasNames +=
+$aliasList +=
     
     @(
     if ($MyModule -isnot [Management.Automation.PSModuleInfo]) {
