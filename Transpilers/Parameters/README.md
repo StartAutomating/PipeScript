@@ -17,6 +17,7 @@ When this is the case it is common for the transpiler to add a ```[ValidateScrip
 
 |DisplayName                                         |Synopsis                                                             |
 |----------------------------------------------------|---------------------------------------------------------------------|
+|[Aliases](Aliases.psx.ps1)                          |[Dynamically Defines Aliases](Aliases.psx.ps1)                       |
 |[ValidateExtension](ValidateExtension.psx.ps1)      |[Validates Extensions](ValidateExtension.psx.ps1)                    |
 |[ValidatePlatform](ValidatePlatform.psx.ps1)        |[Validates the Platform](ValidatePlatform.psx.ps1)                   |
 |[ValidatePropertyName](ValidatePropertyName.psx.ps1)|[Validates Property Names](ValidatePropertyName.psx.ps1)             |
