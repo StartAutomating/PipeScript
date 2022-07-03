@@ -11,4 +11,4 @@ $MyModule = $MyInvocation.MyCommand.ScriptBlock.Module
 $aliasList +=
     [GetExports("Alias")]$MyModule
 
-Export-ModuleMember -Function * -Alias $aliasNames
+Export-ModuleMember -Function * -Alias $aliasList
