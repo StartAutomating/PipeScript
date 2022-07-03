@@ -9,6 +9,7 @@ foreach ($transpilerCmd in Get-Transpiler) {
 }
 
 $MyModule = $MyInvocation.MyCommand.ScriptBlock.Module
-$aliasNames += [GetExports("Alias")]$MyModule
+$aliasNames +=
+    [GetExports("Alias")]$MyModule
 
 Export-ModuleMember -Function * -Alias $aliasNames
