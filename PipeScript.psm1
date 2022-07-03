@@ -13,11 +13,29 @@ foreach ($transpilerCmd in Get-Transpiler) {
 }
 
 $MyModule = $MyInvocation.MyCommand.ScriptBlock.Module
-foreach ($cmd in $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function', $true)) {
-    if ($cmd.ScriptBlock.Module -ne $MyModule) { continue }
-    if ($cmd.ScriptBlock.Attributes.AliasNames) {
-        $aliasNames += $cmd.ScriptBlock.Attributes.AliasNames
-    }
-}
+$aliasNames += 
+               @(
+               if ($MyModule -isnot [Management.Automation.PSModuleInfo]) {
+                   Write-Error "'$MyModule' must be a [Management.Automation.PSModuleInfo]"
+               } elseif ($MyModule.ExportedCommands.Count) {
+                   foreach ($cmd in $MyModule.ExportedCommands.Values) {        
+                       if ($cmd.CommandType -in 'Alias') {
+                           $cmd
+                       }
+                   }
+               } else {
+                   foreach ($cmd in $ExecutionContext.SessionState.InvokeCommand.GetCommands('*', 'Function,Cmdlet', $true)) {
+                       if ($cmd.Module -ne $MyModule) { continue }
+                       if ('Alias' -contains 'Alias' -and $cmd.ScriptBlock.Attributes.AliasNames) {
+                           foreach ($aliasName in $cmd.ScriptBlock.Attributes.AliasNames) {
+                               $ExecutionContext.SessionState.InvokeCommand.GetCommand($aliasName, 'Alias')
+                           }
+                       }
+                       if ('Alias' -contains $cmd.CommandType) {
+                           $cmd
+                       }
+                   }
+               })
+               
 
 Export-ModuleMember -Function * -Alias $aliasNames
