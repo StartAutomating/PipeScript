@@ -1,23 +1,49 @@
 foreach ($file in (Get-ChildItem -Path "$psScriptRoot" -Filter "*-*" -Recurse)) {
     if ($file.Extension -ne '.ps1')      { continue }  # Skip if the extension is not .ps1
-    if ($file.Name -match '\.ps1\.ps1$') { continue }  # Skip if the file is a source generator.
+    if ($file.Name -match '\.[^\.]\.ps1$') { continue }  # Skip if the file is an unrelated file.
     . $file.FullName
 }
 
-$aliasNames = @()
-foreach ($transpilerCmd in Get-Transpiler) {
-    $aliasNames += ".>$($transpilerCmd.DisplayName)"
-    Set-Alias ".>$($transpilerCmd.DisplayName)" Use-PipeScript
-    $aliasNames += ".<$($transpilerCmd.DisplayName)>"
-    Set-Alias ".<$($transpilerCmd.DisplayName)>" Use-PipeScript
-}
+$transpilerNames = Get-Transpiler | Select-Object -ExpandProperty DisplayName
+$aliasList +=
+    
+    @(foreach ($alias in @($transpilerNames)) {
+        Set-Alias ".>$alias" "Use-PipeScript" -PassThru:$True
+    })
+    
+
+$aliasList +=
+    
+    @(foreach ($alias in @($transpilerNames)) {
+        Set-Alias ".<$alias>" "Use-PipeScript" -PassThru:$True
+    })
+    
 
 $MyModule = $MyInvocation.MyCommand.ScriptBlock.Module
-foreach ($cmd in $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function', $true)) {
-    if ($cmd.ScriptBlock.Module -ne $MyModule) { continue }
-    if ($cmd.ScriptBlock.Attributes.AliasNames) {
-        $aliasNames += $cmd.ScriptBlock.Attributes.AliasNames
-    }
-}
+$aliasList +=
+    
+    @(
+    if ($MyModule -isnot [Management.Automation.PSModuleInfo]) {
+        Write-Error "'$MyModule' must be a [Management.Automation.PSModuleInfo]"
+    } elseif ($MyModule.ExportedCommands.Count) {
+        foreach ($cmd in $MyModule.ExportedCommands.Values) {        
+            if ($cmd.CommandType -in 'Alias') {
+                $cmd
+            }
+        }
+    } else {
+        foreach ($cmd in $ExecutionContext.SessionState.InvokeCommand.GetCommands('*', 'Function,Cmdlet', $true)) {
+            if ($cmd.Module -ne $MyModule) { continue }
+            if ('Alias' -contains 'Alias' -and $cmd.ScriptBlock.Attributes.AliasNames) {
+                foreach ($aliasName in $cmd.ScriptBlock.Attributes.AliasNames) {
+                    $ExecutionContext.SessionState.InvokeCommand.GetCommand($aliasName, 'Alias')
+                }
+            }
+            if ('Alias' -contains $cmd.CommandType) {
+                $cmd
+            }
+        }
+    })
+    
 
-Export-ModuleMember -Function * -Alias $aliasNames
+Export-ModuleMember -Function * -Alias $aliasList

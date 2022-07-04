@@ -1,19 +1,14 @@
 ﻿[Include('*-*')]$psScriptRoot
 
-$aliasNames = @()
-foreach ($transpilerCmd in Get-Transpiler) {
-    $aliasNames += ".>$($transpilerCmd.DisplayName)"
-    Set-Alias ".>$($transpilerCmd.DisplayName)" Use-PipeScript
-    $aliasNames += ".<$($transpilerCmd.DisplayName)>"
-    Set-Alias ".<$($transpilerCmd.DisplayName)>" Use-PipeScript
-}
+$transpilerNames = Get-Transpiler | Select-Object -ExpandProperty DisplayName
+$aliasList +=
+    [SmartAlias(Command='Use-PipeScript',Prefix='.>',PassThru)]$transpilerNames
+
+$aliasList +=
+    [SmartAlias(Command='Use-PipeScript',Prefix='.<',Suffix='>',PassThru)]$transpilerNames
 
 $MyModule = $MyInvocation.MyCommand.ScriptBlock.Module
-foreach ($cmd in $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function', $true)) {
-    if ($cmd.ScriptBlock.Module -ne $MyModule) { continue }
-    if ($cmd.ScriptBlock.Attributes.AliasNames) {
-        $aliasNames += $cmd.ScriptBlock.Attributes.AliasNames
-    }
-}
+$aliasList +=
+    [GetExports("Alias")]$MyModule
 
-Export-ModuleMember -Function * -Alias $aliasNames
+Export-ModuleMember -Function * -Alias $aliasList

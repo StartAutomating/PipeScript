@@ -14,7 +14,7 @@
     } | .>PipeScript
 .EXAMPLE
     {
-        [Include('*-*.ps1')]$psScriptRoot        
+        [Include('*-*.ps1')]$psScriptRoot
     } | .>PipeScript
 #>
 param(
@@ -62,8 +62,7 @@ function IncludeFileContents {
         "'@" + @'
 -split "[\r\n]{1,2}" -replace "^@''", "@'" -replace "^''@", "'@" -join [Environment]::NewLine
 '@
-        )
-    
+        )    
     }
     }
 }
@@ -131,7 +130,7 @@ if ($psCmdlet.ParameterSetName -eq 'ScriptBlock' -or
     [ScriptBlock]::Create(@"
 foreach (`$file in (Get-ChildItem -Path "$($VariableAst)" -Filter "$FilePath" -Recurse)) {
     if (`$file.Extension -ne '.ps1')      { continue }  # Skip if the extension is not .ps1
-    if (`$file.Name -match '\.ps1\.ps1$') { continue }  # Skip if the file is a source generator.
+    if (`$file.Name -match '\.[^\.]\.ps1$') { continue }  # Skip if the file is an unrelated file.
     . `$file.FullName
 }
 "@)

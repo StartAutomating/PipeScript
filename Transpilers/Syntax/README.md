@@ -3,11 +3,64 @@ This directory and it's subdirectories contain syntax changes that enable common
 
 |DisplayName                               |Synopsis                                              |
 |------------------------------------------|------------------------------------------------------|
+|[Dot](Dot.psx.ps1)                        |[Dot Notation](Dot.psx.ps1)                           |
 |[PipedAssignment](PipedAssignment.psx.ps1)|[Piped Assignment Transpiler](PipedAssignment.psx.ps1)|
 |[RegexLiteral](RegexLiteral.psx.ps1)      |[Regex Literal Transpiler](RegexLiteral.psx.ps1)      |
 
 
 
+
+## Dot Example 1
+
+
+~~~PowerShell
+    .> {
+        [DateTime]::now |
+~~~
+
+## Dot Example 2
+
+
+~~~PowerShell
+    .> {
+        "abc", "123", "abc123" |
+~~~
+
+## Dot Example 3
+
+
+~~~PowerShell
+    .> { 1
+~~~
+
+## Dot Example 4
+
+
+~~~PowerShell
+    .> { 1
+~~~
+
+## Dot Example 5
+
+
+~~~PowerShell
+    .> { 1.
+~~~
+
+## Dot Example 6
+
+
+~~~PowerShell
+    .> {
+~~~
+
+## Dot Example 7
+
+
+~~~PowerShell
+    .> {
+        # Declare a new object
+~~~
 
 ## PipedAssignment Example 1
 
