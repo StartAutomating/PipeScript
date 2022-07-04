@@ -26,7 +26,21 @@
 .EXAMPLE
     .> { 1.99 | .ToString('C') }
 .EXAMPLE
-    1..5 | .Number { $_ } .Even { -not ($_ % 2) } .Odd { ($_ % 2) -as [bool]}
+    .> { 1..5 | .Number { $_ } .Even { -not ($_ % 2) } .Odd { ($_ % 2) -as [bool]} }
+.EXAMPLE
+    .> { .ID { Get-Random } .Count { 0 } .Total { 10 }}
+.EXAMPLE
+    .> {
+        # Declare a new object
+        .Property = "ConstantValue" .Numbers = 1..100 .Double = {
+            param($n)
+            $n * 2
+        } .EvenNumbers = {
+            $this.Numbers | Where-Object { -not ($_ % 2)}
+        } .OddNumbers = {
+            $this.Numbers | Where-Object { $_ % 2}
+        }
+    }
 #>
 [ValidateScript({
     $commandAst = $_
