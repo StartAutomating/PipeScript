@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.0.6'
+    ModuleVersion     = '0.0.7'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -17,6 +17,20 @@
 
             Tags = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
+## 0.0.7:
+* Syntax Improvements:
+  * Support for Dot Notation (#107)
+* New Transpilers:
+  * .>ModuleRelationships (#105)
+  * .>ModuleExports (#104)
+  * .>Aliases (#106)
+* Fixes:
+  * Invoke-PipeScript improved error behavior (#103)
+  * Explicit Transpiler returns modified ScriptBlock (#102)
+  * .psm1 alias export fix (#100)
+  * Include improvements (#96)
+---
+
 ## 0.0.6:
 * New Transpilers:
   * ValidateScriptBlock
