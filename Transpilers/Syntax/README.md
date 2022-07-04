@@ -44,7 +44,22 @@ This directory and it's subdirectories contain syntax changes that enable common
 
 
 ~~~PowerShell
-    1.
+    .> { 1.
+~~~
+
+## Dot Example 6
+
+
+~~~PowerShell
+    .> {
+~~~
+
+## Dot Example 7
+
+
+~~~PowerShell
+    .> {
+        # Declare a new object
 ~~~
 
 ## PipedAssignment Example 1
