@@ -43,7 +43,6 @@ $aliasList +=
                 $cmd
             }
         }
-    })
-    
+    })    
 
 Export-ModuleMember -Function * -Alias $aliasList
