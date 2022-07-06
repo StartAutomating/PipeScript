@@ -11,6 +11,8 @@ if ($PipeScriptLoaded) {
     "::error:: PipeScript not loaded" |Out-Host
 }
 
-Save-MarkdownHelp -Module PipeScript -ReplaceScriptName '\.psx\.ps1$' -ReplaceScriptNameWith '-Transpiler' -SkipCommandType Alias -PassThru -IncludeTopic *.help.txt  -IncludeExtension @() -ScriptPath '\.psx\.ps1$' 
+Save-MarkdownHelp -Module PipeScript <#-ReplaceScriptName '\.psx\.ps1$' -ReplaceScriptNameWith '-Transpiler'#> -SkipCommandType Alias -PassThru -IncludeTopic *.help.txt  -IncludeExtension @(
+
+) -Command (Get-Transpiler) -ReplaceCommandName '\.psx\.ps1$'
 
 Pop-Location
