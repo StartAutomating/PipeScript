@@ -46,6 +46,9 @@ $StartPattern,
 [Regex]
 $EndPattern,
 
+# A custom replacement evaluator.
+# If not provided, will run any embedded scripts encountered. 
+# The output of these scripts will be the replacement text.
 [Parameter(ParameterSetName='SourceTextReplace')]
 [Parameter(ParameterSetName='SourceStartAndEnd')]
 [Alias('Replacer')]
