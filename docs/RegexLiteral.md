@@ -26,6 +26,13 @@ The ending slash may be followed by ```[Text.RegularExpressions.RegexOptions]```
 [regex]::new('[a|b]', 'IgnoreCase')
 #### EXAMPLE 2
 ```PowerShell
+Invoke-PipeScript {
+    '/[a|b]/'.Matches('ab')
+}
+```
+
+#### EXAMPLE 3
+```PowerShell
 {
     "/[$a|$b]/"
 } | .>PipeScript
@@ -33,7 +40,7 @@ The ending slash may be followed by ```[Text.RegularExpressions.RegexOptions]```
 # This will become:
 
 [regex]::new("[$a|$b]", 'IgnoreCase')
-#### EXAMPLE 3
+#### EXAMPLE 4
 ```PowerShell
 {
 @'
@@ -52,7 +59,7 @@ The ending slash may be followed by ```[Text.RegularExpressions.RegexOptions]```
 ^ # Match the string start
 (?<indent>\s{0,1})
 '@, 'IgnorePatternWhitespace,IgnoreCase')
-#### EXAMPLE 4
+#### EXAMPLE 5
 ```PowerShell
 $Keywords = "looking", "for", "these", "words"
 ```
