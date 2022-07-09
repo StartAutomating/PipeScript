@@ -58,6 +58,12 @@ This indicates the end of what should be considered PipeScript.
 ---
 #### **ReplacementEvaluator**
 
+A custom replacement evaluator.
+If not provided, will run any embedded scripts encountered. 
+The output of these scripts will be the replacement text.
+
+
+
 |Type               |Requried|Postion|PipelineInput|
 |-------------------|--------|-------|-------------|
 |```[ScriptBlock]```|false   |named  |false        |
