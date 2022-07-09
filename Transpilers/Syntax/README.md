@@ -107,6 +107,14 @@ This directory and it's subdirectories contain syntax changes that enable common
 
 
 ~~~PowerShell
+    Invoke-PipeScript {
+        '/[a|b]/'
+~~~
+
+## RegexLiteral Example 3
+
+
+~~~PowerShell
     {
         "/[$a|$b]/"
     } | .>PipeScript
@@ -116,7 +124,7 @@ This directory and it's subdirectories contain syntax changes that enable common
     [regex]::new("[$a|$b]", 'IgnoreCase')
 ~~~
 
-## RegexLiteral Example 3
+## RegexLiteral Example 4
 
 
 ~~~PowerShell
@@ -139,7 +147,7 @@ This directory and it's subdirectories contain syntax changes that enable common
 '@, 'IgnorePatternWhitespace,IgnoreCase')
 ~~~
 
-## RegexLiteral Example 4
+## RegexLiteral Example 5
 
 
 ~~~PowerShell
