@@ -13,17 +13,10 @@
 param(
 
 # A string containing the text contents of the file
-[Parameter(Mandatory,ParameterSetName='SourceTextAndPattern')]
 [Parameter(Mandatory,ParameterSetName='SourceTextReplace')]
 [Parameter(Mandatory,ParameterSetName='SourceStartAndEnd')]
 [string]
 $SourceText,
-
-# A string containing the pattern used to recognize special sections of source code.
-[Parameter(Mandatory,ParameterSetName='SourceTextAndPattern')]
-[regex]
-$SourcePattern,
-
 
 [Parameter(Mandatory,ParameterSetName='SourceTextReplace')]
 [Alias('Replace')]
@@ -60,32 +53,24 @@ $EndPattern,
 $ReplacementEvaluator,
 
 # If set, will not transpile script blocks.
-[Parameter(ParameterSetName='SourceTextAndPattern')]
-[Parameter(ParameterSetName='SourceSections')]
 [Parameter(ParameterSetName='SourceStartAndEnd')]
 [Parameter(ParameterSetName='SourceTextReplace')]
 [switch]
 $NoTranspile,
 
 # The path to the source file.
-[Parameter(ParameterSetName='SourceTextAndPattern')]
-[Parameter(ParameterSetName='SourceSections')]
 [Parameter(ParameterSetName='SourceTextReplace')]
 [Parameter(ParameterSetName='SourceStartAndEnd')]
 [string]
 $SourceFile,
 
 # A Script Block that will be injected before each inline is run. 
-[Parameter(ParameterSetName='SourceTextAndPattern')]
-[Parameter(ParameterSetName='SourceSections')]
 [Parameter(ParameterSetName='SourceTextReplace')]
 [Parameter(ParameterSetName='SourceStartAndEnd')]
 [ScriptBlock]
 $Begin,
 
 # A Script Block that will be piped to after each output.
-[Parameter(ParameterSetName='SourceTextAndPattern')]
-[Parameter(ParameterSetName='SourceSections')]
 [Parameter(ParameterSetName='SourceTextReplace')]
 [Parameter(ParameterSetName='SourceStartAndEnd')]
 [Alias('Process')]
@@ -93,8 +78,6 @@ $Begin,
 $ForeachObject,
 
 # A Script Block that will be injected after each inline script is run. 
-[Parameter(ParameterSetName='SourceTextAndPattern')]
-[Parameter(ParameterSetName='SourceSections')]
 [Parameter(ParameterSetName='SourceTextReplace')]
 [Parameter(ParameterSetName='SourceStartAndEnd')]
 [ScriptBlock]
@@ -102,7 +85,7 @@ $End
 )
 
 begin {
-    $allSections = @()
+    
 }
 
 process {
