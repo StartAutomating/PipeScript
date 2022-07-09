@@ -1,6 +1,6 @@
 This directory contains Inline PipeScript transpilers for several languages.
 
-PipeScript can currently be embedded in 25 languages or file types.
+PipeScript can currently be embedded in 26 languages or file types.
 
 Transpilers in this directory should be named ```Inline.NameOfLanguage.psx.ps1```.
 Each file should handle one and only one language (better explicit than terse).
@@ -21,6 +21,7 @@ Transpilers should call ```.>PipeScript.Inline``` to simplify and standarize pro
 |[Java](Inline.Java.psx.ps1)            |[Java Inline PipeScript Transpiler.](Inline.Java.psx.ps1)            |
 |[JavaScript](Inline.JavaScript.psx.ps1)|[JavaScript Inline PipeScript Transpiler.](Inline.JavaScript.psx.ps1)|
 |[Json](Inline.Json.psx.ps1)            |[JSON PipeScript Transpiler.](Inline.Json.psx.ps1)                   |
+|[Kotlin](Inline.Kotlin.psx.ps1)        |[Kotlin Inline PipeScript Transpiler.](Inline.Kotlin.psx.ps1)        |
 |[Markdown](Inline.Markdown.psx.ps1)    |[Markdown File Transpiler.](Inline.Markdown.psx.ps1)                 |
 |[ObjectiveC](Inline.ObjectiveC.psx.ps1)|[Objective C PipeScript Transpiler.](Inline.ObjectiveC.psx.ps1)      |
 |[OpenSCAD](Inline.OpenSCAD.psx.ps1)    |[OpenSCAD Inline PipeScript Transpiler.](Inline.OpenSCAD.psx.ps1)    |
