@@ -27,16 +27,6 @@ A string containing the text contents of the file
 |--------------|--------|-------|-------------|
 |```[String]```|true    |named  |false        |
 ---
-#### **SourcePattern**
-
-A string containing the pattern used to recognize special sections of source code.
-
-
-
-|Type         |Requried|Postion|PipelineInput|
-|-------------|--------|-------|-------------|
-|```[Regex]```|true    |named  |false        |
----
 #### **ReplacePattern**
 
 |Type         |Requried|Postion|PipelineInput|
@@ -128,12 +118,6 @@ PipeScript.Inline -SourceText <String> -StartPattern <Regex> -EndPattern <Regex>
 ```
 ```PowerShell
 PipeScript.Inline -SourceText <String> -ReplacePattern <Regex> [-ReplacementEvaluator <ScriptBlock>] [-NoTranspile] [-SourceFile <String>] [-Begin <ScriptBlock>] [-ForeachObject <ScriptBlock>] [-End <ScriptBlock>] [<CommonParameters>]
-```
-```PowerShell
-PipeScript.Inline -SourceText <String> -SourcePattern <Regex> [-NoTranspile] [-SourceFile <String>] [-Begin <ScriptBlock>] [-ForeachObject <ScriptBlock>] [-End <ScriptBlock>] [<CommonParameters>]
-```
-```PowerShell
-PipeScript.Inline [-NoTranspile] [-SourceFile <String>] [-Begin <ScriptBlock>] [-ForeachObject <ScriptBlock>] [-End <ScriptBlock>] [<CommonParameters>]
 ```
 ---
 
