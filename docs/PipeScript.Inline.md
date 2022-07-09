@@ -17,16 +17,6 @@ If a Regular Expression can match each section, then the content in each section
 
 ---
 ### Parameters
-#### **SourceSection**
-
-A list of source sections
-
-
-
-|Type              |Requried|Postion|PipelineInput |
-|------------------|--------|-------|--------------|
-|```[PSObject[]]```|true    |1      |true (ByValue)|
----
 #### **SourceText**
 
 A string containing the text contents of the file
@@ -134,9 +124,6 @@ A Script Block that will be injected after each inline script is run.
 ---
 ### Syntax
 ```PowerShell
-PipeScript.Inline [-SourceSection] <PSObject[]> [-NoTranspile] [-SourceFile <String>] [-Begin <ScriptBlock>] [-ForeachObject <ScriptBlock>] [-End <ScriptBlock>] [<CommonParameters>]
-```
-```PowerShell
 PipeScript.Inline -SourceText <String> -StartPattern <Regex> -EndPattern <Regex> [-ReplacementEvaluator <ScriptBlock>] [-NoTranspile] [-SourceFile <String>] [-Begin <ScriptBlock>] [-ForeachObject <ScriptBlock>] [-End <ScriptBlock>] [<CommonParameters>]
 ```
 ```PowerShell
@@ -144,6 +131,9 @@ PipeScript.Inline -SourceText <String> -ReplacePattern <Regex> [-ReplacementEval
 ```
 ```PowerShell
 PipeScript.Inline -SourceText <String> -SourcePattern <Regex> [-NoTranspile] [-SourceFile <String>] [-Begin <ScriptBlock>] [-ForeachObject <ScriptBlock>] [-End <ScriptBlock>] [<CommonParameters>]
+```
+```PowerShell
+PipeScript.Inline [-NoTranspile] [-SourceFile <String>] [-Begin <ScriptBlock>] [-ForeachObject <ScriptBlock>] [-End <ScriptBlock>] [<CommonParameters>]
 ```
 ---
 
