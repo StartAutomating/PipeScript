@@ -85,7 +85,7 @@ $End
 )
 
 begin {
-    
+    $TempModule = New-Module -ScriptBlock { }
 }
 
 process {
@@ -173,7 +173,7 @@ process {
 
                 $codeToRun = [ScriptBlock]::Create($statements -join [Environment]::Newline)
 
-                "$(& $codeToRun)"
+                "$(. $TempModule $codeToRun)"
             }
         }
 
