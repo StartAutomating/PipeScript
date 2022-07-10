@@ -151,7 +151,7 @@ function Search-PipeScript {
                         elseif ($astType -is [Regex]) {
                             [scriptblock]::Create((
                                 'param($ast)
-                                $ast.GetType().Name -match  ([Regex]::New(' + 
+                                $ast.GetType().Name -match ([Regex]::New(' + 
                                 $astType.ToString().Replace("'", "''") + "','" +
                                 $astType.Options + "','" +
                                 $(if ($AstType.MatchTimeout -lt 0) {
@@ -161,8 +161,8 @@ function Search-PipeScript {
                                 }) + '))'
                             ))
                         }
-                        elseif ($astType -as [regex]) {                        
-                            [ScriptBlock]::Create('param($ast) $ast.GetType().Name -match  ' + $astType +'')
+                        elseif ($astType -as [regex]) {
+                            [ScriptBlock]::Create('param($ast) $ast.GetType().Name -match "'+ $astType +'"')
                         } else {
                             [ScriptBlock]::Create('param($ast) $ast.GetType().Name -like  "*' + $astType +'*"')
                         }
