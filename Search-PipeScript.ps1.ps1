@@ -40,7 +40,12 @@ function Search-PipeScript
     [Parameter(ValueFromPipelineByPropertyName)]
     [Alias('RegEx')]
     [ValidateTypes(TypeName={[string], [Regex], [string[]], [regex[]]})]
-    $RegularExpression
+    $RegularExpression,
+
+    # If set, will search nested script blocks.
+    [Alias('SearchNestedScriptBlock')]    
+    [switch]
+    $Recurse
     )
 
     process {
@@ -135,13 +140,16 @@ function Search-PipeScript
                             [ScriptBlock]::Create('param($ast) $ast.GetType().Name -like  "*' + $astType +'*"')
                         }
                     
+                    # Add this condition to the list of conditions.
                     $AstCondition += $condition
                 }
             }
 
+            # If we have any AST conditions
             if ($AstCondition) {
                 foreach ($condition in $AstCondition) {
-                    $ScriptBlock.Ast.FindAll($condition, $true) | 
+                    # Find all of the results.
+                    $ScriptBlock.Ast.FindAll($condition, ($Recurse -as [bool])) | 
                         .InputObject = $inputObject .Result { 
                             $_
                         } .Expression = $condition .ScriptBlock {
