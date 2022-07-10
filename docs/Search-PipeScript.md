@@ -67,6 +67,16 @@ One or more regular expressions to match.
 |--------------|--------|-------|---------------------|
 |```[Object]```|false   |4      |true (ByPropertyName)|
 ---
+#### **Recurse**
+
+If set, will search nested script blocks.
+
+
+
+|Type          |Requried|Postion|PipelineInput|
+|--------------|--------|-------|-------------|
+|```[Switch]```|false   |named  |false        |
+---
 ### Outputs
 Search.PipeScript.Result
 
@@ -74,7 +84,7 @@ Search.PipeScript.Result
 ---
 ### Syntax
 ```PowerShell
-Search-PipeScript [[-InputObject] <Object>] [[-AstCondition] <ScriptBlock[]>] [[-AstType] <Object>] [[-RegularExpression] <Object>] [<CommonParameters>]
+Search-PipeScript [[-InputObject] <Object>] [[-AstCondition] <ScriptBlock[]>] [[-AstType] <Object>] [[-RegularExpression] <Object>] [-Recurse] [<CommonParameters>]
 ```
 ---
 
