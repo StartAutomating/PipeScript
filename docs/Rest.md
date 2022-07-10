@@ -144,6 +144,26 @@ By default, this is 'InvokeParams'
 |--------------|--------|-------|-------------|
 |```[String]```|false   |named  |false        |
 ---
+#### **UriParameterHelp**
+
+A dictionary of help for uri parameters.
+
+
+
+|Type               |Requried|Postion|PipelineInput|
+|-------------------|--------|-------|-------------|
+|```[IDictionary]```|false   |named  |false        |
+---
+#### **UriParameterType**
+
+A dictionary of URI parameter types.
+
+
+
+|Type               |Requried|Postion|PipelineInput|
+|-------------------|--------|-------|-------------|
+|```[IDictionary]```|false   |named  |false        |
+---
 #### **BodyParameter**
 
 A dictionary or list of parameters for the body.
@@ -176,7 +196,7 @@ A script block to be run on each output.
 ---
 ### Syntax
 ```PowerShell
-Rest [-ScriptBlock <ScriptBlock>] [-RESTEndpoint] <String[]> [-ContentType <String>] [-Method <String>] [-InvokeCommand <String>] [-InvokeParameterVariable <String>] [-BodyParameter <PSObject>] [-QueryParameter <PSObject>] [-ForEachOutput <ScriptBlock>] [<CommonParameters>]
+Rest [-ScriptBlock <ScriptBlock>] [-RESTEndpoint] <String[]> [-ContentType <String>] [-Method <String>] [-InvokeCommand <String>] [-InvokeParameterVariable <String>] [-UriParameterHelp <IDictionary>] [-UriParameterType <IDictionary>] [-BodyParameter <PSObject>] [-QueryParameter <PSObject>] [-ForEachOutput <ScriptBlock>] [<CommonParameters>]
 ```
 ---
 
