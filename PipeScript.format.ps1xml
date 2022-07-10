@@ -255,7 +255,7 @@
                 <PropertyName>Result</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Condition</PropertyName>
+                <PropertyName>Expression</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
