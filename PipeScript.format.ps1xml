@@ -233,6 +233,35 @@
         </TableRowEntries>
       </TableControl>
     </View>
+    <View>
+      <Name>Search.PipeScript.Result</Name>
+      <ViewSelectedBy>
+        <TypeName>Search.PipeScript.Result</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <PropertyName>InputObject</PropertyName>
+      </GroupBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Result</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Condition</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
   </ViewDefinitions>
   <Controls>
     <Control>
