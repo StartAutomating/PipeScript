@@ -89,6 +89,16 @@ $InvokeCommand = 'Invoke-RestMethod',
 [string]
 $InvokeParameterVariable = 'InvokeParams',
 
+# A dictionary of help for uri parameters.
+[Alias('UrlParameterHelp')]
+[Collections.IDictionary]
+$UriParameterHelp,
+
+# A dictionary of URI parameter types.
+[Alias('UrlParameterType')]
+[Collections.IDictionary]
+$UriParameterType,
+
 # A dictionary or list of parameters for the body.
 [PSObject]
 $BodyParameter,
@@ -165,13 +175,30 @@ process {
             # The name of the parameter will be in the named capture ${Variable}.
             $parameterName = $match.Groups["Variable"].Value
             # The parameter type will be a string
-            $parameterType = '[string]'
+            $parameterType = if ($UriParameterType.$parameterName) {
+                if ($UriParameterType.$parameterName -as [type]) {
+                    $UriParameterType.$parameterName
+                }
+            } else {
+                '[string]'
+            }
             # and we'll need to put it in the proper parameter set.
             $parameterAttribute = "[Parameter($(                
                 if (-not $match.Groups["IsOptional"].Value) {'Mandatory'}
             ),ValueFromPipelineByPropertyName,ParameterSetName='$endpoint')]"
             # Combine these three pieces to create the parameter attribute.
             $uriParameters[$parameterName] = @(
+                if ($UriParameterHelp -and $UriParameterHelp.$parameterName) {
+                    if ($UriParameterHelp.$parameterName -notmatch '^\<{0,1}\#' ) {
+                        if ($UriParameterHelp.$parameterName -match '[\r\n]') {
+                            "<# " + $UriParameterHelp.$parameterName + "#>" 
+                        } else {
+                            "# " + $UriParameterHelp.$parameterName
+                        }
+                    } else {
+                        $UriParameterHelp.$parameterName
+                    }
+                }
                 $parameterAttribute
                 $parameterType
                 '$' + $parameterName
@@ -200,7 +227,7 @@ process {
         if ($uriParamBlock.Ast.ParamBlock.Parameters) {
             # Carry on the begin block from this command (this is a neat trick)
             [scriptblock]::Create($myCmd.ScriptBlock.Ast.BeginBlock.Extent.ToString())
-        } else { {} }
+        } else { { begin { $myCmd = $MyInvocation.MyCommand }} }
         
     # Next, collect the names of bodyParameters, queryParameters, and uriParameters.
     $bodyParameterNames  = 
@@ -215,6 +242,10 @@ process {
     $RestScript = @(
         # Start with the underlying script block
         $ScriptBlock
+
+        # Then include the begin block from this command (or declare myCmd)
+        $myBeginBlock
+
         # Then declare the initial variables.
         [scriptblock]::Create((@"
 process {
@@ -249,9 +280,7 @@ process {
     # If we had any uri parameters
     if ($uriParameters.Count) {
         # Add the uri parameter block
-        $uriParamBlock
-        # And add the begin block from this script
-        $myBeginBlock
+        $uriParamBlock                
         # Then add a bit to process {} to extract out the URL
 {
 process {
@@ -314,9 +343,13 @@ process {
     $QueryParams = [Ordered]@{}
     foreach ($QueryParameterName in $QueryParameterNames) {
         if ($PSBoundParameters.ContainsKey($QueryParameterName)) {
-            $QueryParams[$QueryParameterName] = $PSBoundParameters[$QueryParameterName]
+            $QueryParams[$QueryParameterName] = $PSBoundParameters[$QueryParameterName]            
         }
     }
+}
+}    
+{
+process {
     if ($invokerCommandinfo.Parameters['QueryParameter'] -and 
         $invokerCommandinfo.Parameters['QueryParameter'].ParameterType -eq [Collections.IDictionary]) {
         $invokerCommandinfo.QueryParameter = $QueryParams
