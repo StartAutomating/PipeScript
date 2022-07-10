@@ -16,6 +16,10 @@
 
     [regex]::new('[a|b]', 'IgnoreCase')
 .EXAMPLE
+    Invoke-PipeScript {
+        '/[a|b]/'.Matches('ab')
+    }
+.EXAMPLE
     {
         "/[$a|$b]/"
     } | .>PipeScript

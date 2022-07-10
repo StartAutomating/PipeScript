@@ -50,8 +50,33 @@ $TypeName,
 $VariableAST
 )
 
+# Determine the list of real types at this point in time
+$realTypes = 
+    @(foreach ($tn in $typeName) {
+        if ($tn -as [type]) {
+            $tn -as [type]
+        }
+    })
 
-$checkTypes = @"
+# If all of the types are .NET types
+if ($realTypes.Length -eq $TypeName.Length) {
+    $checkTypes = @"
+`$validTypeList = [$($realTypes -join '],[')]
+"@ + {
+
+$thisType = $_.GetType()
+$IsTypeOk =
+    $(@( foreach ($validType in $validTypeList) {
+        if ($_ -as $validType) {
+            $true;break
+        }
+    }))
+}
+
+
+} else {
+
+    $checkTypes = @"
 `$validTypeList = '$($typeName -join "','")'
 "@ + {
 $thisType = @(
@@ -87,7 +112,7 @@ $IsTypeOk =
         }
     }) -eq $true) -as [bool]
 }
-
+}
 if ($PSCmdlet.ParameterSetName -eq 'Parameter') {
 [scriptblock]::Create(@"
 [ValidateScript({

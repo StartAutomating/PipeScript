@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.0.7'
+    ModuleVersion     = '0.0.8'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -17,6 +17,22 @@
 
             Tags = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
+## 0.0.8:
+* New Commands:
+  * New-PipeScript (#94)
+  * Search-PipeScript (#115)
+* New Transpilers:
+  * REST (#114)
+  * Inline.Kotlin (#110)
+* Bugfixes and improvements:
+  * Fixing Help Generation (#56)
+  * Anchoring match for Get-Transpiler (#109)
+  * Core Inline Transpiler Cleanup (#111)
+  * Shared Context within Inline Transpilers (#112)
+  * Fixing Include Transpiler Pattern (#96)
+  * Join-PipeScript interactive .Substring error (#116)
+---
+
 ## 0.0.7:
 * Syntax Improvements:
   * Support for Dot Notation (#107)

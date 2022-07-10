@@ -1,6 +1,6 @@
 
-Transpilers/Help.psx.ps1
-------------------------
+Help
+----
 ### Synopsis
 Help Transpiler
 
@@ -74,10 +74,10 @@ The Help Transpiler allows you to write inline help without directly writing com
 ---
 ### Syntax
 ```PowerShell
-Transpilers/Help.psx.ps1 [-Synopsis] <String> [-Description <String>] [-Example <String[]>] [-Link <String[]>] [<CommonParameters>]
+Help [-Synopsis] <String> [-Description <String>] [-Example <String[]>] [-Link <String[]>] [<CommonParameters>]
 ```
 ```PowerShell
-Transpilers/Help.psx.ps1 [-Synopsis] <String> [-Description <String>] [-Example <String[]>] [-Link <String[]>] [-ScriptBlock <ScriptBlock>] [<CommonParameters>]
+Help [-Synopsis] <String> [-Description <String>] [-Example <String[]>] [-Link <String[]>] [-ScriptBlock <ScriptBlock>] [<CommonParameters>]
 ```
 ---
 

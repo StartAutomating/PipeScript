@@ -1,6 +1,6 @@
 
-Transpilers/Explicit.psx.ps1
-----------------------------
+Explicit
+--------
 ### Synopsis
 Makes Output from a PowerShell function Explicit.
 
@@ -28,7 +28,7 @@ System.Collections.IDictionary
 ---
 ### Syntax
 ```PowerShell
-Transpilers/Explicit.psx.ps1 [-ScriptBlock] <ScriptBlock> [<CommonParameters>]
+Explicit [-ScriptBlock] <ScriptBlock> [<CommonParameters>]
 ```
 ---
 

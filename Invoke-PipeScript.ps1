@@ -497,7 +497,10 @@
             elseif ($script:TypeAcceleratorsList -notcontains $transpilerStepName -and $transpilerStepName -notin 'Ordered') {
                 $psCmdlet.WriteError(
                     [Management.Automation.ErrorRecord]::new(
-                        [exception]::new("Unable to find a transpiler for [$TranspilerStepName]")
+                        [exception]::new("Unable to find a transpiler for [$TranspilerStepName]"),
+                        'Transpiler.Not.Found',
+                        'ParserError',
+                        $command
                     )
                 )
                 

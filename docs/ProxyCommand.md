@@ -1,6 +1,6 @@
 
-Transpilers/ProxyCommand.psx.ps1
---------------------------------
+ProxyCommand
+------------
 ### Synopsis
 Creates Proxy Commands
 
@@ -103,7 +103,7 @@ Any default parameters for the ProxyCommand.
 ---
 ### Syntax
 ```PowerShell
-Transpilers/ProxyCommand.psx.ps1 [-ScriptBlock <ScriptBlock>] [-CommandName] <String> [-RemoveParameter <String[]>] [-DefaultParameter <IDictionary>] [<CommonParameters>]
+ProxyCommand [-ScriptBlock <ScriptBlock>] [-CommandName] <String> [-RemoveParameter <String[]>] [-DefaultParameter <IDictionary>] [<CommonParameters>]
 ```
 ---
 

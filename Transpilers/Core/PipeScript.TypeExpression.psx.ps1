@@ -58,7 +58,7 @@ process {
         } else {
             $TypeExpressionAst.TypeName.Name
         }
-
+    
     if ($transpilerStepName -eq 'ordered') { return }
 
     $foundTranspiler =

@@ -120,7 +120,8 @@ function Join-PipeScript
             if ($BlockType -contains 'param') {
                 foreach ($combined in $AllScriptBlocks.Ast.ParamBlock) {
                     if (-not $combined.Parent.Extent) { continue }
-                    $combined.Parent.Extent.ToString().Substring(0, $combined.Extent.StartOffset)
+                    $offsetDifference = $combined.Extent.StartOffset - $combined.Parent.Extent.StartOffset
+                    $combined.Parent.Extent.ToString().Substring(0, $offsetDifference) -replace '^[\r\n]+\{'
                 }
             }            
             # Start the param block

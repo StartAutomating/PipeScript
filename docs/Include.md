@@ -1,6 +1,6 @@
 
-Transpilers/Include.psx.ps1
----------------------------
+Include
+-------
 ### Synopsis
 Includes Files
 
@@ -23,6 +23,13 @@ Includes Files or Functions into a Script.
 {
     [Include("Invoke-PipeScript")]
     param()
+} | .>PipeScript
+```
+
+#### EXAMPLE 3
+```PowerShell
+{
+    [Include('*-*.ps1')]$psScriptRoot
 } | .>PipeScript
 ```
 
@@ -56,7 +63,7 @@ If set, will include the content as a byte array
 ---
 ### Syntax
 ```PowerShell
-Transpilers/Include.psx.ps1 [-FilePath] <String> [-AsByte] -VariableAst <VariableExpressionAst> [<CommonParameters>]
+Include [-FilePath] <String> [-AsByte] -VariableAst <VariableExpressionAst> [<CommonParameters>]
 ```
 ---
 
