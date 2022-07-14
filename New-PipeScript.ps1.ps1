@@ -55,12 +55,13 @@ function New-PipeScript
     )
 
     begin {
-        $ParametersToCreate   = [Ordered]@{}
-        $allDynamicParameters = @()
-        $allBeginBlocks       = @()
-        $allEndBlocks         = @()
-        $allProcessBlocks     = @()
-        $allHeaders           = @()      
+        $ParametersToCreate    = [Ordered]@{}
+        $parameterScriptBlocks = @()
+        $allDynamicParameters  = @()
+        $allBeginBlocks        = @()
+        $allEndBlocks          = @()
+        $allProcessBlocks      = @()
+        $allHeaders            = @()      
     }
 
     process {
@@ -97,12 +98,14 @@ function New-PipeScript
                             if ($EachParameter.Value.Ast.ParamBlock) {
                                 # embed the parameter block (except for the param keyword)
                                 $EachParameter.Value.Ast.ParamBlock.Extent.ToString() -replace 
-                                    '^[\s\r\n]param(' -replace ')[\s\r\n]$'
+                                    '^[\s\r\n]{0,}param\(' -replace '\)[\s\r\n]{0,}$'
                             } else {
                                 # Otherwise
+                                '[Parameter(ValueFromPipelineByPropertyName)]' + (
                                 $EachParameter.Value.ToString() -replace 
                                     "\`$$($eachParameter.Key)[\s\r\n]$" -replace # Replace any trailing variables
-                                    'param()[\s\r\n]{0,}$'  # then replace any empty param blocks.
+                                    'param\(\)[\s\r\n]{0,}$'  # then replace any empty param blocks.
+                                )
                             }
                     }
                     elseif ($EachParameter.Value -is [Object[]]) {
@@ -113,8 +116,16 @@ function New-PipeScript
             } elseif ($Parameter -is [string]) {
                 $ParametersToCreate[$Parameter] = @(
                     "[Parameter(ValueFromPipelineByPropertyName)]"
-                    "`$$Parameter"
+                    "`$$Parameter" 
                 )
+            } elseif ($parameter -is [scriptblock]) {
+                $parameterScriptBlocks +=
+                    if ($parameter.Ast.ParamBlock) {
+                        # embed the parameter block (except for the param keyword)
+                        $parameter
+                    } else {
+                        
+                    }
             } elseif ($Parameter -is [Object[]]) {
                 $currentParam = @()
                 $currentParamName = ''
@@ -175,6 +186,11 @@ function New-PipeScript
             }) -join (',' + [Environment]::NewLine)) +
             [Environment]::NewLine +
             ')'
+
+        if ($parameterScriptBlocks) {
+            $parameterScriptBlocks += [ScriptBlock]::new($newParamBlock)
+            $newParamBlock = $parameterScriptBlocks | Join-PipeScript
+        }
 
 
         $createdScriptBlock = [scriptblock]::Create("
