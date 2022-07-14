@@ -350,13 +350,28 @@ process {
 }    
 {
 process {
+    foreach ($qp in @($QueryParams.GetEnumerator())) {
+        $qpValue = 
+            if ($qp.Value -is [DateTime]) {
+                $qp.Value.Tostring('o')
+            }
+            elseif ($qp.Value -is [switch]) {
+                $qp.Value -as [bool]
+            }
+            else {
+                $qp.Value
+            }
+
+        $queryParams[$qp.Key] = $qpValue
+    }
+
     if ($invokerCommandinfo.Parameters['QueryParameter'] -and 
         $invokerCommandinfo.Parameters['QueryParameter'].ParameterType -eq [Collections.IDictionary]) {
-        $invokerCommandinfo.QueryParameter = $QueryParams
+        $invokeSplat.QueryParameter = $QueryParams
     } else {
         $queryParamStr = 
             @(foreach ($qp in $QueryParams.GetEnumerator()) {
-                "$($qp.Key)=$([Web.HttpUtility]::UrlEncode($qp.Value).Replace('+', '%20'))"
+                "$($qp.Key)=$([Web.HttpUtility]::UrlEncode($qpValue).Replace('+', '%20'))"
             }) -join '&'
         if ($invokeSplat.Uri.Contains('?')) {
             $invokeSplat.Uri = "$($invokeSplat.Uri)" + '&' + $queryParamStr
@@ -382,6 +397,21 @@ process {
                 $completeBody[$bodyParameterName] = $PSBoundParameters[$bodyParameterName]
             }
         }
+    }
+
+    foreach ($bodyPart in @($completeBody.GetEnumerator())) {
+        $bodyValue = 
+            if ($bodyPart.Value -is [DateTime]) {
+                $bodyPart.Value.ToString('o')
+            } 
+            elseif ($bodyPart.Value -is [switch]) {
+                $bodyPart.Value -as [bool]
+            }
+            else {
+                $bodyPart.Value
+            }
+
+        $completeBody[$bodyPart.Key] = $bodyValue
     }
 
     $bodyContent = 
