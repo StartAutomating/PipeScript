@@ -17,7 +17,8 @@ function New-PipeScript
     # * As an  ```[Object[]]```.
     # * As a ```[ScriptBlock]```
     [Parameter(ValueFromPipelineByPropertyName)]
-    [ValidateTypes(TypeName={[Collections.IDictionary], [string],[Object[]], [Scriptblock]})]    
+    [ValidateScriptBlock(ParameterOnly)]
+    [ValidateTypes(TypeName={[Collections.IDictionary], [string],[Object[]], [Scriptblock]})]
     $Parameter,
     
     # The dynamic parameter block.
