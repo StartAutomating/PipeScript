@@ -69,6 +69,7 @@ $validateScripts = @(
     if ($DataLanguage) {
 @'
 [ValidateScript({
+    if ($_ -isnot [ScriptBlock]) { return $true }
     $sbCopy = "data { $_ }"
     try {
         $dataOutput = & ([ScriptBlock]::Create($sbCopy))
@@ -82,6 +83,7 @@ $validateScripts = @(
     if ($ParameterOnly) {
 @'
 [ValidateScript({
+    if ($_ -isnot [ScriptBlock]) { return $true }
     $statementCount = 0
     $statementCount += $_.Ast.DynamicParamBlock.Statements.Count
     $statementCount += $_.Ast.BeginBlock.Statements.Count
@@ -98,6 +100,7 @@ $validateScripts = @(
     if ($NoBlock) {
 @'
 [ValidateScript({
+    if ($_ -isnot [ScriptBlock]) { return $true }
     if ($_.Ast.DynamicParamBlock -or $_.Ast.BeginBlock -or $_.Ast.ProcessBlock) {
         throw "ScriptBlock should not have any named blocks"
     }
@@ -108,6 +111,7 @@ $validateScripts = @(
     if ($NoParameter) {
 @'
 [ValidateScript({
+    if ($_ -isnot [ScriptBlock]) { return $true }
     if ($_.Ast.ParamBlock.Parameters.Count) {
         throw "ScriptBlock should not have parameters"
     }
