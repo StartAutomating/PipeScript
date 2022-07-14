@@ -143,12 +143,12 @@ function Join-PipeScript
                                 $lastParameter   = $parameter.Parent.Parameters[$parameterIndex - 1]
                                 $relativeOffset  = $lastParameter.Extent.EndOffset + 1 - $parameter.Parent.Extent.StartOffset
                                 $distance        = $parameter.Extent.StartOffset - $lastParameter.Extent.EndOffset - 1
-                                $parameter.Parent.Extent.ToString().Substring($relativeOffset, $distance) -replace '^[\r\n]+'
+                                $parameter.Parent.Extent.ToString().Substring($relativeOffset, $distance) -replace '^[\,\s\r\n]+'
                             } else {
                                 $parentExtent = $parameter.Parent.Extent.ToString()
                                 $afterFirstParens = $parentExtent.IndexOf('(') + 1 
                                 $parentExtent.Substring($afterFirstParens, 
-                                    $parameter.Extent.StartOffset - $parameter.Parent.Extent.StartOffset - $afterFirstParens) -replace '^[\r\n]+'                            
+                                    $parameter.Extent.StartOffset - $parameter.Parent.Extent.StartOffset - $afterFirstParens) -replace '^[\s\r\n]+'
                             }
 
 
@@ -170,7 +170,7 @@ function Join-PipeScript
                         $parameterIndex++
                     }                                        
                 }) 
-                $paramOut -join (',' + ([Environment]::NewLine * 2))
+                $paramOut -notmatch '^[\s\r\n]$' -join (',' + ([Environment]::NewLine * 2))
                 if (@($AllScriptBlocks.Ast.ParamBlock) -ne $null) {
                     ' ' * (@(@($AllScriptBlocks.Ast.ParamBlock) -ne $null)[0] | MeasureIndent) + ")"
                 }            
