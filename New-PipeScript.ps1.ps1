@@ -1,4 +1,4 @@
-function New-PipeScript
+﻿function New-PipeScript
 {
     <#
     .Synopsis
@@ -17,9 +17,10 @@ function New-PipeScript
     # * As an  ```[Object[]]```.
     # * As a ```[ScriptBlock]```
     [Parameter(ValueFromPipelineByPropertyName)]
-    [ValidateTypes(TypeName={[Collections.IDictionary], [string],[Object[]], [Scriptblock]})]    
+    [ValidateScriptBlock(ParameterOnly)]
+    [ValidateTypes(TypeName={[Collections.IDictionary], [string],[Object[]], [Scriptblock]})]
     $Parameter,
-    
+
     # The dynamic parameter block.
     [Parameter(ValueFromPipelineByPropertyName)]
     [ValidateScriptBlock(NoBlocks, NoParameters)]
@@ -47,7 +48,7 @@ function New-PipeScript
     [Alias('EndBlock')]
     [ScriptBlock]
     $End,
-    
+
     # The script header.
     [Parameter(ValueFromPipelineByPropertyName)]
     [string]
@@ -55,12 +56,13 @@ function New-PipeScript
     )
 
     begin {
-        $ParametersToCreate   = [Ordered]@{}
-        $allDynamicParameters = @()
-        $allBeginBlocks       = @()
-        $allEndBlocks         = @()
-        $allProcessBlocks     = @()
-        $allHeaders           = @()      
+        $ParametersToCreate    = [Ordered]@{}
+        $parameterScriptBlocks = @()
+        $allDynamicParameters  = @()
+        $allBeginBlocks        = @()
+        $allEndBlocks          = @()
+        $allProcessBlocks      = @()
+        $allHeaders            = @()
     }
 
     process {
@@ -71,7 +73,7 @@ function New-PipeScript
                 # If it is, walk thur each parameter in the dictionary
                 foreach ($EachParameter in $Parameter.GetEnumerator()) {
                     # Continue past any parameters we already have
-                    if ($ParametersToCreate.Contains($EachParameter.Key)) { 
+                    if ($ParametersToCreate.Contains($EachParameter.Key)) {
                         continue
                     }
                     # If the parameter is a string and the value is not a variable
@@ -96,13 +98,15 @@ function New-PipeScript
                             # If there was a param block on the script block
                             if ($EachParameter.Value.Ast.ParamBlock) {
                                 # embed the parameter block (except for the param keyword)
-                                $EachParameter.Value.Ast.ParamBlock.Extent.ToString() -replace 
-                                    '^[\s\r\n]param(' -replace ')[\s\r\n]$'
+                                $EachParameter.Value.Ast.ParamBlock.Extent.ToString() -replace
+                                    '^[\s\r\n]{0,}param\(' -replace '\)[\s\r\n]{0,}$'
                             } else {
                                 # Otherwise
-                                $EachParameter.Value.ToString() -replace 
+                                '[Parameter(ValueFromPipelineByPropertyName)]' + (
+                                $EachParameter.Value.ToString() -replace
                                     "\`$$($eachParameter.Key)[\s\r\n]$" -replace # Replace any trailing variables
-                                    'param()[\s\r\n]{0,}$'  # then replace any empty param blocks.
+                                    'param\(\)[\s\r\n]{0,}$'  # then replace any empty param blocks.
+                                )
                             }
                     }
                     elseif ($EachParameter.Value -is [Object[]]) {
@@ -115,6 +119,14 @@ function New-PipeScript
                     "[Parameter(ValueFromPipelineByPropertyName)]"
                     "`$$Parameter"
                 )
+            } elseif ($parameter -is [scriptblock]) {
+                $parameterScriptBlocks +=
+                    if ($parameter.Ast.ParamBlock) {
+                        # embed the parameter block (except for the param keyword)
+                        $parameter
+                    } else {
+
+                    }
             } elseif ($Parameter -is [Object[]]) {
                 $currentParam = @()
                 $currentParamName = ''
@@ -164,17 +176,22 @@ function New-PipeScript
         if ($end) {
             $allEndBlocks += $end
         }
-        
+
     }
 
     end {
-        $newParamBlock = 
-            "param(" + [Environment]::newLine + 
+        $newParamBlock =
+            "param(" + [Environment]::newLine +
             $(@(foreach ($toCreate in $ParametersToCreate.GetEnumerator()) {
                 $toCreate.Value -join [Environment]::NewLine
             }) -join (',' + [Environment]::NewLine)) +
             [Environment]::NewLine +
             ')'
+
+        if ($parameterScriptBlocks) {
+            $parameterScriptBlocks += [ScriptBlock]::new($newParamBlock)
+            $newParamBlock = $parameterScriptBlocks | Join-PipeScript
+        }
 
 
         $createdScriptBlock = [scriptblock]::Create("

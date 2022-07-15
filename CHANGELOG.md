@@ -1,3 +1,13 @@
+## 0.0.9:
+* New Features:
+  * new keyword (#128)
+  * == operator (#123 (thanks @dfinke))
+* Fixes
+  * REST Transpiler automatically coerces [DateTime] and [switch] parameters (#118)
+  * Join-PipeScript:  Fixing multiparam error (#124)
+  * ValidateScriptBlock:  Only validing ScriptBlocks (#125)
+---
+
 ## 0.0.8:
 * New Commands:
   * New-PipeScript (#94)

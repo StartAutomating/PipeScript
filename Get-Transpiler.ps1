@@ -1,4 +1,4 @@
-#region Piecemeal [ 0.3.2 ] : Easy Extensible Plugins for PowerShell
+#region Piecemeal [ 0.3.3 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
 # Install-Piecemeal -ExtensionNoun 'Transpiler' -ExtensionPattern '\.psx\.ps1$' -ExtensionTypeName 'PipeScript.Transpiler' -OutputPath '.\Get-Transpiler.ps1'
@@ -153,20 +153,7 @@ function Get-Transpiler
 
     # If set, will output the help for the extensions
     [switch]
-    $Help,
-
-    # If set, will get help about one or more parameters of an extension
-    [string[]]
-    $ParameterHelp,
-
-    # If set, will get help examples
-    [Alias('Examples')]
-    [switch]
-    $Example,
-
-    # If set, will output the full help for the extensions
-    [switch]
-    $FullHelp
+    $Help
     )
 
     begin {
@@ -292,15 +279,21 @@ function Get-Transpiler
 
             $extCmd.PSObject.Methods.Add([psscriptmethod]::New('GetHelpField', {
                 param([Parameter(Mandatory)]$Field)
-                foreach ($block in $this.BlockComments) {
+                $fieldNames = 'synopsis','description','link','example','inputs', 'outputs', 'parameter', 'notes'
+                foreach ($block in $this.BlockComments) {                
                     foreach ($match in [Regex]::new("
                         \.(?<Field>$Field)                   # Field Start
                         [\s-[\r\n]]{0,}                      # Optional Whitespace
                         [\r\n]+                              # newline
-                        (?<Content>(.|\s)+?(?=(\.\w+|\#\>))) # Anything until the next .\field or end of the comment block
+                        (?<Content>(?:.|\s)+?(?=
+                        (
+                            [\r\n]{0,}\s{0,}\.(?>$($fieldNames -join '|'))|
+                            \#\>|
+                            \z
+                        ))) # Anything until the next .field or end of the comment block
                         ", 'IgnoreCase,IgnorePatternWhitespace', [Timespan]::FromSeconds(1)).Matches(
                             $block.Value
-                        )) {
+                        )) {                        
                         $match.Groups["Content"].Value -replace '[\s\r\n]+$'
                     }                    
                 }
@@ -813,18 +806,9 @@ function Get-Transpiler
                     }
                     return
                 }
-                elseif ($IsValid -and ($Help -or $FullHelp -or $Example -or $ParameterHelp)) {
-                    $getHelpSplat = @{}
-                    if ($FullHelp) {
-                        $getHelpSplat["Full"] = $true
-                    }
-                    if ($Example) {
-                        $getHelpSplat["Example"] = $true
-                    }
-                    if ($ParameterHelp) {
-                        $getHelpSplat["ParameterHelp"] = $ParameterHelp
-                    }
-
+                elseif ($IsValid -and $Help) {
+                    $getHelpSplat = @{Full=$true}
+                    
                     if ($extCmd -is [Management.Automation.ExternalScriptInfo]) {
                         Get-Help $extCmd.Source @getHelpSplat
                     } elseif ($extCmd -is [Management.Automation.FunctionInfo]) {
@@ -933,5 +917,5 @@ function Get-Transpiler
         }
     }
 }
-#endregion Piecemeal [ 0.3.2 ] : Easy Extensible Plugins for PowerShell
+#endregion Piecemeal [ 0.3.3 ] : Easy Extensible Plugins for PowerShell
 

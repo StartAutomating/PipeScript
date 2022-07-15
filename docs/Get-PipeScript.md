@@ -250,36 +250,6 @@ If set, will output the help for the extensions
 |--------------|--------|-------|-------------|
 |```[Switch]```|false   |named  |false        |
 ---
-#### **ParameterHelp**
-
-If set, will get help about one or more parameters of an extension
-
-
-
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[String[]]```|false   |10     |false        |
----
-#### **Example**
-
-If set, will get help examples
-
-
-
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
----
-#### **FullHelp**
-
-If set, will output the full help for the extensions
-
-
-
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
----
 ### Outputs
 Extension
 
@@ -287,7 +257,7 @@ Extension
 ---
 ### Syntax
 ```PowerShell
-Get-PipeScript [[-PipeScriptPath] <String>] [-Force] [[-CommandName] <String[]>] [[-PipeScriptName] <String[]>] [-Like] [-Match] [-DynamicParameter] [-CouldRun] [[-CouldPipe] <PSObject>] [-Run] [-Stream] [[-DynamicParameterSetName] <String>] [[-DynamicParameterPositionOffset] <Int32>] [-NoMandatoryDynamicParameter] [-RequirePipeScriptAttribute] [[-ValidateInput] <PSObject>] [-AllValid] [[-ParameterSetName] <String>] [[-Parameter] <IDictionary>] [-SteppablePipeline] [-Help] [[-ParameterHelp] <String[]>] [-Example] [-FullHelp] [<CommonParameters>]
+Get-PipeScript [[-PipeScriptPath] <String>] [-Force] [[-CommandName] <String[]>] [[-PipeScriptName] <String[]>] [-Like] [-Match] [-DynamicParameter] [-CouldRun] [[-CouldPipe] <PSObject>] [-Run] [-Stream] [[-DynamicParameterSetName] <String>] [[-DynamicParameterPositionOffset] <Int32>] [-NoMandatoryDynamicParameter] [-RequirePipeScriptAttribute] [[-ValidateInput] <PSObject>] [-AllValid] [[-ParameterSetName] <String>] [[-Parameter] <IDictionary>] [-SteppablePipeline] [-Help] [<CommonParameters>]
 ```
 ---
 
