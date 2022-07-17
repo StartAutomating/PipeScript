@@ -7,8 +7,33 @@ function Join-PipeScript
         Joins ScriptBlocks written in PowerShell or PipeScript.
     .EXAMPLE
         Get-Command Join-PipeScript | Join-PipeScript
+    .EXAMPLE
+        {
+        param(
+        [string]
+        $x
+        )
+        },
+        {
+        param(            
+        [string]
+        $y
+        )
+        } | 
+            Join-PipeScript
+    .EXAMPLE
+        {
+            begin {
+                $factor = 2
+            }
+        }, {
+            process {
+                $_ * $factor
+            }
+        } | Join-PipeScript
     .LINK
         Update-PipeScript
+    
     #>
     [Alias('Join-ScriptBlock', 'jps')]
     param(
@@ -121,7 +146,7 @@ function Join-PipeScript
                 foreach ($combined in $AllScriptBlocks.Ast.ParamBlock) {
                     if (-not $combined.Parent.Extent) { continue }
                     $offsetDifference = $combined.Extent.StartOffset - $combined.Parent.Extent.StartOffset
-                    $combined.Parent.Extent.ToString().Substring(0, $offsetDifference) -replace '^[\r\n]+\{'
+                    $combined.Parent.Extent.ToString().Substring(0, $offsetDifference) -replace '^[\r\n\s]{0,}\{'
                 }
             }            
             # Start the param block
