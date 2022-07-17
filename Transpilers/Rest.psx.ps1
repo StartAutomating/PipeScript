@@ -99,11 +99,41 @@ $UriParameterHelp,
 [Collections.IDictionary]
 $UriParameterType,
 
-# A dictionary or list of parameters for the body.
+<#
+A dictionary or list of parameters for the body.
+
+
+If a parameter has a ```[ComponentModel.DefaultBindingProperty]``` attribute,
+it will be used to rename the body parameter.
+
+
+If a parameter has a ```[ComponentModel.AmbientValue]``` attribute with a ```[ScriptBlock]``` value,
+it will be used to redefine the value.
+
+
+If a parameter value is a [DateTime], it will be turned into a [string] using the standard format.
+
+If a parameter is a [switch], it will be turned into a [bool].
+#>
 [PSObject]
 $BodyParameter,
 
-# A dictionary or list of query parameters.
+<#
+A dictionary or list of query parameters.
+
+
+If a parameter has a ```[ComponentModel.DefaultBindingProperty]``` attribute,
+it will be used to rename the body parameter.
+
+
+If a parameter has a ```[ComponentModel.AmbientValue]``` attribute with a ```[ScriptBlock]``` value,
+it will be used to redefine the value.
+
+
+If a parameter value is a [DateTime], it will be turned into a [string] using the standard format.
+
+If a parameter is a [switch], it will be turned into a [bool].
+#>
 [PSObject]
 $QueryParameter,
 
