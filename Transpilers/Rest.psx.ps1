@@ -161,8 +161,6 @@ begin {
             return ''
         }
     }
-
-    $myCmd = $MyInvocation.MyCommand
 }
 
 process {
@@ -222,12 +220,99 @@ process {
             New-PipeScript -Parameter $QueryParameter
         } else { {} }
         
-    $myBeginBlock = 
+    
+    
+    $myBeginBlocks = @(
         # If we used any URI parameters
         if ($uriParamBlock.Ast.ParamBlock.Parameters) {
             # Carry on the begin block from this command (this is a neat trick)
-            [scriptblock]::Create($myCmd.ScriptBlock.Ast.BeginBlock.Extent.ToString())
-        } else { { begin { $myCmd = $MyInvocation.MyCommand }} }
+            [scriptblock]::Create($MyInvocation.MyCommand.ScriptBlock.Ast.BeginBlock.Extent.ToString())
+        } else { { } }
+
+        $foundAttributesOfInterest = 
+            $QueryParamblock, $bodyParamBlock | 
+                Search-PipeScript -AstCondition {
+                    param($ast)
+                    if ($ast -isnot [Management.Automation.Language.AttributeAST]) { return }
+                    $reflectedType = $ast.TypeName.GetReflectionType()
+                    if ($reflectedType -eq [ComponentModel.AmbientValueAttribute]) { return $true }
+                    if ($reflectedType -eq [ComponentModel.DefaultBindingPropertyAttribute]) { return $true }
+                }
+
+        if ($foundAttributesOfInterest) {
+{
+    begin {
+        $myCmd = $MyInvocation.MyCommand
+        function ConvertRestInput {
+            param([Collections.IDictionary]$RestInput = @{})
+            foreach ($ri in @($RestInput.GetEnumerator())) {
+                $RestParameterAttributes = @($myCmd.Parameters[$ri.Key].Attributes)
+                $restParameterName  = $ri.Key
+                $restParameterValue = $ri.Value
+                foreach ($attr in $RestParameterAttributes) {
+                    if ($attr -is [ComponentModel.AmbientValueAttribute] -and 
+                        $attr.Value -is [ScriptBlock]) {
+                        $_ = $this = $ri.Value
+                        $restParameterValue = & $attr.Value
+                    }
+                    if ($attr -is [ComponentModel.DefaultBindingPropertyAttribute]) {
+                        $restParameterName = $attr.Name
+                    }
+                }
+                $restParameterValue = 
+                    if ($restParameterValue -is [DateTime]) {
+                        $restParameterValue.Tostring('o')
+                    }
+                    elseif ($restParameterValue -is [switch]) {
+                        $restParameterValue -as [bool]
+                    }
+                    else {
+                        $restParameterValue
+                    }
+                
+                if ($restParameterValue -is [Collections.IDictionary]) {
+                    $RestInput.Remove($ri.Key)
+                    foreach ($kv in $restParameterValue.GetEnumerator()) {
+                        $RestInput[$kv.Key] = $kv.Value
+                    }
+                } elseif ($restParameterName -ne $ri.Key) {
+                    $RestInput.Remove($ri.Key)
+                    $RestInput[$restParameterName] = $restParameterValue
+                } else {
+                    $RestInput[$ri.Key] = $restParameterValue
+                }
+            }
+            $RestInput
+        }
+    }
+}
+        } else {
+{
+    begin {
+        function ConvertRestInput {
+            param([Collections.IDictionary]$RestInput = @{})
+            foreach ($ri in @($RestInput.GetEnumerator())) {
+                
+                $restParameterValue = $ri.Value
+                $restParameterValue = 
+                    if ($restParameterValue -is [DateTime]) {
+                        $restParameterValue.Tostring('o')
+                    }
+                    elseif ($restParameterValue -is [switch]) {
+                        $restParameterValue -as [bool]
+                    }
+                    else {
+                        $restParameterValue
+                    }
+                    
+                $RestInput[$ri.Key] = $restParameterValue
+            }
+            $RestInput
+        }
+    }
+}
+        }
+    )
         
     # Next, collect the names of bodyParameters, queryParameters, and uriParameters.
     $bodyParameterNames  = 
@@ -244,7 +329,9 @@ process {
         $ScriptBlock
 
         # Then include the begin block from this command (or declare myCmd)
-        $myBeginBlock
+        foreach ($beginBlock in $myBeginBlocks) {
+            $beginBlock
+        }
 
         # Then declare the initial variables.
         [scriptblock]::Create((@"
@@ -344,26 +431,18 @@ process {
     foreach ($QueryParameterName in $QueryParameterNames) {
         if ($PSBoundParameters.ContainsKey($QueryParameterName)) {
             $QueryParams[$QueryParameterName] = $PSBoundParameters[$QueryParameterName]            
+        } else {
+            $queryDefault = $ExecutionContext.SessionState.PSVariable.Get($QueryParameterName).Value
+            if ($null -ne $queryDefault) {
+                $QueryParams[$QueryParameterName] = $queryDefault
+            }
         }
     }
 }
 }    
 {
 process {
-    foreach ($qp in @($QueryParams.GetEnumerator())) {
-        $qpValue = 
-            if ($qp.Value -is [DateTime]) {
-                $qp.Value.Tostring('o')
-            }
-            elseif ($qp.Value -is [switch]) {
-                $qp.Value -as [bool]
-            }
-            else {
-                $qp.Value
-            }
-
-        $queryParams[$qp.Key] = $qpValue
-    }
+    $queryParams = ConvertRestInput $queryParams
 
     if ($invokerCommandinfo.Parameters['QueryParameter'] -and 
         $invokerCommandinfo.Parameters['QueryParameter'].ParameterType -eq [Collections.IDictionary]) {
@@ -395,24 +474,16 @@ process {
         if ($bodyParameterName) {
             if ($PSBoundParameters.ContainsKey($bodyParameterName)) {
                 $completeBody[$bodyParameterName] = $PSBoundParameters[$bodyParameterName]
+            } else {
+                $bodyDefault = $ExecutionContext.SessionState.PSVariable.Get($bodyParameterName).Value
+                if ($null -ne $bodyDefault) {
+                    $completeBody[$bodyParameterName] = $bodyDefault
+                }
             }
         }
     }
 
-    foreach ($bodyPart in @($completeBody.GetEnumerator())) {
-        $bodyValue = 
-            if ($bodyPart.Value -is [DateTime]) {
-                $bodyPart.Value.ToString('o')
-            } 
-            elseif ($bodyPart.Value -is [switch]) {
-                $bodyPart.Value -as [bool]
-            }
-            else {
-                $bodyPart.Value
-            }
-
-        $completeBody[$bodyPart.Key] = $bodyValue
-    }
+    $completeBody = ConvertRestInput $completeBody
 
     $bodyContent = 
         if ($ContentType -match 'x-www-form-urlencoded') {
