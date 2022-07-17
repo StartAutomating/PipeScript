@@ -13,9 +13,8 @@
     # Defines one or more parameters for a ScriptBlock.
     # Parameters can be defined in a few ways:
     # * As a ```[Collections.Dictionary]``` of Parameters
-    # * As the ```[string]``` name of an untyped parameter.
-    # * As an  ```[Object[]]```.
-    # * As a ```[ScriptBlock]```
+    # * As the ```[string]``` name of an untyped parameter.    
+    # * As a ```[ScriptBlock]``` containing only parameters.
     [Parameter(ValueFromPipelineByPropertyName)]
     [ValidateScriptBlock(ParameterOnly)]
     [ValidateTypes(TypeName={[Collections.IDictionary], [string],[Object[]], [Scriptblock]})]
@@ -109,77 +108,66 @@
                                 )
                             }
                     }
+                    # If the value was an array
                     elseif ($EachParameter.Value -is [Object[]]) {
-                        $ParametersToCreate[$EachParameter.Key] =
+                        $ParametersToCreate[$EachParameter.Key] = # join it's elements by newlines
                             $EachParameter.Value -join [Environment]::Newline
                     }
                 }
-            } elseif ($Parameter -is [string]) {
-                $ParametersToCreate[$Parameter] = @(
+            
+            } 
+            # If the parameter was a string
+            elseif ($Parameter -is [string]) 
+            {
+                # treat it as  parameter name
+                $ParametersToCreate[$Parameter] =                                         
+                    @(
                     "[Parameter(ValueFromPipelineByPropertyName)]"
                     "`$$Parameter"
-                )
-            } elseif ($parameter -is [scriptblock]) {
+                    ) -join [Environment]::NewLine                    
+            } 
+            # If the parameter is a [ScriptBlock]
+            elseif ($parameter -is [scriptblock]) 
+            {
+                
+                # add it to a list of parameter script blocks.
                 $parameterScriptBlocks +=
-                    if ($parameter.Ast.ParamBlock) {
-                        # embed the parameter block (except for the param keyword)
+                    if ($parameter.Ast.ParamBlock) {                        
                         $parameter
-                    } else {
-
-                    }
-            } elseif ($Parameter -is [Object[]]) {
-                $currentParam = @()
-                $currentParamName = ''
-                foreach ($EachParameter in $Parameter) {
-                    if ($EachParameter -is [string] -and -not $EachParameter.Contains(' ')) {
-                        if ($currentParam) {
-                            $ParametersToCreate[$currentParamName] = $currentParam
-                            $currentParam = @()
-                            $currentParamName = ''
-                        }
-                        $currentParam += "`$$EachParameter"
-                        $currentParamName = $EachParameter
-                    } elseif ($EachParameter -is [string] -and $EachParameter.Contains(' ')) {
-                        $currentParam = @(
-                            if ($EachParameter.Contains("`n")) {
-                                "<#" + [Environment]::newLine + $EachParameter + [Environment]::newLine + '#>'
-                            } else {
-                                "# $EachParameter"
-                            }
-                        ) + $currentParam
-                    } elseif ($EachParameter -is [type]) {
-                        $currentParam += "[$($EachParameter.Fullname)]"
-                    }
-                }
-                if ($currentParamName) {
-                    $ParametersToCreate[$currentParamName] = $currentParam
-                }
+                    }            
             }
         }
 
-        if ($header) {
+        # If there is header content,
+        if ($header) {            
             $allHeaders += $Header
         }
 
-        if ($DynamicParameter) {
+        # dynamic parameters,
+        if ($DynamicParameter) {            
             $allDynamicParameters += $DynamicParameter
         }
 
-        if ($Begin) {
+        # begin,
+        if ($Begin) {            
             $allBeginBlocks += $begin
         }
 
-        if ($process) {
+        # process,
+        if ($process) {            
             $allProcessBlocks += $process
         }
 
+        # or end blocks.
         if ($end) {
+            # accumulate them.
             $allEndBlocks += $end
         }
 
     }
 
     end {
+        # Take all of the accumulated parameters and create a parameter block
         $newParamBlock =
             "param(" + [Environment]::newLine +
             $(@(foreach ($toCreate in $ParametersToCreate.GetEnumerator()) {
@@ -188,12 +176,14 @@
             [Environment]::NewLine +
             ')'
 
-        if ($parameterScriptBlocks) {
-            $parameterScriptBlocks += [ScriptBlock]::new($newParamBlock)
+        # If any parameters were passed in as ```[ScriptBlock]```s,
+        if ($parameterScriptBlocks) {            
+            $parameterScriptBlocks += [ScriptBlock]::Create($newParamBlock)
+            # join them with the new parameter block.
             $newParamBlock = $parameterScriptBlocks | Join-PipeScript
         }
 
-
+        # Create the script block by combining together the provided parts.
         $createdScriptBlock = [scriptblock]::Create("
 $($allHeaders -join [Environment]::Newline)
 $newParamBlock
@@ -212,6 +202,8 @@ $(if ($allEndBlocks -and -not $allBeginBlocks -and -not $allProcessBlocks) {
     @(@("end {") + $allEndBlocks + '}') -join [Environment]::Newline
 })
 ")
-        $createdScriptBlock
+
+        # return the created script block.
+        return $createdScriptBlock
     }
 }
