@@ -1,4 +1,8 @@
-﻿# What Is PipeScript?
+﻿<div align='center'>
+<img src='Assets/PipeScript.svg' />
+</div>
+
+# What Is PipeScript?
 
 > PipeScript is a transpiled scripting language built atop of PowerShell.
 
