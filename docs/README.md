@@ -1,60 +1,54 @@
-﻿<div align='center'>
-<img src='Assets/PipeScript.png' />
-</div>
+This directory and it's subdirectories contain additional language keywords within PipeScript.
 
-# What Is PipeScript?
+Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 
-> PipeScript is a transpiled scripting language built atop of PowerShell.
 
-> PipeScript can be run interactively
+|DisplayName       |Synopsis                    |
+|------------------|----------------------------|
+|[New](New.psx.ps1)|['new' keyword](New.psx.ps1)|
 
-> PipeScript can embedded within many languages to dynamically generate source code
 
-## What's a Transpiler?
 
-A transpiler takes source code written in one language and transforms or translates it.
 
-Transpilers can be used to extend a given language.
-For example, TypeScript adds strongly typed features to JavaScript, a weakly typed language.
+## New Example 1
 
-Transpilers can also be used to convert from one language to another.
-For example, most PowerShell ```Select-Object``` statements could be translated to SQL.
 
-Transpilers can also be used to optimize or reconfigure source code.
-For example, any minifier or code stylization tool is a transpiler. 
+~~~PowerShell
+    .> { new DateTime }
+~~~
 
-## What makes PipeScript unique?
+## New Example 2
 
-PipeScript is unique because PowerShell is unique.
 
-There are a few facets of PowerShell's uniqueness that make PipeScript possible:
+~~~PowerShell
+    .> { new byte 1 }
+~~~
 
-### Incredibly Flexible Syntax
+## New Example 3
 
-One of PowerShell's strengths is it's consistent syntax.  Most PowerShell you encounter will be cleanly organized into Verbs and Nouns.
-For example, ```Get-Process```.
 
-However, like JavaScript, what is valid syntax goes far beyond what PowerShell uses.  Commands can be named almost anything.  Attributes and Types need not exist to be valid.  This gives us many places we can extend PowerShell as a language.
+~~~PowerShell
+    .> { new int[] 5 }
+~~~
 
-Additionally, the core language features of PowerShell are a superset of most programming languages.  This means that PowerShell should be able to be transpiled into any language.
+## New Example 4
 
-### The Abstract Syntax Tree
 
-PowerShell also has an Abstract Syntax Tree.  This is used to represent scripts before they run.  As the name implies, this is hierarchical representation of syntax, which lets us walk thru step-by-step, not just token-by-token.
+~~~PowerShell
+    .> { new datetime 12/31/1999 }
+~~~
 
-Because the Abstract Syntax Tree of PowerShell is so well-defined, it lets us be incredibly flexible.  Not only can we transform certain parts of the syntax, we can do so differently based off of the surrounding context.  This makes transforming PowerShell much more potent than a simple find and replace.
+## New Example 5
 
-### Rich RegEx Support
 
-PowerShell comes with Rich RegEx Support.
-The ```-match```, ```-replace```, and ```-split``` operators help slice and dice text, and the .NET ```[RegEx]``` class allows for even more advanced operations.  This lets us flexibly parse text and turn it into objects.
+~~~PowerShell
+    .> { new @{RandomNumber = Get-Random; A ='b'}}
+~~~
 
-### The Object Pipeline
+## New Example 6
 
-The Object Pipeline is the backbone of PowerShell and PipeScript.
 
-It allows you to pipe structured data, not text, from one step to the next.
+~~~PowerShell
+    .> { new Diagnostics.ProcessStartInfo @{FileName='f'} }
+~~~
 
-By using the object pipeline, you loosely couple each step and allow steps to easily take input from structured files or APIs.
-
-PipeScript allows you to transpile using an Object Pipeline.
