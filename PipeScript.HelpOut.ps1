@@ -11,7 +11,7 @@ if ($PipeScriptLoaded) {
     "::error:: PipeScript not loaded" |Out-Host
 }
 
-Save-MarkdownHelp -Module PipeScript -SkipCommandType Alias -PassThru -IncludeTopic *.help.txt -Command (
+Save-MarkdownHelp -Module PipeScript -SkipCommandType Alias -PassThru -Command (
     Get-Transpiler
 ) -ReplaceCommandName '\.psx\.ps1$'
 
