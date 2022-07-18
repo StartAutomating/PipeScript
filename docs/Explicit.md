@@ -25,6 +25,16 @@ Invoke-PipeScript {
 }
 ```
 
+#### EXAMPLE 2
+```PowerShell
+{
+    [explicit]{
+        1,2,3,4
+        echo "Output"
+    }
+} | .>PipeScript
+```
+
 ---
 ### Parameters
 #### **ScriptBlock**
