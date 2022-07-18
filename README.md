@@ -1,5 +1,5 @@
 ﻿<div align='center'>
-<img src='Assets/PipeScript.svg' />
+<img src='Assets/PipeScript.png' />
 </div>
 
 # What Is PipeScript?
