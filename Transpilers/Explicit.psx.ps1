@@ -14,6 +14,13 @@
         "This Will Not Output"
         Write-Output "This Will Output"
     }
+.EXAMPLE
+    {
+        [explicit]{
+            1,2,3,4
+            echo "Output"
+        }
+    } | .>PipeScript
 #>
 [OutputType([ScriptBlock])]
 param(
