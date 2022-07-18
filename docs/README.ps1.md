@@ -1,19 +1,11 @@
-This directory contains Inline PipeScript transpilers for several languages.
+Files in this directory and it's subdirectories generate wrappers for PipeScript and PowerShell.
 
-PipeScript can currently be embedded in ```.>{@(Get-Transpiler -TranspilerPath $pwd).Count}<.``` languages or file types.
-
-Transpilers in this directory should be named ```Inline.NameOfLanguage.psx.ps1```.
-Each file should handle one and only one language (better explicit than terse).
-
-Transpilers should call ```.>PipeScript.Inline``` to simplify and standarize processing.
+These wrappers allow PipeScript or PowerShell to be called from other programming languages.
 
 ~~~PipeScript{
     [PSCustomObject]@{
         Table = Get-Transpiler -TranspilerPath $pwd |
-            Select-Object @{
-                Name='Language'
-                Expression= {$_.DisplayName -replace '^Inline\.'}
-            }, @{
+            Select-Object DisplayName, @{
                 Name='Synopsis'
                 Expression= { $_.Synopsis -replace '[\s\r\n]+$' }
             }, @{
