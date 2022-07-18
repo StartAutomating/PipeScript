@@ -1,29 +1,25 @@
-This directory and it's subdirectories contain additional language keywords within PipeScript.
+This directory contains Inline PipeScript transpilers for several languages.
 
-Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
+PipeScript can currently be embedded in ```.>{@(Get-Transpiler -TranspilerPath $pwd).Count}<.``` languages or file types.
+
+Transpilers in this directory should be named ```Inline.NameOfLanguage.psx.ps1```.
+Each file should handle one and only one language (better explicit than terse).
+
+Transpilers should call ```.>PipeScript.Inline``` to simplify and standarize processing.
 
 ~~~PipeScript{
     [PSCustomObject]@{
         Table = Get-Transpiler -TranspilerPath $pwd |
-            Select-Object DisplayName, Synopsis, @{
+            Select-Object @{
+                Name='Language'
+                Expression= {$_.DisplayName -replace '^Inline\.'}
+            }, @{
+                Name='Synopsis'
+                Expression= { $_.Synopsis -replace '[\s\r\n]+$' }
+            }, @{
                 Name='Link'
                 Expression = { $_.Name }
             }
-    }}
-~~~
-
-
-~~~PipeScript{
-    @(foreach ($transpiler in Get-Transpiler -TranspilerPath $pwd) {
-        $examples = @($transpiler.Examples)
-        if (-not $examples) { continue }
-        for ($exampleNumber = 1; $exampleNumber -le $examples.Length; $exampleNumber++) {
-            @("## $($transpiler.DisplayName) Example $($exampleNumber)", 
-                [Environment]::Newline,
-                "~~~PowerShell",                
-                $examples[$exampleNumber - 1],                
-                "~~~") -join [Environment]::Newline
-        }        
-    }) -join ([Environment]::Newline * 2)
+    }
 }
 ~~~
