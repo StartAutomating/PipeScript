@@ -1,211 +1,33 @@
-This directory and it's subdirectories contain syntax changes that enable common programming scenarios in PowerShell and PipeScript.
+This directory and it's subdirectories contain Transpilers that transform parameter attributes.
 
+Parameter Transpilers do not need to take any values from the pipeline.
+They will be called by the Core PipeScript Transpiler ```PipeScript.ParameterAttribute```.
 
-|DisplayName                                     |Synopsis                                                 |
-|------------------------------------------------|---------------------------------------------------------|
-|[Dot](Dot.psx.ps1)                              |[Dot Notation](Dot.psx.ps1)                              |
-|[EqualityComparison](EqualityComparison.psx.ps1)|[Allows equality comparison.](EqualityComparison.psx.ps1)|
-|[PipedAssignment](PipedAssignment.psx.ps1)      |[Piped Assignment Transpiler](PipedAssignment.psx.ps1)   |
-|[RegexLiteral](RegexLiteral.psx.ps1)            |[Regex Literal Transpiler](RegexLiteral.psx.ps1)         |
+When Transpiling a Parameter, the Transpiler should return one of two things.
 
+1. An empty ```[ScriptBlock]``` preceeded by attributes or help.  This will replace the Transpiled attribute with a real one.
+2. A ```[Collections.IDictionary]``` can be used to send arguments directly back to ```Update-PipeScript```.
 
+Many parameter transpilers can also apply to a ```[Management.Automation.Language.VariableExpressionAst]```.  
 
+When this is the case it is common for the transpiler to add a ```[ValidateScript]``` attribute to the variable.  This will constraint the value of that variable.
 
-## Dot Example 1
+## List Of Parameter Transpilers
 
 
-~~~PowerShell
-    .> {
-        [DateTime]::now | .Month .Day .Year
-    }
-~~~
+|DisplayName                                         |Synopsis                                                             |
+|----------------------------------------------------|---------------------------------------------------------------------|
+|[Aliases](Aliases.psx.ps1)                          |[Dynamically Defines Aliases](Aliases.psx.ps1)                       |
+|[ValidateExtension](ValidateExtension.psx.ps1)      |[Validates Extensions](ValidateExtension.psx.ps1)                    |
+|[ValidatePlatform](ValidatePlatform.psx.ps1)        |[Validates the Platform](ValidatePlatform.psx.ps1)                   |
+|[ValidatePropertyName](ValidatePropertyName.psx.ps1)|[Validates Property Names](ValidatePropertyName.psx.ps1)             |
+|[ValidateScriptBlock](ValidateScriptBlock.psx.ps1)  |[Validates Script Blocks](ValidateScriptBlock.psx.ps1)               |
+|[ValidateTypes](ValidateTypes.psx.ps1)              |[Validates if an object is one or more types.](ValidateTypes.psx.ps1)|
+|[VBN](VBN.psx.ps1)                                  |[ValueFromPiplineByPropertyName Shorthand](VBN.psx.ps1)              |
+|[VFP](VFP.psx.ps1)                                  |[ValueFromPipline Shorthand](VFP.psx.ps1)                            |
 
-## Dot Example 2
 
 
-~~~PowerShell
-    .> {
-        "abc", "123", "abc123" | .Length
-    }
-~~~
 
-## Dot Example 3
 
-
-~~~PowerShell
-    .> { 1.99 | .ToString 'C' [CultureInfo]'gb-gb' }
-~~~
-
-## Dot Example 4
-
-
-~~~PowerShell
-    .> { 1.99 | .ToString('C') }
-~~~
-
-## Dot Example 5
-
-
-~~~PowerShell
-    .> { 1..5 | .Number { $_ } .Even { -not ($_ % 2) } .Odd { ($_ % 2) -as [bool]} }
-~~~
-
-## Dot Example 6
-
-
-~~~PowerShell
-    .> { .ID { Get-Random } .Count { 0 } .Total { 10 }}
-~~~
-
-## Dot Example 7
-
-
-~~~PowerShell
-    .> {
-        # Declare a new object
-        .Property = "ConstantValue" .Numbers = 1..100 .Double = {
-            param($n)
-            $n * 2
-        } .EvenNumbers = {
-            $this.Numbers | Where-Object { -not ($_ % 2)}
-        } .OddNumbers = {
-            $this.Numbers | Where-Object { $_ % 2}
-        }
-    }
-~~~
-
-## EqualityComparison Example 1
-
-
-~~~PowerShell
-    Invoke-PipeScript -ScriptBlock {
-        $a = 1    
-        if ($a == 1 ) {
-            "A is $a"
-        }
-    }
-~~~
-
-## EqualityComparison Example 2
-
-
-~~~PowerShell
-    {
-        $a == "b"
-    } | .>PipeScript
-~~~
-
-## PipedAssignment Example 1
-
-
-~~~PowerShell
-    {
-        $Collection |=| Where-Object Name -match $Pattern
-    } | .>PipeScript
-
-    # This will become:
-
-    $Collection = $Collection | Where-Object Name -match $pattern
-~~~
-
-## PipedAssignment Example 2
-
-
-~~~PowerShell
-    {
-        $Collection |=| Where-Object Name -match $pattern | Select-Object -ExpandProperty Name
-    } | .>PipeScript
-
-    # This will become
-
-    $Collection = $Collection |
-            Where-Object Name -match $pattern |
-            Select-Object -ExpandProperty Name
-~~~
-
-## RegexLiteral Example 1
-
-
-~~~PowerShell
-    {
-        '/[a|b]/'
-    } | .>PipeScript
-
-    # This will become:
-
-    [regex]::new('[a|b]', 'IgnoreCase')
-~~~
-
-## RegexLiteral Example 2
-
-
-~~~PowerShell
-    Invoke-PipeScript {
-        '/[a|b]/'.Matches('ab')
-    }
-~~~
-
-## RegexLiteral Example 3
-
-
-~~~PowerShell
-    {
-        "/[$a|$b]/"
-    } | .>PipeScript
-
-    # This will become:
-
-    [regex]::new("[$a|$b]", 'IgnoreCase')
-~~~
-
-## RegexLiteral Example 4
-
-
-~~~PowerShell
-    {
-@'
-/
-# Heredocs Regex literals will have IgnorePatternWhitespace by default, which allows comments
-^ # Match the string start
-(?<indent>\s{0,1})
-/
-'@
-    } | .>PipeScript
-
-    # This will become:
-
-    [regex]::new(@'
-# Heredocs Regex literals will have IgnorePatternWhitespace by default, which allows comments
-^ # Match the string start
-(?<indent>\s{0,1})
-'@, 'IgnorePatternWhitespace,IgnoreCase')
-~~~
-
-## RegexLiteral Example 5
-
-
-~~~PowerShell
-    $Keywords = "looking", "for", "these", "words"
-
-    {
-@"
-/
-# Double quoted heredocs can still contain variables
-[\s\p{P}]{0,1}         # Whitespace or punctuation
-$($Keywords -join '|') # followed by keywords
-[\s\p{P}]{0,1}         # followed by whitespace or punctuation
-/
-"@
-    } | .>PipeScript
-
-
-    # This will become:
-
-    [regex]::new(@"
-# Double quoted heredocs can still contain variables
-[\s\p{P}]{0,1}         # Whitespace or punctuation
-$($Keywords -join '|') # followed by keywords
-[\s\p{P}]{0,1}         # followed by whitespace or punctuation
-"@, 'IgnorePatternWhitespace,IgnoreCase')
-~~~
 
