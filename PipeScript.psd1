@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.0.9'
+    ModuleVersion     = '0.0.10'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -17,6 +17,20 @@
 
             Tags = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
+## 0.0.10:
+* Improvements:
+  * REST transpiler
+    * Supports Query/BodyParameter with AmbientValue and DefaultBindingProperty (#119)
+    * Improved Documentation
+  * Logo (#132)
+* Bugfixes:
+  * New-PipeScript (#122)
+    * Improving Improving inline documentation and [ScriptBlock] handling
+  * Join-PipeScript (#124)
+    * Adding .Examples
+    * Fixing parameter joining issues
+---
+
 ## 0.0.9:
 * New Features:
   * new keyword (#128)

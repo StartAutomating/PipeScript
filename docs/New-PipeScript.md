@@ -23,9 +23,8 @@ New-PipeScript -Parameter @{a='b'}
 Defines one or more parameters for a ScriptBlock.
 Parameters can be defined in a few ways:
 * As a ```[Collections.Dictionary]``` of Parameters
-* As the ```[string]``` name of an untyped parameter.
-* As an  ```[Object[]]```.
-* As a ```[ScriptBlock]```
+* As the ```[string]``` name of an untyped parameter.    
+* As a ```[ScriptBlock]``` containing only parameters.
 
 
 

@@ -14,15 +14,41 @@ All statements will be assigned to $null, unless they explicitly use Write-Outpu
 If Write-Output or echo is used, the command will be replaced for more effecient output.
 
 ---
+### Examples
+#### EXAMPLE 1
+```PowerShell
+Invoke-PipeScript {
+    [explicit()]
+    param()
+    "This Will Not Output"
+    Write-Output "This Will Output"
+}
+```
+
+#### EXAMPLE 2
+```PowerShell
+{
+    [explicit]{
+        1,2,3,4
+        echo "Output"
+    }
+} | .>PipeScript
+```
+
+---
 ### Parameters
 #### **ScriptBlock**
+
+The ScriptBlock that will be transpiled.
+
+
 
 |Type               |Requried|Postion|PipelineInput |
 |-------------------|--------|-------|--------------|
 |```[ScriptBlock]```|true    |1      |true (ByValue)|
 ---
 ### Outputs
-System.Collections.IDictionary
+System.Management.Automation.ScriptBlock
 
 
 ---

@@ -19,6 +19,36 @@ Joins ScriptBlocks written in PowerShell or PipeScript.
 Get-Command Join-PipeScript | Join-PipeScript
 ```
 
+#### EXAMPLE 2
+```PowerShell
+{
+param(
+[string]
+$x
+)
+},
+{
+param(            
+[string]
+$y
+)
+} | 
+    Join-PipeScript
+```
+
+#### EXAMPLE 3
+```PowerShell
+{
+    begin {
+        $factor = 2
+    }
+}, {
+    process {
+        $_ * $factor
+    }
+} | Join-PipeScript
+```
+
 ---
 ### Parameters
 #### **ScriptBlock**
