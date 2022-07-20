@@ -10,6 +10,7 @@
 
     If a Regular Expression can match each section, then the content in each section can be replaced.
 #>
+[CmdletBinding(DefaultParameterSetName='SourceStartAndEnd')]
 param(
 
 # A string containing the text contents of the file
@@ -49,51 +50,74 @@ $EndPattern,
 # A custom replacement evaluator.
 # If not provided, will run any embedded scripts encountered. 
 # The output of these scripts will be the replacement text.
-[Parameter(ParameterSetName='SourceTextReplace')]
-[Parameter(ParameterSetName='SourceStartAndEnd')]
 [Alias('Replacer')]
 [ScriptBlock]
 $ReplacementEvaluator,
 
 # If set, will not transpile script blocks.
-[Parameter(ParameterSetName='SourceStartAndEnd')]
-[Parameter(ParameterSetName='SourceTextReplace')]
 [switch]
 $NoTranspile,
 
 # The path to the source file.
-[Parameter(ParameterSetName='SourceTextReplace')]
-[Parameter(ParameterSetName='SourceStartAndEnd')]
 [string]
 $SourceFile,
 
 # A Script Block that will be injected before each inline is run. 
-[Parameter(ParameterSetName='SourceTextReplace')]
-[Parameter(ParameterSetName='SourceStartAndEnd')]
 [ScriptBlock]
 $Begin,
 
 # A Script Block that will be piped to after each output.
-[Parameter(ParameterSetName='SourceTextReplace')]
-[Parameter(ParameterSetName='SourceStartAndEnd')]
 [Alias('Process')]
 [ScriptBlock]
 $ForeachObject,
 
 # A Script Block that will be injected after each inline script is run. 
-[Parameter(ParameterSetName='SourceTextReplace')]
-[Parameter(ParameterSetName='SourceStartAndEnd')]
 [ScriptBlock]
-$End
+$End,
+
+# A collection of parameters
+[Collections.IDictionary]
+$Parameter = @{},
+
+# An argument list. 
+[Alias('Args')]
+[PSObject[]]
+$ArgumentList = @()
 )
 
 begin {
-    $TempModule = New-Module -ScriptBlock { }
+    function GetInlineScript($match) {
+        $pipeScriptText = 
+            if ($Match.Groups["PipeScript"].Value) {
+                $Match.Groups["PipeScript"].Value
+            } elseif ($match.Groups["PS"].Value) {
+                $Match.Groups["PS"].Value                        
+            }
+
+        if (-not $pipeScriptText) {
+            return
+        }
+
+        $InlineScriptBlock = [scriptblock]::Create($pipeScriptText)
+        if (-not $InlineScriptBlock) {                    
+            return
+        }
+
+        if (-not $NoTranspile) {
+            $TranspiledOutput = $InlineScriptBlock | .>Pipescript
+            if ($TranspiledOutput -is [ScriptBlock]) {
+                $InlineScriptBlock = $TranspiledOutput
+            }
+        }
+        $InlineScriptBlock
+    }
 }
 
 process {
     $psParameterSet = $psCmdlet.ParameterSetName
     if ($psParameterSet -eq 'SourceStartAndEnd') {
+        # If the Source Start and End were provided,
+        # create a replacepattern that matches all content until the end pattern.
         $ReplacePattern = [Regex]::New("
     # Match the PipeScript Start
     $StartPattern
@@ -104,41 +128,32 @@ process {
     # Then Match the PipeScript End
     $EndPattern
         ", 'IgnoreCase, IgnorePatternWhitespace', '00:00:10')
+
+        # Now switch the parameter set to SourceTextReplace
         $psParameterSet = 'SourceTextReplace'
     }
 
+    $newModuleSplat = @{ScriptBlock={}}
+    if ($SourceFile) {
+        $newModuleSplat.Name = $SourceFile
+    }
+
+    $FileModuleContext = New-Module @newModuleSplat
+
+    # If the parameter set was SourceTextReplace
     if ($psParameterSet -eq 'SourceTextReplace') {
         $fileText      = $SourceText
+        # See if we have a replacement evaluator.
         if (-not $PSBoundParameters["ReplacementEvaluator"]) {
+            # If we don't, create one.
             $ReplacementEvaluator = {
                 param($match)
-
-                $pipeScriptText = 
-                    if ($Match.Groups["PipeScript"].Value) {
-                        $Match.Groups["PipeScript"].Value
-                    } elseif ($match.Groups["PS"].Value) {
-                        $Match.Groups["PS"].Value                        
-                    }
-
-                if (-not $pipeScriptText) {
-                    return
-                }
-
-                $InlineScriptBlock = [scriptblock]::Create($pipeScriptText)
-                if (-not $InlineScriptBlock) {                    
-                    return
-                }
-
-                if (-not $NoTranspile) {
-                    $TranspiledOutput = $InlineScriptBlock | .>Pipescript
-                    if ($TranspiledOutput -is [ScriptBlock]) {
-                        $InlineScriptBlock = $TranspiledOutput
-                    }
-                }
                 
+                $InlineScriptBlock = GetInlineScript $match
+                if (-not $InlineScriptBlock) { return }
                 $inlineAstString = $InlineScriptBlock.Ast.Extent.ToString()
-                if ($InlineScriptBlock.ParamBlock) {
-                    $inlineAstString = $inlineAstString.Replace($InlineScriptBlock.ParamBlock.Extent.ToString(), '')
+                if ($InlineScriptBlock.Ast.ParamBlock) {
+                    $inlineAstString = $inlineAstString.Replace($InlineScriptBlock.Ast.ParamBlock.Extent.ToString(), '')
                 }
                 $inlineAstString = $inlineAstString
                 $AddForeach =
@@ -176,10 +191,32 @@ process {
 
                 $codeToRun = [ScriptBlock]::Create($statements -join [Environment]::Newline)
 
-                "$(. $TempModule $codeToRun)"
+                "$(. $FileModuleContext $codeToRun)"
             }
         }
 
+        # Walk thru each match before we replace it
+        foreach ($match in $ReplacePattern.Matches($fileText)) {
+            # get the inline script block
+            $inlineScriptBlock = GetInlineScript $match            
+            if (-not $inlineScriptBlock -or # If there was no block or 
+                # there were no parameters,
+                -not $inlineScriptBlock.Ast.ParamBlock.Parameters 
+            ) { 
+                continue # skip.
+            }
+            # Create a script block out of just the parameter block
+            $paramScriptBlock = [ScriptBlock]::Create(
+                $inlineScriptBlock.Ast.ParamBlock.Extent.ToString()
+            )
+            # Dot that script into the file's context.
+            # This is some wonderful PowerShell magic.
+            # By doing this, the variables are defined with strong types and values.
+            . $FileModuleContext $paramScriptBlock @Parameter @ArgumentList
+        }
+
+        # Now, we run the replacer.  
+        # This should run each inline script and replace the text.        
         return $ReplacePattern.Replace($fileText, $ReplacementEvaluator)
     }
 }
