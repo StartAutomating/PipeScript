@@ -21,7 +21,15 @@
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]
-$CommandInfo
+$CommandInfo,
+
+# A dictionary of parameters.
+[Collections.IDictionary]
+$Parameter,
+
+# A list of arguments.
+[PSObject[]]
+$ArgumentList
 )
 
 begin {
@@ -39,12 +47,21 @@ begin {
     $startRegex = [Regex]::New("(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)", 'IgnorePatternWhitespace')
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $endRegex   = "(?<PSEnd>$Whitespace\}${endComment}[\s-[\r\n]]{0,}${IgnoredContext})"
+
+    # Create a splat containing arguments to the core inline transpiler
+    $Splat      = [Ordered]@{
+        StartPattern  = $startRegex
+        EndPattern    = $endRegex
+    }
 }
 
 process {
-    
-    $fileInfo = $commandInfo.Source -as [IO.FileInfo]
-    $fileText      = [IO.File]::ReadAllText($fileInfo.Fullname)
+    # Add parameters related to the file
+    $Splat.SourceFile = $commandInfo.Source -as [IO.FileInfo]
+    $Splat.SourceText = [IO.File]::ReadAllText($commandInfo.Source)
+    if ($Parameter) { $splat.Parameter = $Parameter }
+    if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
 
-    .>PipeScript.Inline -SourceFile $CommandInfo.Source -SourceText $fileText -StartPattern $startRegex -EndPattern $endRegex
+    # Call the core inline transpiler.
+    .>PipeScript.Inline @Splat
 }
