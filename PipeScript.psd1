@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.0.10'
+    ModuleVersion     = '0.0.11'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -17,6 +17,11 @@
 
             Tags = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
+## 0.0.11:
+* Source Generators Now Support Parameters / Arguments (#75)
+* Invoke-PipeScript Terminating Build Errors (#135)
+---
+
 ## 0.0.10:
 * Improvements:
   * REST transpiler
