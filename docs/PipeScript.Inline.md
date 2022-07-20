@@ -118,12 +118,32 @@ A Script Block that will be injected after each inline script is run.
 |-------------------|--------|-------|-------------|
 |```[ScriptBlock]```|false   |named  |false        |
 ---
+#### **Parameter**
+
+A collection of parameters
+
+
+
+|Type               |Requried|Postion|PipelineInput|
+|-------------------|--------|-------|-------------|
+|```[IDictionary]```|false   |named  |false        |
+---
+#### **ArgumentList**
+
+An argument list.
+
+
+
+|Type              |Requried|Postion|PipelineInput|
+|------------------|--------|-------|-------------|
+|```[PSObject[]]```|false   |named  |false        |
+---
 ### Syntax
 ```PowerShell
-PipeScript.Inline -SourceText <String> -StartPattern <Regex> -EndPattern <Regex> [-ReplacementEvaluator <ScriptBlock>] [-NoTranspile] [-SourceFile <String>] [-Begin <ScriptBlock>] [-ForeachObject <ScriptBlock>] [-End <ScriptBlock>] [<CommonParameters>]
+PipeScript.Inline -SourceText <String> -StartPattern <Regex> -EndPattern <Regex> [-ReplacementEvaluator <ScriptBlock>] [-NoTranspile] [-SourceFile <String>] [-Begin <ScriptBlock>] [-ForeachObject <ScriptBlock>] [-End <ScriptBlock>] [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
 ```PowerShell
-PipeScript.Inline -SourceText <String> -ReplacePattern <Regex> [-ReplacementEvaluator <ScriptBlock>] [-NoTranspile] [-SourceFile <String>] [-Begin <ScriptBlock>] [-ForeachObject <ScriptBlock>] [-End <ScriptBlock>] [<CommonParameters>]
+PipeScript.Inline -SourceText <String> -ReplacePattern <Regex> [-ReplacementEvaluator <ScriptBlock>] [-NoTranspile] [-SourceFile <String>] [-Begin <ScriptBlock>] [-ForeachObject <ScriptBlock>] [-End <ScriptBlock>] [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
 ---
 

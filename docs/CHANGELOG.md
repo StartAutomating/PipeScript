@@ -1,3 +1,8 @@
+## 0.0.11:
+* Source Generators Now Support Parameters / Arguments (#75)
+* Invoke-PipeScript Terminating Build Errors (#135)
+---
+
 ## 0.0.10:
 * Improvements:
   * REST transpiler

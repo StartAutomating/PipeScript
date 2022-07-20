@@ -73,50 +73,7 @@
             # If we didn't, do that now.
             $script:TypeAcceleratorsList = [PSObject].Assembly.GetType("System.Management.Automation.TypeAccelerators")::Get.Keys
         }
-        function TranspileOutput {
-            param(
-                [Parameter(Position=0)]
-                $OriginalInputObject,
-
-                [Parameter(ValueFromPipeline)]
-                [PSObject]
-                $PipeScriptOutput
-            )
-
-            begin {
-                $astReplacements  = [Ordered]@{}
-                $textReplacements = [Ordered]@{}
-            }
-
-            process {
-                if ($PipeScriptOutput -is [Collections.IDictionary]) {
-                    $astReplacementCount  = $astReplacements.Count
-                    $textReplacementCount = $textReplacements.Count 
-                    foreach ($kv in $PipeScriptOutput.GetEnumerator()) {
-                        if ($kv.Key -is [Management.Automation.Language.Ast]) {
-                            $astReplacements[$kv.Key] = $kv.Value
-                        } elseif ($kv.Key -match '^\d,\d$') {
-                            $textReplacements["$($kv.Key)"] = $[kv.Value
-                        }
-                    }
-                    if ($astReplacementCount -eq $astReplacements.Count -and 
-                        $textReplacementCount -eq $textReplacements.Count) {
-                        $PipeScriptOutput
-                    }
-                } else {
-                    $PipeScriptOutput
-                }
-            }
-
-            end {
-                if ($OriginalInputObject -is [scriptblock] -and $astReplacements.Count -or $textReplacements.Count) {
-                    Update-PipeScript -ScriptBlock $OriginalInputObject -AstReplacement $astReplacements -TextReplacement $textReplacements
-                } elseif ($OriginalInputObject -is [string] -and $textReplacements.Count) {
-                    Update-PipeScript -Text $OriginalInputObject -TextReplacement $textReplacements
-                }
-            }
-        }
-        
+                
         function TypeConstraintToArguments (
             [Parameter(ValueFromPipeline)]
             $TypeName
@@ -164,20 +121,24 @@
         }
 
         $InvokePipeScriptParameters = [Ordered]@{} + $psBoundParameters
+        $TranspilerErrors   = @()
+        $TranspilerWarnings = @()
+        $ErrorsAndWarnings  = @{ErrorVariable='TranspilerErrors';WarningVariable='TranspilerWarnings'}
+
 
         # If the command is a ```[ScriptBlock]```
         if ($Command -is [scriptblock]) 
         {
             # Attempt to transpile it.
-            $transpilationErrors   = @()
-            $TranspiledScriptBlock = $Command | .>Pipescript -ErrorVariable TranspilationErrors
+            $TranspiledScriptBlock = $Command | .>Pipescript @ErrorsAndWarnings
             if (-not $TranspiledScriptBlock) {  # If we could not transpile it
                 Write-Error "Command {$command} could not be transpiled" # error out.
 
                 $null =
                     New-Event -SourceIdentifier 'PipeScript.Transpilation.Failed' -MessageData ([PSCustomObject][Ordered]@{
                         Command = $command
-                        Error = $transpilationErrors                        
+                        Error   = $TranspilerErrors
+                        Warning = $TranspilerWarnings
                     })
                 return
             }
@@ -226,7 +187,7 @@
                 # If we could, recursively reinvoke.
                 if ($command -is [ScriptBlock]) {
                     $InvokePipeScriptParameters.Command = $command
-                    Invoke-PipeScript @InvokePipeScriptParameters                
+                    Invoke-PipeScript @InvokePipeScriptParameters
                 }
             }
         }
@@ -242,19 +203,23 @@
             if ($Command.Source -notmatch $IsSourceGenerator ) {
                 # invoke it normally.
                 if ($InputObject) {
-                    $InputObject | & $Command @Parameter @ArgumentList | TranspileOutput -OriginalInputObject $InputObject
+                    $InputObject | & $Command @Parameter @ArgumentList
                 } else {
-                    & $Command @Parameter @ArgumentList | TranspileOutput -OriginalInputObject $InputObject
+                    & $Command @Parameter @ArgumentList
                 }
             }
 
             # If the command was a source generator
-            else {
+            else {                
                 # predetermine the output path 
                 $outputPath = $($Command.Source -replace $IsSourceGenerator, '.${ext}')
                 # and attempt to find a transpiler.
                 $foundTranspiler = Get-Transpiler -CouldPipe $Command -ValidateInput $Command -ErrorAction Ignore
-                    
+                
+                $ParamsAndArgs    = [Ordered]@{Parameter=$Parameter;ArgumentList = $ArgumentList}
+                $transpilerErrors   = @()
+                $transpilerWarnings = @()
+
 
                 # Push into the location of the file, so the current working directory will be accurate for any inline scripts.
                 Push-Location ($command.Source | Split-Path)
@@ -262,7 +227,7 @@
                 # Get the output from the source generator.
                 $pipescriptOutput =
                     if ($foundTranspiler) { # If we found transpilers
-                        foreach ($ft in $foundTranspiler)  {                            
+                        foreach ($ft in $foundTranspiler)  {
                             # run them.
 
                             $null =
@@ -271,13 +236,16 @@
                                     SourcePath = $command.Source
                                 })
 
-                            $transpilerOutput = $command | & $ft.ExtensionCommand
-
+                            $transpilerOutput = $command | 
+                                & $ft.ExtensionCommand @ErrorsAndWarnings @ParamsAndArgs
+                            
                             $null =
                                 New-Event -SourceIdentifier 'PipeScript.SourceGenerator.Stop' -MessageData ([PSCustomObject][Ordered]@{
                                     Transpiler       = $ft.ExtensionCommand
                                     TranspilerOutput = $transpilerOutput
                                     SourcePath       = $command.Source
+                                    Errors           = $TranspilerErrors
+                                    Warnings         = $TranspilerWarnings 
                                 })
                             
                             $transpilerOutput = 
@@ -306,13 +274,13 @@
                                 $fileText = [IO.File]::ReadAllText($Command.Source)
                                 # and attempt to create a script block
                                 try {
-                                    [scriptblock]::Create($fileText) | .>Pipescript
+                                    [scriptblock]::Create($fileText) | .>Pipescript @ErrorsAndWarnings
                                 } catch {
                                     $ex = $_
                                     Write-Error "[CommandInfo] -Command could not be made into a [ScriptBlock]: $ex"                                    
                                 }
                             } else {                                                                                                        
-                                $Command.ScriptBlock | .>Pipescript
+                                $Command.ScriptBlock | .>Pipescript @ErrorsAndWarnings
                             }
 
                         if (-not $fileScriptBlock) { return }
@@ -327,6 +295,25 @@
                 # Now that the source generator has finished running, we can Pop-Location.
                 Pop-Location
                 
+                if ($TranspilerErrors) {                    
+                    $failedMessage = @(                        
+                        "$($command.Source): " + "$($TranspilerErrors.Count) error(s)"
+                        if ($transpilerWarnings) {
+                            "$($TranspilerWarnings.Count) warning(s)"
+                        }
+                    ) -join ','
+                    Write-Error $failedMessage -ErrorId Build.Failed -TargetObject (
+                        [PSCustomObject][ordered]@{
+                            Output     = $pipescriptOutput
+                            Errors     = $TranspilerErrors
+                            Warnings   = $TranspilerWarnings
+                            Command    = $Command
+                            Parameters = $InvokePipeScriptParameters 
+                        }
+                    )
+                    return
+                }
+
                 # If the source generator outputted a byte[]
                 if ($pipeScriptOutput -as [byte[]]) {
                     # Save the content to $OutputPath as bytes.
@@ -466,8 +453,7 @@
                 $ArgumentList += $stringArguments
                 if ($InputObject) {
                     $inputObject |
-                        & $foundTranspiler @ArgumentList @Parameter |
-                        TranspileOutput -OriginalInputObject $InputObject
+                        & $foundTranspiler @ArgumentList @Parameter
                 } else {
                     & $foundTranspiler @ArgumentList @Parameter
                 }
@@ -485,8 +471,7 @@
                     }
                     if ($canPipe) {
                         $inputObject |
-                            & $realCommandExists @Parameter @ArgumentList |
-                            TranspileOutput -OriginalInputObject $InputObject
+                            & $realCommandExists @Parameter @ArgumentList
                     } else {
                         & $realCommandExists @Parameter @ArgumentList
                     }
@@ -559,9 +544,9 @@
 
             if ($foundTranspiler) {
                 if ($InputObject) {
-                    $inputObject | & $foundTranspiler @ArgumentList @Parameter | TranspileOutput -OriginalInputObject $InputObject
+                    $inputObject | & $foundTranspiler @ArgumentList @Parameter
                 } else {
-                    & $foundTranspiler @ArgumentList @Parameter | TranspileOutput -OriginalInputObject $InputObject
+                    & $foundTranspiler @ArgumentList @Parameter
                 }
             } else {
                 Write-Error "Could not find Transpiler '$TranspilerStepName'"

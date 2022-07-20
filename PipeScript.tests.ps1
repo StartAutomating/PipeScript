@@ -24,8 +24,12 @@ describe PipeScript {
         namespace TestProgram/*{Get-Random}*/ {
             public static class Program {
                 public static string Hello() {
-                    string helloMessage = /*{
-                        '"hello"', '"hello world"', '"hey there"', '"howdy"' | Get-Random
+                    string helloMessage = /*{param($n)
+                        if ($n) {
+                            "`"hello $n`""
+                        } else {
+                            '"hello"', '"hello world"', '"hey there"', '"howdy"' | Get-Random
+                        }
                     }*/ string.Empty; 
                     return helloMessage;
                 }
@@ -39,6 +43,10 @@ describe PipeScript {
             $AddedFile = .> .\HelloWorld.ps1.cs
             $addedType = Add-Type -TypeDefinition (Get-Content $addedFile.FullName -Raw) -PassThru
             $addedType::Hello() | Should -belike 'H*'
+
+            $addedFile2 = .> .\HelloWorld.ps1.cs 1
+            $addedType2 = Add-Type -TypeDefinition (Get-Content $addedFile.FullName -Raw) -PassThru
+            $addedType2::Hello() | Should -be 'Hello 1'
 
             Remove-Item .\HelloWorld.ps1.cs
             Remove-Item $AddedFile.FullName 
