@@ -33,9 +33,29 @@ The command information.  This will include the path to the file.
 |--------------|--------|-------|--------------|
 |```[Object]```|true    |1      |true (ByValue)|
 ---
+#### **Parameter**
+
+A dictionary of parameters.
+
+
+
+|Type               |Requried|Postion|PipelineInput|
+|-------------------|--------|-------|-------------|
+|```[IDictionary]```|false   |2      |false        |
+---
+#### **ArgumentList**
+
+A list of arguments.
+
+
+
+|Type              |Requried|Postion|PipelineInput|
+|------------------|--------|-------|-------------|
+|```[PSObject[]]```|false   |3      |false        |
+---
 ### Syntax
 ```PowerShell
-Inline.Go [-CommandInfo] <Object> [<CommonParameters>]
+Inline.Go [-CommandInfo] <Object> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 
