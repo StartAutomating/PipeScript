@@ -73,50 +73,7 @@
             # If we didn't, do that now.
             $script:TypeAcceleratorsList = [PSObject].Assembly.GetType("System.Management.Automation.TypeAccelerators")::Get.Keys
         }
-        function TranspileOutput {
-            param(
-                [Parameter(Position=0)]
-                $OriginalInputObject,
-
-                [Parameter(ValueFromPipeline)]
-                [PSObject]
-                $PipeScriptOutput
-            )
-
-            begin {
-                $astReplacements  = [Ordered]@{}
-                $textReplacements = [Ordered]@{}
-            }
-
-            process {
-                if ($PipeScriptOutput -is [Collections.IDictionary]) {
-                    $astReplacementCount  = $astReplacements.Count
-                    $textReplacementCount = $textReplacements.Count 
-                    foreach ($kv in $PipeScriptOutput.GetEnumerator()) {
-                        if ($kv.Key -is [Management.Automation.Language.Ast]) {
-                            $astReplacements[$kv.Key] = $kv.Value
-                        } elseif ($kv.Key -match '^\d,\d$') {
-                            $textReplacements["$($kv.Key)"] = $[kv.Value
-                        }
-                    }
-                    if ($astReplacementCount -eq $astReplacements.Count -and 
-                        $textReplacementCount -eq $textReplacements.Count) {
-                        $PipeScriptOutput
-                    }
-                } else {
-                    $PipeScriptOutput
-                }
-            }
-
-            end {
-                if ($OriginalInputObject -is [scriptblock] -and $astReplacements.Count -or $textReplacements.Count) {
-                    Update-PipeScript -ScriptBlock $OriginalInputObject -AstReplacement $astReplacements -TextReplacement $textReplacements
-                } elseif ($OriginalInputObject -is [string] -and $textReplacements.Count) {
-                    Update-PipeScript -Text $OriginalInputObject -TextReplacement $textReplacements
-                }
-            }
-        }
-        
+                
         function TypeConstraintToArguments (
             [Parameter(ValueFromPipeline)]
             $TypeName
@@ -242,9 +199,9 @@
             if ($Command.Source -notmatch $IsSourceGenerator ) {
                 # invoke it normally.
                 if ($InputObject) {
-                    $InputObject | & $Command @Parameter @ArgumentList | TranspileOutput -OriginalInputObject $InputObject
+                    $InputObject | & $Command @Parameter @ArgumentList
                 } else {
-                    & $Command @Parameter @ArgumentList | TranspileOutput -OriginalInputObject $InputObject
+                    & $Command @Parameter @ArgumentList
                 }
             }
 
@@ -466,8 +423,7 @@
                 $ArgumentList += $stringArguments
                 if ($InputObject) {
                     $inputObject |
-                        & $foundTranspiler @ArgumentList @Parameter |
-                        TranspileOutput -OriginalInputObject $InputObject
+                        & $foundTranspiler @ArgumentList @Parameter
                 } else {
                     & $foundTranspiler @ArgumentList @Parameter
                 }
@@ -485,8 +441,7 @@
                     }
                     if ($canPipe) {
                         $inputObject |
-                            & $realCommandExists @Parameter @ArgumentList |
-                            TranspileOutput -OriginalInputObject $InputObject
+                            & $realCommandExists @Parameter @ArgumentList
                     } else {
                         & $realCommandExists @Parameter @ArgumentList
                     }
@@ -559,9 +514,9 @@
 
             if ($foundTranspiler) {
                 if ($InputObject) {
-                    $inputObject | & $foundTranspiler @ArgumentList @Parameter | TranspileOutput -OriginalInputObject $InputObject
+                    $inputObject | & $foundTranspiler @ArgumentList @Parameter
                 } else {
-                    & $foundTranspiler @ArgumentList @Parameter | TranspileOutput -OriginalInputObject $InputObject
+                    & $foundTranspiler @ArgumentList @Parameter
                 }
             } else {
                 Write-Error "Could not find Transpiler '$TranspilerStepName'"
