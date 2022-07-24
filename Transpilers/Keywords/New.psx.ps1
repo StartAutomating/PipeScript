@@ -20,6 +20,8 @@
 .EXAMPLE
     .> { new int[] 5 }
 .EXAMPLE
+    .> { new Timespan }
+.EXAMPLE
     .> { new datetime 12/31/1999 }
 .EXAMPLE
     .> { new @{RandomNumber = Get-Random; A ='b'}}
@@ -97,7 +99,13 @@ process {
                 $constructorArguments[0] -is [string]) {
                 "[$newTypeName]::parse(" + ($constructorArguments -join ',') + ")"
             } elseif ($realNewType::new) {
-                "[$newTypeName]::new(" + ($constructorArguments -join ',') + ")"
+                if ($constructorArguments) {
+                    "[$newTypeName]::new(" + ($constructorArguments -join ',') + ")"
+                } elseif ($realNewType::new.overloadDefinitions -notmatch '\(\)$') {
+                    "[$newTypeName]::new(`$null)"
+                } else {
+                    "[$newTypeName]::new()"
+                }
             } elseif ($realNewType.IsPrimitive) {
                 if ($constructorArguments) {
                     if ($constructorArguments.Length -eq 1) {

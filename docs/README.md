@@ -4,11 +4,16 @@
 
 # What Is PipeScript?
 
-> PipeScript is a transpiled scripting language built atop of PowerShell.
+PipeScript is a scripting language built atop PowerShell.
 
-> PipeScript can be run interactively
 
-> PipeScript can embedded within many languages to dynamically generate source code
+PipeScript is transpiled into PowerShell.
+
+
+PipeScript can be run interactively, or used to build more PowerShell with less code.
+
+
+PipeScript can also be embedded in many other languages to dynamically generate source code.
 
 ## What's a Transpiler?
 

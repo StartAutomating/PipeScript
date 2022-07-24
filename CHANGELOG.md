@@ -1,3 +1,12 @@
+## 0.0.12:
+* Adding assert keyword (#143)
+* Fixing new keyword for blank constructors (#142 )
+* Rest Transpiler:
+  * Handling multiple QueryString values (#139)
+  * Only passing ContentType to invoker if invoker supports it (#141)
+  * Defaulting to JSON body when ContentType is unspecified (#140)
+---
+
 ## 0.0.11:
 * Source Generators Now Support Parameters / Arguments (#75)
 * Invoke-PipeScript Terminating Build Errors (#135)
