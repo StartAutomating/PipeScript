@@ -97,7 +97,13 @@ process {
                 $constructorArguments[0] -is [string]) {
                 "[$newTypeName]::parse(" + ($constructorArguments -join ',') + ")"
             } elseif ($realNewType::new) {
-                "[$newTypeName]::new(" + ($constructorArguments -join ',') + ")"
+                if ($constructorArguments) {
+                    "[$newTypeName]::new(" + ($constructorArguments -join ',') + ")"
+                } elseif ($realNewType::new.overloadDefinitions -notmatch '\(\)$') {
+                    "[$newTypeName]::new(`$null)"
+                } else {
+                    "[$newTypeName]::new()"
+                }
             } elseif ($realNewType.IsPrimitive) {
                 if ($constructorArguments) {
                     if ($constructorArguments.Length -eq 1) {
