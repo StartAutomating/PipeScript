@@ -210,6 +210,17 @@ If a parameter is a [switch], it will be turned into a [bool].
 |----------------|--------|-------|-------------|
 |```[PSObject]```|false   |named  |false        |
 ---
+#### **JoinQueryValue**
+
+If provided, will join multiple values of a query by this string.
+If the string is '&', each value will be provided as a key-value pair.
+
+
+
+|Type          |Requried|Postion|PipelineInput|
+|--------------|--------|-------|-------------|
+|```[String]```|false   |named  |false        |
+---
 #### **ForEachOutput**
 
 A script block to be run on each output.
@@ -222,7 +233,7 @@ A script block to be run on each output.
 ---
 ### Syntax
 ```PowerShell
-Rest [-ScriptBlock <ScriptBlock>] [-RESTEndpoint] <String[]> [-ContentType <String>] [-Method <String>] [-InvokeCommand <String>] [-InvokeParameterVariable <String>] [-UriParameterHelp <IDictionary>] [-UriParameterType <IDictionary>] [-BodyParameter <PSObject>] [-QueryParameter <PSObject>] [-ForEachOutput <ScriptBlock>] [<CommonParameters>]
+Rest [-ScriptBlock <ScriptBlock>] [-RESTEndpoint] <String[]> [-ContentType <String>] [-Method <String>] [-InvokeCommand <String>] [-InvokeParameterVariable <String>] [-UriParameterHelp <IDictionary>] [-UriParameterType <IDictionary>] [-BodyParameter <PSObject>] [-QueryParameter <PSObject>] [-JoinQueryValue <String>] [-ForEachOutput <ScriptBlock>] [<CommonParameters>]
 ```
 ---
 
