@@ -430,7 +430,7 @@ process {
     if ($method) {
         $invokeSplat.Method = $method
     }
-    if ($ContentType) {
+    if ($ContentType -and $invokerCommandInfo.Parameters.ContentType) {        
         $invokeSplat.ContentType = $ContentType
     }
 }
@@ -520,7 +520,7 @@ process {
             @(foreach ($bodyPart in $completeBody.GetEnumerator()) {
                 "$($bodyPart.Key.ToString().ToLower())=$([Web.HttpUtility]::UrlEncode($bodyPart.Value))"
             }) -join '&'
-        } elseif ($ContentType -match 'json') {
+        } elseif ($ContentType -match 'json' -or -not $ContentType) {
             ConvertTo-Json $completeBody
         }
 
