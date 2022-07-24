@@ -38,15 +38,20 @@ If 'new'
 
 #### EXAMPLE 4
 ```PowerShell
-{ new datetime 12/31/1999 }
+{ new Timespan }
 ```
 
 #### EXAMPLE 5
 ```PowerShell
-{ new @{RandomNumber = Get-Random; A ='b'}}
+{ new datetime 12/31/1999 }
 ```
 
 #### EXAMPLE 6
+```PowerShell
+{ new @{RandomNumber = Get-Random; A ='b'}}
+```
+
+#### EXAMPLE 7
 ```PowerShell
 { new Diagnostics.ProcessStartInfo @{FileName='f'} }
 ```
