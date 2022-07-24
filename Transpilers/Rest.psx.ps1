@@ -137,6 +137,11 @@ If a parameter is a [switch], it will be turned into a [bool].
 [PSObject]
 $QueryParameter,
 
+# If provided, will join multiple values of a query by this string.
+# If the string is '&', each value will be provided as a key-value pair.
+[string]
+$JoinQueryValue,
+
 # A script block to be run on each output.
 [ScriptBlock]
 $ForEachOutput
@@ -274,7 +279,7 @@ process {
     begin {
         $myCmd = $MyInvocation.MyCommand
         function ConvertRestInput {
-            param([Collections.IDictionary]$RestInput = @{})
+            param([Collections.IDictionary]$RestInput = @{}, [switch]$ToQueryString)
             foreach ($ri in @($RestInput.GetEnumerator())) {
                 $RestParameterAttributes = @($myCmd.Parameters[$ri.Key].Attributes)
                 $restParameterName  = $ri.Key
@@ -297,7 +302,14 @@ process {
                         $restParameterValue -as [bool]
                     }
                     else {
-                        $restParameterValue
+                        if ($ToQueryString -and 
+                            $restParameterValue -is [Array] -and 
+                            $JoinQueryValue) {
+                            $restParameterValue -join $JoinQueryValue
+                        } else {
+                            $restParameterValue
+                        }
+                        
                     }
                 
                 if ($restParameterValue -is [Collections.IDictionary]) {
@@ -320,7 +332,7 @@ process {
 {
     begin {
         function ConvertRestInput {
-            param([Collections.IDictionary]$RestInput = @{})
+            param([Collections.IDictionary]$RestInput = @{}, [switch]$ToQueryString)
             foreach ($ri in @($RestInput.GetEnumerator())) {
                 
                 $restParameterValue = $ri.Value
@@ -332,7 +344,13 @@ process {
                         $restParameterValue -as [bool]
                     }
                     else {
-                        $restParameterValue
+                        if ($ToQueryString -and 
+                            $restParameterValue -is [Array] -and 
+                            $JoinQueryValue) {
+                            $restParameterValue -join $JoinQueryValue
+                        } else {
+                            $restParameterValue
+                        }
                     }
                     
                 $RestInput[$ri.Key] = $restParameterValue
@@ -373,6 +391,7 @@ process {
     `$contentType         = '$contentType'
     `$bodyParameterNames  = @('$($bodyParameterNames -join "','")')
     `$queryParameterNames = @('$($queryParameterNames -join "','")')
+    `$joinQueryValue      = '$joinQueryValue'
     `$uriParameterNames   = @('$($uriParameterNames -join "','")')
     `$endpoints           = @("$($endpoint -join "','")")
     `$ForEachOutput = {
@@ -472,7 +491,7 @@ process {
 }    
 {
 process {
-    $queryParams = ConvertRestInput $queryParams
+    $queryParams = ConvertRestInput $queryParams -ToQueryString
 
     if ($invokerCommandinfo.Parameters['QueryParameter'] -and 
         $invokerCommandinfo.Parameters['QueryParameter'].ParameterType -eq [Collections.IDictionary]) {
@@ -480,7 +499,14 @@ process {
     } else {
         $queryParamStr = 
             @(foreach ($qp in $QueryParams.GetEnumerator()) {
-                "$($qp.Key)=$([Web.HttpUtility]::UrlEncode($qpValue).Replace('+', '%20'))"
+                $qpValue = $qp.value                
+                if ($JoinQueryValue -eq '&') {
+                    foreach ($qVal in $qpValue -split '&') {
+                        "$($qp.Key)=$([Web.HttpUtility]::UrlEncode($qValue).Replace('+', '%20'))"    
+                    }
+                } else {
+                    "$($qp.Key)=$([Web.HttpUtility]::UrlEncode($qpValue).Replace('+', '%20'))"
+                }
             }) -join '&'
         if ($invokeSplat.Uri.Contains('?')) {
             $invokeSplat.Uri = "$($invokeSplat.Uri)" + '&' + $queryParamStr
