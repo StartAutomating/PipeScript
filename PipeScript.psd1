@@ -1,22 +1,33 @@
 @{
-    ModuleVersion     = '0.0.11'
+    ModuleVersion     = '0.0.12'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
     AliasesToExport   = '*'
     FormatsToProcess  = 'PipeScript.format.ps1xml'
     TypesToProcess    = 'PipeScript.types.ps1xml'
-    Guid = 'fc054786-b1ce-4ed8-a90f-7cc9c27edb06'
-    CompanyName='Start-Automating'
-    Copyright='2022 Start-Automating'
-    Author='James Brundage'
+    Guid              = 'fc054786-b1ce-4ed8-a90f-7cc9c27edb06'
+    CompanyName       = 'Start-Automating'
+    Copyright         = '2022 Start-Automating'
+    Author            = 'James Brundage'
     PrivateData = @{
         PSData = @{
             ProjectURI = 'https://github.com/StartAutomating/PipeScript'
             LicenseURI = 'https://github.com/StartAutomating/PipeScript/blob/main/LICENSE'
-
-            Tags = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
+            RecommendModule = @('PSMinifier')
+            RelatedModule   = @()
+            BuildModule     = @('EZOut','Piecemeal','PipeScript','HelpOut', 'PSDevOps')
+            Tags            = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
+## 0.0.12:
+* Adding assert keyword (#143)
+* Fixing new keyword for blank constructors (#142 )
+* Rest Transpiler:
+  * Handling multiple QueryString values (#139)
+  * Only passing ContentType to invoker if invoker supports it (#141)
+  * Defaulting to JSON body when ContentType is unspecified (#140)
+---
+
 ## 0.0.11:
 * Source Generators Now Support Parameters / Arguments (#75)
 * Invoke-PipeScript Terminating Build Errors (#135)
