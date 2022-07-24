@@ -20,6 +20,8 @@
 .EXAMPLE
     .> { new int[] 5 }
 .EXAMPLE
+    .> { new Timespan }
+.EXAMPLE
     .> { new datetime 12/31/1999 }
 .EXAMPLE
     .> { new @{RandomNumber = Get-Random; A ='b'}}
