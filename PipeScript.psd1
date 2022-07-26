@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.0.12'
+    ModuleVersion     = '0.0.13'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -19,6 +19,19 @@
             BuildModule     = @('EZOut','Piecemeal','PipeScript','HelpOut', 'PSDevOps')
             Tags            = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
+## 0.0.13:
+* New / Improved Keywords 
+  * assert keyword (Support for pipelines) (#143)
+  * new keyword (Support for ::Create method) (#148)
+  * until keyword (#146) 
+* Syntax Improvements
+  * Support for === (#123) (thanks @dfinke)
+* New Inline PipeScript support:
+  * Now Supporting Inline PipeScript in YAML (#147)
+* General Improvements:
+  * Extending AST Types (#145)
+---
+
 ## 0.0.12:
 * Adding assert keyword (#143)
 * Fixing new keyword for blank constructors (#142 )
