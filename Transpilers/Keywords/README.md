@@ -7,6 +7,7 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 |------------------------|--------------------------------|
 |[Assert](Assert.psx.ps1)|[Assert keyword](Assert.psx.ps1)|
 |[New](New.psx.ps1)      |['new' keyword](New.psx.ps1)    |
+|[Until](Until.psx.ps1)  |[until keyword](Until.psx.ps1)  |
 
 
 
@@ -112,5 +113,43 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 
 ~~~PowerShell
     .> { (new PowerShell).AddScript("Get-Command").Invoke() }
+~~~
+
+## Until Example 1
+
+
+~~~PowerShell
+    {
+        $x = 0
+        until ($x == 10) {
+            $x            
+            $x++
+        }        
+    } |.>PipeScript
+~~~
+
+## Until Example 2
+
+
+~~~PowerShell
+    {
+        until "00:00:05" {
+            [DateTime]::Now
+            Start-Sleep -Milliseconds 500
+        } 
+    } | .>PipeScript
+~~~
+
+## Until Example 3
+
+
+~~~PowerShell
+    Invoke-PipeScript {
+        $tries = 3
+        until (-not $tries) {
+            "$tries tries left"
+            $tries--            
+        }
+    }
 ~~~
 
