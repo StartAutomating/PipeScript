@@ -16,7 +16,7 @@ describe "'until' keyword" {
                 break thisUntil
             }
             $x
-        } | Should -Be 10
+        } | Should -Be 1
     }
 }
 
