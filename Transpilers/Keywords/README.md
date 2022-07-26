@@ -17,7 +17,7 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 ~~~PowerShell
     # With no second argument, assert will throw an error with the condition of the assertion.
     Invoke-PipeScript {
-        assert (1 -eq 1)
+        assert (1 -ne 1)
     } -Debug
 ~~~
 
@@ -27,7 +27,7 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 ~~~PowerShell
     # With a second argument of a string, assert will throw an error
     Invoke-PipeScript {
-        assert ($true) "It's true"
+        assert ($false) "It's not true!"
     } -Debug
 ~~~
 
@@ -37,7 +37,7 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 ~~~PowerShell
     # Conditions can also be written as a ScriptBlock
     Invoke-PipeScript {
-        assert {$true} "Process id '$pid' Asserted"
+        assert {$false} "Process id '$pid' Asserted"
     } -Verbose
 ~~~
 
@@ -47,7 +47,7 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 ~~~PowerShell
     # If the assertion action was a ScriptBlock, no exception is automatically thrown
     Invoke-PipeScript {
-        assert ($true) { Write-Information "Assertion was true"}
+        assert ($false) { Write-Information "I Assert There Is a Problem"}
     } -Verbose
 ~~~
 
@@ -98,5 +98,19 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 
 ~~~PowerShell
     .> { new Diagnostics.ProcessStartInfo @{FileName='f'} }
+~~~
+
+## New Example 8
+
+
+~~~PowerShell
+    .> { new ScriptBlock 'Get-Command'}
+~~~
+
+## New Example 9
+
+
+~~~PowerShell
+    .> { (new PowerShell).AddScript("Get-Command").Invoke() }
 ~~~
 
