@@ -11,7 +11,9 @@ Assert is a common keyword in many programming languages.
 
 In PipeScript, Asset will take a condition and an optional action.
 
-The condtion may be contained in either parenthesis or a [ScriptBlock].
+If the condition returns null, false, or empty, the assertion will be thrown.
+
+The condition may be contained in either parenthesis or a [ScriptBlock].
 
 If there is no action, the assertion will throw an exception containing the condition.
 
@@ -29,7 +31,7 @@ Additionally, while running, Assertions will be ignored if -Verbose or -Debug ha
 ```PowerShell
 # With no second argument, assert will throw an error with the condition of the assertion.
 Invoke-PipeScript {
-    assert (1 -eq 1)
+    assert (1 -ne 1)
 } -Debug
 ```
 
@@ -37,7 +39,7 @@ Invoke-PipeScript {
 ```PowerShell
 # With a second argument of a string, assert will throw an error
 Invoke-PipeScript {
-    assert ($true) "It's true"
+    assert ($false) "It's not true!"
 } -Debug
 ```
 
@@ -45,7 +47,7 @@ Invoke-PipeScript {
 ```PowerShell
 # Conditions can also be written as a ScriptBlock
 Invoke-PipeScript {
-    assert {$true} "Process id '$pid' Asserted"
+    assert {$false} "Process id '$pid' Asserted"
 } -Verbose
 ```
 
@@ -53,7 +55,7 @@ Invoke-PipeScript {
 ```PowerShell
 # If the assertion action was a ScriptBlock, no exception is automatically thrown
 Invoke-PipeScript {
-    assert ($true) { Write-Information "Assertion was true"}
+    assert ($false) { Write-Information "I Assert There Is a Problem"}
 } -Verbose
 ```
 
