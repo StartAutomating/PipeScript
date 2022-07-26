@@ -10,16 +10,13 @@
 
     If a Regular Expression can match each section, then the content in each section can be replaced.
 #>
-[CmdletBinding(DefaultParameterSetName='SourceStartAndEnd')]
 param(
 
 # A string containing the text contents of the file
-[Parameter(Mandatory,ParameterSetName='SourceTextReplace')]
-[Parameter(Mandatory,ParameterSetName='SourceStartAndEnd')]
+[Parameter(Mandatory)]
 [string]
 $SourceText,
 
-[Parameter(Mandatory,ParameterSetName='SourceTextReplace')]
 [Alias('Replace')]
 [ValidateScript({    
     if ($_.GetGroupNames() -notcontains 'PS' -and 
@@ -35,14 +32,12 @@ $ReplacePattern,
 # The Start Pattern.
 # This indicates the beginning of what should be considered PipeScript.
 # An expression will match everything until -EndPattern
-[Parameter(Mandatory,ParameterSetName='SourceStartAndEnd')]
 [Alias('StartRegex')]
 [Regex]
 $StartPattern,
 
 # The End Pattern
 # This indicates the end of what should be considered PipeScript.
-[Parameter(Mandatory,ParameterSetName='SourceStartAndEnd')]
 [Alias('EndRegex')]
 [Regex]
 $EndPattern,
@@ -114,8 +109,8 @@ begin {
 }
 
 process {
-    $psParameterSet = $psCmdlet.ParameterSetName
-    if ($psParameterSet -eq 'SourceStartAndEnd') {
+    
+    if ($StartPattern -and $EndPattern) {
         # If the Source Start and End were provided,
         # create a replacepattern that matches all content until the end pattern.
         $ReplacePattern = [Regex]::New("
@@ -141,7 +136,7 @@ process {
     $FileModuleContext = New-Module @newModuleSplat
 
     # If the parameter set was SourceTextReplace
-    if ($psParameterSet -eq 'SourceTextReplace') {
+    if ($ReplacePattern) {
         $fileText      = $SourceText
         # See if we have a replacement evaluator.
         if (-not $PSBoundParameters["ReplacementEvaluator"]) {
@@ -190,7 +185,7 @@ process {
                 ) 
 
                 $codeToRun = [ScriptBlock]::Create($statements -join [Environment]::Newline)
-
+                . $FileModuleContext { $match = $($args)} $match
                 "$(. $FileModuleContext $codeToRun)"
             }
         }

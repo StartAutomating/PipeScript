@@ -7,6 +7,7 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 |------------------------|--------------------------------|
 |[Assert](Assert.psx.ps1)|[Assert keyword](Assert.psx.ps1)|
 |[New](New.psx.ps1)      |['new' keyword](New.psx.ps1)    |
+|[Until](Until.psx.ps1)  |[until keyword](Until.psx.ps1)  |
 
 
 
@@ -17,7 +18,7 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 ~~~PowerShell
     # With no second argument, assert will throw an error with the condition of the assertion.
     Invoke-PipeScript {
-        assert (1 -eq 1)
+        assert (1 -ne 1)
     } -Debug
 ~~~
 
@@ -27,7 +28,7 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 ~~~PowerShell
     # With a second argument of a string, assert will throw an error
     Invoke-PipeScript {
-        assert ($true) "It's true"
+        assert ($false) "It's not true!"
     } -Debug
 ~~~
 
@@ -37,7 +38,7 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 ~~~PowerShell
     # Conditions can also be written as a ScriptBlock
     Invoke-PipeScript {
-        assert {$true} "Process id '$pid' Asserted"
+        assert {$false} "Process id '$pid' Asserted"
     } -Verbose
 ~~~
 
@@ -47,8 +48,28 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 ~~~PowerShell
     # If the assertion action was a ScriptBlock, no exception is automatically thrown
     Invoke-PipeScript {
-        assert ($true) { Write-Information "Assertion was true"}
+        assert ($false) { Write-Information "I Assert There Is a Problem"}
     } -Verbose
+~~~
+
+## Assert Example 5
+
+
+~~~PowerShell
+    # assert can be used with the object pipeline.  $_ will be the current object.
+    Invoke-PipeScript {
+        1..4 | assert {$_ % 2} "$_ is not odd!"
+    } -Debug
+~~~
+
+## Assert Example 6
+
+
+~~~PowerShell
+    # You can provide a ```[ScriptBlock]``` as the second argument to see each failure
+    Invoke-PipeScript {
+        1..4 | assert {$_ % 2} { Write-Error "$_ is not odd!" }
+    } -Debug
 ~~~
 
 ## New Example 1
@@ -98,5 +119,57 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 
 ~~~PowerShell
     .> { new Diagnostics.ProcessStartInfo @{FileName='f'} }
+~~~
+
+## New Example 8
+
+
+~~~PowerShell
+    .> { new ScriptBlock 'Get-Command'}
+~~~
+
+## New Example 9
+
+
+~~~PowerShell
+    .> { (new PowerShell).AddScript("Get-Command").Invoke() }
+~~~
+
+## Until Example 1
+
+
+~~~PowerShell
+    {
+        $x = 0
+        until ($x == 10) {
+            $x            
+            $x++
+        }        
+    } |.>PipeScript
+~~~
+
+## Until Example 2
+
+
+~~~PowerShell
+    {
+        until "00:00:05" {
+            [DateTime]::Now
+            Start-Sleep -Milliseconds 500
+        } 
+    } | .>PipeScript
+~~~
+
+## Until Example 3
+
+
+~~~PowerShell
+    Invoke-PipeScript {
+        $tries = 3
+        until (-not $tries) {
+            "$tries tries left"
+            $tries--            
+        }
+    }
 ~~~
 

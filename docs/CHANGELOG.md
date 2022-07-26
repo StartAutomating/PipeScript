@@ -1,3 +1,18 @@
+## 0.0.13:
+* New / Improved Keywords 
+  * assert keyword (Support for pipelines) (#143)
+  * new keyword (Support for ::Create method) (#148)
+  * until keyword (#146) 
+* Syntax Improvements
+  * Support for === (#123) (thanks @dfinke)
+* New Inline PipeScript support:
+  * Now Supporting Inline PipeScript in YAML (#147)
+* General Improvements:
+  * Extending AST Types (#145)
+  * Adding tests for keywords
+---
+
+
 ## 0.0.12:
 * Adding assert keyword (#143)
 * Fixing new keyword for blank constructors (#142 )

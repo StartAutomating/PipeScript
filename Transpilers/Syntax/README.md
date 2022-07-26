@@ -1,12 +1,13 @@
 This directory and it's subdirectories contain syntax changes that enable common programming scenarios in PowerShell and PipeScript.
 
 
-|DisplayName                                     |Synopsis                                                 |
-|------------------------------------------------|---------------------------------------------------------|
-|[Dot](Dot.psx.ps1)                              |[Dot Notation](Dot.psx.ps1)                              |
-|[EqualityComparison](EqualityComparison.psx.ps1)|[Allows equality comparison.](EqualityComparison.psx.ps1)|
-|[PipedAssignment](PipedAssignment.psx.ps1)      |[Piped Assignment Transpiler](PipedAssignment.psx.ps1)   |
-|[RegexLiteral](RegexLiteral.psx.ps1)            |[Regex Literal Transpiler](RegexLiteral.psx.ps1)         |
+|DisplayName                                             |Synopsis                                                          |
+|--------------------------------------------------------|------------------------------------------------------------------|
+|[Dot](Dot.psx.ps1)                                      |[Dot Notation](Dot.psx.ps1)                                       |
+|[EqualityComparison](EqualityComparison.psx.ps1)        |[Allows equality comparison.](EqualityComparison.psx.ps1)         |
+|[EqualityTypeComparison](EqualityTypeComparison.psx.ps1)|[Allows equality type comparison.](EqualityTypeComparison.psx.ps1)|
+|[PipedAssignment](PipedAssignment.psx.ps1)              |[Piped Assignment Transpiler](PipedAssignment.psx.ps1)            |
+|[RegexLiteral](RegexLiteral.psx.ps1)                    |[Regex Literal Transpiler](RegexLiteral.psx.ps1)                  |
 
 
 
@@ -92,6 +93,68 @@ This directory and it's subdirectories contain syntax changes that enable common
 ~~~PowerShell
     {
         $a == "b"
+    } | .>PipeScript
+~~~
+
+## EqualityTypeComparison Example 1
+
+
+~~~PowerShell
+    Invoke-PipeScript -ScriptBlock {
+        $a = 1
+        $number = 1    
+        if ($a === $number ) {
+            "A is $a"
+        }
+    }
+~~~
+
+## EqualityTypeComparison Example 2
+
+
+~~~PowerShell
+    Invoke-PipeScript -ScriptBlock {
+        $One = 1
+        $OneIsNotANumber = "1"
+        if ($one == $OneIsNotANumber) {
+            'With ==, a number can be compared to a string, so $a == "1"'
+        }
+        if (-not ($One === $OneIsNotANumber)) {
+            "With ===, a number isn't the same type as a string, so this will be false."            
+        }
+    }
+~~~
+
+## EqualityTypeComparison Example 3
+
+
+~~~PowerShell
+    Invoke-PipeScript -ScriptBlock {
+        if ($null === $null) {
+            '$Null really is $null'
+        }
+    }
+~~~
+
+## EqualityTypeComparison Example 4
+
+
+~~~PowerShell
+    Invoke-PipeScript -ScriptBlock {
+        $zero = 0
+        if (-not ($zero === $null)) {
+            '$zero is not $null'
+        }
+    }
+~~~
+
+## EqualityTypeComparison Example 5
+
+
+~~~PowerShell
+    {
+        $a = "b"
+        $a === "b"
     } | .>PipeScript
 ~~~
 

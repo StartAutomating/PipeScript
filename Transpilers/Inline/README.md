@@ -1,6 +1,6 @@
 This directory contains Inline PipeScript transpilers for several languages.
 
-PipeScript can currently be embedded in 26 languages or file types.
+PipeScript can currently be embedded in 27 languages or file types.
 
 Transpilers in this directory should be named ```Inline.NameOfLanguage.psx.ps1```.
 Each file should handle one and only one language (better explicit than terse).
@@ -36,6 +36,7 @@ Transpilers should call ```.>PipeScript.Inline``` to simplify and standarize pro
 |[TOML](Inline.TOML.psx.ps1)            |[TOML Inline PipeScript Transpiler.](Inline.TOML.psx.ps1)            |
 |[TypeScript](Inline.TypeScript.psx.ps1)|[TypeScript Inline PipeScript Transpiler.](Inline.TypeScript.psx.ps1)|
 |[XML](Inline.XML.psx.ps1)              |[XML Inline PipeScript Transpiler.](Inline.XML.psx.ps1)              |
+|[YAML](Inline.YAML.psx.ps1)            |[Yaml File Transpiler.](Inline.YAML.psx.ps1)                         |
 
 
 

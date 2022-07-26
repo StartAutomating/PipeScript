@@ -1,0 +1,2 @@
+System.Management.Automation.Language.ScriptBlockExpressionAst
+System.Management.Automation.Language.ScriptBlockAst

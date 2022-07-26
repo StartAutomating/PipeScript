@@ -56,6 +56,16 @@ If 'new'
 { new Diagnostics.ProcessStartInfo @{FileName='f'} }
 ```
 
+#### EXAMPLE 8
+```PowerShell
+{ new ScriptBlock 'Get-Command'}
+```
+
+#### EXAMPLE 9
+```PowerShell
+{ (new PowerShell).AddScript("Get-Command").Invoke() }
+```
+
 ---
 ### Parameters
 #### **CommandAst**

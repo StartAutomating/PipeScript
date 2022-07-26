@@ -6,7 +6,9 @@
     
     In PipeScript, Asset will take a condition and an optional action.
 
-    The condtion may be contained in either parenthesis or a [ScriptBlock].
+    If the condition returns null, false, or empty, the assertion will be thrown.
+
+    The condition may be contained in either parenthesis or a [ScriptBlock].
 
     If there is no action, the assertion will throw an exception containing the condition.
 
@@ -20,23 +22,33 @@
 .EXAMPLE
     # With no second argument, assert will throw an error with the condition of the assertion.
     Invoke-PipeScript {
-        assert (1 -eq 1)
+        assert (1 -ne 1)
     } -Debug
 .EXAMPLE
     # With a second argument of a string, assert will throw an error
     Invoke-PipeScript {
-        assert ($true) "It's true"
+        assert ($false) "It's not true!"
     } -Debug
 .EXAMPLE
     # Conditions can also be written as a ScriptBlock
     Invoke-PipeScript {
-        assert {$true} "Process id '$pid' Asserted"
+        assert {$false} "Process id '$pid' Asserted"
     } -Verbose
 .EXAMPLE
     # If the assertion action was a ScriptBlock, no exception is automatically thrown
     Invoke-PipeScript {
-        assert ($true) { Write-Information "Assertion was true"}
-    } -Verbose  
+        assert ($false) { Write-Information "I Assert There Is a Problem"}
+    } -Verbose
+.EXAMPLE
+    # assert can be used with the object pipeline.  $_ will be the current object.
+    Invoke-PipeScript {
+        1..4 | assert {$_ % 2} "$_ is not odd!"
+    } -Debug
+.EXAMPLE
+    # You can provide a ```[ScriptBlock]``` as the second argument to see each failure
+    Invoke-PipeScript {
+        1..4 | assert {$_ % 2} { Write-Error "$_ is not odd!" }
+    } -Debug
 #>
 [ValidateScript({
     # This transpiler should run if the command is literally 'assert'
@@ -88,7 +100,7 @@ process {
     $checkDebugPreference = '($debugPreference,$verbosePreference -ne ''silentlyContinue'')'
 
     $condition =
-        [ScriptBlock]::Create("($checkDebugPreference -and $(
+        [ScriptBlock]::Create("($checkDebugPreference -and -not $(
             # If the condition is already in parenthesis,
             if ($firstArgTypeName -eq 'ParenExpressionAst') {                
                 "$FirstArg" # leave it alone.
@@ -97,7 +109,7 @@ process {
             elseif ($firstArgTypeName -eq 'ScriptBlockExpressionAst')
             {
                 # put it in parenthesis.
-                "($($FirstArg -replace '^\{' -replace '\}$'))"
+                "($($FirstArg.GetScriptBlock()))"
             }
             # Otherwise
             else
@@ -117,17 +129,32 @@ process {
             "if $condition { throw '{$($firstArg -replace "'", "''")}' } "
         } elseif ($secondArg.GetType().Name -eq 'ScriptBlockExpressionAst') {
             # If the second argument was a script, transpile and embed it.
-            "if $condition {$([ScriptBlock]::Create(
-                ($secondArg -replace '^\{' -replace '\}$')
-            ) | .>Pipescript)}"
+            "if $condition {$($secondArg.GetScriptBlock().Transpile())}"
         } else {
             # Otherwise, throw the second argument.
             "if $condition { throw $secondArg } "
         }
     
+    
+    $inPipeline = $false
+    if ($CommandAst.Parent -is [Management.Automation.Language.PipelineAst] -and 
+        $CommandAst.Parent.PipelineElements.Count -gt 1) {
+        $inPipeline = $true
+    }
+
     if ($DebugPreference, $VerbosePreference -ne 'silentlyContinue') {
-        [scriptblock]::Create($newScript)
-    } else {        
-        {}
+        if ($inPipeline) {
+            [scriptblock]::Create("& { process { $newScript } }")
+        } else {
+            [scriptblock]::Create($newScript)
+        }
+        
+    } else {
+        if ($inPipeline) {
+            {& { process { $_ }}}
+        } else {
+            {}
+        }
+        
     }
 }

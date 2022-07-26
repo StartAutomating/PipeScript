@@ -27,6 +27,10 @@
     .> { new @{RandomNumber = Get-Random; A ='b'}}
 .EXAMPLE
     .> { new Diagnostics.ProcessStartInfo @{FileName='f'} }
+.EXAMPLE
+    .> { new ScriptBlock 'Get-Command'}
+.EXAMPLE
+    .> { (new PowerShell).AddScript("Get-Command").Invoke() }
 #>
 [ValidateScript({
     $CommandAst = $_
@@ -101,12 +105,24 @@ process {
             } elseif ($realNewType::new) {
                 if ($constructorArguments) {
                     "[$newTypeName]::new(" + ($constructorArguments -join ',') + ")"
-                } elseif ($realNewType::new.overloadDefinitions -notmatch '\(\)$') {
+                } elseif (-not ($realNewType::new.overloadDefinitions -match '\(\)$')) {
                     "[$newTypeName]::new(`$null)"
                 } else {
                     "[$newTypeName]::new()"
                 }
-            } elseif ($realNewType.IsPrimitive) {
+            } 
+            elseif ($realNewType::create) {
+                if ($constructorArguments) {
+                    "[$newTypeName]::create(" + ($constructorArguments -join ',') + ")"
+                }
+                elseif (-not ($realNewType::create.overloadDefinitions -match '\(\)$')) {
+                    "[$newTypeName]::create(`$null)"
+                }
+                else {
+                    "[$newTypeName]::create()"
+                }
+            }            
+            elseif ($realNewType.IsPrimitive) {
                 if ($constructorArguments) {
                     if ($constructorArguments.Length -eq 1) {
                         "[$newTypeName]$constructorArguments"    
@@ -137,5 +153,8 @@ process {
 
     if ($newNew) {
         [scriptblock]::Create($newNew)
+    } else {
+        Write-Error "Unable to create '$newTypeName'"
+        return
     }
 }
