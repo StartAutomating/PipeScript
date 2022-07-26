@@ -61,11 +61,11 @@ process {
     if (-not $firstArg -or $firstArg.GetType().Name -notin 
         'ParenExpressionAst', 'ScriptBlockExpressionAst',
         'VariableExpressionAst','MemberExpressionAst','ExpandableStringExpressionAst') {
-        Write-Error "Until must be followed by a Variable, Member, String, or Parenthesis Expression"
+        Write-Error "Until must be followed by a Variable, Member, ExpandableString, or Parenthesis Expression"
         return
     }
 
-    if ($secondArg -isnot [Management.Automation.Language.ScriptBlockExpressionAst]) {
+    if ($secondArg -isnot [Scriptblock]) {
         Write-Error "Until must be followed by a condition and a ScriptBlock"
         return
     }
@@ -83,7 +83,7 @@ process {
     }
 
     $conditionScript = [ScriptBlock]::Create($condition)
-    $LoopScript = $secondArg.Extent.ToString() -replace '^\{' -replace '\}$'    
+    $LoopScript = $secondArg
 
     $secondArgScriptBlock = [ScriptBlock]::Create($LoopScript)
     
