@@ -8,7 +8,8 @@ describe "'new' keyword" {
     it "Can also ::Parse a type if it cannot be constructed" {
         Invoke-PipeScript {
             $byte = new byte 254
-        }
+            $byte.GetType()
+        } | Should -be ([byte])
     }
     it "Can can also ::Create an object" {
         Invoke-PipeScript {
