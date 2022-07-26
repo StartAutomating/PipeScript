@@ -38,7 +38,17 @@
     # If the assertion action was a ScriptBlock, no exception is automatically thrown
     Invoke-PipeScript {
         assert ($false) { Write-Information "I Assert There Is a Problem"}
-    } -Verbose  
+    } -Verbose
+.EXAMPLE
+    # assert can be used with the object pipeline.  $_ will be the current object.
+    Invoke-PipeScript {
+        1..4 | assert {$_ % 2} "$_ is not odd!"
+    } -Debug
+.EXAMPLE
+    # You can provide a ```[ScriptBlock]``` as the second argument to see each failure
+    Invoke-PipeScript {
+        1..4 | assert {$_ % 2} { Write-Error "$_ is not odd!" }
+    } -Debug
 #>
 [ValidateScript({
     # This transpiler should run if the command is literally 'assert'
@@ -99,7 +109,7 @@ process {
             elseif ($firstArgTypeName -eq 'ScriptBlockExpressionAst')
             {
                 # put it in parenthesis.
-                "($($FirstArg -replace '^\{' -replace '\}$'))"
+                "($($FirstArg.GetScriptBlock()))"
             }
             # Otherwise
             else
@@ -119,22 +129,32 @@ process {
             "if $condition { throw '{$($firstArg -replace "'", "''")}' } "
         } elseif ($secondArg.GetType().Name -eq 'ScriptBlockExpressionAst') {
             # If the second argument was a script, transpile and embed it.
-            "if $condition {$([ScriptBlock]::Create(
-                ($secondArg -replace '^\{' -replace '\}$')
-            ) | .>Pipescript)}"
+            "if $condition {$($secondArg.GetScriptBlock().Transpile())}"
         } else {
             # Otherwise, throw the second argument.
             "if $condition { throw $secondArg } "
         }
+    
     
     $inPipeline = $false
     if ($CommandAst.Parent -is [Management.Automation.Language.PipelineAst] -and 
         $CommandAst.Parent.PipelineElements.Count -gt 1) {
         $inPipeline = $true
     }
-    if ($DebugPreference, $VerbosePreference -ne 'silentlyContinue') {        
-        [scriptblock]::Create($newScript)
-    } else {        
-        {}
+
+    if ($DebugPreference, $VerbosePreference -ne 'silentlyContinue') {
+        if ($inPipeline) {
+            [scriptblock]::Create("& { process { $newScript } }")
+        } else {
+            [scriptblock]::Create($newScript)
+        }
+        
+    } else {
+        if ($inPipeline) {
+            {& { process { $_ }}}
+        } else {
+            {}
+        }
+        
     }
 }
