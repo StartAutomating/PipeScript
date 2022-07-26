@@ -25,13 +25,13 @@ A string containing the text contents of the file
 
 |Type          |Requried|Postion|PipelineInput|
 |--------------|--------|-------|-------------|
-|```[String]```|true    |named  |false        |
+|```[String]```|true    |1      |false        |
 ---
 #### **ReplacePattern**
 
 |Type         |Requried|Postion|PipelineInput|
 |-------------|--------|-------|-------------|
-|```[Regex]```|true    |named  |false        |
+|```[Regex]```|false   |2      |false        |
 ---
 #### **StartPattern**
 
@@ -43,7 +43,7 @@ An expression will match everything until -EndPattern
 
 |Type         |Requried|Postion|PipelineInput|
 |-------------|--------|-------|-------------|
-|```[Regex]```|true    |named  |false        |
+|```[Regex]```|false   |3      |false        |
 ---
 #### **EndPattern**
 
@@ -54,7 +54,7 @@ This indicates the end of what should be considered PipeScript.
 
 |Type         |Requried|Postion|PipelineInput|
 |-------------|--------|-------|-------------|
-|```[Regex]```|true    |named  |false        |
+|```[Regex]```|false   |4      |false        |
 ---
 #### **ReplacementEvaluator**
 
@@ -66,7 +66,7 @@ The output of these scripts will be the replacement text.
 
 |Type               |Requried|Postion|PipelineInput|
 |-------------------|--------|-------|-------------|
-|```[ScriptBlock]```|false   |named  |false        |
+|```[ScriptBlock]```|false   |5      |false        |
 ---
 #### **NoTranspile**
 
@@ -86,7 +86,7 @@ The path to the source file.
 
 |Type          |Requried|Postion|PipelineInput|
 |--------------|--------|-------|-------------|
-|```[String]```|false   |named  |false        |
+|```[String]```|false   |6      |false        |
 ---
 #### **Begin**
 
@@ -96,7 +96,7 @@ A Script Block that will be injected before each inline is run.
 
 |Type               |Requried|Postion|PipelineInput|
 |-------------------|--------|-------|-------------|
-|```[ScriptBlock]```|false   |named  |false        |
+|```[ScriptBlock]```|false   |7      |false        |
 ---
 #### **ForeachObject**
 
@@ -106,7 +106,7 @@ A Script Block that will be piped to after each output.
 
 |Type               |Requried|Postion|PipelineInput|
 |-------------------|--------|-------|-------------|
-|```[ScriptBlock]```|false   |named  |false        |
+|```[ScriptBlock]```|false   |8      |false        |
 ---
 #### **End**
 
@@ -116,7 +116,7 @@ A Script Block that will be injected after each inline script is run.
 
 |Type               |Requried|Postion|PipelineInput|
 |-------------------|--------|-------|-------------|
-|```[ScriptBlock]```|false   |named  |false        |
+|```[ScriptBlock]```|false   |9      |false        |
 ---
 #### **Parameter**
 
@@ -126,7 +126,7 @@ A collection of parameters
 
 |Type               |Requried|Postion|PipelineInput|
 |-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |named  |false        |
+|```[IDictionary]```|false   |10     |false        |
 ---
 #### **ArgumentList**
 
@@ -136,14 +136,11 @@ An argument list.
 
 |Type              |Requried|Postion|PipelineInput|
 |------------------|--------|-------|-------------|
-|```[PSObject[]]```|false   |named  |false        |
+|```[PSObject[]]```|false   |11     |false        |
 ---
 ### Syntax
 ```PowerShell
-PipeScript.Inline -SourceText <String> -StartPattern <Regex> -EndPattern <Regex> [-ReplacementEvaluator <ScriptBlock>] [-NoTranspile] [-SourceFile <String>] [-Begin <ScriptBlock>] [-ForeachObject <ScriptBlock>] [-End <ScriptBlock>] [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
-```
-```PowerShell
-PipeScript.Inline -SourceText <String> -ReplacePattern <Regex> [-ReplacementEvaluator <ScriptBlock>] [-NoTranspile] [-SourceFile <String>] [-Begin <ScriptBlock>] [-ForeachObject <ScriptBlock>] [-End <ScriptBlock>] [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
+PipeScript.Inline [-SourceText] <String> [[-ReplacePattern] <Regex>] [[-StartPattern] <Regex>] [[-EndPattern] <Regex>] [[-ReplacementEvaluator] <ScriptBlock>] [-NoTranspile] [[-SourceFile] <String>] [[-Begin] <ScriptBlock>] [[-ForeachObject] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 
