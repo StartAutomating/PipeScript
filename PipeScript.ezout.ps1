@@ -19,6 +19,7 @@ $destinationRoot = $myRoot
 if ($formatting) {
     $myFormatFile = Join-Path $destinationRoot "$myModuleName.format.ps1xml"
     $formatting | Out-FormatData -Module $MyModuleName | Set-Content $myFormatFile -Encoding UTF8
+    Get-Item $myFormatFile
 }
 
 $types = @(
@@ -33,5 +34,6 @@ $types = @(
 if ($types) {
     $myTypesFile = Join-Path $destinationRoot "$myModuleName.types.ps1xml"
     $types | Out-TypeData | Set-Content $myTypesFile -Encoding UTF8
+    Get-Item $myTypesFile
 }
 Pop-Location
