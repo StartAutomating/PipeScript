@@ -52,6 +52,26 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
     } -Verbose
 ~~~
 
+## Assert Example 5
+
+
+~~~PowerShell
+    # assert can be used with the object pipeline.  $_ will be the current object.
+    Invoke-PipeScript {
+        1..4 | assert {$_ % 2} "$_ is not odd!"
+    } -Debug
+~~~
+
+## Assert Example 6
+
+
+~~~PowerShell
+    # You can provide a ```[ScriptBlock]``` as the second argument to see each failure
+    Invoke-PipeScript {
+        1..4 | assert {$_ % 2} { Write-Error "$_ is not odd!" }
+    } -Debug
+~~~
+
 ## New Example 1
 
 
