@@ -120,6 +120,12 @@ git config --global user.name  $UserName
 
 if (-not $env:GITHUB_WORKSPACE) { throw "No GitHub workspace" }
 
+$branchName = git rev-parse --abrev-ref HEAD
+if (-not $branchName) { 
+
+    return
+}
+
 git pull | Out-Host
 
 $PipeScriptStart = [DateTime]::Now
