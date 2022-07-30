@@ -100,7 +100,21 @@ $processScriptOutput = { process {
 
 
 if (-not $UserName) { $UserName = $env:GITHUB_ACTOR }
-if (-not $UserEmail) { $UserEmail = "$UserName@github.com" }
+if (-not $UserEmail) { 
+    $GitHubUserEmail = 
+        if ($env:GITHUB_TOKEN) {
+            Invoke-RestMethod -uri "https://api.github.com/user/emails" -Headers @{
+                Authorization = "token $env:GITHUB_TOKEN"
+            } |
+                Select-Object -First 1 -ExpandProperty email
+        } else {''}
+    $UserEmail = 
+    if ($GitHubUserEmail) {
+        $GitHubUserEmail
+    } else {
+        "$UserName@github.com"
+    }    
+}
 git config --global user.email $UserEmail
 git config --global user.name  $UserName
 
