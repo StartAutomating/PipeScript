@@ -87,7 +87,7 @@
                 if ($TypeName.IsGeneric) {
                     $TypeNameParams[$typeName.Name] = 
                         $typeName.GenericArguments |
-                            UnpackTypeConstraintArgs
+                            TypeConstraintToArguments
                 } elseif (-not $TypeName.IsArray) {
                     $TypeNameArgs += $TypeName.Name
                 }
