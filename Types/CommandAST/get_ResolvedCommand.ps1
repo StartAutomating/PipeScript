@@ -1,0 +1,1 @@
+$ExecutionContext.SessionState.InvokeCommand.GetCommand($this.CommandElements[0].ToString(), 'All')

@@ -100,13 +100,30 @@ $processScriptOutput = { process {
 
 
 if (-not $UserName) { $UserName = $env:GITHUB_ACTOR }
-if (-not $UserEmail) { $UserEmail = "$UserName@github.com" }
+if (-not $UserEmail) { 
+    $GitHubUserEmail = 
+        if ($env:GITHUB_TOKEN) {
+            Invoke-RestMethod -uri "https://api.github.com/user/emails" -Headers @{
+                Authorization = "token $env:GITHUB_TOKEN"
+            } |
+                Select-Object -First 1 -ExpandProperty email
+        } else {''}
+    $UserEmail = 
+    if ($GitHubUserEmail) {
+        $GitHubUserEmail
+    } else {
+        "$UserName@github.com"
+    }    
+}
 git config --global user.email $UserEmail
 git config --global user.name  $UserName
 
 if (-not $env:GITHUB_WORKSPACE) { throw "No GitHub workspace" }
 
-git pull | Out-Host
+$branchName = git rev-parse --abrev-ref HEAD
+if (-not $branchName) { 
+    return
+}
 
 $PipeScriptStart = [DateTime]::Now
 if ($PipeScript) {
@@ -143,11 +160,15 @@ if ($CommitMessage -or $anyFilesChanged) {
 
         git commit -m $ExecutionContext.SessionState.InvokeCommand.ExpandString($CommitMessage)
     }    
+    
+
 
     $checkDetached = git symbolic-ref -q HEAD
     if (-not $LASTEXITCODE) {
+        "::notice::Pulling Changes" | Out-Host
+        git pull | Out-Host
         "::notice::Pushing Changes" | Out-Host
-        git push        
+        git push | Out-Host
         "Git Push Output: $($gitPushed  | Out-String)"
     } else {
         "::notice::Not pushing changes (on detached head)" | Out-Host

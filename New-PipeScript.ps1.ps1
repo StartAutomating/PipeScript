@@ -51,7 +51,18 @@
     # The script header.
     [Parameter(ValueFromPipelineByPropertyName)]
     [string]
-    $Header
+    $Header,
+
+    # If provided, will automatically create parameters.
+    # Parameters will be automatically created for any unassigned variables.
+    [Alias('AutoParameterize','AutoParameters')]
+    [switch]
+    $AutoParameter,
+
+    # The type used for automatically generated parameters.
+    # By default, ```[PSObject]```.
+    [type]
+    $AutoParameterType = [PSObject]
     )
 
     begin {
@@ -164,6 +175,24 @@
             $allEndBlocks += $end
         }
 
+        if ($AutoParameter) {
+            $variableDefinitions = $Begin, $Process, $End |
+                Where-Object { $_ } |
+                Search-PipeScript -AstType VariableExpressionAST |
+                Select-Object -ExpandProperty Result
+            foreach ($var in $variableDefinitions) {
+                $assigned = $var.GetAssignments()
+                if ($assigned) { continue }
+                $varName = $var.VariablePath.userPath.ToString()
+                $ParametersToCreate[$varName] = @(
+                    @(
+                    "[Parameter(ValueFromPipelineByPropertyName)]"
+                    "[$($AutoParameterType.FullName -replace '^System\.')]"
+                    "$var"
+                    ) -join [Environment]::NewLine
+                )
+            }
+        }
     }
 
     end {

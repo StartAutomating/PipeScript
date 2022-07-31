@@ -66,6 +66,11 @@ If 'new'
 { (new PowerShell).AddScript("Get-Command").Invoke() }
 ```
 
+#### EXAMPLE 10
+```PowerShell
+{ new 'https://schema.org/Thing' }
+```
+
 ---
 ### Parameters
 #### **CommandAst**

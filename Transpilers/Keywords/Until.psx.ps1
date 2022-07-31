@@ -16,11 +16,33 @@
         }        
     } |.>PipeScript
 .EXAMPLE
-    {
+    Invoke-PipeScript {
         until "00:00:05" {
             [DateTime]::Now
             Start-Sleep -Milliseconds 500
         } 
+    }
+.EXAMPLE
+    Invoke-PipeScript {
+        until "12:17 pm" {
+            [DateTime]::Now
+            Start-Sleep -Milliseconds 500
+        } 
+    }
+.EXAMPLE
+    {
+        $eventCounter = 0
+        until "MyEvent" {
+            $eventCounter++
+            $eventCounter
+            until "00:00:03" {
+                "sleeping a few seconds"
+                Start-Sleep -Milliseconds 500
+            }
+            if (-not ($eventCounter % 5)) {
+                $null = New-Event -SourceIdentifier MyEvent
+            }
+        }
     } | .>PipeScript
 .EXAMPLE
     Invoke-PipeScript {
@@ -48,6 +70,10 @@ param(
 $CommandAst
 )
 
+begin {
+    $myCmdName = $MyInvocation.MyCommand.Name
+}
+
 process {
     $CommandName, $CommandArgs = $commandAst.CommandElements
     if ($commandName -like ':*') {
@@ -60,7 +86,9 @@ process {
     # If the first arg is a command expression, it becomes do {} while ($firstArg)
     if (-not $firstArg -or $firstArg.GetType().Name -notin 
         'ParenExpressionAst', 'ScriptBlockExpressionAst',
-        'VariableExpressionAst','MemberExpressionAst','ExpandableStringExpressionAst') {
+        'VariableExpressionAst','MemberExpressionAst',
+        'string',
+        'ExpandableStringExpressionAst') {
         Write-Error "Until must be followed by a Variable, Member, ExpandableString, or Parenthesis Expression"
         return
     }
@@ -75,13 +103,37 @@ process {
         $firstArg.Pipeline.PipelineElements.Count -eq 1 -and 
         $firstArg.Pipeline.PipelineElements[0].Expression -and 
         $firstArg.Pipeline.PipelineElements[0].Expression.GetType().Name -in 
-        'VariableExpressionAst','MemberExpressionAst','ExpandableStringExpressionAst') {
+        'VariableExpressionAst','MemberExpressionAst','ExpandableStringExpressionAst', 
+        'StringConstantExpressionAst') {
         $condition = $firstArg.Pipeline.PipelineElements[0].Expression
     }
     elseif ($firstArg.GetType().Name -eq 'ScriptBlockExpressionAst') {
         $condition = $firstArg -replace '^\{' -replace '\}$'
     }
 
+    $BeforeLoop      = ''
+        
+    $callstack       = Get-PSCallStack
+    $callCount       = @($callstack | 
+        Where-Object { $_.InvocationInfo.MyCommand.Name -eq $myCmdName}).count - 1
+    $untilVar = '$' + ('_' * $callCount) + 'untilStartTime'
+
+    if ($condition -is [string]) {
+        
+        
+        if ($condition -as [Timespan]) {            
+            $beforeLoop = "$untilVar = [DateTime]::Now"
+            $condition  = "(([DateTime]::Now - $untilVar) -ge ([Timespan]'$Condition'))"
+        }
+        elseif ($condition -as [DateTime]) {
+            $condition = "[DateTime]::Now -ge ([DateTime]'$Condition')"
+        }
+        else {
+            $beforeLoop = "$untilVar = [DateTime]::Now"
+            $condition  = 'Get-Event -SourceIdentifier ' + "'$condition'" + " -ErrorAction Ignore | Where-Object TimeGenerated -ge $untilVar" 
+        }
+    }
+    
     $conditionScript = [ScriptBlock]::Create($condition)
     $LoopScript = $secondArg
 
@@ -98,6 +150,7 @@ process {
     
     
     $newScript = @"
+$(if ($BeforeLoop) { $BeforeLoop + [Environment]::NewLine})
 $(if ($CommandName -like ':*') { "$CommandName "})do {
 $untilTranspiled
 } while $conditionScript

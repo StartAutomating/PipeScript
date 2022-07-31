@@ -31,6 +31,8 @@
     .> { new ScriptBlock 'Get-Command'}
 .EXAMPLE
     .> { (new PowerShell).AddScript("Get-Command").Invoke() }
+.EXAMPLE
+    .> { new 'https://schema.org/Thing' }
 #>
 [ValidateScript({
     $CommandAst = $_
@@ -46,7 +48,7 @@ process {
     $null, $newTypeName, $newArgs = $CommandAst.CommandElements
     $maybeGeneric = $false
     $propertiesToCreate   = @()
-
+    $newTypeNameAst =  $newTypeName
     $newTypeName = 
         # Non-generic types will be a bareword constant        
         if ($newTypeName.Value) {
@@ -54,7 +56,7 @@ process {
         } 
         elseif ($newTypeName -is [Management.Automation.Language.HashtableAst]) {
             $propertiesToCreate += $newTypeName
-        }
+        }        
         else {
             # generic types will be an ArrayLiteralAst
             $maybeGeneric = $true
@@ -135,7 +137,14 @@ process {
             }
         } elseif ($propertiesToCreate.Count -eq 1 -and -not $newTypeName) {
             "[PSCustomObject][Ordered]$propertiesToCreate"
-        } else {
+        } elseif ($newTypeNameAst -is [Management.Automation.Language.StringConstantExpressionAst]) {
+            if ($propertiesToCreate) {
+                "[PSCustomObject]([Ordered]@{PSTypeName=$newTypeNameAst} + ([Ordered]$propertiesToCreate))"
+            } else {
+                "[PSCustomObject][Ordered]@{PSTypeName=$newTypeNameAst}"
+            }
+        }
+        else {
             Write-Error "Unknown type '$newTypeName'"                        
             return
         }

@@ -26,15 +26,43 @@ until will always run at least once, and will run until a condition is true.
 
 #### EXAMPLE 2
 ```PowerShell
-{
+Invoke-PipeScript {
     until "00:00:05" {
         [DateTime]::Now
         Start-Sleep -Milliseconds 500
     } 
-} | .>PipeScript
+}
 ```
 
 #### EXAMPLE 3
+```PowerShell
+Invoke-PipeScript {
+    until "12:17 pm" {
+        [DateTime]::Now
+        Start-Sleep -Milliseconds 500
+    } 
+}
+```
+
+#### EXAMPLE 4
+```PowerShell
+{
+    $eventCounter = 0
+    until "MyEvent" {
+        $eventCounter++
+        $eventCounter
+        until "00:00:03" {
+            "sleeping a few seconds"
+            Start-Sleep -Milliseconds 500
+        }
+        if (-not ($eventCounter % 5)) {
+            $null = New-Event -SourceIdentifier MyEvent
+        }
+    }
+} | .>PipeScript
+```
+
+#### EXAMPLE 5
 ```PowerShell
 Invoke-PipeScript {
     $tries = 3

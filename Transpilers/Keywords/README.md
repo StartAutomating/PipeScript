@@ -135,6 +135,13 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
     .> { (new PowerShell).AddScript("Get-Command").Invoke() }
 ~~~
 
+## New Example 10
+
+
+~~~PowerShell
+    .> { new 'https://schema.org/Thing' }
+~~~
+
 ## Until Example 1
 
 
@@ -152,15 +159,47 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
 
 
 ~~~PowerShell
-    {
+    Invoke-PipeScript {
         until "00:00:05" {
             [DateTime]::Now
             Start-Sleep -Milliseconds 500
         } 
-    } | .>PipeScript
+    }
 ~~~
 
 ## Until Example 3
+
+
+~~~PowerShell
+    Invoke-PipeScript {
+        until "12:17 pm" {
+            [DateTime]::Now
+            Start-Sleep -Milliseconds 500
+        } 
+    }
+~~~
+
+## Until Example 4
+
+
+~~~PowerShell
+    {
+        $eventCounter = 0
+        until "MyEvent" {
+            $eventCounter++
+            $eventCounter
+            until "00:00:03" {
+                "sleeping a few seconds"
+                Start-Sleep -Milliseconds 500
+            }
+            if (-not ($eventCounter % 5)) {
+                $null = New-Event -SourceIdentifier MyEvent
+            }
+        }
+    } | .>PipeScript
+~~~
+
+## Until Example 5
 
 
 ~~~PowerShell
