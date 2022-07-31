@@ -135,6 +135,13 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
     .> { (new PowerShell).AddScript("Get-Command").Invoke() }
 ~~~
 
+## New Example 10
+
+
+~~~PowerShell
+    .> { new 'https://schema.org/Thing' }
+~~~
+
 ## Until Example 1
 
 
