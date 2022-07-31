@@ -39,6 +39,9 @@ Valid Values:
 * Script
 * Configuration
 * All
+
+
+
 |Type                  |Requried|Postion|PipelineInput|
 |----------------------|--------|-------|-------------|
 |```[CommandTypes[]]```|false   |1      |false        |
