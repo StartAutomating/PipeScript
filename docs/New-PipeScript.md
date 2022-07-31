@@ -82,9 +82,31 @@ The script header.
 |--------------|--------|-------|---------------------|
 |```[String]```|false   |6      |true (ByPropertyName)|
 ---
+#### **AutoParameter**
+
+If provided, will automatically create parameters.
+Parameters will be automatically created for any unassigned variables.
+
+
+
+|Type          |Requried|Postion|PipelineInput|
+|--------------|--------|-------|-------------|
+|```[Switch]```|false   |named  |false        |
+---
+#### **AutoParameterType**
+
+The type used for automatically generated parameters.
+By default, ```[PSObject]```.
+
+
+
+|Type        |Requried|Postion|PipelineInput|
+|------------|--------|-------|-------------|
+|```[Type]```|false   |7      |false        |
+---
 ### Syntax
 ```PowerShell
-New-PipeScript [[-Parameter] <Object>] [[-DynamicParameter] <ScriptBlock>] [[-Begin] <ScriptBlock>] [[-Process] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Header] <String>] [<CommonParameters>]
+New-PipeScript [[-Parameter] <Object>] [[-DynamicParameter] <ScriptBlock>] [[-Begin] <ScriptBlock>] [[-Process] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Header] <String>] [-AutoParameter] [[-AutoParameterType] <Type>] [<CommonParameters>]
 ```
 ---
 
