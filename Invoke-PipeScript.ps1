@@ -127,7 +127,7 @@
 
 
         # If the command is a ```[ScriptBlock]```
-        if ($Command -is [scriptblock]) 
+        if ($Command -is [scriptblock])
         {
             # Attempt to transpile it.
             $TranspiledScriptBlock = $Command | .>Pipescript @ErrorsAndWarnings
@@ -142,8 +142,28 @@
                     })
                 return
             }
+
+            if ($TranspilerErrors) {                    
+                $failedMessage = @(                        
+                    "$($command.Source): " + "$($TranspilerErrors.Count) error(s)"
+                    if ($transpilerWarnings) {
+                        "$($TranspilerWarnings.Count) warning(s)"
+                    }
+                ) -join ','
+                Write-Error $failedMessage -ErrorId Build.Failed -TargetObject (
+                    [PSCustomObject][ordered]@{
+                        Output     = $pipescriptOutput
+                        Errors     = $TranspilerErrors
+                        Warnings   = $TranspilerWarnings
+                        Command    = $Command
+                        Parameters = $InvokePipeScriptParameters 
+                    }
+                )                
+            }
+
             # If it could not be transpiled into a [ScriptBlock] or [ScriptBlock[]]            
-            if ($transpiledScriptBlock -isnot [ScriptBlock] -and -not ($TranspiledScriptBlock -as [scriptblock[]])) {
+            if ($TranspilerErrors -or 
+                ($transpiledScriptBlock -isnot [ScriptBlock] -and -not ($TranspiledScriptBlock -as [scriptblock[]]))) {
                 # error out.
                 Write-Error "Command {$command} could not be transpiled into [ScriptBlock]s"
                 return
