@@ -122,11 +122,8 @@ if (-not $env:GITHUB_WORKSPACE) { throw "No GitHub workspace" }
 
 $branchName = git rev-parse --abrev-ref HEAD
 if (-not $branchName) { 
-
     return
 }
-
-git pull | Out-Host
 
 $PipeScriptStart = [DateTime]::Now
 if ($PipeScript) {
@@ -163,11 +160,15 @@ if ($CommitMessage -or $anyFilesChanged) {
 
         git commit -m $ExecutionContext.SessionState.InvokeCommand.ExpandString($CommitMessage)
     }    
+    
+
 
     $checkDetached = git symbolic-ref -q HEAD
     if (-not $LASTEXITCODE) {
+        "::notice::Pulling Changes" | Out-Host
+        git pull | Out-Host
         "::notice::Pushing Changes" | Out-Host
-        git push        
+        git push | Out-Host
         "Git Push Output: $($gitPushed  | Out-String)"
     } else {
         "::notice::Not pushing changes (on detached head)" | Out-Host
