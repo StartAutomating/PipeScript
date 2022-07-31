@@ -1,3 +1,19 @@
+## 0.0.14:
+* New Transpilers:
+  * [RemoveParameter] (#159)
+  * [RenameVariable] (#160)  
+* Keyword Updates:
+  * new now supports extended type creation (#164)
+  * until now supports a TimeSpan, DateTime, or EventName string (#153)
+* AST Extended Type Enhancements:
+  * [TypeConstraintAst] and [AttributeAst] now have .ResolvedCommand (#162)
+* Action Updates
+  * Pulling just before push (#163)
+  * Not running when there is not a current branch (#158)
+  * Improving email determination (#156)
+* Invoke-PipeScript terminates transpiler errors when run interactively (#161)
+---
+
 ## 0.0.13:
 * New / Improved Keywords 
   * assert keyword (Support for pipelines) (#143)
