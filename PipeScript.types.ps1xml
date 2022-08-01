@@ -213,6 +213,12 @@ for (
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>IsAssigned</Name>
+        <GetScriptBlock>
+                        $this.Parent.Parent -is [Management.Automation.Language.AssignmentStatementAST]
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>IsPiped</Name>
         <GetScriptBlock>
                         ($this.Parent -is [Management.Automation.Language.PipelineAst]) -and
@@ -288,6 +294,18 @@ $this.Parent.PipelineElements.IndexOf($this)
 
                     </Script>
       </ScriptMethod>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.Language.PipelineAST</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>IsAssigned</Name>
+        <GetScriptBlock>
+                        $this.Parent -is [Management.Automation.Language.AssignmentStatementAST]
+
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>
