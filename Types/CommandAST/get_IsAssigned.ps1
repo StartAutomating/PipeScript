@@ -1,0 +1,1 @@
+$this.Parent.Parent -is [Management.Automation.Language.AssignmentStatementAST]

@@ -24,6 +24,26 @@ while ($thisParent) {
 
                     </Script>
       </ScriptMethod>
+      <ScriptProperty>
+        <Name>Tokens</Name>
+        <GetScriptBlock>
+                        $text = $this.Extent.ToString()
+    
+$previousToken = $null
+$tokenCount = 0
+@(foreach ($token in [Management.Automation.PSParser]::Tokenize($text, [ref]$null)) {
+    Add-Member NoteProperty Text $text -Force -InputObject $token
+    Add-Member NoteProperty PreviousToken $previousToken -Force -InputObject $token
+    if ($token.Type -in 'Variable', 'String') {
+        $realContent = $text.Substring($token.Start, $token.Length)
+        Add-Member NoteProperty Content $realContent  -Force -InputObject $token
+    }
+    $previousToken = $token
+    $tokenCount++
+    $token            
+})
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>
@@ -193,6 +213,12 @@ for (
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>IsAssigned</Name>
+        <GetScriptBlock>
+                        $this.Parent.Parent -is [Management.Automation.Language.AssignmentStatementAST]
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>IsPiped</Name>
         <GetScriptBlock>
                         ($this.Parent -is [Management.Automation.Language.PipelineAst]) -and
@@ -268,6 +294,18 @@ $this.Parent.PipelineElements.IndexOf($this)
 
                     </Script>
       </ScriptMethod>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.Language.PipelineAST</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>IsAssigned</Name>
+        <GetScriptBlock>
+                        $this.Parent -is [Management.Automation.Language.AssignmentStatementAST]
+
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>

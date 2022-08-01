@@ -1,3 +1,10 @@
+## 0.1:
+* PipeScript can now Transpile Protocols (Fixes #168)
+* PipeScript can transpile http[s] protocol (Fixes #169)
+* PipeScript now formats the AST (Fixes #166) 
+* Added .IsAssigned to CommandAST/PipelineAST (Fixes #167)
+---
+
 ## 0.0.14:
 * New Transpilers:
   * [RemoveParameter] (#159)
