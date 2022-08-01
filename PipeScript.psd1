@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.0.14'
+    ModuleVersion     = '0.1'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -19,6 +19,13 @@
             BuildModule     = @('EZOut','Piecemeal','PipeScript','HelpOut', 'PSDevOps')
             Tags            = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
+## 0.1:
+* PipeScript can now Transpile Protocols (Fixes #168)
+* PipeScript can transpile http[s] protocol (Fixes #169)
+* PipeScript now formats the AST (Fixes #166) 
+* Added .IsAssigned to CommandAST/PipelineAST (Fixes #167)
+---
+
 ## 0.0.14:
 * New Transpilers:
   * [RemoveParameter] (#159)
