@@ -16,6 +16,16 @@ Creates new PipeScript and PowerShell ScriptBlocks.
 New-PipeScript -Parameter @{a='b'}
 ```
 
+#### EXAMPLE 2
+```PowerShell
+New-PipeScript -Parameter ([Net.HttpWebRequest].GetProperties()) -ParameterHelp @{
+    Accept='
+HTTP Accept.
+HTTP Accept indicates what content types the web request will accept as a response.
+'
+}
+```
+
 ---
 ### Parameters
 #### **Parameter**
@@ -104,9 +114,19 @@ By default, ```[PSObject]```.
 |------------|--------|-------|-------------|
 |```[Type]```|false   |7      |false        |
 ---
+#### **ParameterHelp**
+
+If provided, will add inline help to parameters.
+
+
+
+|Type               |Requried|Postion|PipelineInput|
+|-------------------|--------|-------|-------------|
+|```[IDictionary]```|false   |8      |false        |
+---
 ### Syntax
 ```PowerShell
-New-PipeScript [[-Parameter] <Object>] [[-DynamicParameter] <ScriptBlock>] [[-Begin] <ScriptBlock>] [[-Process] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Header] <String>] [-AutoParameter] [[-AutoParameterType] <Type>] [<CommonParameters>]
+New-PipeScript [[-Parameter] <Object>] [[-DynamicParameter] <ScriptBlock>] [[-Begin] <ScriptBlock>] [[-Process] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Header] <String>] [-AutoParameter] [[-AutoParameterType] <Type>] [[-ParameterHelp] <IDictionary>] [<CommonParameters>]
 ```
 ---
 
