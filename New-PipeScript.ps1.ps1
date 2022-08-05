@@ -21,15 +21,15 @@ HTTP Accept indicates what content types the web request will accept as a respon
     # Defines one or more parameters for a ScriptBlock.
     # Parameters can be defined in a few ways:
     # * As a ```[Collections.Dictionary]``` of Parameters
-    # * As the ```[string]``` name of an untyped parameter.    
+    # * As the ```[string]``` name of an untyped parameter.
     # * As a ```[ScriptBlock]``` containing only parameters.
     [Parameter(ValueFromPipelineByPropertyName)]
     [ValidateScriptBlock(ParameterOnly)]
     [ValidateTypes(TypeName={
-        [Collections.IDictionary], 
+        [Collections.IDictionary],
         [string],
-        [Object[]], 
-        [Scriptblock], 
+        [Object[]],
+        [Scriptblock],
         [Reflection.PropertyInfo],
         [Reflection.PropertyInfo[]],
         [Reflection.ParameterInfo],
@@ -176,39 +176,39 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             $EachParameter.Value -join [Environment]::Newline
                     }
                 }
-            
-            } 
+
+            }
             # If the parameter was a string
-            elseif ($Parameter -is [string]) 
+            elseif ($Parameter -is [string])
             {
                 # treat it as  parameter name
-                $ParametersToCreate[$Parameter] =                                         
+                $ParametersToCreate[$Parameter] =
                     @(
                     if ($parameterHelp -and $parameterHelp[$Parameter]) {
                         $parameterHelp[$Parameter] | embedParameterHelp
                     }
                     "[Parameter(ValueFromPipelineByPropertyName)]"
                     "`$$Parameter"
-                    ) -join [Environment]::NewLine                    
-            } 
+                    ) -join [Environment]::NewLine
+            }
             # If the parameter is a [ScriptBlock]
-            elseif ($parameter -is [scriptblock]) 
+            elseif ($parameter -is [scriptblock])
             {
-                
+
                 # add it to a list of parameter script blocks.
                 $parameterScriptBlocks +=
-                    if ($parameter.Ast.ParamBlock) {                        
+                    if ($parameter.Ast.ParamBlock) {
                         $parameter
-                    }            
+                    }
             }
-            elseif ($parameter -is [Reflection.PropertyInfo] -or 
-                $parameter -as [Reflection.PropertyInfo[]] -or 
-                $parameter -is [Reflection.ParameterInfo] -or 
+            elseif ($parameter -is [Reflection.PropertyInfo] -or
+                $parameter -as [Reflection.PropertyInfo[]] -or
+                $parameter -is [Reflection.ParameterInfo] -or
                 $parameter -as [Reflection.ParameterInfo[]] -or
                 $parameter -is [Reflection.MethodInfo] -or
                 $parameter -as [Reflection.MethodInfo[]]
             ) {
-                if ($parameter -is [Reflection.MethodInfo] -or 
+                if ($parameter -is [Reflection.MethodInfo] -or
                     $parameter -as [Reflection.MethodInfo[]]) {
                     $parameter = @(foreach ($methodInfo in $parameter) {
                         $methodInfo.GetParameters()
@@ -217,7 +217,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
 
                 foreach ($prop in $Parameter) {
                     if ($prop -is [Reflection.PropertyInfo] -and -not $prop.CanWrite) { continue }
-                    $paramType =                         
+                    $paramType =
                         if ($prop.ParameterType) {
                             $prop.ParameterType
                         } elseif ($prop.PropertyType) {
@@ -251,26 +251,26 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             '$' + $prop.Name
                         ) -ne ''
                 }
-            }            
+            }
         }
 
         # If there is header content,
-        if ($header) {            
+        if ($header) {
             $allHeaders += $Header
         }
 
         # dynamic parameters,
-        if ($DynamicParameter) {            
+        if ($DynamicParameter) {
             $allDynamicParameters += $DynamicParameter
         }
 
         # begin,
-        if ($Begin) {            
+        if ($Begin) {
             $allBeginBlocks += $begin
         }
 
         # process,
-        if ($process) {            
+        if ($process) {
             $allProcessBlocks += $process
         }
 
@@ -311,7 +311,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
             ')'
 
         # If any parameters were passed in as ```[ScriptBlock]```s,
-        if ($parameterScriptBlocks) {            
+        if ($parameterScriptBlocks) {
             $parameterScriptBlocks += [ScriptBlock]::Create($newParamBlock)
             # join them with the new parameter block.
             $newParamBlock = $parameterScriptBlocks | Join-PipeScript
