@@ -17,7 +17,18 @@
     # * As a ```[ScriptBlock]``` containing only parameters.
     [Parameter(ValueFromPipelineByPropertyName)]
     [ValidateScriptBlock(ParameterOnly)]
-    [ValidateTypes(TypeName={[Collections.IDictionary], [string],[Object[]], [Scriptblock]})]
+    [ValidateTypes(TypeName={
+        [Collections.IDictionary], 
+        [string],
+        [Object[]], 
+        [Scriptblock], 
+        [Reflection.PropertyInfo],
+        [Reflection.PropertyInfo[]],
+        [Reflection.ParameterInfo],
+        [Reflection.ParameterInfo[]],
+        [Reflection.MethodInfo],
+        [Reflection.MethodInfo[]]
+    })]
     $Parameter,
 
     # The dynamic parameter block.
@@ -147,6 +158,43 @@
                         $parameter
                     }            
             }
+            elseif ($parameter -is [Reflection.PropertyInfo] -or 
+                $parameter -as [Reflection.PropertyInfo[]] -or 
+                $parameter -is [Reflection.ParameterInfo] -or 
+                $parameter -as [Reflection.ParameterInfo[]] -or
+                $parameter -is [Reflection.MethodInfo] -or
+                $parameter -as [Reflection.MethodInfo[]]
+            ) {
+                if ($parameter -is [Reflection.MethodInfo] -or 
+                    $parameter -as [Reflection.MethodInfo[]]) {
+                    $parameter = @(foreach ($methodInfo in $parameter) {
+                        $methodInfo.GetParameters()
+                    })
+                }
+
+                foreach ($prop in $Parameter) {
+                    if ($prop -is [Reflection.PropertyInfo] -and -not $prop.CanWrite) { continue }
+                    $paramType = 
+                        if ($prop.ParameterType) {
+                            $prop.ParameterType
+                        } elseif ($prop.PropertyType) {
+                            $prop.PropertyType
+                        } else {
+                            [PSObject]
+                        }
+                    $ParametersToCreate[$prop.Name] =
+                        @(
+                            $parameterAttribute = "[Parameter(ValueFromPipelineByPropertyName)]"
+                            $parameterAttribute
+                            if ($paramType -eq [boolean]) {
+                                "[switch]"
+                            } else {
+                                "[$($paramType -replace '^System\.')]"
+                            }
+                            '$' + $prop.Name
+                        ) -ne ''
+                }
+            }            
         }
 
         # If there is header content,
