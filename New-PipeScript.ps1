@@ -6,6 +6,13 @@ function New-PipeScript {
         Creates new PipeScript and PowerShell ScriptBlocks.
     .EXAMPLE
         New-PipeScript -Parameter @{a='b'}
+    .EXAMPLE
+        New-PipeScript -Parameter ([Net.HttpWebRequest].GetProperties()) -ParameterHelp @{
+            Accept='
+HTTP Accept.
+HTTP Accept indicates what content types the web request will accept as a response.
+'
+        }
     #>
     [Alias('New-ScriptBlock')]
     param(
@@ -132,7 +139,10 @@ function New-PipeScript {
     # The type used for automatically generated parameters.
     # By default, ```[PSObject]```.
     [type]
-    $AutoParameterType = [PSObject]
+    $AutoParameterType = [PSObject],
+    # If provided, will add inline help to parameters.
+    [Collections.IDictionary]
+    $ParameterHelp    
     )
     begin {
         $ParametersToCreate    = [Ordered]@{}
@@ -142,6 +152,19 @@ function New-PipeScript {
         $allEndBlocks          = @()
         $allProcessBlocks      = @()
         $allHeaders            = @()
+        filter embedParameterHelp {
+                    if ($_ -notmatch '^\s\<\#' -and $_ -notmatch '^\s\#') {
+                        $commentLines = @($_ -split '(?>\r\n|\n)')
+                        if ($commentLines.Count -gt 1) {
+                            '<#' + [Environment]::NewLine + "$_".Trim() + [Environment]::newLine + '#>'
+                        } else {
+                            "# $_"
+                        }
+                    } else {
+                        $_
+                    }
+                
+        }
     }
     process {
         if ($parameter) {
@@ -159,6 +182,9 @@ function New-PipeScript {
                         $parameterName = $EachParameter.Key
                         $ParametersToCreate[$EachParameter.Key] =
                             @(
+                                if ($parameterHelp -and $parameterHelp[$eachParameter.Key]) {
+                                    $parameterHelp[$eachParameter.Key] | embedParameterHelp
+                                }
                                 $parameterAttribute = "[Parameter(ValueFromPipelineByPropertyName)]"
                                 $parameterType
                                 '$' + $parameterName
@@ -201,6 +227,9 @@ function New-PipeScript {
                 # treat it as  parameter name
                 $ParametersToCreate[$Parameter] =                                         
                     @(
+                    if ($parameterHelp -and $parameterHelp[$Parameter]) {
+                        $parameterHelp[$Parameter] | embedParameterHelp
+                    }
                     "[Parameter(ValueFromPipelineByPropertyName)]"
                     "`$$Parameter"
                     ) -join [Environment]::NewLine                    
@@ -240,6 +269,9 @@ function New-PipeScript {
                         }
                     $ParametersToCreate[$prop.Name] =
                         @(
+                            if ($parameterHelp -and $parameterHelp[$prop.Name]) {
+                                $parameterHelp[$prop.Name] | embedParameterHelp
+                            }
                             $parameterAttribute = "[Parameter(ValueFromPipelineByPropertyName)]"
                             $parameterAttribute
                             if ($paramType -eq [boolean]) {
