@@ -29,7 +29,7 @@ function New-PipeScript {
         }
     })]
     [ValidateScript({
-    $validTypeList = [System.Collections.IDictionary],[System.String],[System.Object[]],[System.Management.Automation.ScriptBlock]
+    $validTypeList = [System.Collections.IDictionary],[System.String],[System.Object[]],[System.Management.Automation.ScriptBlock],[System.Reflection.PropertyInfo],[System.Reflection.PropertyInfo[]],[System.Reflection.ParameterInfo],[System.Reflection.ParameterInfo[]],[System.Reflection.MethodInfo],[System.Reflection.MethodInfo[]]
     $thisType = $_.GetType()
     $IsTypeOk =
         $(@( foreach ($validType in $validTypeList) {
@@ -38,7 +38,7 @@ function New-PipeScript {
             }
         }))
     if (-not $isTypeOk) {
-        throw "Unexpected type '$(@($thisType)[0])'.  Must be 'System.Collections.IDictionary','string','System.Object[]','scriptblock'."
+        throw "Unexpected type '$(@($thisType)[0])'.  Must be 'System.Collections.IDictionary','string','System.Object[]','scriptblock','System.Reflection.PropertyInfo','System.Reflection.PropertyInfo[]','System.Reflection.ParameterInfo','System.Reflection.ParameterInfo[]','System.Reflection.MethodInfo','System.Reflection.MethodInfo[]'."
     }
     return $true
     })]
@@ -215,6 +215,42 @@ function New-PipeScript {
                         $parameter
                     }            
             }
+            elseif ($parameter -is [Reflection.PropertyInfo] -or 
+                $parameter -as [Reflection.PropertyInfo[]] -or 
+                $parameter -is [Reflection.ParameterInfo] -or 
+                $parameter -as [Reflection.ParameterInfo[]] -or
+                $parameter -is [Reflection.MethodInfo] -or
+                $parameter -as [Reflection.MethodInfo[]]
+            ) {
+                if ($parameter -is [Reflection.MethodInfo] -or 
+                    $parameter -as [Reflection.MethodInfo[]]) {
+                    $parameter = @(foreach ($methodInfo in $parameter) {
+                        $methodInfo.GetParameters()
+                    })
+                }
+                foreach ($prop in $Parameter) {
+                    if ($prop -is [Reflection.PropertyInfo] -and -not $prop.CanWrite) { continue }
+                    $paramType = 
+                        if ($prop.ParameterType) {
+                            $prop.ParameterType
+                        } elseif ($prop.PropertyType) {
+                            $prop.PropertyType
+                        } else {
+                            [PSObject]
+                        }
+                    $ParametersToCreate[$prop.Name] =
+                        @(
+                            $parameterAttribute = "[Parameter(ValueFromPipelineByPropertyName)]"
+                            $parameterAttribute
+                            if ($paramType -eq [boolean]) {
+                                "[switch]"
+                            } else {
+                                "[$($paramType -replace '^System\.')]"
+                            }
+                            '$' + $prop.Name
+                        ) -ne ''
+                }
+            }            
         }
         # If there is header content,
         if ($header) {            
