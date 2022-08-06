@@ -72,7 +72,7 @@ A list of positional arguments.  These will be directly passed to the underlying
 #### **SafeScriptBlockAttributeEvaluation**
 
 If this is not set, when a transpiler's parameters do not take a [ScriptBlock], ScriptBlock values will be evaluated.
-This can be a very useful capability, because it can enable dynamic transpilation. 
+This can be a very useful capability, because it can enable dynamic transpilation.
 If this is set, will make ScriptBlockAst values will be run within data language, which significantly limits their capabilities.
 
 
