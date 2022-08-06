@@ -18,7 +18,7 @@
         $token = $_
         $prevEnd = $_.PreviousToken.Start + $_.PreviousToken.Length
         $substring = $_.Text.Substring($prevEnd, $token.Start -  $prevEnd)
-        if ($substring) { $substring} else { ''}
+        if ($substring) { $substring} else { '' }
     </ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
@@ -68,7 +68,7 @@
               <ExpressionBinding>
                 <ItemSelectionCondition>
                   <ScriptBlock>
-        $_.Type -in 'Keyword', 'String'
+        $_.Type -in 'Keyword', 'String', 'CommandArgument'
     </ScriptBlock>
                 </ItemSelectionCondition>
                 <PropertyName>Content</PropertyName>
@@ -85,15 +85,27 @@
         $_.Type -in 'Variable', 'Command'
     </ScriptBlock>
                 </ItemSelectionCondition>
-                <ScriptBlock>
-        $_.Content
-    </ScriptBlock>
+                <PropertyName>Content</PropertyName>
               </ExpressionBinding>
               <ExpressionBinding>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Warning' ) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
-                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Blue' -NoClear) -join ''</ScriptBlock>
+                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Magenta' -NoClear) -join ''</ScriptBlock>
+              </ExpressionBinding>
+              <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+        $_.Type -in 'CommandParameter'
+    </ScriptBlock>
+                </ItemSelectionCondition>
+                <PropertyName>Content</PropertyName>
+              </ExpressionBinding>
+              <ExpressionBinding>
+                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Magenta' ) -join ''</ScriptBlock>
+              </ExpressionBinding>
+              <ExpressionBinding>
+                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Magenta' -NoClear) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
                 <ItemSelectionCondition>
@@ -104,12 +116,16 @@
                 <PropertyName>Content</PropertyName>
               </ExpressionBinding>
               <ExpressionBinding>
-                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Blue' ) -join ''</ScriptBlock>
+                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Magenta' ) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
                 <ItemSelectionCondition>
                   <ScriptBlock>
-        $_.Type -notin 'Comment', 'GroupStart', 'GroupEnd', 'Variable', 'Operator', 'Command','Keyword', 'String'
+        $_.Type -notin 'Comment', 
+            'Keyword', 'String', 'CommandArgument',
+            'Variable', 'Command',
+            'CommandParameter',
+            'Operator','GroupStart', 'GroupEnd'
     </ScriptBlock>
                 </ItemSelectionCondition>
                 <PropertyName>Content</PropertyName>
