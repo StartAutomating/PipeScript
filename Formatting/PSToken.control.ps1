@@ -5,7 +5,7 @@ Write-FormatView -AsControl -Name "PSToken" -TypeName "n/a" -Action {
         $token = $_
         $prevEnd = $_.PreviousToken.Start + $_.PreviousToken.Length
         $substring = $_.Text.Substring($prevEnd, $token.Start -  $prevEnd)
-        if ($substring) { $substring} else { ''}
+        if ($substring) { $substring} else { '' }
     }
 
     Write-FormatViewExpression -If {
@@ -13,20 +13,26 @@ Write-FormatView -AsControl -Name "PSToken" -TypeName "n/a" -Action {
     } -ForegroundColor Success -Property Content
 
     Write-FormatViewExpression -If {
-        $_.Type -in 'Keyword', 'String'
+        $_.Type -in 'Keyword', 'String', 'CommandArgument'
     } -ForegroundColor Verbose -Property Content
 
     Write-FormatViewExpression -If {
         $_.Type -in 'Variable', 'Command'
-    } -ForegroundColor Warning -ScriptBlock {
-        $_.Content
-    }
+    } -ForegroundColor Warning -Property Content
+
+    Write-FormatViewExpression -If {
+        $_.Type -in 'CommandParameter'
+    } -ForegroundColor Magenta -Property Content
 
     Write-FormatViewExpression -If {
         $_.Type -in 'Operator','GroupStart', 'GroupEnd'
-    } -ForegroundColor Blue -Property Content
+    } -ForegroundColor Magenta -Property Content
 
     Write-FormatViewExpression -If {
-        $_.Type -notin 'Comment', 'GroupStart', 'GroupEnd', 'Variable', 'Operator', 'Command','Keyword', 'String'
+        $_.Type -notin 'Comment', 
+            'Keyword', 'String', 'CommandArgument',
+            'Variable', 'Command',
+            'CommandParameter',
+            'Operator','GroupStart', 'GroupEnd'
     } -Property Content
 }
