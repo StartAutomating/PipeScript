@@ -7,7 +7,20 @@ function Update-PipeScript {
 
         Update-PipeScript is used by PipeScript transpilers in order to make a number of changes to a script.
 
-        It can also be used interactively to transform scripts or text in a number of ways.        
+        It can also be used interactively to transform scripts or text in a number of ways.
+    .EXAMPLE
+        Update-PipeScript -ScriptBlock {
+            param($x,$y)
+        } -RemoveParameter x
+    .EXAMPLE
+        Update-PipeScript -RenameVariable @{x='y'} -ScriptBlock {$x}
+    .EXAMPLE
+        Update-PipeScript -ScriptBlock {
+            #region MyRegion
+            1
+            #endregion MyRegion
+            2
+        } -RegionReplacement @{MyRegion=''} 
     #>
     [Alias('Update-ScriptBlock', 'ups')]
     param(    
@@ -266,7 +279,7 @@ function Update-PipeScript {
 
         if ($RegionReplacement.Count) {
             foreach ($regionName in $RegionReplacement.Keys) {
-                $replacementReplacer = $RegexReplacement[$regionName]
+                $replacementReplacer = $RegionReplacement[$regionName]
                 $RegionName = $RegionName -replace '\s', '\s'
                 
                 $regionReplaceRegex = [Regex]::New("        
