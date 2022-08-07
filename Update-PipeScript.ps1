@@ -56,6 +56,10 @@ function Update-PipeScript {
     # If provided, will replace regular expression matches.
     [Collections.IDictionary]
     $RegexReplacement = [Ordered]@{},
+
+    # If provided, will replace regions.
+    [Collections.IDictionary]
+    $RegionReplacement,
     
     # If provided, will remove one or more parameters from a ScriptBlock.
     [string[]]
@@ -259,6 +263,30 @@ function Update-PipeScript {
             ) -join ''
 
         $text = $newScript
+
+        if ($RegionReplacement.Count) {
+            foreach ($regionName in $RegionReplacement.Keys) {
+                $replacementReplacer = $RegexReplacement[$regionName]
+                $RegionName = $RegionName -replace '\s', '\s'
+                
+                $regionReplaceRegex = [Regex]::New("        
+                    [\n\r\s]{0,}        # Preceeding whitespace
+                    \#region            # The literal 'region'
+                    \s{1,} 
+                    (?<Name>$RegionName)
+                        (?<Content>
+                            (?:.|\s)+?(?=
+                            \z|
+                            ^\s{0,}\#endregion\s{1,}\k<Name>
+                        )
+                    )
+                    ^\s{0,}\#endregion\s{1,}\k<Name>
+                ", 'Multiline,IgnorePatternWhitespace,IgnoreCase', '00:00:05'
+                )
+                $RegexReplacement[$regionReplaceRegex] = $replacementReplacer
+            }
+        }
+
         if ($RegexReplacement.Count) {
             foreach ($repl in $RegexReplacement.GetEnumerator()) {
                 $replRegex = if ($repl.Key -is [Regex]) {
