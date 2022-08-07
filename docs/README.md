@@ -4,7 +4,7 @@
 
 # What Is PipeScript?
 
-PipeScript is a scripting language built atop PowerShell.
+PipeScript is a programming language built atop PowerShell.
 
 
 PipeScript is transpiled into PowerShell.
