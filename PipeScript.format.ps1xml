@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<!-- Generated with EZOut 1.8.8: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
+<!-- Generated with EZOut 1.8.8.1: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
 <Configuration>
   <Controls>
     <Control>
@@ -1153,12 +1153,15 @@ $BackgroundColor
     # The InputObject.
     [Parameter(ValueFromPipeline)]
     [PSObject]
-    $inputObject,
+    $InputObject,
 
     # If set, will make a YAML header by adding a YAML Document tag above and below output.
     [Alias('YAMLDocument')]
     [switch]
-    $YamlHeader
+    $YamlHeader,
+
+    [int]
+    $Indent = 0
     )
 
     begin {
@@ -1201,7 +1204,7 @@ $BackgroundColor
                     }
                     return # Once the string has been emitted, return.
                 }
-                if ( [int], [float], [bool] -contains $Object.GetType() ) { # If it is an [int] or [float] or [bool]
+                if ( $Object.GetType().IsPrimitive ) { # If it is a primitive type
                     "$Object".ToLower()  # Emit it in lowercase.
                     if ($Parent -is [Collections.IList]) {
                         [Environment]::NewLine
@@ -1239,14 +1242,12 @@ $BackgroundColor
                     foreach ($Obj in $Object) { 
                         $allPrimitive = $allPrimitive -band (
                             $Obj -is [string] -or 
-                            $obj -is [int] -or 
-                            $obj -is [float] -or 
-                            $obj -is [bool]
+                            $obj.GetType().IsPrimitive
                         ) 
                     }
                     if ($parent -and -not $allPrimitive) {
                         $Indent += 2
-                    }            
+                    }
                 }
             
             
@@ -1272,16 +1273,21 @@ $BackgroundColor
                 #endregion Nested
             }                
         }
+        function IndentString([string]$String,[int]$Indent) {
+            @(foreach ($line in @($String -split '(?&gt;\r\n|\n)')) {
+                (' ' * $indent) + $line 
+            }) -join [Environment]::NewLine
+        }
         $inputWasNotPiped = $PSBoundParameters.InputObject -as [bool]
         $allInputObjects  = @()
     }
 
     process {
         if ($inputWasNotPiped) {
-            '' + $(if ($YamlHeader) { '---' + [Environment]::NewLine })  + (
+            IndentString ('' + $(if ($YamlHeader) { '---' + [Environment]::NewLine })  + (
                 (&amp; $toYaml -object $inputObject) -join '' -replace 
                     "$([Environment]::NewLine * 2)", [Environment]::NewLine
-            ) + $(if ($YamlHeader) { [Environment]::NewLine  + '---'})
+            ) + $(if ($YamlHeader) { [Environment]::NewLine  + '---'})) -Indent $Indent
         } else {
             $allInputObjects += $inputObject
         }
@@ -1290,15 +1296,15 @@ $BackgroundColor
     end {
         if (-not $allInputObjects) { return }
         if ($allInputObjects.Length -eq 1) {
-            '' + $(if ($YamlHeader) { '---' + [Environment]::NewLine}) + (
+            IndentString ('' + $(if ($YamlHeader) { '---' + [Environment]::NewLine}) + (
                 (&amp; $toYaml -object $inputObject) -join '' -replace 
                     "$([Environment]::NewLine * 2)", [Environment]::NewLine
-            ) + $(if ($YamlHeader) { [Environment]::NewLine  + '---'})
+            ) + $(if ($YamlHeader) { [Environment]::NewLine  + '---'})) -Indent $Indent
         } else {
-            '' + $(if ($YamlHeader) { '---' + [Environment]::NewLine})  + (
+            IndentString ('' + $(if ($YamlHeader) { '---' + [Environment]::NewLine})  + (
                 (&amp; $toYaml -object $allInputObjects) -join '' -replace 
                     "$([Environment]::NewLine * 2)", [Environment]::NewLine
-            ) + $(if ($YamlHeader) { [Environment]::NewLine  + '---'})
+            ) + $(if ($YamlHeader) { [Environment]::NewLine  + '---'})) -Indent $Indent
         }
     }
 </ScriptBlock>
@@ -1627,7 +1633,19 @@ $BackgroundColor
             
         
 
-    &amp; ${PipeScript_Format-YAML} -inputObject $_
+    $inputObject = $_
+    if ($inputObject.psobject.properties['Indent'].Value -as [int]) {
+        $indentLevel = $inputObject.Indent -as [int]
+        $inputCopy = [Ordered]@{}
+        foreach ($prop in $inputObject.psobject.properties) {
+            if ($prop.Name -eq 'indent') { continue }
+            $inputCopy[$prop.Name] = $prop.Value
+        }
+        &amp; ${PipeScript_Format-YAML} -inputObject $inputCopy -Indent $indentLevel
+    } else {
+        &amp; ${PipeScript_Format-YAML} -inputObject $inputObject    
+    }
+    
 </ScriptBlock>
               </ExpressionBinding>
             </CustomItem>
