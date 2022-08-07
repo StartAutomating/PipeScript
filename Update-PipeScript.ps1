@@ -52,6 +52,10 @@ function Update-PipeScript {
     })]
     [Collections.IDictionary]
     $AstReplacement = [Ordered]@{},
+
+    # If provided, will replace regular expression matches.
+    [Collections.IDictionary]
+    $RegexReplacement = [Ordered]@{},
     
     # If provided, will remove one or more parameters from a ScriptBlock.
     [string[]]
@@ -254,14 +258,26 @@ function Update-PipeScript {
                 }
             ) -join ''
 
-            if ($ScriptBlock) {                
-                if ($Transpile) {
-                    [ScriptBlock]::Create($newScript) | .>Pipescript
-                } else {
-                    [ScriptBlock]::Create($newScript)
+        $text = $newScript
+        if ($RegexReplacement.Count) {
+            foreach ($repl in $RegexReplacement.GetEnumerator()) {
+                $replRegex = if ($repl.Key -is [Regex]) {
+                    $repl.Key
+                } else { 
+                    [Regex]::new($repl.Key,'IgnoreCase,IgnorePatternWhitespace','00:00:05')
                 }
-            } else {
-                $newScript
+                $newScript = $text = $replRegex.Replace($text, $repl.Value)
             }
+        }
+
+        if ($ScriptBlock) {                
+            if ($Transpile) {
+                [ScriptBlock]::Create($newScript) | .>Pipescript
+            } else {
+                [ScriptBlock]::Create($newScript)
+            }
+        } else {
+            $newScript
+        }
     }
 }
