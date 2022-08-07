@@ -66,6 +66,16 @@ If provided, will replace regular expression matches.
 |-------------------|--------|-------|-------------|
 |```[IDictionary]```|false   |5      |false        |
 ---
+#### **RegionReplacement**
+
+If provided, will replace regions.
+
+
+
+|Type               |Requried|Postion|PipelineInput|
+|-------------------|--------|-------|-------------|
+|```[IDictionary]```|false   |6      |false        |
+---
 #### **RemoveParameter**
 
 If provided, will remove one or more parameters from a ScriptBlock.
@@ -74,7 +84,7 @@ If provided, will remove one or more parameters from a ScriptBlock.
 
 |Type            |Requried|Postion|PipelineInput|
 |----------------|--------|-------|-------------|
-|```[String[]]```|false   |6      |false        |
+|```[String[]]```|false   |7      |false        |
 ---
 #### **RenameVariable**
 
@@ -84,7 +94,7 @@ A collection of variables to rename.
 
 |Type               |Requried|Postion|PipelineInput|
 |-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |7      |false        |
+|```[IDictionary]```|false   |8      |false        |
 ---
 #### **Transpile**
 
@@ -98,7 +108,7 @@ If set, will transpile the updated script block.
 ---
 ### Syntax
 ```PowerShell
-Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-RegexReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-RenameVariable] <IDictionary>] [-Transpile] [<CommonParameters>]
+Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-RegexReplacement] <IDictionary>] [[-RegionReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-RenameVariable] <IDictionary>] [-Transpile] [<CommonParameters>]
 ```
 ---
 
