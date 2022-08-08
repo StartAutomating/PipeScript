@@ -14,6 +14,30 @@ Update-PipeScript is used by PipeScript transpilers in order to make a number of
 It can also be used interactively to transform scripts or text in a number of ways.
 
 ---
+### Examples
+#### EXAMPLE 1
+```PowerShell
+Update-PipeScript -ScriptBlock {
+    param($x,$y)
+} -RemoveParameter x
+```
+
+#### EXAMPLE 2
+```PowerShell
+Update-PipeScript -RenameVariable @{x='y'} -ScriptBlock {$x}
+```
+
+#### EXAMPLE 3
+```PowerShell
+Update-PipeScript -ScriptBlock {
+    #region MyRegion
+    1
+    #endregion MyRegion
+    2
+} -RegionReplacement @{MyRegion=''}
+```
+
+---
 ### Parameters
 #### **ScriptBlock**
 
@@ -56,6 +80,26 @@ If set, will replace items based off of the abstract syntax tree.
 |-------------------|--------|-------|-------------|
 |```[IDictionary]```|false   |4      |false        |
 ---
+#### **RegexReplacement**
+
+If provided, will replace regular expression matches.
+
+
+
+|Type               |Requried|Postion|PipelineInput|
+|-------------------|--------|-------|-------------|
+|```[IDictionary]```|false   |5      |false        |
+---
+#### **RegionReplacement**
+
+If provided, will replace regions.
+
+
+
+|Type               |Requried|Postion|PipelineInput|
+|-------------------|--------|-------|-------------|
+|```[IDictionary]```|false   |6      |false        |
+---
 #### **RemoveParameter**
 
 If provided, will remove one or more parameters from a ScriptBlock.
@@ -64,7 +108,7 @@ If provided, will remove one or more parameters from a ScriptBlock.
 
 |Type            |Requried|Postion|PipelineInput|
 |----------------|--------|-------|-------------|
-|```[String[]]```|false   |5      |false        |
+|```[String[]]```|false   |7      |false        |
 ---
 #### **RenameVariable**
 
@@ -74,7 +118,7 @@ A collection of variables to rename.
 
 |Type               |Requried|Postion|PipelineInput|
 |-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |6      |false        |
+|```[IDictionary]```|false   |8      |false        |
 ---
 #### **Transpile**
 
@@ -88,7 +132,7 @@ If set, will transpile the updated script block.
 ---
 ### Syntax
 ```PowerShell
-Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-RenameVariable] <IDictionary>] [-Transpile] [<CommonParameters>]
+Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-RegexReplacement] <IDictionary>] [[-RegionReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-RenameVariable] <IDictionary>] [-Transpile] [<CommonParameters>]
 ```
 ---
 

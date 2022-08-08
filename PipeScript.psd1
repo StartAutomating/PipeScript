@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.1'
+    ModuleVersion     = '0.1.1'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -19,6 +19,25 @@
             BuildModule     = @('EZOut','Piecemeal','PipeScript','HelpOut', 'PSDevOps')
             Tags            = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
+## 0.1.1:
+* New Keywords:
+  * await (Fixes #181)
+* New-PipeScript:
+  * Allowing -Parameter to be supplied via reflection (Fixes #171)
+  * Adding -ParameterHelp (Fixes #172)
+  * Adding -WeaklyTyped (Fixes #174)
+* Update-PipeScript:
+  * Adding -RegexReplacement (Fixes #178)
+  * Adding -RegionReplacement (Fixes #179)
+* Use-PipeScript:
+  * Supporting Get-Command -Syntax (Fixes #177)
+* Types/Formatting Fixes:
+  * CommandAST/AttributeAST:  Adding .Args/.Arguments/.Parameters aliases (Fixes #176)
+  * CommandAST:  Fixing .GetParameter (Fixes #175)
+  * Updating PSToken control (more colorization) (Fixes #166)
+  * YAML Formatter indent / primitive support (Fixes #180)
+---
+
 ## 0.1:
 * PipeScript can now Transpile Protocols (Fixes #168)
 * PipeScript can transpile http[s] protocol (Fixes #169)

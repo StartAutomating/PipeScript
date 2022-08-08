@@ -1,6 +1,10 @@
-This directory and it's subdirectories contain additional language keywords within PipeScript.
+# PipeScript Keywords
 
-Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
+PipeScript contains several new language keywords that are not found in PowerShell.
+
+This directory contains the implementations of PipeScript language keywords.
+
+## Keyword List
 
 ~~~PipeScript{
     [PSCustomObject]@{
@@ -12,6 +16,7 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
     }}
 ~~~
 
+# Examples
 
 ~~~PipeScript{
     @(foreach ($transpiler in Get-Transpiler -TranspilerPath $pwd) {
@@ -27,3 +32,7 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
     }) -join ([Environment]::Newline * 2)
 }
 ~~~
+
+
+
+Keywords will generally be implemented as a Transpiler that tranforms a CommandAST.

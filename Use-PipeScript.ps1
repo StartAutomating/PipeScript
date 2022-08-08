@@ -2,7 +2,7 @@
 {
     <#
     .Synopsis
-        Uses PipeScript Transpilers    
+        Uses PipeScript Transpilers
     .Description
         Runs an individual PipeScript Transpiler.
         This command must be used by it's smart aliases (for example ```.>PipeScript```).
@@ -35,19 +35,37 @@
             {
                 $matches.Name
             }
-            else
+            elseif ($MyInv.InvocationName)
             {
                 $myInv.InvocationName -replace $NameRegex, '${Name}'
             }
+            else {
+                $callstackPeek = @(Get-PSCallStack)[-1]
+                $callerCommand = $callstackPeek.InvocationInfo.MyCommand.ToString()
+                $CallerName =
+                    if ($callerCommand -match "-Name\s{0,1}(?<Name>\S+)") {
+                        $matches.Name
+                    } elseif ($callerCommand -match '(?>gcm|Get-Command)\s{0,1}(?<Name>\S+)') {
+                        $matches.Name
+                    }
+
+                if ($callerName) {
+                    $callerName -replace $NameRegex, '${Name}'
+                }
+            }
+
+        if (-not $mySafeName) { return }
 
         # Find the Converter in the library.
-        $converter = Get-Transpiler | Where-Object DisplayName -eq $mySafeName 
-        $converter.GetDynamicParameters()
-        # return $Converter.GetDynamicParameters()        
+        $converter = Get-Transpiler | Where-Object DisplayName -eq $mySafeName
+        if ($converter) {
+            $converter.GetDynamicParameters()
+        }
+
     }
 
     begin {
-        $steppablePipelines = 
+        $steppablePipelines =
             @(if (-not $mySafeName -and $psBoundParameters['Name']) {
                 $names = $psBoundParameters['Name']
                 $null  = $psBoundParameters.Remove('Name')
@@ -61,10 +79,10 @@
     }
 
     process {
-        if (-not $mySafeName -and -not $steppablePipelines) {            
+        if (-not $mySafeName -and -not $steppablePipelines) {
             Write-Error "Must call Use-Pipescript with one of it's aliases."
             return
-        } 
+        }
         elseif ($steppablePipelines) {
             $in = $_
             foreach ($sp in $steppablePipelines) {

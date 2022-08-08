@@ -7,7 +7,20 @@ function Update-PipeScript {
 
         Update-PipeScript is used by PipeScript transpilers in order to make a number of changes to a script.
 
-        It can also be used interactively to transform scripts or text in a number of ways.        
+        It can also be used interactively to transform scripts or text in a number of ways.
+    .EXAMPLE
+        Update-PipeScript -ScriptBlock {
+            param($x,$y)
+        } -RemoveParameter x
+    .EXAMPLE
+        Update-PipeScript -RenameVariable @{x='y'} -ScriptBlock {$x}
+    .EXAMPLE
+        Update-PipeScript -ScriptBlock {
+            #region MyRegion
+            1
+            #endregion MyRegion
+            2
+        } -RegionReplacement @{MyRegion=''} 
     #>
     [Alias('Update-ScriptBlock', 'ups')]
     param(    
@@ -52,6 +65,14 @@ function Update-PipeScript {
     })]
     [Collections.IDictionary]
     $AstReplacement = [Ordered]@{},
+
+    # If provided, will replace regular expression matches.
+    [Collections.IDictionary]
+    $RegexReplacement = [Ordered]@{},
+
+    # If provided, will replace regions.
+    [Collections.IDictionary]
+    $RegionReplacement,
     
     # If provided, will remove one or more parameters from a ScriptBlock.
     [string[]]
@@ -254,14 +275,50 @@ function Update-PipeScript {
                 }
             ) -join ''
 
-            if ($ScriptBlock) {                
-                if ($Transpile) {
-                    [ScriptBlock]::Create($newScript) | .>Pipescript
-                } else {
-                    [ScriptBlock]::Create($newScript)
-                }
-            } else {
-                $newScript
+        $text = $newScript
+
+        if ($RegionReplacement.Count) {
+            foreach ($regionName in $RegionReplacement.Keys) {
+                $replacementReplacer = $RegionReplacement[$regionName]
+                $RegionName = $RegionName -replace '\s', '\s'
+                
+                $regionReplaceRegex = [Regex]::New("        
+                    [\n\r\s]{0,}        # Preceeding whitespace
+                    \#region            # The literal 'region'
+                    \s{1,} 
+                    (?<Name>$RegionName)
+                        (?<Content>
+                            (?:.|\s)+?(?=
+                            \z|
+                            ^\s{0,}\#endregion\s{1,}\k<Name>
+                        )
+                    )
+                    ^\s{0,}\#endregion\s{1,}\k<Name>
+                ", 'Multiline,IgnorePatternWhitespace,IgnoreCase', '00:00:05'
+                )
+                $RegexReplacement[$regionReplaceRegex] = $replacementReplacer
             }
+        }
+
+        if ($RegexReplacement.Count) {
+            foreach ($repl in $RegexReplacement.GetEnumerator()) {
+                $replRegex = if ($repl.Key -is [Regex]) {
+                    $repl.Key
+                } else { 
+                    [Regex]::new($repl.Key,'IgnoreCase,IgnorePatternWhitespace','00:00:05')
+                }
+                $newScript = $text = $replRegex.Replace($text, $repl.Value)
+            }
+        }
+
+        if ($ScriptBlock) {                
+            if ($Transpile) {
+                [ScriptBlock]::Create($newScript) | .>Pipescript
+            } else {
+                [ScriptBlock]::Create($newScript)
+            }
+        } else {
+            $newScript
+        }
     }
 }
