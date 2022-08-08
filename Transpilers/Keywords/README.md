@@ -1,16 +1,22 @@
-This directory and it's subdirectories contain additional language keywords within PipeScript.
+# PipeScript Keywords
 
-Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
+PipeScript contains several new language keywords that are not found in PowerShell.
 
+This directory contains the implementations of PipeScript language keywords.
 
-|DisplayName             |Synopsis                        |
-|------------------------|--------------------------------|
-|[Assert](Assert.psx.ps1)|[Assert keyword](Assert.psx.ps1)|
-|[New](New.psx.ps1)      |['new' keyword](New.psx.ps1)    |
-|[Until](Until.psx.ps1)  |[until keyword](Until.psx.ps1)  |
+## Keyword List
 
 
+|DisplayName             |Synopsis                                       |
+|------------------------|-----------------------------------------------|
+|[Assert](Assert.psx.ps1)|[Assert keyword](Assert.psx.ps1)               |
+|[Await](Await.psx.ps1)  |[awaits asynchronous operations](Await.psx.ps1)|
+|[New](New.psx.ps1)      |['new' keyword](New.psx.ps1)                   |
+|[Until](Until.psx.ps1)  |[until keyword](Until.psx.ps1)                 |
 
+
+
+# Examples
 
 ## Assert Example 1
 
@@ -70,6 +76,24 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
     Invoke-PipeScript {
         1..4 | assert {$_ % 2} { Write-Error "$_ is not odd!" }
     } -Debug
+~~~
+
+## Await Example 1
+
+
+~~~PowerShell
+    .>PipeScript -ScriptBlock {
+        await $Websocket.SendAsync($SendSegment, 'Binary', $true, [Threading.CancellationToken]::new($false))
+    }
+~~~
+
+## Await Example 2
+
+
+~~~PowerShell
+    .>PipeScript -ScriptBlock {
+        $receiveResult = await $Websocket.ReceiveAsync($receiveSegment, [Threading.CancellationToken]::new($false))
+    }
 ~~~
 
 ## New Example 1
@@ -211,4 +235,8 @@ Most keywords will be implemented as a Transpiler that tranforms a CommandAST.
         }
     }
 ~~~
+
+
+
+Keywords will generally be implemented as a Transpiler that tranforms a CommandAST.
 
