@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<!-- Generated with EZOut 1.8.8.1: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
+<!-- Generated with EZOut 1.9.0: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
 <Configuration>
   <Controls>
     <Control>
@@ -1161,7 +1161,12 @@ $BackgroundColor
     $YamlHeader,
 
     [int]
-    $Indent = 0
+    $Indent = 0,
+
+    # The maximum depth of objects to include.
+    # Beyond this depth, an empty string will be returned.    
+    [int]
+    $Depth
     )
 
     begin {
@@ -1176,6 +1181,13 @@ $BackgroundColor
             process {
                 $n++
                 if ($Object -eq $null) { return }
+
+                if ($depth) {
+                    $myDepth = $indent / 2
+                    if ($myDepth -gt $depth) {
+                        return ''
+                    }
+                }
             
                 if ($Parent -and $Parent -is [Collections.IList]) {
                     if ($Parent.IndexOf($Object) -gt 0) { ' ' * $Indent }
@@ -1261,7 +1273,11 @@ $BackgroundColor
                     $Object |
                         &amp; $mySelf -Parent $Object -GrandParent $Parent -Indent $Indent
             
-                } elseif ($Object.PSObject.Properties) {
+                } 
+                elseif ($object -is [enum]) {
+                    $object.ToString()
+                }
+                elseif ($Object.PSObject.Properties) {
                     $Object.psobject.properties |
                         &amp; $mySelf -Parent $Object -GrandParent $Parent -Indent $Indent
                 }
