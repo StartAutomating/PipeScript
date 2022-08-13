@@ -21,6 +21,7 @@
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]
+[Management.Automation.CommandInfo]
 $CommandInfo,
 
 # A dictionary of parameters.
