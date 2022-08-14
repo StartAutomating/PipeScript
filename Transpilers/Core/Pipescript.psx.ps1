@@ -44,7 +44,7 @@
 #>
 param(
 # A ScriptBlock that will be transpiled.
-[Parameter(Mandatory,ParameterSetName='ScriptBlock',ValueFromPipeline)]
+[Parameter(Mandatory,ParameterSetName='ScriptBlock',ValueFromPipeline,Position=0)]
 [ScriptBlock]
 $ScriptBlock,
 
