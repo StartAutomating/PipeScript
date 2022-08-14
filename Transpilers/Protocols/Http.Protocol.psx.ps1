@@ -136,6 +136,8 @@ process {
             }
             elseif ($argument -is [scriptblock]) {
                 "{" + $argument + "}"
+            } else {
+                "$argument"
             }
         }
         foreach ($param in $commandParameters.GetEnumerator()) {
