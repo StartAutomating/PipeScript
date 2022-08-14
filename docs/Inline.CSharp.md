@@ -69,9 +69,9 @@ The command information.  This will include the path to the file.
 
 
 
-|Type          |Requried|Postion|PipelineInput |
-|--------------|--------|-------|--------------|
-|```[Object]```|true    |1      |true (ByValue)|
+|Type               |Requried|Postion|PipelineInput |
+|-------------------|--------|-------|--------------|
+|```[CommandInfo]```|true    |1      |true (ByValue)|
 ---
 #### **Parameter**
 
@@ -95,7 +95,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.CSharp [-CommandInfo] <Object> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
+Inline.CSharp [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 
