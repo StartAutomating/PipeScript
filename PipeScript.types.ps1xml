@@ -306,7 +306,8 @@ for (
       <ScriptProperty>
         <Name>IsAssigned</Name>
         <GetScriptBlock>
-                        $this.Parent.Parent -is [Management.Automation.Language.AssignmentStatementAST]
+                        $this.Parent.IsAssigned -as [bool]
+
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -408,7 +409,8 @@ if ($foundTranspiler) {
       <ScriptProperty>
         <Name>IsAssigned</Name>
         <GetScriptBlock>
-                        $this.Parent -is [Management.Automation.Language.AssignmentStatementAST]
+                        $this.Parent -and
+$this.Parent.GetType().Name -in 'AssignmentStatementAST', 'HashtableAST'
 
                     </GetScriptBlock>
       </ScriptProperty>
