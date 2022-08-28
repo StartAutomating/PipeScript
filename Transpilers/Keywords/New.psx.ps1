@@ -55,7 +55,7 @@ process {
             $newTypeName.Value
         } 
         elseif ($newTypeName -is [Management.Automation.Language.HashtableAst]) {
-            $propertiesToCreate += $newTypeName
+            $propertiesToCreate += $newTypeName.Transpile()
         }        
         else {
             # generic types will be an ArrayLiteralAst
@@ -72,7 +72,7 @@ process {
         foreach ($newArg in $newArgs) {
             # If the argument is a hashtable, treat it as properties to set after creation.
             if ($newArg -is [Management.Automation.Language.HashtableAst]) {
-                $propertiesToCreate += $newArg
+                $propertiesToCreate += $newArg.Transpile()
             } else {
             # Otherwise, treat it as arguments.
                 $newArg
@@ -139,9 +139,9 @@ process {
             "[PSCustomObject][Ordered]$propertiesToCreate"
         } elseif ($newTypeNameAst -is [Management.Automation.Language.StringConstantExpressionAst]) {
             if ($propertiesToCreate) {
-                "[PSCustomObject]([Ordered]@{PSTypeName=$newTypeNameAst} + ([Ordered]$propertiesToCreate))"
+                "[PSCustomObject]([Ordered]@{PSTypeName='$newTypeNameAst'} + ([Ordered]$propertiesToCreate))"
             } else {
-                "[PSCustomObject][Ordered]@{PSTypeName=$newTypeNameAst}"
+                "[PSCustomObject][Ordered]@{PSTypeName='$newTypeNameAst'}"
             }
         }
         else {
@@ -149,7 +149,7 @@ process {
             return
         }
 
-    if ($propertiesToCreate -and $newTypeName) {
+    if ($propertiesToCreate -and $newTypeName -and $realNewType) {
         $newNew = '$newObject = ' + $newNew + [Environment]::NewLine
         $newNew += (@(foreach ($propSet in $propertiesToCreate) {
             'foreach ($kvp in ' + "([Ordered]" + $propSet + ').GetEnumerator()) {
