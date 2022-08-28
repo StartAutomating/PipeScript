@@ -24,6 +24,15 @@ while ($thisParent) {
 
                     </Script>
       </ScriptMethod>
+      <ScriptMethod>
+        <Name>Transpile</Name>
+        <Script>
+                        [ScriptBlock]::Create(
+    "$this"
+) | .&gt;PipeScript
+
+                    </Script>
+      </ScriptMethod>
       <ScriptProperty>
         <Name>Tokens</Name>
         <GetScriptBlock>
