@@ -1,0 +1,3 @@
+[ScriptBlock]::Create(
+    "$this"
+) | .>PipeScript
