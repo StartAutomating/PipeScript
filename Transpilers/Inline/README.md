@@ -1,11 +1,14 @@
 This directory contains Inline PipeScript transpilers for several languages.
 
-PipeScript can currently be embedded in 27 languages or file types.
-
 Transpilers in this directory should be named ```Inline.NameOfLanguage.psx.ps1```.
+
 Each file should handle one and only one language (better explicit than terse).
 
 Transpilers should call ```.>PipeScript.Inline``` to simplify and standarize processing.
+
+PipeScript can currently be embedded in 27 languages or file types.
+
+### Supported Languages
 
 
 |Language                               |Synopsis                                                             |
@@ -37,6 +40,22 @@ Transpilers should call ```.>PipeScript.Inline``` to simplify and standarize pro
 |[TypeScript](Inline.TypeScript.psx.ps1)|[TypeScript Inline PipeScript Transpiler.](Inline.TypeScript.psx.ps1)|
 |[XML](Inline.XML.psx.ps1)              |[XML Inline PipeScript Transpiler.](Inline.XML.psx.ps1)              |
 |[YAML](Inline.YAML.psx.ps1)            |[Yaml File Transpiler.](Inline.YAML.psx.ps1)                         |
+
+
+
+### Contributing
+
+If you would like to add support for writing a language with PipeScript, this is the place to put it.
+
+Transpilers in this directory should:
+* Be named ```Inline.NameOfLanguage.psx.ps1```.
+* Accept ```[Management.Automation.CommandInfo]``` as a pipeline parameter.
+* Use ```[ValidateScript({})]``` or ```[ValidatePattern()]``` to ensure that the correct file type is targeted.
+
+Each file should handle one and only one language (better explicit than terse).
+
+Transpilers should call ```.>PipeScript.Inline``` to simplify and standarize processing.
+
 
 
 
