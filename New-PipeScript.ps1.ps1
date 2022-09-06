@@ -345,15 +345,21 @@ HTTP Accept indicates what content types the web request will accept as a respon
             $allEndBlocks += $end
         }
 
+        # If -AutoParameter was passed
         if ($AutoParameter) {
+            # Find all of the variable expressions within -Begin, -Process, and -End
             $variableDefinitions = $Begin, $Process, $End |
                 Where-Object { $_ } |
                 Search-PipeScript -AstType VariableExpressionAST |
                 Select-Object -ExpandProperty Result
             foreach ($var in $variableDefinitions) {
+                # Then, see where those variables were assigned
                 $assigned = $var.GetAssignments()
+                # (if they were assigned, keep moving)
                 if ($assigned) { continue }
+                # If there were not assigned
                 $varName = $var.VariablePath.userPath.ToString()
+                # add it to the list of parameters to create.
                 $ParametersToCreate[$varName] = @(
                     @(
                     "[Parameter(ValueFromPipelineByPropertyName)]"
