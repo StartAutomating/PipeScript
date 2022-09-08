@@ -1,3 +1,23 @@
+## 0.1.2:
+* New Inline Language support
+  * Batch support (Fixes #198)
+  * Bash Support  (Fixes #194)
+* Core Inline Transpiler : Adding -LinePattern (fixes #197)
+* New-PipeScript: Writing help (Fixes #195) and functions (fixes #196)
+* AST Type Improvements:
+  * Adding [AST].Transpile() (Fixes #192)
+  * Considering a pipeline in a hashtable to be assigned (Fixes #193)
+  * [ScriptBlock]/[AST]:  Adding .Transpilers (Fixes #185)
+  * [CommandAst].ResolvedCommand:  Checking transpilers first (Fixes #186)
+* Improvements:
+  * new keyword property bag improvements (Fixes #191)
+  * Use-PipeScript:  Defaulting to core transpiler (Fixes #188)
+  * Core Transpiler:  Allowing -ScriptBlock to be provided postionally (Fixes #189)
+  * Adding Hashtable formatter (Fixes #187)
+  * HTTP Protocol: Enabling Splatting (Fixes #183)
+  * Requiring Inline Transpilers accept [Management.Automation.CommandInfo] from the Pipeline (Fixes #184)
+---
+
 ## 0.1.1:
 * New Keywords:
   * await (Fixes #181)
@@ -186,3 +206,4 @@
 ---
 ## 0.0.1
 Initial Commit.
+

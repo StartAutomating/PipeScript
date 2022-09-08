@@ -16,5 +16,14 @@ describe "'new' keyword" {
             (new ScriptBlock).GetType()
         } | Should -Be ([scriptblock])
     }
+    it 'Can make property bags' {
+        Invoke-PipeScript {
+            (new MyPropertyBag @{}).pstypenames[0]
+        } | Should -Be MyPropertyBag
+
+        Invoke-PipeScript {
+            (new MyPropertyBag @{n=1}).n
+        } | Should -Be 1
+    }
 }
 

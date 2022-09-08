@@ -1,21 +1,36 @@
 <#
 .SYNOPSIS
-    JSON PipeScript Transpiler.
+    Bash PipeScript Transpiler.
 .DESCRIPTION
-    Transpiles JSON with Inline PipeScript into JSON.
+    Transpiles Bash with Inline PipeScript into Bash.
 
-    Multiline comments blocks like ```/*{}*/``` will be treated as blocks of PipeScript.
+    Heredocs named PipeScript{} will be treated as blocks of PipeScript.
 
-    Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
+    ```bash
+    <<PipeScript{}
+    
+    # This will be considered PipeScript / PowerShell, and will return the contents of a bash script.
 
-    * ```null```
-    * ```""```
-    * ```{}```
-    * ```[]```
+    PipeScript{}
+    ```
+.EXAMPLE
+    Invoke-PipeScript {
+        $bashScript = @'
+        echo 'hello world'
+
+        <<PipeScript{}
+            "echo '$('hi','yo','sup' | Get-Random)'"
+        PipeScript{}
+    '@
+    
+        [OutputFile('.\HelloWorld.ps1.sh')]$bashScript
+    }
+
+    Invoke-PipeScript .\HelloWorld.ps1.sh
 #>
 [ValidateScript({
     $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.json$') {
+    if ($cmdInfo.Source -match '\.sh$') {
         return $true
     }
     return $false    
@@ -37,15 +52,12 @@ $ArgumentList
 
 begin {
     # We start off by declaring a number of regular expressions:
-    $startComment = '/\*' # * Start Comments ```\*```
-    $endComment   = '\*/' # * End Comments   ```/*```
-    $Whitespace   = '[\s\n\r]{0,}'
-    # * IgnoredContext ```String.empty```, ```null```, blank strings and characters
-    $IgnoredContext = "(?<ignore>(?>$("null", '""', "\{\}", "\[\]" -join '|'))\s{0,}){0,1}"
-    # * StartRegex     ```$IgnoredContext + $StartComment + '{' + $Whitespace```
-    $startRegex = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
-    # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
-    $endRegex   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    $startComment = '(?>\<\<PipeScript\{\})' 
+    $endComment   = '(?>PipeScript\{\})'    
+    # * StartRegex     ```$StartComment + '{' + $Whitespace```
+    $startRegex = "(?<PSStart>${startComment})"
+    # * EndRegex       ```$whitespace + '}' + $EndComment```
+    $endRegex   = "(?<PSEnd>${endComment})"
 
     # Create a splat containing arguments to the core inline transpiler
     $Splat      = [Ordered]@{

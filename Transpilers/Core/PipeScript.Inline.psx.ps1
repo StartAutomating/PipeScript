@@ -77,7 +77,13 @@ $Parameter = @{},
 # An argument list. 
 [Alias('Args')]
 [PSObject[]]
-$ArgumentList = @()
+$ArgumentList = @(),
+
+# Some languages only allow single-line comments.
+# To work with these languages, provide a -LinePattern indicating what makes a comment
+# Only lines beginning with this pattern within -StartPattern and -EndPattern will be considered a script.
+[Regex]
+$LinePattern
 )
 
 begin {
@@ -91,6 +97,11 @@ begin {
 
         if (-not $pipeScriptText) {
             return
+        }
+
+        if ($LinePattern) {
+            $pipeScriptLines = @($pipeScriptText -split '(?>\r\n|\n)')
+            $pipeScriptText  = $pipeScriptLines -match $LinePattern -replace $LinePattern -join [Environment]::Newline
         }
 
         $InlineScriptBlock = [scriptblock]::Create($pipeScriptText)

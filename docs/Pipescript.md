@@ -72,7 +72,7 @@ A ScriptBlock that will be transpiled.
 
 |Type               |Requried|Postion|PipelineInput |
 |-------------------|--------|-------|--------------|
-|```[ScriptBlock]```|true    |named  |true (ByValue)|
+|```[ScriptBlock]```|true    |1      |true (ByValue)|
 ---
 #### **Transpiler**
 
@@ -86,8 +86,9 @@ One or more transpilation expressions that apply to the script block.
 ---
 ### Syntax
 ```PowerShell
-Pipescript -ScriptBlock <ScriptBlock> [-Transpiler <String[]>] [<CommonParameters>]
+Pipescript [-ScriptBlock] <ScriptBlock> [-Transpiler <String[]>] [<CommonParameters>]
 ```
 ---
+
 
 

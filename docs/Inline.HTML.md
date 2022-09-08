@@ -1,3 +1,4 @@
-Inline.HTML.psx.ps1 [-CommandInfo] <Object> [[-Parameter] <IDictionary>] [[-ArgumentList] <psobject[]>] [<CommonParameters>]
+Inline.HTML.psx.ps1 [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <psobject[]>] [<CommonParameters>]
+
 
 

@@ -138,10 +138,23 @@ An argument list.
 |------------------|--------|-------|-------------|
 |```[PSObject[]]```|false   |11     |false        |
 ---
+#### **LinePattern**
+
+Some languages only allow single-line comments.
+To work with these languages, provide a -LinePattern indicating what makes a comment
+Only lines beginning with this pattern within -StartPattern and -EndPattern will be considered a script.
+
+
+
+|Type         |Requried|Postion|PipelineInput|
+|-------------|--------|-------|-------------|
+|```[Regex]```|false   |12     |false        |
+---
 ### Syntax
 ```PowerShell
-PipeScript.Inline [-SourceText] <String> [[-ReplacePattern] <Regex>] [[-StartPattern] <Regex>] [[-EndPattern] <Regex>] [[-ReplacementEvaluator] <ScriptBlock>] [-NoTranspile] [[-SourceFile] <String>] [[-Begin] <ScriptBlock>] [[-ForeachObject] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
+PipeScript.Inline [-SourceText] <String> [[-ReplacePattern] <Regex>] [[-StartPattern] <Regex>] [[-EndPattern] <Regex>] [[-ReplacementEvaluator] <ScriptBlock>] [-NoTranspile] [[-SourceFile] <String>] [[-Begin] <ScriptBlock>] [[-ForeachObject] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [[-LinePattern] <Regex>] [<CommonParameters>]
 ```
 ---
+
 
 

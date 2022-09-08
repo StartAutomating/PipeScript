@@ -1,4 +1,4 @@
-﻿<div align='center'>
+<div align='center'>
 <img src='Assets/PipeScript.svg' />
 </div>
 

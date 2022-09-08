@@ -1,20 +1,41 @@
 
-Inline.Razor
-------------
+Inline.Bash
+-----------
 ### Synopsis
-Razor Inline PipeScript Transpiler.
+Bash PipeScript Transpiler.
 
 ---
 ### Description
 
-Transpiles Razor with Inline PipeScript into Razor.
+Transpiles Bash with Inline PipeScript into Bash.
 
-Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
+Heredocs named PipeScript{} will be treated as blocks of PipeScript.
 
-JavaScript/CSS comment blocks like ```/*{}*/``` will also be treated as blocks of PipeScript.
+```bash
+<<PipeScript{}
 
-Razor comment blocks like ```@*{}*@``` will also be treated as blocks of PipeScript.
+# This will be considered PipeScript / PowerShell, and will return the contents of a bash script.
 
+PipeScript{}
+```
+
+---
+### Examples
+#### EXAMPLE 1
+```PowerShell
+Invoke-PipeScript {
+    $bashScript = @'
+    echo 'hello world'
+```
+<<PipeScript{}
+        "echo '$('hi','yo','sup' | Get-Random)'"
+    PipeScript{}
+'@
+
+    [OutputFile('.\HelloWorld.ps1.sh')]$bashScript
+}
+
+Invoke-PipeScript .\HelloWorld.ps1.sh
 ---
 ### Parameters
 #### **CommandInfo**
@@ -49,7 +70,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.Razor [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
+Inline.Bash [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 

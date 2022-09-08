@@ -152,7 +152,28 @@ HTTP Accept indicates what content types the web request will accept as a respon
     #>
     [Alias('WeakType', 'WeakParameters', 'WeaklyTypedParameters', 'WeakProperties', 'WeaklyTypedProperties')]
     [switch]
-    $WeaklyTyped
+    $WeaklyTyped,
+    # The name of the function to create.
+    [string]
+    $FunctionName,
+    # The type of the function to create.  This will be ignored if -FunctionName is not passed.
+    [string]
+    $FunctionType = 'function',
+    # A description of the script's functionality.  If provided with -Synopsis, will generate help.
+    [string]
+    $Description,
+    # A short synopsis of the script's functionality.  If provided with -Description, will generate help.
+    [string]
+    $Synopsis,
+    # A list of examples to use in help.  Will be ignored if -Synopsis and -Description are not passed.
+    [string[]]
+    $Example,
+    # A list of links to use in help.  Will be ignored if -Synopsis and -Description are not passed.
+    [string[]]
+    $Link,
+    # A list of attributes to declare on the scriptblock.
+    [string[]]
+    $Attribute
     )
     begin {
         $ParametersToCreate    = [Ordered]@{}
@@ -177,6 +198,36 @@ HTTP Accept indicates what content types the web request will accept as a respon
         }
     }
     process {
+        if ($Synopsis -and $Description) {
+            function indentHelpLine {
+                            foreach ($line in $args -split '(?>\r\n|\n)') {
+                                (' ' * 4) + $line.Trim()
+                            }
+                        
+            }
+            $helpHeader = @(
+                "<#"
+                ".Synopsis"
+                indentHelpLine $Synopsis
+                ".Description"
+                indentHelpLine $Description
+                
+                foreach ($helpExample in $Example) {
+                    ".Example"
+                    indentHelpLine $helpExample
+                }
+                foreach ($helplink in $Link) {
+                    ".Link"
+                    indentHelpLine $link
+                } 
+                "#>"
+            ) -join [Environment]::Newline
+            $allHeaders += $helpHeader
+        }
+        
+        if ($Attribute) {
+            $allHeaders += $Attribute
+        }
         if ($parameter) {
             # The -Parameter can be a dictionary of parameters.
             if ($Parameter -is [Collections.IDictionary]) {
@@ -252,6 +303,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                         $parameter
                     }
             }
+            # If the -Parameter was provided via reflection
             elseif ($parameter -is [Reflection.PropertyInfo] -or
                 $parameter -as [Reflection.PropertyInfo[]] -or
                 $parameter -is [Reflection.ParameterInfo] -or
@@ -324,15 +376,21 @@ HTTP Accept indicates what content types the web request will accept as a respon
             # accumulate them.
             $allEndBlocks += $end
         }
+        # If -AutoParameter was passed
         if ($AutoParameter) {
+            # Find all of the variable expressions within -Begin, -Process, and -End
             $variableDefinitions = $Begin, $Process, $End |
                 Where-Object { $_ } |
                 Search-PipeScript -AstType VariableExpressionAST |
                 Select-Object -ExpandProperty Result
             foreach ($var in $variableDefinitions) {
+                # Then, see where those variables were assigned
                 $assigned = $var.GetAssignments()
+                # (if they were assigned, keep moving)
                 if ($assigned) { continue }
+                # If there were not assigned
                 $varName = $var.VariablePath.userPath.ToString()
+                # add it to the list of parameters to create.
                 $ParametersToCreate[$varName] = @(
                     @(
                     "[Parameter(ValueFromPipelineByPropertyName)]"
@@ -359,7 +417,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
             $newParamBlock = $parameterScriptBlocks | Join-PipeScript
         }
         # Create the script block by combining together the provided parts.
-        $createdScriptBlock = [scriptblock]::Create("
+        $createdScriptBlock = [scriptblock]::Create("$(if ($functionName) { "$functionType $FunctionName {"})
 $($allHeaders -join [Environment]::Newline)
 $newParamBlock
 $(if ($allDynamicParameters) {
@@ -376,9 +434,17 @@ $(if ($allEndBlocks -and -not $allBeginBlocks -and -not $allProcessBlocks) {
 } elseif ($allEndBlocks) {
     @(@("end {") + $allEndBlocks + '}') -join [Environment]::Newline
 })
+$(if ($FunctionName) { '}'}) 
 ")
-        # return the created script block.
-        return $createdScriptBlock
+        # If we have a -FunctionName and the -FunctionType is not a built-in function type
+        if ($CreatedScriptBlock -and 
+            $functionName -and $FunctionType -notin 'function', 'filter') {
+            # return the transpiled script.
+            return $createdScriptBlock.Transpile()
+        } else {
+            # otherwise, return the created script.
+            return $createdScriptBlock
+        }
     }
 }
 

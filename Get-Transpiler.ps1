@@ -1,4 +1,4 @@
-#region Piecemeal [ 0.3.3 ] : Easy Extensible Plugins for PowerShell
+#region Piecemeal [ 0.3.4 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
 # Install-Piecemeal -ExtensionNoun 'Transpiler' -ExtensionPattern '\.psx\.ps1$' -ExtensionTypeName 'PipeScript.Transpiler' -OutputPath '.\Get-Transpiler.ps1'
@@ -230,7 +230,7 @@ function Get-Transpiler
                 }
 
             $extCmd.PSObject.Methods.Add([psscriptmethod]::new('GetExtendedCommands', {
-
+                param([Management.Automation.CommandInfo[]]$CommandList)
                 $extendedCommandNames = @(
                     foreach ($attr in $this.ScriptBlock.Attributes) {
                         if ($attr -isnot [Management.Automation.CmdletAttribute]) { continue }
@@ -244,13 +244,16 @@ function Get-Transpiler
                     $this | Add-Member NoteProperty ExtensionCommands @() -Force
                     return    
                 }
-                $allLoadedCmds = $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','All', $true)
+                if (-not $CommandList) {
+                    $commandList = $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function,Alias,Cmdlet', $true)
+                }
                 $extends = @{}
-                foreach ($loadedCmd in $allLoadedCmds) {
+                :nextCommand foreach ($loadedCmd in $commandList) {
                     foreach ($extensionCommandName in $extendedCommandNames) {
                         if ($extensionCommandName -and $loadedCmd.Name -match $extensionCommandName) {
                             $loadedCmd
                             $extends[$loadedCmd.Name] = $loadedCmd
+                            continue nextCommand
                         }
                     }
                 }
@@ -263,7 +266,12 @@ function Get-Transpiler
                 $this | Add-Member NoteProperty ExtensionCommands $extends.Values -Force
             }))
 
-            $null = $extCmd.GetExtendedCommands()
+            if (-not $script:AllCommands) {
+                $script:AllCommands = $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function,Alias,Cmdlet', $true)
+            }
+            
+
+            $null = $extCmd.GetExtendedCommands($script:AllCommands)
 
             $inheritanceLevel = [ComponentModel.InheritanceLevel]::Inherited
 
@@ -824,9 +832,8 @@ function Get-Transpiler
                     return $allDynamicParameters
                 }
             }
-        }
-        #endregion Define Inner Functions
-
+        }        
+        #endregion Define Inner Functions        
 
         $extensionFullRegex =
             [Regex]::New($(
@@ -847,7 +854,8 @@ function Get-Transpiler
         $getCmd    = $ExecutionContext.SessionState.InvokeCommand.GetCommand
 
         if ($Force) {
-            $script:Transpilers = $null
+            $script:Transpilers  = $null
+            $script:AllCommands = @()
         }
         if (-not $script:Transpilers)
         {
@@ -917,5 +925,5 @@ function Get-Transpiler
         }
     }
 }
-#endregion Piecemeal [ 0.3.3 ] : Easy Extensible Plugins for PowerShell
+#endregion Piecemeal [ 0.3.4 ] : Easy Extensible Plugins for PowerShell
 

@@ -1,1 +1,2 @@
-$this.Parent -is [Management.Automation.Language.AssignmentStatementAST]
+$this.Parent -and
+$this.Parent.GetType().Name -in 'AssignmentStatementAST', 'HashtableAST'

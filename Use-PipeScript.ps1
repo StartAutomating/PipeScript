@@ -54,7 +54,9 @@
                 }
             }
 
-        if (-not $mySafeName) { return }
+        if (-not $mySafeName) {
+            $mySafeName = 'PipeScript'
+        }
 
         # Find the Converter in the library.
         $converter = Get-Transpiler | Where-Object DisplayName -eq $mySafeName

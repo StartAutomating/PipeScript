@@ -1,1 +1,1 @@
-$this.Parent.Parent -is [Management.Automation.Language.AssignmentStatementAST]
+$this.Parent.IsAssigned -as [bool]
