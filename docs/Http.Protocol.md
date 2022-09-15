@@ -22,14 +22,14 @@ Converts an http[s] protocol command to PowerShell.
 ```PowerShell
 {
     get https://api.github.com/repos/StartAutomating/PipeScript
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 #### EXAMPLE 3
 ```PowerShell
 Invoke-PipeScript {
-    $GitHubApi = 'api.github.com'
-    $UserName  = 'StartAutomating'
+    $GitHubApi = &#39;api.github.com&#39;
+    $UserName  = &#39;StartAutomating&#39;
     https://$GitHubApi/users/$UserName
 }
 ```
@@ -60,7 +60,7 @@ Invoke-PipeScript {
 #### EXAMPLE 7
 ```PowerShell
 {
-    http://text-processing.com/api/sentiment/ -Method POST -ContentType 'application/x-www-form-urlencoded' -Body "text=amazing!" |
+    http://text-processing.com/api/sentiment/ -Method POST -ContentType &#39;application/x-www-form-urlencoded&#39; -Body &quot;text=amazing!&quot; |
         Select-Object -ExpandProperty Probability -Property Label
 }
 ```
@@ -73,9 +73,16 @@ The URI.
 
 
 
-|Type       |Requried|Postion|PipelineInput |
-|-----------|--------|-------|--------------|
-|```[Uri]```|true    |1      |true (ByValue)|
+> **Type**: ```[Uri]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **CommandAst**
 
@@ -83,19 +90,33 @@ The Command's Abstract Syntax Tree
 
 
 
-|Type              |Requried|Postion|PipelineInput|
-|------------------|--------|-------|-------------|
-|```[CommandAst]```|true    |2      |false        |
+> **Type**: ```[CommandAst]```
+
+> **Required**: true
+
+> **Position**: 2
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Method**
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|false   |3      |false        |
+> **Type**: ```[String]```
+
+> **Required**: false
+
+> **Position**: 3
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Http.Protocol [-CommandUri] <Uri> [-CommandAst] <CommandAst> [[-Method] <String>] [<CommonParameters>]
+Http.Protocol [-CommandUri] &lt;Uri&gt; [-CommandAst] &lt;CommandAst&gt; [[-Method] &lt;String&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 
