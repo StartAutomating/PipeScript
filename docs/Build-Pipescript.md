@@ -19,13 +19,20 @@ One or more input paths.  If no -InputPath is provided, will build all scripts b
 
 
 
-|Type            |Requried|Postion|PipelineInput        |
-|----------------|--------|-------|---------------------|
-|```[String[]]```|false   |1      |true (ByPropertyName)|
+> **Type**: ```[String[]]```
+
+> **Required**: false
+
+> **Position**: 1
+
+> **PipelineInput**:true (ByPropertyName)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Build-Pipescript [[-InputPath] <String[]>] [<CommonParameters>]
+Build-Pipescript [[-InputPath] &lt;String[]&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 
