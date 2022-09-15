@@ -6,13 +6,7 @@
 
     Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.rs$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.rs$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

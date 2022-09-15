@@ -10,13 +10,7 @@
 
     Razor comment blocks like ```@*{}*@``` will also be treated as blocks of PipeScript.
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.(cshtml|razor)$') {
-        return $true
-    }
-    return $false
-})]
+[ValidatePattern('\.(cshtml|razor)$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

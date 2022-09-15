@@ -14,7 +14,7 @@ The Help Transpiler allows you to write inline help without directly writing com
 #### EXAMPLE 1
 ```PowerShell
 {
-    [Help(Synopsis="The Synopsis", Description="A Description")]
+    [Help(Synopsis=&quot;The Synopsis&quot;, Description=&quot;A Description&quot;)]
     param()
 ```
 "This Script Has Help, Without Directly Writing Comments"
@@ -24,60 +24,95 @@ The Help Transpiler allows you to write inline help without directly writing com
 ```PowerShell
 {
     param(
-    [Help(Synopsis="X Value")]
+    [Help(Synopsis=&quot;X Value&quot;)]
     $x
     )
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 #### EXAMPLE 3
 ```PowerShell
 {
     param(
-    [Help("X Value")]
+    [Help(&quot;X Value&quot;)]
     $x
     )
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 ---
 ### Parameters
 #### **Synopsis**
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|true    |1      |false        |
+> **Type**: ```[String]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Description**
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|false   |named  |false        |
+> **Type**: ```[String]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Example**
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[String[]]```|false   |named  |false        |
+> **Type**: ```[String[]]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Link**
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[String[]]```|false   |named  |false        |
+> **Type**: ```[String[]]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ScriptBlock**
 
-|Type               |Requried|Postion|PipelineInput |
-|-------------------|--------|-------|--------------|
-|```[ScriptBlock]```|false   |named  |true (ByValue)|
+> **Type**: ```[ScriptBlock]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Help [-Synopsis] <String> [-Description <String>] [-Example <String[]>] [-Link <String[]>] [<CommonParameters>]
+Help [-Synopsis] &lt;String&gt; [-Description &lt;String&gt;] [-Example &lt;String[]&gt;] [-Link &lt;String[]&gt;] [&lt;CommonParameters&gt;]
 ```
 ```PowerShell
-Help [-Synopsis] <String> [-Description <String>] [-Example <String[]>] [-Link <String[]>] [-ScriptBlock <ScriptBlock>] [<CommonParameters>]
+Help [-Synopsis] &lt;String&gt; [-Description &lt;String&gt;] [-Example &lt;String[]&gt;] [-Link &lt;String[]&gt;] [-ScriptBlock &lt;ScriptBlock&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 

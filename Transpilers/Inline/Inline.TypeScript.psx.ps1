@@ -17,13 +17,7 @@
     * ```""```
     * ```''```
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.ts$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.tsx{0,1}')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

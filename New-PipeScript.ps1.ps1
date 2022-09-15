@@ -116,10 +116,12 @@ HTTP Accept indicates what content types the web request will accept as a respon
     $Synopsis,
 
     # A list of examples to use in help.  Will be ignored if -Synopsis and -Description are not passed.
+    [Alias('Examples')]
     [string[]]
     $Example,
 
     # A list of links to use in help.  Will be ignored if -Synopsis and -Description are not passed.
+    [Alias('Links')]
     [string[]]
     $Link,
 
@@ -157,7 +159,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
         if ($Synopsis -and $Description) {
             function indentHelpLine {
                 foreach ($line in $args -split '(?>\r\n|\n)') {
-                    (' ' * 4) + $line.Trim()
+                    (' ' * 4) + $line.TrimEnd()
                 }
             }
 
@@ -174,7 +176,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                 }
                 foreach ($helplink in $Link) {
                     ".Link"
-                    indentHelpLine $link
+                    indentHelpLine $helplink
                 } 
                 "#>"
             ) -join [Environment]::Newline
@@ -273,15 +275,20 @@ HTTP Accept indicates what content types the web request will accept as a respon
                 $parameter -is [Reflection.MethodInfo] -or
                 $parameter -as [Reflection.MethodInfo[]]
             ) {
+                # check to see if it's a method
                 if ($parameter -is [Reflection.MethodInfo] -or
                     $parameter -as [Reflection.MethodInfo[]]) {
                     $parameter = @(foreach ($methodInfo in $parameter) {
-                        $methodInfo.GetParameters()
+                        $methodInfo.GetParameters() # if so, reflect the method's parameters
                     })
                 }
 
+                # Walk over each parameter
                 foreach ($prop in $Parameter) {
+                    # If it is a property info that cannot be written, skip.
                     if ($prop -is [Reflection.PropertyInfo] -and -not $prop.CanWrite) { continue }
+
+                    # Determine the reflected parameter type.
                     $paramType =
                         if ($prop.ParameterType) {
                             $prop.ParameterType

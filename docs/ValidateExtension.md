@@ -17,17 +17,17 @@ This creates a [ValidatePattern] that will ensure the extension matches.
 ```PowerShell
 {        
     param(
-    [ValidateExtension(Extension=".cs", ".ps1")]
+    [ValidateExtension(Extension=&quot;.cs&quot;, &quot;.ps1&quot;)]
     $FilePath
     )
-} |.>PipeScript
+} |.&gt;PipeScript
 ```
 
 #### EXAMPLE 2
 ```PowerShell
 {
     param(
-    [ValidateExtension(Extension=".cs", ".ps1")]
+    [ValidateExtension(Extension=&quot;.cs&quot;, &quot;.ps1&quot;)]
     $FilePath
     )
 ```
@@ -37,7 +37,7 @@ $FilePath
 ```PowerShell
 {
     param(
-    [ValidateExtension(Extension=".cs", ".ps1")]
+    [ValidateExtension(Extension=&quot;.cs&quot;, &quot;.ps1&quot;)]
     $FilePath
     )
 ```
@@ -51,9 +51,16 @@ The extensions being validated.
 
 
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[String[]]```|true    |1      |false        |
+> **Type**: ```[String[]]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **VariableAST**
 
@@ -62,16 +69,23 @@ If this is provided, will apply a ```[ValidatePattern({})]``` attribute to the v
 
 
 
-|Type                         |Requried|Postion|PipelineInput |
-|-----------------------------|--------|-------|--------------|
-|```[VariableExpressionAst]```|false   |named  |true (ByValue)|
+> **Type**: ```[VariableExpressionAst]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-ValidateExtension [-Extension] <String[]> [<CommonParameters>]
+ValidateExtension [-Extension] &lt;String[]&gt; [&lt;CommonParameters&gt;]
 ```
 ```PowerShell
-ValidateExtension [-Extension] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
+ValidateExtension [-Extension] &lt;String[]&gt; [-VariableAST &lt;VariableExpressionAst&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 

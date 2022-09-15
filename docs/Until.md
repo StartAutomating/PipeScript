@@ -21,13 +21,13 @@ until will always run at least once, and will run until a condition is true.
         $x            
         $x++
     }        
-} |.>PipeScript
+} |.&gt;PipeScript
 ```
 
 #### EXAMPLE 2
 ```PowerShell
 Invoke-PipeScript {
-    until "00:00:05" {
+    until &quot;00:00:05&quot; {
         [DateTime]::Now
         Start-Sleep -Milliseconds 500
     } 
@@ -37,7 +37,7 @@ Invoke-PipeScript {
 #### EXAMPLE 3
 ```PowerShell
 Invoke-PipeScript {
-    until "12:17 pm" {
+    until &quot;12:17 pm&quot; {
         [DateTime]::Now
         Start-Sleep -Milliseconds 500
     } 
@@ -48,18 +48,18 @@ Invoke-PipeScript {
 ```PowerShell
 {
     $eventCounter = 0
-    until "MyEvent" {
+    until &quot;MyEvent&quot; {
         $eventCounter++
         $eventCounter
-        until "00:00:03" {
-            "sleeping a few seconds"
+        until &quot;00:00:03&quot; {
+            &quot;sleeping a few seconds&quot;
             Start-Sleep -Milliseconds 500
         }
         if (-not ($eventCounter % 5)) {
             $null = New-Event -SourceIdentifier MyEvent
         }
     }
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 #### EXAMPLE 5
@@ -67,7 +67,7 @@ Invoke-PipeScript {
 Invoke-PipeScript {
     $tries = 3
     until (-not $tries) {
-        "$tries tries left"
+        &quot;$tries tries left&quot;
         $tries--            
     }
 }
@@ -77,13 +77,20 @@ Invoke-PipeScript {
 ### Parameters
 #### **CommandAst**
 
-|Type              |Requried|Postion|PipelineInput |
-|------------------|--------|-------|--------------|
-|```[CommandAst]```|true    |named  |true (ByValue)|
+> **Type**: ```[CommandAst]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Until -CommandAst <CommandAst> [<CommonParameters>]
+Until -CommandAst &lt;CommandAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 ### Notes

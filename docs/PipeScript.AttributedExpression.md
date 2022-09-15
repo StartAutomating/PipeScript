@@ -24,13 +24,20 @@ The attributed expression
 
 
 
-|Type                           |Requried|Postion|PipelineInput |
-|-------------------------------|--------|-------|--------------|
-|```[AttributedExpressionAst]```|true    |named  |true (ByValue)|
+> **Type**: ```[AttributedExpressionAst]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-PipeScript.AttributedExpression -AttributedExpressionAst <AttributedExpressionAst> [<CommonParameters>]
+PipeScript.AttributedExpression -AttributedExpressionAst &lt;AttributedExpressionAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 

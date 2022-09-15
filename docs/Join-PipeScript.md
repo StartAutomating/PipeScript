@@ -12,6 +12,9 @@ Joins ScriptBlocks written in PowerShell or PipeScript.
 ---
 ### Related Links
 * [Update-PipeScript](Update-PipeScript.md)
+
+
+
 ---
 ### Examples
 #### EXAMPLE 1
@@ -57,9 +60,16 @@ A ScriptBlock written in PowerShell or PipeScript.
 
 
 
-|Type                 |Requried|Postion|PipelineInput                 |
-|---------------------|--------|-------|------------------------------|
-|```[ScriptBlock[]]```|true    |named  |true (ByValue, ByPropertyName)|
+> **Type**: ```[ScriptBlock[]]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue, ByPropertyName)
+
+
+
 ---
 #### **SkipBlockType**
 
@@ -81,9 +91,16 @@ Valid Values:
 
 
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[String[]]```|false   |named  |false        |
+> **Type**: ```[String[]]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **BlockType**
 
@@ -104,9 +121,16 @@ Valid Values:
 
 
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[String[]]```|false   |named  |false        |
+> **Type**: ```[String[]]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Transpile**
 
@@ -114,13 +138,20 @@ If set, will transpile the joined ScriptBlock.
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Join-PipeScript -ScriptBlock <ScriptBlock[]> [-SkipBlockType <String[]>] [-BlockType <String[]>] [-Transpile] [<CommonParameters>]
+Join-PipeScript -ScriptBlock &lt;ScriptBlock[]&gt; [-SkipBlockType &lt;String[]&gt;] [-BlockType &lt;String[]&gt;] [-Transpile] [&lt;CommonParameters&gt;]
 ```
 ---
 

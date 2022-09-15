@@ -25,8 +25,8 @@ The OpenSCAD Inline Transpiler will consider the following syntax to be empty:
 #### EXAMPLE 1
 ```PowerShell
 {
-    $OpenScadWithInlinePipeScript = @'
-Shape = "cube" /*{'"cube"', '"sphere"', '"circle"' | Get-Random}*/;
+    $OpenScadWithInlinePipeScript = @&#39;
+Shape = &quot;cube&quot; /*{&#39;&quot;cube&quot;&#39;, &#39;&quot;sphere&quot;&#39;, &#39;&quot;circle&quot;&#39; | Get-Random}*/;
 Size  = 1 /*{Get-Random -Min 1 -Max 100}*/ ;
 ```
 if (Shape == "cube") {
@@ -52,9 +52,16 @@ The command information.  This will include the path to the file.
 
 
 
-|Type               |Requried|Postion|PipelineInput |
-|-------------------|--------|-------|--------------|
-|```[CommandInfo]```|true    |1      |true (ByValue)|
+> **Type**: ```[CommandInfo]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **Parameter**
 
@@ -62,9 +69,16 @@ A dictionary of parameters.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |2      |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: 2
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ArgumentList**
 
@@ -72,13 +86,20 @@ A list of arguments.
 
 
 
-|Type              |Requried|Postion|PipelineInput|
-|------------------|--------|-------|-------------|
-|```[PSObject[]]```|false   |3      |false        |
+> **Type**: ```[PSObject[]]```
+
+> **Required**: false
+
+> **Position**: 3
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Inline.OpenSCAD [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
+Inline.OpenSCAD [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 

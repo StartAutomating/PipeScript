@@ -21,7 +21,7 @@ Invoke-PipeScript -ScriptBlock {
     $a = 1
     $number = 1    
     if ($a === $number ) {
-        "A is $a"
+        &quot;A is $a&quot;
     }
 }
 ```
@@ -30,12 +30,12 @@ Invoke-PipeScript -ScriptBlock {
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
     $One = 1
-    $OneIsNotANumber = "1"
+    $OneIsNotANumber = &quot;1&quot;
     if ($one == $OneIsNotANumber) {
-        'With ==, a number can be compared to a string, so $a == "1"'
+        &#39;With ==, a number can be compared to a string, so $a == &quot;1&quot;&#39;
     }
     if (-not ($One === $OneIsNotANumber)) {
-        "With ===, a number isn't the same type as a string, so this will be false."            
+        &quot;With ===, a number isn&#39;t the same type as a string, so this will be false.&quot;            
     }
 }
 ```
@@ -44,7 +44,7 @@ Invoke-PipeScript -ScriptBlock {
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
     if ($null === $null) {
-        '$Null really is $null'
+        &#39;$Null really is $null&#39;
     }
 }
 ```
@@ -54,7 +54,7 @@ Invoke-PipeScript -ScriptBlock {
 Invoke-PipeScript -ScriptBlock {
     $zero = 0
     if (-not ($zero === $null)) {
-        '$zero is not $null'
+        &#39;$zero is not $null&#39;
     }
 }
 ```
@@ -62,9 +62,9 @@ Invoke-PipeScript -ScriptBlock {
 #### EXAMPLE 5
 ```PowerShell
 {
-    $a = "b"
-    $a === "b"
-} | .>PipeScript
+    $a = &quot;b&quot;
+    $a === &quot;b&quot;
+} | .&gt;PipeScript
 ```
 
 ---
@@ -75,13 +75,20 @@ The original assignment statement.
 
 
 
-|Type                          |Requried|Postion|PipelineInput |
-|------------------------------|--------|-------|--------------|
-|```[AssignmentStatementAst]```|true    |1      |true (ByValue)|
+> **Type**: ```[AssignmentStatementAst]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-EqualityTypeComparison [-AssignmentStatementAST] <AssignmentStatementAst> [<CommonParameters>]
+EqualityTypeComparison [-AssignmentStatementAST] &lt;AssignmentStatementAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 ### Notes

@@ -37,13 +37,7 @@
 
     Invoke-PipeScript .\HelloWorld.ps1.cmd
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.cmd$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.cmd$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

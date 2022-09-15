@@ -19,8 +19,8 @@ Generates a Proxy Command for an underlying PowerShell or PipeScript command.
 #### EXAMPLE 2
 ```PowerShell
 {
-    function [ProxyCommand<'Get-Process'>]GetProcessProxy {}
-} | .>PipeScript
+    function [ProxyCommand&lt;&#39;Get-Process&#39;&gt;]GetProcessProxy {}
+} | .&gt;PipeScript
 ```
 
 #### EXAMPLE 3
@@ -30,16 +30,16 @@ ProxyCommand -CommandName Get-Process -RemoveParameter *
 
 #### EXAMPLE 4
 ```PowerShell
-Invoke-PipeScript -ScriptBlock {[ProxyCommand('Get-Process')]param()}
+Invoke-PipeScript -ScriptBlock {[ProxyCommand(&#39;Get-Process&#39;)]param()}
 ```
 
 #### EXAMPLE 5
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
-    [ProxyCommand('Get-Process', 
-        RemoveParameter='*',
+    [ProxyCommand(&#39;Get-Process&#39;, 
+        RemoveParameter=&#39;*&#39;,
         DefaultParameter={
-            @{id='$pid'}
+            @{id=&#39;$pid&#39;}
         })]
         param()
 }
@@ -49,14 +49,14 @@ Invoke-PipeScript -ScriptBlock {
 ```PowerShell
 { 
     function Get-MyProcess {
-        [ProxyCommand('Get-Process', 
-            RemoveParameter='*',
+        [ProxyCommand(&#39;Get-Process&#39;, 
+            RemoveParameter=&#39;*&#39;,
             DefaultParameter={
-                @{id='$pid'}
+                @{id=&#39;$pid&#39;}
             })]
             param()
     } 
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 ---
@@ -67,9 +67,16 @@ The ScriptBlock that will become a proxy command.  This should be empty, since i
 
 
 
-|Type               |Requried|Postion|PipelineInput |
-|-------------------|--------|-------|--------------|
-|```[ScriptBlock]```|false   |named  |true (ByValue)|
+> **Type**: ```[ScriptBlock]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **CommandName**
 
@@ -77,9 +84,16 @@ The name of the command being proxied.
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|true    |1      |false        |
+> **Type**: ```[String]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **RemoveParameter**
 
@@ -87,9 +101,16 @@ If provided, will remove any number of parameters from the proxy command.
 
 
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[String[]]```|false   |named  |false        |
+> **Type**: ```[String[]]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **DefaultParameter**
 
@@ -97,13 +118,20 @@ Any default parameters for the ProxyCommand.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |named  |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-ProxyCommand [-ScriptBlock <ScriptBlock>] [-CommandName] <String> [-RemoveParameter <String[]>] [-DefaultParameter <IDictionary>] [<CommonParameters>]
+ProxyCommand [-ScriptBlock &lt;ScriptBlock&gt;] [-CommandName] &lt;String&gt; [-RemoveParameter &lt;String[]&gt;] [-DefaultParameter &lt;IDictionary&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 

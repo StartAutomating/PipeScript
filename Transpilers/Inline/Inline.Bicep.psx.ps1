@@ -11,13 +11,7 @@
     * ```''```
     * ```{}```
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.bicep$') {
-        return $true
-    }
-    return $false
-})]
+[ValidatePattern('\.bicep$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

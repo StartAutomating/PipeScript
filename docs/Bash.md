@@ -13,22 +13,36 @@ Wraps PowerShell in a Bash Script
 ### Parameters
 #### **ScriptInfo**
 
-|Type                      |Requried|Postion|PipelineInput |
-|--------------------------|--------|-------|--------------|
-|```[ExternalScriptInfo]```|true    |named  |true (ByValue)|
+> **Type**: ```[ExternalScriptInfo]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **ScriptBlock**
 
-|Type               |Requried|Postion|PipelineInput |
-|-------------------|--------|-------|--------------|
-|```[ScriptBlock]```|true    |named  |true (ByValue)|
+> **Type**: ```[ScriptBlock]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Bash -ScriptInfo <ExternalScriptInfo> [<CommonParameters>]
+Bash -ScriptInfo &lt;ExternalScriptInfo&gt; [&lt;CommonParameters&gt;]
 ```
 ```PowerShell
-Bash -ScriptBlock <ScriptBlock> [<CommonParameters>]
+Bash -ScriptBlock &lt;ScriptBlock&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 

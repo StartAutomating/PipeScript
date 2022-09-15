@@ -13,6 +13,9 @@ This command must be used by it's smart aliases (for example ```.>PipeScript```)
 ---
 ### Related Links
 * [Get-Transpiler](Get-Transpiler.md)
+
+
+
 ---
 ### Examples
 #### EXAMPLE 1
@@ -23,7 +26,7 @@ PipeScript # Returns an unchanged ScriptBlock, because there was nothing to run.
 ---
 ### Syntax
 ```PowerShell
-Use-PipeScript [<CommonParameters>]
+Use-PipeScript [&lt;CommonParameters&gt;]
 ```
 ---
 

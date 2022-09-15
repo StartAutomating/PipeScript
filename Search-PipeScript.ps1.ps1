@@ -4,7 +4,9 @@ function Search-PipeScript
     .Synopsis
         Searches PowerShell and PipeScript ScriptBlocks
     .Description
-        Searches PowerShell and PipeScript ScriptBlocks, files, and text
+        Searches the contents of PowerShell and PipeScript ScriptBlocks, files, and text.
+
+        Search-PipeScript can search using an -ASTCondition -or -ASTType or with a -RegularExpression.
     .Example
         Search-PipeScript -ScriptBlock {
             $a
@@ -38,7 +40,7 @@ function Search-PipeScript
     
     # One or more regular expressions to match.
     [Parameter(ValueFromPipelineByPropertyName)]
-    [Alias('RegEx')]
+    [Alias('RegEx','Regexes','RegularExpressions')]
     [ValidateTypes(TypeName={[string], [Regex], [string[]], [regex[]]})]
     $RegularExpression,
 

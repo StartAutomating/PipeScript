@@ -13,15 +13,29 @@ Wraps PowerShell in a Windows Batch Script
 ### Parameters
 #### **ScriptInfo**
 
-|Type                      |Requried|Postion|PipelineInput |
-|--------------------------|--------|-------|--------------|
-|```[ExternalScriptInfo]```|true    |named  |true (ByValue)|
+> **Type**: ```[ExternalScriptInfo]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **ScriptBlock**
 
-|Type               |Requried|Postion|PipelineInput |
-|-------------------|--------|-------|--------------|
-|```[ScriptBlock]```|true    |named  |true (ByValue)|
+> **Type**: ```[ScriptBlock]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **WindowsPowerShell**
 
@@ -29,16 +43,23 @@ If set, will use Windows PowerShell core (powershell.exe).  If not, will use Pow
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Batch -ScriptInfo <ExternalScriptInfo> [-WindowsPowerShell] [<CommonParameters>]
+Batch -ScriptInfo &lt;ExternalScriptInfo&gt; [-WindowsPowerShell] [&lt;CommonParameters&gt;]
 ```
 ```PowerShell
-Batch -ScriptBlock <ScriptBlock> [-WindowsPowerShell] [<CommonParameters>]
+Batch -ScriptBlock &lt;ScriptBlock&gt; [-WindowsPowerShell] [&lt;CommonParameters&gt;]
 ```
 ---
 

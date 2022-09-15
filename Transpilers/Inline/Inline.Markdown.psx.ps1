@@ -33,13 +33,7 @@
 
     .> .\HelloWorld.ps1.md
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.(?>md|markdown)$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.(?>md|markdown)$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]
@@ -58,10 +52,22 @@ $ArgumentList
 begin {
     # We start off by declaring a number of regular expressions:
     
-    $startComment = '(?>                
-        (?>```|~~~) |
-        (?<=(?>[\r\n]+){1})[\s-[\r\n]]{0,3}(?>```|~~~) 
-    ){1}(?>[\.\<\>]{2}|PipeScript)\s{0,}\{\s{0,}' 
+    $startComment = '(?>
+        # Match three ticks or tildas                
+        (?>```|~~~|) |        
+        # Or three ticks or tilda, as long as they were preceeded by a newline and followed by less than three spaces.        
+        (?<=(?>[\r\n]+){1})
+        [\s-[\r\n]]{0,3}
+        (?>```|~~~)        
+    ){1}(?>    
+        # Then, match two characters in the set .<>
+        [\.\<\>]{2}
+        | 
+        PipeScript # or match the literal word PipeScript
+    )\s{0,}
+    # followed by a bracket and any opening whitespace.
+    \{\s{0,}
+' 
     $endComment   = '\}(?>[\.\<\>]{2}|PipeScript){0,1}(?>
         \s{0,}(?>[\r\n]+){1}\s{0,3}(?>```|~~~)        
         |

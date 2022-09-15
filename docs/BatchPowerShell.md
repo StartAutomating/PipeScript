@@ -13,15 +13,29 @@ Wraps PowerShell in a Windows Batch Script
 ### Parameters
 #### **ScriptInfo**
 
-|Type                      |Requried|Postion|PipelineInput |
-|--------------------------|--------|-------|--------------|
-|```[ExternalScriptInfo]```|true    |named  |true (ByValue)|
+> **Type**: ```[ExternalScriptInfo]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **ScriptBlock**
 
-|Type               |Requried|Postion|PipelineInput |
-|-------------------|--------|-------|--------------|
-|```[ScriptBlock]```|true    |named  |true (ByValue)|
+> **Type**: ```[ScriptBlock]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **Pwsh**
 
@@ -29,16 +43,23 @@ If set, will use PowerShell core (pwsh.exe).  If not, will use Windows PowerShel
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-BatchPowerShell -ScriptInfo <ExternalScriptInfo> [-Pwsh] [<CommonParameters>]
+BatchPowerShell -ScriptInfo &lt;ExternalScriptInfo&gt; [-Pwsh] [&lt;CommonParameters&gt;]
 ```
 ```PowerShell
-BatchPowerShell -ScriptBlock <ScriptBlock> [-Pwsh] [<CommonParameters>]
+BatchPowerShell -ScriptBlock &lt;ScriptBlock&gt; [-Pwsh] [&lt;CommonParameters&gt;]
 ```
 ---
 

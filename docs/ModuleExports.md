@@ -42,9 +42,16 @@ Valid Values:
 
 
 
-|Type                  |Requried|Postion|PipelineInput|
-|----------------------|--------|-------|-------------|
-|```[CommandTypes[]]```|false   |1      |false        |
+> **Type**: ```[CommandTypes[]]```
+
+> **Required**: false
+
+> **Position**: 1
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **VariableAST**
 
@@ -52,16 +59,23 @@ A VariableExpression.  This variable must contain a module.
 
 
 
-|Type                         |Requried|Postion|PipelineInput |
-|-----------------------------|--------|-------|--------------|
-|```[VariableExpressionAst]```|true    |named  |true (ByValue)|
+> **Type**: ```[VariableExpressionAst]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScript | Application | Script | Configuration | All}] [<CommonParameters>]
+ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScript | Application | Script | Configuration | All}] [&lt;CommonParameters&gt;]
 ```
 ```PowerShell
-ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScript | Application | Script | Configuration | All}] -VariableAST <VariableExpressionAst> [<CommonParameters>]
+ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScript | Application | Script | Configuration | All}] -VariableAST &lt;VariableExpressionAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 

@@ -12,6 +12,9 @@ Renames variables in a ScriptBlock
 ---
 ### Related Links
 * [Update-PipeScript](Update-PipeScript.md)
+
+
+
 ---
 ### Examples
 #### EXAMPLE 1
@@ -19,12 +22,12 @@ Renames variables in a ScriptBlock
 {
     [RenameVariable(VariableRename={
         @{
-            x='x1'
-            y='y1'
+            x=&#39;x1&#39;
+            y=&#39;y1&#39;
         }
     })]
     param($x, $y)
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 ---
@@ -35,9 +38,16 @@ The name of one or more parameters to remove
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|true    |1      |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ScriptBlock**
 
@@ -45,13 +55,20 @@ The ScriptBlock that declares the parameters.
 
 
 
-|Type               |Requried|Postion|PipelineInput |
-|-------------------|--------|-------|--------------|
-|```[ScriptBlock]```|true    |named  |true (ByValue)|
+> **Type**: ```[ScriptBlock]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-RenameVariable [-VariableRename] <IDictionary> -ScriptBlock <ScriptBlock> [<CommonParameters>]
+RenameVariable [-VariableRename] &lt;IDictionary&gt; -ScriptBlock &lt;ScriptBlock&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<!-- Generated with EZOut 1.9.0: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
+<!-- Generated with EZOut 1.9.2: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
 <Types>
   <Type>
     <Name>System.Management.Automation.Language.Ast</Name>
@@ -445,7 +445,30 @@ else {
       <ScriptMethod>
         <Name>Transpile</Name>
         <Script>
-                        $this | .&gt;PipeScript
+                        $TranspilerErrors   = @()
+$TranspilerWarnings = @()
+
+$ErrorsAndWarnings  = @{ErrorVariable='TranspilerErrors';WarningVariable='TranspilerWarnings'}
+$this | .&gt;PipeScript @ErrorsAndWarnings
+
+if ($TranspilerErrors) {
+    $failedMessage = (@(        
+        "$($TranspilerErrors.Count) error(s)"
+        if ($transpilerWarnings) {
+            "$($TranspilerWarnings.Count) warning(s)"
+        }
+    ) -join ',') + (@(
+        foreach ($transpilerError in $TranspilerErrors) {
+            "$($transpilerError | Out-String)"
+        }
+    ) -join [Environment]::Newline)
+    throw $failedMessage
+}
+elseif ($TranspilerWarnings) {
+    foreach ($TranspilerWarning in $TranspilerWarnings) {
+        Write-Warning "$TranspilerWarning "
+    }
+}
 
                     </Script>
       </ScriptMethod>

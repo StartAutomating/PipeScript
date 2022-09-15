@@ -20,11 +20,11 @@ When used on a ```[Management.Automation.Language.VariableExpressionAst]``` will
 ```PowerShell
 {
     param(
-    [ValidatePlatform("Windows")]
+    [ValidatePlatform(&quot;Windows&quot;)]
     [switch]
     $UseWMI
     )
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 ---
@@ -35,22 +35,36 @@ The name of one or more platforms.  These will be interpreted as wildcards.
 
 
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[String[]]```|true    |1      |false        |
+> **Type**: ```[String[]]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **VariableAST**
 
-|Type                         |Requried|Postion|PipelineInput |
-|-----------------------------|--------|-------|--------------|
-|```[VariableExpressionAst]```|false   |named  |true (ByValue)|
+> **Type**: ```[VariableExpressionAst]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-ValidatePlatform [-Platform] <String[]> [<CommonParameters>]
+ValidatePlatform [-Platform] &lt;String[]&gt; [&lt;CommonParameters&gt;]
 ```
 ```PowerShell
-ValidatePlatform [-Platform] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
+ValidatePlatform [-Platform] &lt;String[]&gt; [-VariableAST &lt;VariableExpressionAst&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 

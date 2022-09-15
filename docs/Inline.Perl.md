@@ -18,12 +18,12 @@ PipeScript can be embedded in a Plain Old Document block that starts with ```=be
 #### EXAMPLE 1
 ```PowerShell
 {
-    $HelloWorldPerl = @'
+    $HelloWorldPerl = @&#39;
 =begin PipeScript
-$msg = "hello", "hi", "hey", "howdy" | Get-Random
-"print(" + '"' + $msg + '");'
+$msg = &quot;hello&quot;, &quot;hi&quot;, &quot;hey&quot;, &quot;howdy&quot; | Get-Random
+&quot;print(&quot; + &#39;&quot;&#39; + $msg + &#39;&quot;);&#39;
 =end   PipeScript
-'@
+&#39;@
 ```
 [Save(".\HelloWorld.ps1.pl")]$HelloWorldPerl
 }
@@ -37,9 +37,16 @@ The command information.  This will include the path to the file.
 
 
 
-|Type               |Requried|Postion|PipelineInput |
-|-------------------|--------|-------|--------------|
-|```[CommandInfo]```|true    |1      |true (ByValue)|
+> **Type**: ```[CommandInfo]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **Parameter**
 
@@ -47,9 +54,16 @@ A dictionary of parameters.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |2      |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: 2
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ArgumentList**
 
@@ -57,13 +71,20 @@ A list of arguments.
 
 
 
-|Type              |Requried|Postion|PipelineInput|
-|------------------|--------|-------|-------------|
-|```[PSObject[]]```|false   |3      |false        |
+> **Type**: ```[PSObject[]]```
+
+> **Required**: false
+
+> **Position**: 3
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Inline.Perl [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
+Inline.Perl [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 

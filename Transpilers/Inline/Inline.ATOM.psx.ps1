@@ -6,13 +6,7 @@
 
     Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.atom$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.atom$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

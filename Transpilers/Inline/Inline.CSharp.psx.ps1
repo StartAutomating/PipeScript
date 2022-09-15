@@ -50,13 +50,7 @@ namespace TestProgram/*{Get-Random}*/ {
         }
     }
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.cs$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.cs$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

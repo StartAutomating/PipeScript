@@ -16,17 +16,23 @@ It will run other converters as directed by the source code.
 ---
 ### Related Links
 * [.>Pipescript.Function](.>Pipescript.Function.md)
+
+
+
 * [.>Pipescript.AttributedExpression](.>Pipescript.AttributedExpression.md)
+
+
+
 ---
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
 {
     function [explicit]ExplicitOutput {
-        "whoops"
+        &quot;whoops&quot;
         return 1
     }
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 #### EXAMPLE 2
@@ -34,11 +40,11 @@ It will run other converters as directed by the source code.
 {        
     [minify]{
         # Requires PSMinifier (this comment will be minified away)
-        "blah"
-            "de"
-                "blah"
+        &quot;blah&quot;
+            &quot;de&quot;
+                &quot;blah&quot;
     }
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 #### EXAMPLE 3
@@ -58,8 +64,8 @@ It will run other converters as directed by the source code.
 #### EXAMPLE 5
 ```PowerShell
 {
-    function [ProxyCommand<'Get-Process'>]GetProcessProxy {}
-} | .>PipeScript
+    function [ProxyCommand&lt;&#39;Get-Process&#39;&gt;]GetProcessProxy {}
+} | .&gt;PipeScript
 ```
 
 ---
@@ -70,9 +76,16 @@ A ScriptBlock that will be transpiled.
 
 
 
-|Type               |Requried|Postion|PipelineInput |
-|-------------------|--------|-------|--------------|
-|```[ScriptBlock]```|true    |1      |true (ByValue)|
+> **Type**: ```[ScriptBlock]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **Transpiler**
 
@@ -80,13 +93,20 @@ One or more transpilation expressions that apply to the script block.
 
 
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[String[]]```|false   |named  |false        |
+> **Type**: ```[String[]]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Pipescript [-ScriptBlock] <ScriptBlock> [-Transpiler <String[]>] [<CommonParameters>]
+Pipescript [-ScriptBlock] &lt;ScriptBlock&gt; [-Transpiler &lt;String[]&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 

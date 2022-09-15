@@ -1,0 +1,17 @@
+These are all of the transpilers currently included in PipeScript:
+
+
+~~~PipeScript{
+    [PSCustomObject]@{
+        Table = Get-Transpiler |
+            Sort-Object Name |
+            Select-Object @{
+                Name = 'Name'
+                Expression = {
+                    "[$($_.DisplayName)]($($_.Source -replace '^.+(?=Transpilers)'))"
+                }
+            },
+            Synopsis
+    }
+}
+~~~

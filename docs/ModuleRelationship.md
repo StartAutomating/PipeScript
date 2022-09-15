@@ -32,13 +32,20 @@ A VariableExpression.  This variable must contain a module or name of module.
 
 
 
-|Type                         |Requried|Postion|PipelineInput |
-|-----------------------------|--------|-------|--------------|
-|```[VariableExpressionAst]```|true    |named  |true (ByValue)|
+> **Type**: ```[VariableExpressionAst]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-ModuleRelationship -VariableAST <VariableExpressionAst> [<CommonParameters>]
+ModuleRelationship -VariableAST &lt;VariableExpressionAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 

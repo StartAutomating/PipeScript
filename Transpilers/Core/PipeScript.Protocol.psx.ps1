@@ -31,15 +31,16 @@
 [ValidateScript({
     $commandAst = $_
     if ($commandAst.CommandElements -and 
-        $commandAst.CommandElements[0] -match '://') {
+        $commandAst.CommandElements[0].Value -match '://') {
         return $true
     }
-    if ($commandAst.CommandElements.Count -ge 2 -and 
-        $commandAst.CommandElements[1] -match '://') {
+    if ($commandAst.CommandElements.Count -ge 2 -and         
+        $commandAst.CommandElements[1].Value -match '://') {
         return $true
     }
     return $false
 })]
+[Reflection.AssemblyMetaData('Order', -1)]
 param(
 # The Command Abstract Syntax Tree.
 [Parameter(Mandatory,ValueFromPipeline)]
@@ -47,7 +48,8 @@ param(
 $CommandAst
 )
 
-process {    
+process {
+    $myCmd = $MyInvocation.MyCommand
     [string]$CommandMethod = ''
     [string]$commandName   =
         if ($CommandAst.CommandElements[0].Value -match '://') {
@@ -64,8 +66,20 @@ process {
             $commandName -as [uri]
         }
         else {
-            $commandName -replace '\$(.+)\:','$1__' -replace '\$','__' -as [uri]
+            $commandName -replace '\*(?=[:/])','0.0.0.0' -replace '\$(.+)\:','$1__' -replace '\$','__' -as [uri]
         }
+
+    if (-not $commandUri) {        
+        $PSCmdlet.WriteError(
+            [Management.Automation.ErrorRecord]::new(                
+                [exception]::new("Could not convert '$commandName' to a [uri]"),
+                'CommandName.Not.Uri',
+                'SyntaxError',
+                $CommandAst
+            )
+        )        
+        return
+    }
 
     $commandAstSplat = @{
         CommandAST = $commandAst        
@@ -85,7 +99,9 @@ process {
 
     foreach ($found in $foundTranspiler) {
         $params = $found.ExtensionParameter
+        if ("$($found.ExtensionCommand.ScriptBlock)" -eq "$($myCmd.ScriptBlock)") { continue }
         $transpilerOutput = & $found.ExtensionCommand @params
+        
         if ($transpilerOutput) { $transpilerOutput; break }
     }    
 }

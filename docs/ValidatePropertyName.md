@@ -15,18 +15,18 @@ Validates that an object has one or more property names.
 ```PowerShell
 {
     param(
-    [ValidatePropertyName(PropertyName='a','b')]
+    [ValidatePropertyName(PropertyName=&#39;a&#39;,&#39;b&#39;)]
     $InputObject
     )
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 #### EXAMPLE 2
 ```PowerShell
-[PSCustomObject]@{a='a';b='b'} |
-    .> {
+[PSCustomObject]@{a=&#39;a&#39;;b=&#39;b&#39;} |
+    .&gt; {
         param(
-        [ValidatePropertyName(PropertyName='a','b')]
+        [ValidatePropertyName(PropertyName=&#39;a&#39;,&#39;b&#39;)]
         [vfp]
         $InputObject
         )
@@ -35,10 +35,10 @@ $InputObject
     }
 #### EXAMPLE 3
 ```PowerShell
-@{a='a'} |
-    .> {
+@{a=&#39;a&#39;} |
+    .&gt; {
         param(
-        [ValidatePropertyName(PropertyName='a','b')]
+        [ValidatePropertyName(PropertyName=&#39;a&#39;,&#39;b&#39;)]
         [vfp]
         $InputObject
         )
@@ -53,9 +53,16 @@ The property names being validated.
 
 
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[String[]]```|true    |1      |false        |
+> **Type**: ```[String[]]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **VariableAST**
 
@@ -64,16 +71,23 @@ If this is provided, will apply a ```[ValidateScript({})]``` attribute to the va
 
 
 
-|Type                         |Requried|Postion|PipelineInput |
-|-----------------------------|--------|-------|--------------|
-|```[VariableExpressionAst]```|false   |named  |true (ByValue)|
+> **Type**: ```[VariableExpressionAst]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-ValidatePropertyName [-PropertyName] <String[]> [<CommonParameters>]
+ValidatePropertyName [-PropertyName] &lt;String[]&gt; [&lt;CommonParameters&gt;]
 ```
 ```PowerShell
-ValidatePropertyName [-PropertyName] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
+ValidatePropertyName [-PropertyName] &lt;String[]&gt; [-VariableAST &lt;VariableExpressionAst&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 

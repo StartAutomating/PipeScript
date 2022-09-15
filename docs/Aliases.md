@@ -18,9 +18,9 @@ When used with a variable, [Aliases] will Set-Alias on each value in the variabl
 #### EXAMPLE 1
 ```PowerShell
 {
-    $aliases = "Foo", "Bar", "Baz"
-    [Aliases(Command="Get-Process")]$aliases
-} | .>PipeScript
+    $aliases = &quot;Foo&quot;, &quot;Bar&quot;, &quot;Baz&quot;
+    [Aliases(Command=&quot;Get-Process&quot;)]$aliases
+} | .&gt;PipeScript
 ```
 
 #### EXAMPLE 2
@@ -28,12 +28,12 @@ When used with a variable, [Aliases] will Set-Alias on each value in the variabl
 {
     param(
     [Aliases(Aliases={
-       ([char]'a'..[char]'z')
+       ([char]&#39;a&#39;..[char]&#39;z&#39;)
     })]
     [string]
     $Drive
     )
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 ---
@@ -44,9 +44,16 @@ A list of aliases
 
 
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[String[]]```|true    |named  |false        |
+> **Type**: ```[String[]]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Prefix**
 
@@ -54,9 +61,16 @@ If provided, will prefix each alias
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|false   |named  |false        |
+> **Type**: ```[String]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Suffix**
 
@@ -64,9 +78,16 @@ If provided, will add a suffix to each alias
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|false   |named  |false        |
+> **Type**: ```[String]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Command**
 
@@ -74,15 +95,29 @@ The command being aliased.  This is only required when transpiling a variable.
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|true    |named  |false        |
+> **Type**: ```[String]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **PassThru**
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **VariableAST**
 
@@ -91,16 +126,23 @@ If provided, this will be treated as the alias name or list of alias names.
 
 
 
-|Type                         |Requried|Postion|PipelineInput |
-|-----------------------------|--------|-------|--------------|
-|```[VariableExpressionAst]```|true    |named  |true (ByValue)|
+> **Type**: ```[VariableExpressionAst]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Aliases -Aliases <String[]> [-Prefix <String>] [-Suffix <String>] [<CommonParameters>]
+Aliases -Aliases &lt;String[]&gt; [-Prefix &lt;String&gt;] [-Suffix &lt;String&gt;] [&lt;CommonParameters&gt;]
 ```
 ```PowerShell
-Aliases [-Prefix <String>] [-Suffix <String>] -Command <String> [-PassThru] -VariableAST <VariableExpressionAst> [<CommonParameters>]
+Aliases [-Prefix &lt;String&gt;] [-Suffix &lt;String&gt;] -Command &lt;String&gt; [-PassThru] -VariableAST &lt;VariableExpressionAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 
