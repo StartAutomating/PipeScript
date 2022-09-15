@@ -9,13 +9,15 @@ PipeScript can currently be embedded in ```.>{@(Get-Transpiler -TranspilerPath $
         Table = Get-Transpiler -TranspilerPath $pwd |
             Select-Object @{
                 Name='Language'
-                Expression= {$_.DisplayName -replace '^Inline\.'}
+                Expression= {
+                    "[$($_.DisplayName -replace '^Inline\.')]($($_.Link))"
+                }
             }, @{
                 Name='Synopsis'
                 Expression= { $_.Synopsis -replace '[\s\r\n]+$' }
             }, @{
-                Name='Link'
-                Expression = { $_.Name }
+                Name='Pattern'
+                Expression = { '```' + "$($_.ScriptBlock.Attributes.RegexPattern -replace '\|','\|')" + '```'}
             }
     }
 }
