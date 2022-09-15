@@ -15,7 +15,7 @@ Type Expressions may be transpiled.
 ```PowerShell
 {
     [include[a.ps1]]
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 ---
@@ -26,13 +26,20 @@ The attributed expression
 
 
 
-|Type                     |Requried|Postion|PipelineInput |
-|-------------------------|--------|-------|--------------|
-|```[TypeExpressionAst]```|true    |named  |true (ByValue)|
+> **Type**: ```[TypeExpressionAst]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-PipeScript.TypeExpression -TypeExpressionAst <TypeExpressionAst> [<CommonParameters>]
+PipeScript.TypeExpression -TypeExpressionAst &lt;TypeExpressionAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 
