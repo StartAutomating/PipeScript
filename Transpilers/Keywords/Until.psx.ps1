@@ -141,19 +141,12 @@ process {
     
     $conditionScript = $conditionScript      | .>Pipescript
     $untilTranspiled = $secondArgScriptBlock | .>Pipescript
-    $conditionScript = 
-        if ($conditionScript -match '^\(') {
-            "(-not $conditionScript)"
-        } else {
-            "(-not ($conditionScript))"
-        }
-    
     
     $newScript = @"
 $(if ($BeforeLoop) { $BeforeLoop + [Environment]::NewLine})
 $(if ($CommandName -like ':*') { "$CommandName "})do {
 $untilTranspiled
-} while $conditionScript
+} until $conditionScript
 "@
     
     [ScriptBlock]::Create($newScript)
