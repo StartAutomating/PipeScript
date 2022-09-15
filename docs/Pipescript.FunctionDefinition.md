@@ -17,13 +17,20 @@ An abstract syntax tree function definition.
 
 
 
-|Type                         |Requried|Postion|PipelineInput |
-|-----------------------------|--------|-------|--------------|
-|```[FunctionDefinitionAst]```|true    |named  |true (ByValue)|
+> **Type**: ```[FunctionDefinitionAst]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Pipescript.FunctionDefinition -FunctionDefinition <FunctionDefinitionAst> [<CommonParameters>]
+Pipescript.FunctionDefinition -FunctionDefinition &lt;FunctionDefinitionAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 
