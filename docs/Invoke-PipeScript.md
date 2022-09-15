@@ -26,6 +26,9 @@ Invoke-PipeScript can also use a number of Abstract Syntax Tree elements as comm
 ---
 ### Related Links
 * [Update-PipeScript](Update-PipeScript.md)
+
+
+
 ---
 ### Parameters
 #### **InputObject**
@@ -35,9 +38,16 @@ If no -Command is provided and -InputObject is a [ScriptBlock]
 
 
 
-|Type            |Requried|Postion|PipelineInput |
-|----------------|--------|-------|--------------|
-|```[PSObject]```|false   |named  |true (ByValue)|
+> **Type**: ```[PSObject]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **Command**
 
@@ -45,9 +55,16 @@ The Command that will be run.
 
 
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[PSObject]```|false   |1      |false        |
+> **Type**: ```[PSObject]```
+
+> **Required**: false
+
+> **Position**: 1
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Parameter**
 
@@ -55,9 +72,16 @@ A collection of named parameters.  These will be directly passed to the underlyi
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |named  |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ArgumentList**
 
@@ -65,9 +89,16 @@ A list of positional arguments.  These will be directly passed to the underlying
 
 
 
-|Type              |Requried|Postion|PipelineInput|
-|------------------|--------|-------|-------------|
-|```[PSObject[]]```|false   |named  |false        |
+> **Type**: ```[PSObject[]]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **SafeScriptBlockAttributeEvaluation**
 
@@ -77,13 +108,20 @@ If this is set, will make ScriptBlockAst values will be run within data language
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Invoke-PipeScript [-InputObject <PSObject>] [[-Command] <PSObject>] [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [-SafeScriptBlockAttributeEvaluation] [<CommonParameters>]
+Invoke-PipeScript [-InputObject &lt;PSObject&gt;] [[-Command] &lt;PSObject&gt;] [-Parameter &lt;IDictionary&gt;] [-ArgumentList &lt;PSObject[]&gt;] [-SafeScriptBlockAttributeEvaluation] [&lt;CommonParameters&gt;]
 ```
 ---
 
