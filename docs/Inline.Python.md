@@ -18,15 +18,15 @@ PipeScript can be included in a Python string that starts and ends with ```{}```
 #### EXAMPLE 1
 ```PowerShell
 {
-   $pythonContent = @'
-"""{
-$msg = "Hello World", "Hey There", "Howdy" | Get-Random
-@"
-print("$msg")
-"@
-}"""
-'@
-    [OutputFile('.\HelloWorld.ps1.py')]$PythonContent
+   $pythonContent = @&#39;
+&quot;&quot;&quot;{
+$msg = &quot;Hello World&quot;, &quot;Hey There&quot;, &quot;Howdy&quot; | Get-Random
+@&quot;
+print(&quot;$msg&quot;)
+&quot;@
+}&quot;&quot;&quot;
+&#39;@
+    [OutputFile(&#39;.\HelloWorld.ps1.py&#39;)]$PythonContent
 }
 ```
 .> .\HelloWorld.ps1.py
@@ -38,9 +38,16 @@ The command information.  This will include the path to the file.
 
 
 
-|Type               |Requried|Postion|PipelineInput |
-|-------------------|--------|-------|--------------|
-|```[CommandInfo]```|true    |1      |true (ByValue)|
+> **Type**: ```[CommandInfo]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **Parameter**
 
@@ -48,9 +55,16 @@ A dictionary of parameters.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |2      |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: 2
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ArgumentList**
 
@@ -58,13 +72,20 @@ A list of arguments.
 
 
 
-|Type              |Requried|Postion|PipelineInput|
-|------------------|--------|-------|-------------|
-|```[PSObject[]]```|false   |3      |false        |
+> **Type**: ```[PSObject[]]```
+
+> **Required**: false
+
+> **Position**: 3
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Inline.Python [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
+Inline.Python [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 
