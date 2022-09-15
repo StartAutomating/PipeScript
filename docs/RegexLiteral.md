@@ -18,8 +18,8 @@ The ending slash may be followed by ```[Text.RegularExpressions.RegexOptions]```
 #### EXAMPLE 1
 ```PowerShell
 {
-    '/[a|b]/'
-} | .>PipeScript
+    &#39;/[a|b]/&#39;
+} | .&gt;PipeScript
 ```
 # This will become:
 
@@ -27,15 +27,15 @@ The ending slash may be followed by ```[Text.RegularExpressions.RegexOptions]```
 #### EXAMPLE 2
 ```PowerShell
 Invoke-PipeScript {
-    '/[a|b]/'.Matches('ab')
+    &#39;/[a|b]/&#39;.Matches(&#39;ab&#39;)
 }
 ```
 
 #### EXAMPLE 3
 ```PowerShell
 {
-    "/[$a|$b]/"
-} | .>PipeScript
+    &quot;/[$a|$b]/&quot;
+} | .&gt;PipeScript
 ```
 # This will become:
 
@@ -43,14 +43,14 @@ Invoke-PipeScript {
 #### EXAMPLE 4
 ```PowerShell
 {
-@'
+@&#39;
 /
 # Heredocs Regex literals will have IgnorePatternWhitespace by default, which allows comments
 ^ # Match the string start
-(?<indent>\s{0,1})
+(?&lt;indent&gt;\s{0,1})
 /
-'@
-} | .>PipeScript
+&#39;@
+} | .&gt;PipeScript
 ```
 # This will become:
 
@@ -61,7 +61,7 @@ Invoke-PipeScript {
 '@, 'IgnorePatternWhitespace,IgnoreCase')
 #### EXAMPLE 5
 ```PowerShell
-$Keywords = "looking", "for", "these", "words"
+$Keywords = &quot;looking&quot;, &quot;for&quot;, &quot;these&quot;, &quot;words&quot;
 ```
 {
 @"
@@ -87,22 +87,36 @@ $($Keywords -join '|') # followed by keywords
 ### Parameters
 #### **StringConstantExpression**
 
-|Type                               |Requried|Postion|PipelineInput |
-|-----------------------------------|--------|-------|--------------|
-|```[StringConstantExpressionAst]```|true    |named  |true (ByValue)|
+> **Type**: ```[StringConstantExpressionAst]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **ExpandableStringExpression**
 
-|Type                                 |Requried|Postion|PipelineInput |
-|-------------------------------------|--------|-------|--------------|
-|```[ExpandableStringExpressionAst]```|true    |named  |true (ByValue)|
+> **Type**: ```[ExpandableStringExpressionAst]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-RegexLiteral -StringConstantExpression <StringConstantExpressionAst> [<CommonParameters>]
+RegexLiteral -StringConstantExpression &lt;StringConstantExpressionAst&gt; [&lt;CommonParameters&gt;]
 ```
 ```PowerShell
-RegexLiteral -ExpandableStringExpression <ExpandableStringExpressionAst> [<CommonParameters>]
+RegexLiteral -ExpandableStringExpression &lt;ExpandableStringExpressionAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 
