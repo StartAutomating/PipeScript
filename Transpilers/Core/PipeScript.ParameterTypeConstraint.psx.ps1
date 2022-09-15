@@ -1,7 +1,22 @@
 <#
+.SYNOPSIS
+    Transpiles Parameter Type Constraints
+.DESCRIPTION
+    Transpiles Parameter Type Constraints.
+    
+    A Type Constraint is an AST expression that constrains a value to a particular type
+    (many languages call this a type cast).
+
+    If the type name does not exist, and is not [ordered], PipeScript will search for a transpiler and attempt to run it.
 #>
 [ValidateScript({
-    $_.Parent -is [Management.Automation.Language.ParameterAst]
+    if (-not $_.Parent -is [Management.Automation.Language.ParameterAst]) {
+        return $false
+    }
+
+    $isRealType = $_.TypeName.GetReflectionType()
+    if ($isRealType) { return $false }
+    return $true
 })]
 param(
 [Parameter(Mandatory,ParameterSetName='ParameterAst',ValueFromPipeline)]
@@ -21,5 +36,13 @@ process {
     
     $isRealType = $TypeConstraintAST.TypeName.GetReflectionType()
     if ($isRealType) { return }
-    Invoke-PipeScript -TypeConstraint $TypeConstraintAST
+    if ($TypeConstraintAST.TypeName.Name -eq 'ordered') {
+        return
+    }
+    try {
+        Invoke-PipeScript -TypeConstraint $TypeConstraintAST
+    } catch {
+        $errorInfo = $_
+        $PSCmdlet.WriteError($errorInfo)
+    }
 }
