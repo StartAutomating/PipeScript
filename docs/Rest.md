@@ -15,49 +15,49 @@ Generates PowerShell that communicates with a REST api.
 ```PowerShell
 {
     function Get-Sentiment {
-        [Rest("http://text-processing.com/api/sentiment/",
-            ContentType="application/x-www-form-urlencoded",
-            Method = "POST",
-            BodyParameter="Text",
+        [Rest(&quot;http://text-processing.com/api/sentiment/&quot;,
+            ContentType=&quot;application/x-www-form-urlencoded&quot;,
+            Method = &quot;POST&quot;,
+            BodyParameter=&quot;Text&quot;,
             ForeachOutput = {
                 $_ | Select-Object -ExpandProperty Probability -Property Label
             }
         )]
         param()
     } 
-} | .>PipeScript | Set-Content .\Get-Sentiment.ps1
+} | .&gt;PipeScript | Set-Content .\Get-Sentiment.ps1
 ```
 
 #### EXAMPLE 2
 ```PowerShell
 Invoke-PipeScript {
-    [Rest("http://text-processing.com/api/sentiment/",
-        ContentType="application/x-www-form-urlencoded",
-        Method = "POST",
-        BodyParameter="Text",
+    [Rest(&quot;http://text-processing.com/api/sentiment/&quot;,
+        ContentType=&quot;application/x-www-form-urlencoded&quot;,
+        Method = &quot;POST&quot;,
+        BodyParameter=&quot;Text&quot;,
         ForeachOutput = {
             $_ | Select-Object -ExpandProperty Probability -Property Label
         }
     )]
     param()
-} -Parameter @{Text='wow!'}
+} -Parameter @{Text=&#39;wow!&#39;}
 ```
 
 #### EXAMPLE 3
 ```PowerShell
 {
-    [Rest("https://api.github.com/users/{username}/repos",
-        QueryParameter={"type", "sort", "direction", "page", "per_page"}
+    [Rest(&quot;https://api.github.com/users/{username}/repos&quot;,
+        QueryParameter={&quot;type&quot;, &quot;sort&quot;, &quot;direction&quot;, &quot;page&quot;, &quot;per_page&quot;}
     )]
     param()
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 #### EXAMPLE 4
 ```PowerShell
 Invoke-PipeScript {
-    [Rest("https://api.github.com/users/{username}/repos",
-        QueryParameter={"type", "sort", "direction", "page", "per_page"}
+    [Rest(&quot;https://api.github.com/users/{username}/repos&quot;,
+        QueryParameter={&quot;type&quot;, &quot;sort&quot;, &quot;direction&quot;, &quot;page&quot;, &quot;per_page&quot;}
     )]
     param()
 } -UserName StartAutomating
@@ -66,18 +66,18 @@ Invoke-PipeScript {
 #### EXAMPLE 5
 ```PowerShell
 {
-    [Rest("http://text-processing.com/api/sentiment/",
-        ContentType="application/x-www-form-urlencoded",
-        Method = "POST",
+    [Rest(&quot;http://text-processing.com/api/sentiment/&quot;,
+        ContentType=&quot;application/x-www-form-urlencoded&quot;,
+        Method = &quot;POST&quot;,
         BodyParameter={@{
-            Text = '
+            Text = &#39;
                 [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
                 [string]
                 $Text
-            '
+            &#39;
         }})]
     param()
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 ---
@@ -89,9 +89,16 @@ If not empty, the contents of this ScriptBlock will preceed the REST api call.
 
 
 
-|Type               |Requried|Postion|PipelineInput |
-|-------------------|--------|-------|--------------|
-|```[ScriptBlock]```|false   |named  |true (ByValue)|
+> **Type**: ```[ScriptBlock]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **RESTEndpoint**
 
@@ -99,9 +106,16 @@ One or more REST endpoints.  This endpoint will be parsed for REST variables.
 
 
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[String[]]```|true    |1      |false        |
+> **Type**: ```[String[]]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ContentType**
 
@@ -109,9 +123,16 @@ The content type.  If provided, this parameter will be passed to the -InvokeComm
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|false   |named  |false        |
+> **Type**: ```[String]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Method**
 
@@ -119,9 +140,16 @@ The method.  If provided, this parameter will be passed to the -InvokeCommand.
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|false   |named  |false        |
+> **Type**: ```[String]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **InvokeCommand**
 
@@ -129,9 +157,16 @@ The invoke command.  This command _must_ have a parameter -URI.
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|false   |named  |false        |
+> **Type**: ```[String]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **InvokeParameterVariable**
 
@@ -140,9 +175,16 @@ By default, this is 'InvokeParams'
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|false   |named  |false        |
+> **Type**: ```[String]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **UriParameterHelp**
 
@@ -150,9 +192,16 @@ A dictionary of help for uri parameters.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |named  |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **UriParameterType**
 
@@ -160,9 +209,16 @@ A dictionary of URI parameter types.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |named  |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **BodyParameter**
 
@@ -183,9 +239,16 @@ If a parameter is a [switch], it will be turned into a [bool].
 
 
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[PSObject]```|false   |named  |false        |
+> **Type**: ```[PSObject]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **QueryParameter**
 
@@ -206,9 +269,16 @@ If a parameter is a [switch], it will be turned into a [bool].
 
 
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[PSObject]```|false   |named  |false        |
+> **Type**: ```[PSObject]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **JoinQueryValue**
 
@@ -217,9 +287,16 @@ If the string is '&', each value will be provided as a key-value pair.
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|false   |named  |false        |
+> **Type**: ```[String]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ForEachOutput**
 
@@ -227,13 +304,20 @@ A script block to be run on each output.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[ScriptBlock]```|false   |named  |false        |
+> **Type**: ```[ScriptBlock]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Rest [-ScriptBlock <ScriptBlock>] [-RESTEndpoint] <String[]> [-ContentType <String>] [-Method <String>] [-InvokeCommand <String>] [-InvokeParameterVariable <String>] [-UriParameterHelp <IDictionary>] [-UriParameterType <IDictionary>] [-BodyParameter <PSObject>] [-QueryParameter <PSObject>] [-JoinQueryValue <String>] [-ForEachOutput <ScriptBlock>] [<CommonParameters>]
+Rest [-ScriptBlock &lt;ScriptBlock&gt;] [-RESTEndpoint] &lt;String[]&gt; [-ContentType &lt;String&gt;] [-Method &lt;String&gt;] [-InvokeCommand &lt;String&gt;] [-InvokeParameterVariable &lt;String&gt;] [-UriParameterHelp &lt;IDictionary&gt;] [-UriParameterType &lt;IDictionary&gt;] [-BodyParameter &lt;PSObject&gt;] [-QueryParameter &lt;PSObject&gt;] [-JoinQueryValue &lt;String&gt;] [-ForEachOutput &lt;ScriptBlock&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 
