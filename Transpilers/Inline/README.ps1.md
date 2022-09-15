@@ -10,7 +10,7 @@ PipeScript can currently be embedded in ```.>{@(Get-Transpiler -TranspilerPath $
             Select-Object @{
                 Name='Language'
                 Expression= {
-                    "[$($_.DisplayName -replace '^Inline\.')]($($_.Link))"
+                    "[$($_.DisplayName -replace '^Inline\.')]($($_.Name))"
                 }
             }, @{
                 Name='Synopsis'
