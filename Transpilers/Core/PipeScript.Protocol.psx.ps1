@@ -47,7 +47,8 @@ param(
 $CommandAst
 )
 
-process {    
+process {
+    $myCmd = $MyInvocation.MyCommand
     [string]$CommandMethod = ''
     [string]$commandName   =
         if ($CommandAst.CommandElements[0].Value -match '://') {
@@ -64,7 +65,7 @@ process {
             $commandName -as [uri]
         }
         else {
-            $commandName -replace '\$(.+)\:','$1__' -replace '\$','__' -as [uri]
+            $commandName -replace '\*(?=[:/])','0.0.0.0' -replace '\$(.+)\:','$1__' -replace '\$','__' -as [uri]
         }
 
     $commandAstSplat = @{
@@ -85,7 +86,9 @@ process {
 
     foreach ($found in $foundTranspiler) {
         $params = $found.ExtensionParameter
+        if ("$($found.ExtensionCommand.ScriptBlock)" -eq "$($myCmd.ScriptBlock)") { continue }
         $transpilerOutput = & $found.ExtensionCommand @params
+        
         if ($transpilerOutput) { $transpilerOutput; break }
     }    
 }
