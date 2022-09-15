@@ -34,13 +34,7 @@ List:
 
     .> .\HelloWorld.ps1.yaml
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.(?>yml|yaml)$') {
-        return $true
-    }
-    return $false
-})]
+[ValidatePattern('\.(?>yml|yaml)$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

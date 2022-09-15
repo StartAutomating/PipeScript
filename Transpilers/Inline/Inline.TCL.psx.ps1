@@ -40,13 +40,7 @@
 
     Invoke-PipeScript .\HelloWorld.ps1.tcl
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.t(?>cl|k)$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.t(?>cl|k)$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

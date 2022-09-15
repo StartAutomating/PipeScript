@@ -13,13 +13,7 @@
     * ```{}```
     * ```[]```
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.json$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.json$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

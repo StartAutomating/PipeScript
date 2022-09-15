@@ -32,13 +32,7 @@
 
     Invoke-PipeScript .\HelloWorld.ps1.adb
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.ad[bs]$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.ad[bs]$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

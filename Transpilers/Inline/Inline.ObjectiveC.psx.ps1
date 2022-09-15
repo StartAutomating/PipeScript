@@ -17,13 +17,7 @@
     * ```""```
     * ```''```
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.(?>m|mm)$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.(?>m|mm)$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

@@ -16,13 +16,7 @@
     * ```""```
     * ```''```
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.(?>c|cpp|h|swig)$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.(?>c|cpp|h|swig)$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

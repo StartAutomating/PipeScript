@@ -36,13 +36,7 @@ if (Shape == "circle") {
     
     .> .\RandomShapeAndSize.ps1.scad
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.scad$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.scad$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

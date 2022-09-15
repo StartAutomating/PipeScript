@@ -22,13 +22,7 @@ print("$msg")
 
     .> .\HelloWorld.ps1.py
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.py$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.py$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

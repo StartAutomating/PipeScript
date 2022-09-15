@@ -16,13 +16,7 @@
     * ```""```
     * ```''```
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.(?>java)$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.(?>java)$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

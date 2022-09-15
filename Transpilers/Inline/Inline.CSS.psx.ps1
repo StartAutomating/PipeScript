@@ -30,13 +30,7 @@ MyClass {
 
     .> .\StyleSheet.ps1.css
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.s{0,1}css$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.s{0,1}css$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

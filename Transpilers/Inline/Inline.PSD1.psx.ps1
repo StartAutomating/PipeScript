@@ -11,13 +11,7 @@
     * ```''```
     * ```{}```
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.psd1$') {
-        return $true
-    }
-    return $false
-})]
+[ValidatePattern('\.psd1$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

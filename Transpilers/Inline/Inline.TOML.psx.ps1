@@ -18,13 +18,7 @@ RandomNumber = """{Get-Random}"""
 
     .> .\RandomExample.ps1.toml
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.toml$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.toml$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]

@@ -6,13 +6,7 @@
 
     PipeScript can be embedded in a multiline block that starts with ```=begin{``` and ends with } (followed by ```=end```)
 #>
-[ValidateScript({
-    $cmdInfo = $_
-    if ($cmdInfo.Source -match '\.rb$') {
-        return $true
-    }
-    return $false    
-})]
+[ValidatePattern('\.rb$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline)]
