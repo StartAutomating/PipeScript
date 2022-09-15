@@ -1,3 +1,27 @@
+## 0.1.3:
+* New Protocols: UDP (Fixes #208)
+* New Inline Language Support:
+  * ADA (Fixes #207)
+  * Basic/VB/VBScript (Fixes #206)
+  * R (Fixes #204)
+  * SQL (Fixes #200)
+  * TCL/TK (Fixes #205)
+* Keyword improvements:
+  * new keyword now allows static members as constructor arguments (Fixes #214)
+  * until keyword uses do{} until (Fixes #217)
+* General Improvements:
+  * Core Transpiler now respects .Rank (Fixes #210 #211)
+  * New-PipeScript:
+    * Fixing -Link behavior (Fixes #201)
+    * Trimming ends of examples (Fixes #202)
+    * Plurally aliasing -Examples and -Links (Fixes #203)
+  * Search-PipeScript:
+    * Now supports plural aliases for -RegularExpression (Fixes #219)
+* ParameterTypeConstraint now ignores [ordered] (Fixes #190)
+* Extended Type System Improvements:
+  * [ScriptBlock].Transpile() now throws (Fixes #212)
+---
+
 ## 0.1.2:
 * New Inline Language support
   * Batch support (Fixes #198)
