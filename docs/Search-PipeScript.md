@@ -12,6 +12,9 @@ Searches PowerShell and PipeScript ScriptBlocks, files, and text
 ---
 ### Related Links
 * [Update-PipeScript](Update-PipeScript.md)
+
+
+
 ---
 ### Examples
 #### EXAMPLE 1
@@ -20,7 +23,7 @@ Search-PipeScript -ScriptBlock {
     $a
     $b
     $c
-    "text"
+    &quot;text&quot;
 } -AstType Variable
 ```
 
@@ -32,9 +35,16 @@ The ScriptBlock that will be searched.
 
 
 
-|Type          |Requried|Postion|PipelineInput                 |
-|--------------|--------|-------|------------------------------|
-|```[Object]```|false   |1      |true (ByValue, ByPropertyName)|
+> **Type**: ```[Object]```
+
+> **Required**: false
+
+> **Position**: 1
+
+> **PipelineInput**:true (ByValue, ByPropertyName)
+
+
+
 ---
 #### **AstCondition**
 
@@ -43,9 +53,16 @@ These Script Blocks
 
 
 
-|Type                 |Requried|Postion|PipelineInput        |
-|---------------------|--------|-------|---------------------|
-|```[ScriptBlock[]]```|false   |2      |true (ByPropertyName)|
+> **Type**: ```[ScriptBlock[]]```
+
+> **Required**: false
+
+> **Position**: 2
+
+> **PipelineInput**:true (ByPropertyName)
+
+
+
 ---
 #### **AstType**
 
@@ -53,9 +70,16 @@ A shortname for the abstract syntax tree types.
 
 
 
-|Type          |Requried|Postion|PipelineInput        |
-|--------------|--------|-------|---------------------|
-|```[Object]```|false   |3      |true (ByPropertyName)|
+> **Type**: ```[Object]```
+
+> **Required**: false
+
+> **Position**: 3
+
+> **PipelineInput**:true (ByPropertyName)
+
+
+
 ---
 #### **RegularExpression**
 
@@ -63,9 +87,16 @@ One or more regular expressions to match.
 
 
 
-|Type          |Requried|Postion|PipelineInput        |
-|--------------|--------|-------|---------------------|
-|```[Object]```|false   |4      |true (ByPropertyName)|
+> **Type**: ```[Object]```
+
+> **Required**: false
+
+> **Position**: 4
+
+> **PipelineInput**:true (ByPropertyName)
+
+
+
 ---
 #### **Recurse**
 
@@ -73,9 +104,16 @@ If set, will search nested script blocks.
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Outputs
 Search.PipeScript.Result
@@ -84,7 +122,7 @@ Search.PipeScript.Result
 ---
 ### Syntax
 ```PowerShell
-Search-PipeScript [[-InputObject] <Object>] [[-AstCondition] <ScriptBlock[]>] [[-AstType] <Object>] [[-RegularExpression] <Object>] [-Recurse] [<CommonParameters>]
+Search-PipeScript [[-InputObject] &lt;Object&gt;] [[-AstCondition] &lt;ScriptBlock[]&gt;] [[-AstType] &lt;Object&gt;] [[-RegularExpression] &lt;Object&gt;] [-Recurse] [&lt;CommonParameters&gt;]
 ```
 ---
 
