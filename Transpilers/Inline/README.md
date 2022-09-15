@@ -1,6 +1,6 @@
 This directory contains Inline PipeScript transpilers for several languages.
 
-PipeScript can currently be embedded in 32 languages or file types.
+PipeScript can currently be embedded in 33 languages or file types.
 
 ### Supported Languages
 
@@ -35,6 +35,7 @@ PipeScript can currently be embedded in 32 languages or file types.
 |[RSS](Inline.RSS.psx.ps1)              |[RSS Inline PipeScript Transpiler.](Inline.RSS.psx.ps1)              |
 |[Ruby](Inline.Ruby.psx.ps1)            |[Ruby Inline PipeScript Transpiler.](Inline.Ruby.psx.ps1)            |
 |[Rust](Inline.Rust.psx.ps1)            |[Rust Inline PipeScript Transpiler.](Inline.Rust.psx.ps1)            |
+|[SQL](Inline.SQL.psx.ps1)              |[SQL PipeScript Transpiler.](Inline.SQL.psx.ps1)                     |
 |[TOML](Inline.TOML.psx.ps1)            |[TOML Inline PipeScript Transpiler.](Inline.TOML.psx.ps1)            |
 |[TypeScript](Inline.TypeScript.psx.ps1)|[TypeScript Inline PipeScript Transpiler.](Inline.TypeScript.psx.ps1)|
 |[XML](Inline.XML.psx.ps1)              |[XML Inline PipeScript Transpiler.](Inline.XML.psx.ps1)              |
