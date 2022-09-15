@@ -7,7 +7,8 @@ Searches PowerShell and PipeScript ScriptBlocks
 ---
 ### Description
 
-Searches PowerShell and PipeScript ScriptBlocks, files, and text
+Searches the contents of PowerShell and PipeScript ScriptBlocks, files, and text.
+Search-PipeScript can search using an -ASTCondition -or -ASTType or with a -RegularExpression.
 
 ---
 ### Related Links
