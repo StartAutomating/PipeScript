@@ -83,7 +83,11 @@ process {
     $constructorArguments = @(
         foreach ($constructorArg in $constructorArguments) {
             if ($constructorArg.StringConstantType -eq 'BareWord') {
-                "'" + $constructorArg.Value.Replace("'","''") + "'"
+                if ($constructorArg.Value -match '^\[[^\]]+\]') {
+                    $constructorArg.Value
+                } else {
+                    "'" + $constructorArg.Value.Replace("'","''") + "'"
+                }
             } else {
                 $constructorArg
             }
