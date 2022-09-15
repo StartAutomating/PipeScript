@@ -221,37 +221,37 @@ process {
                     }
 
                 # If we found any matching pipescripts
-                if ($pipescripts) {
-                    $pipeScriptOutput = # run them
-                        :NextPipeScript foreach ($ps in $pipescripts) {
-                            Invoke-PipeScript -InputObject $item -CommandInfo $ps.ExtensionCommand
-                        }
-
-                    foreach ($pso in $pipeScriptOutput) {
-                        if ($pso -is [Collections.IDictionary]) {
-                            $psoCopy = [Ordered]@{} + $pso                             
-                            foreach ($kv in @($psoCopy.GetEnumerator())) {
-                                if ($kv.Key -is [Management.Automation.Language.Ast]) {
-                                    $astReplacements[$kv.Key] = $kv.Value
-                                    $psoCopy.Remove($kv.Key)
-                                } elseif ($kv.Key -match '^\d,\d$') {
-                                    $textReplacements["$($kv.Key)"] = $kv.Value
-                                    $psoCopy.Remove($kv.Key)
+                if ($pipescripts) {                    
+                    :NextPipeScript 
+                        foreach ($ps in $pipescripts) {
+                            $pipeScriptOutput = Invoke-PipeScript -InputObject $item -CommandInfo $ps.ExtensionCommand
+                            foreach ($pso in $pipeScriptOutput) {
+                                if ($pso -is [Collections.IDictionary]) {
+                                    $psoCopy = [Ordered]@{} + $pso                             
+                                    foreach ($kv in @($psoCopy.GetEnumerator())) {
+                                        if ($kv.Key -is [Management.Automation.Language.Ast]) {
+                                            $astReplacements[$kv.Key] = $kv.Value
+                                            $psoCopy.Remove($kv.Key)
+                                        } elseif ($kv.Key -match '^\d,\d$') {
+                                            $textReplacements["$($kv.Key)"] = $kv.Value
+                                            $psoCopy.Remove($kv.Key)
+                                        }
+                                    }
+                                    if ($psoCopy.Count) {
+                                        $updateSplats += $psoCopy
+                                    }                            
+                                }
+                                # If we have ouput from any of the scripts (and we have not yet replaced anything)
+                                elseif ($pso -and -not $AstReplacements[$item]) 
+                                { 
+                                    # determine the end of this AST element
+                                    $start = $scriptText.IndexOf($item.Extent.Text, $myOffset) 
+                                    $end   = $start + $item.Extent.Text.Length
+                                    $skipUntil = $end # set SkipUntil
+                                    $AstReplacements[$item] = $pso # and store the replacement.                                    
                                 }
                             }
-                            if ($psoCopy.Count) {
-                                $updateSplats += $psoCopy
-                            }                            
-                        } else {
-                            if ($pso) { # If we have ouput from any of the scripts
-                                $start = $scriptText.IndexOf($item.Extent.Text, $myOffset) # determine the end of this AST element
-                                $end   = $start + $item.Extent.Text.Length
-                                $skipUntil = $end # set SkipUntil
-                                $AstReplacements[$item] = $pso # and store the replacement.
-                            }
-                        }
-                    }
-
+                        }                
                 } 
             }
             
