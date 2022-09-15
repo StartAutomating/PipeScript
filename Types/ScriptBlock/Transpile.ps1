@@ -5,15 +5,16 @@ $ErrorsAndWarnings  = @{ErrorVariable='TranspilerErrors';WarningVariable='Transp
 $this | .>PipeScript @ErrorsAndWarnings
 
 if ($TranspilerErrors) {
-    $failedMessage = @(
-        foreach ($transpilerError in $TranspilerErrors) {
-            "$($transpilerError)"
-        }
+    $failedMessage = (@(        
         "$($TranspilerErrors.Count) error(s)"
         if ($transpilerWarnings) {
             "$($TranspilerWarnings.Count) warning(s)"
         }
-    ) -join ','
+    ) -join ',') + (@(
+        foreach ($transpilerError in $TranspilerErrors) {
+            "$($transpilerError | Out-String)"
+        }
+    ) -join [Environment]::Newline)
     throw $failedMessage
 }
 elseif ($TranspilerWarnings) {
