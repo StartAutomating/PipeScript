@@ -53,9 +53,16 @@ This will attempt to recreate the Script Block as a datalanguage block and execu
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ParameterOnly**
 
@@ -63,9 +70,16 @@ If set, will ensure that the [ScriptBlock] only has parameters
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **NoBlock**
 
@@ -73,9 +87,16 @@ If set, will ensure that the [ScriptBlock] has no named blocks.
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **NoParameter**
 
@@ -83,9 +104,16 @@ If set, will ensure that the [ScriptBlock] has no parameters.
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **VariableAST**
 
@@ -93,16 +121,23 @@ A VariableExpression.  If provided, the Validation attributes will apply to this
 
 
 
-|Type                         |Requried|Postion|PipelineInput |
-|-----------------------------|--------|-------|--------------|
-|```[VariableExpressionAst]```|true    |named  |true (ByValue)|
+> **Type**: ```[VariableExpressionAst]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [<CommonParameters>]
+ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [&lt;CommonParameters&gt;]
 ```
 ```PowerShell
-ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] -VariableAST <VariableExpressionAst> [<CommonParameters>]
+ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] -VariableAST &lt;VariableExpressionAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 
