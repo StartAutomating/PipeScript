@@ -40,6 +40,8 @@ PipeScript allows you to build PowerShell scripts, and provides you with an engi
 
 This allows us to fine-tune the way we build PowerShell and lets us extend the language to make complex scenarios simple.
 
+See the [List of Transpilers](ListOfTranspilers.md) you can use to transform your scripts.
+
 ## Making Programming more Scriptable
 
 Programming is tedious, not hard.
@@ -50,7 +52,9 @@ For example, if implementing an interface or subclass, the only things that will
 
 PipeScript can be be embedded within 34 languages.
 
-Embedding PipeScript within any of these languages allows you to generate any of these languages with parameterized scripts.
+Embedding PipeScript within any of these languages allows you to generate any of these languages with parameterized scripts, thus removing some of the tedium of programming.
+
+See the [Supported Languages](SupportedLanguages.md) you can use to transform your scripts.
 
 ## What's a Transpiler?
 
