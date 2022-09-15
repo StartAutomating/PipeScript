@@ -29,7 +29,7 @@ This transpiler enables commands in protocol format to be transpiled.
 #### EXAMPLE 2
 ```PowerShell
 -ScriptBlock {
-    $userName = 'StartAutomating'
+    $userName = &#39;StartAutomating&#39;
     https://$GitHubApi/users/$UserName
 }
 ```
@@ -37,7 +37,7 @@ This transpiler enables commands in protocol format to be transpiled.
 #### EXAMPLE 3
 ```PowerShell
 -ScriptBlock {
-    $env:GitUserName = 'StartAutomating'
+    $env:GitUserName = &#39;StartAutomating&#39;
     https://api.github.com/users/$env:GitUserName
 }
 ```
@@ -50,13 +50,20 @@ The Command Abstract Syntax Tree.
 
 
 
-|Type              |Requried|Postion|PipelineInput |
-|------------------|--------|-------|--------------|
-|```[CommandAst]```|true    |1      |true (ByValue)|
+> **Type**: ```[CommandAst]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-PipeScript.Protocol [-CommandAst] <CommandAst> [<CommonParameters>]
+PipeScript.Protocol [-CommandAst] &lt;CommandAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 ### Notes
