@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<!-- Generated with EZOut 1.9.0: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
+<!-- Generated with EZOut 1.9.1: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
 <Configuration>
   <Controls>
     <Control>
@@ -749,7 +749,7 @@
     #&gt;
     [Management.Automation.Cmdlet("Format","Object")]
     [ValidateScript({return $true})]
-    param(
+    param(            
     [Parameter(ValueFromPipeline,ValueFromPipelineByPropertyName)]
     [PSObject]
     $InputObject,
@@ -916,7 +916,10 @@
                 '```' + # Start the code fence,
                     $(if ($CodeLanguage) { $CodeLanguage}) + # add the language,
                     [Environment]::newline + # then a newline,
-                    $(if ($ScriptBlock) { "$scriptBlock" } else { $inputObject | LinkInput}) +  # then the -ScriptBlock or -InputObject
+                    $(
+                        $codeContent = $(if ($ScriptBlock) { "$scriptBlock" } else { $inputObject | LinkInput})  # then the -ScriptBlock or -InputObject
+                        [Web.HttpUtility]::HtmlEncode($codeContent)
+                    ) +
                     [Environment]::newline + # then a newline
                 '```' # then close the code fence.
             )
@@ -934,7 +937,7 @@
         }
         elseif ($BlockQuote -or $BlockQuoteDepth) {
             if (-not $BlockQuoteDepth) { $BlockQuoteDepth = 1 }
-            $markdownLines += ("&gt;" * $BlockQuoteDepth) + ' ' + (
+            $markdownLines += ("&gt;" * $BlockQuoteDepth ) + ' ' + (
                 "$inputObject" -split '(?&gt;\r\n|\n)' -join (
                     [Environment]::NewLine + ("&gt;" * $BlockQuoteDepth) + ' '
                 )
@@ -1059,13 +1062,19 @@
                 }
                 
                 # Now we create the row for this object.
-                $markdownLines += '|' + (@(foreach ($prop in $propertyList) {
-                    if ($prop -is [string]) {
-                        $in.$prop | LinkInput
-                    } else {
-                        $prop.Value | LinkInput
-                    }
-                }) -replace ([Environment]::newline), '&lt;br/&gt;' -replace '\|', '`|' -join '|') + '|'
+
+                $markdownLine = '|' + (
+                    @(
+                        foreach ($prop in $propertyList) {
+                            if ($prop -is [string]) {
+                                $in.$prop | LinkInput
+                            } else {
+                                $prop.Value | LinkInput
+                            }
+                        }
+                    ) -replace ([Environment]::newline), '&lt;br/&gt;' -replace '\|', '`|' -join '|') + '|'
+
+                $markdownLines += $markdownLine
             }                                    
         }
 
