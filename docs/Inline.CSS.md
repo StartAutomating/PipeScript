@@ -27,14 +27,14 @@ The CSS Inline Transpiler will consider the following syntax to be empty:
 #### EXAMPLE 1
 ```PowerShell
 {
-    $StyleSheet = @'
+    $StyleSheet = @&#39;
 MyClass {
-text-color: "#000000" /*{
-"'red'", "'green'","'blue'" | Get-Random
+text-color: &quot;#000000&quot; /*{
+&quot;&#39;red&#39;&quot;, &quot;&#39;green&#39;&quot;,&quot;&#39;blue&#39;&quot; | Get-Random
 }*/;
 }
-'@
-    [Save(".\StyleSheet.ps1.css")]$StyleSheet
+&#39;@
+    [Save(&quot;.\StyleSheet.ps1.css&quot;)]$StyleSheet
 }
 ```
 .> .\StyleSheet.ps1.css
@@ -46,9 +46,16 @@ The command information.  This will include the path to the file.
 
 
 
-|Type               |Requried|Postion|PipelineInput |
-|-------------------|--------|-------|--------------|
-|```[CommandInfo]```|true    |1      |true (ByValue)|
+> **Type**: ```[CommandInfo]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **Parameter**
 
@@ -56,9 +63,16 @@ A dictionary of parameters.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |2      |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: 2
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ArgumentList**
 
@@ -66,13 +80,20 @@ A list of arguments.
 
 
 
-|Type              |Requried|Postion|PipelineInput|
-|------------------|--------|-------|-------------|
-|```[PSObject[]]```|false   |3      |false        |
+> **Type**: ```[PSObject[]]```
+
+> **Required**: false
+
+> **Position**: 3
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Inline.CSS [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
+Inline.CSS [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 
