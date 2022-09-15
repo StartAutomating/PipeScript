@@ -1,12 +1,13 @@
 This directory contains Inline PipeScript transpilers for several languages.
 
-PipeScript can currently be embedded in 29 languages or file types.
+PipeScript can currently be embedded in 30 languages or file types.
 
 ### Supported Languages
 
 
 |Language                               |Synopsis                                                             |
 |---------------------------------------|---------------------------------------------------------------------|
+|[ADA](Inline.ADA.psx.ps1)              |[ADA PipeScript Transpiler.](Inline.ADA.psx.ps1)                     |
 |[ATOM](Inline.ATOM.psx.ps1)            |[ATOM Inline PipeScript Transpiler.](Inline.ATOM.psx.ps1)            |
 |[Bash](Inline.Bash.psx.ps1)            |[Bash PipeScript Transpiler.](Inline.Bash.psx.ps1)                   |
 |[Batch](Inline.Batch.psx.ps1)          |[Batch PipeScript Transpiler.](Inline.Batch.psx.ps1)                 |
