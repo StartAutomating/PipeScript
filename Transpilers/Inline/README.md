@@ -5,42 +5,42 @@ PipeScript can currently be embedded in 34 languages or file types.
 ### Supported Languages
 
 
-|Language                               |Synopsis                                                             |
-|---------------------------------------|---------------------------------------------------------------------|
-|[ADA](Inline.ADA.psx.ps1)              |[ADA PipeScript Transpiler.](Inline.ADA.psx.ps1)                     |
-|[ATOM](Inline.ATOM.psx.ps1)            |[ATOM Inline PipeScript Transpiler.](Inline.ATOM.psx.ps1)            |
-|[Bash](Inline.Bash.psx.ps1)            |[Bash PipeScript Transpiler.](Inline.Bash.psx.ps1)                   |
-|[Basic](Inline.Basic.psx.ps1)          |[Basic PipeScript Transpiler.](Inline.Basic.psx.ps1)                 |
-|[Batch](Inline.Batch.psx.ps1)          |[Batch PipeScript Transpiler.](Inline.Batch.psx.ps1)                 |
-|[Bicep](Inline.Bicep.psx.ps1)          |[Bicep Inline PipeScript Transpiler.](Inline.Bicep.psx.ps1)          |
-|[CPlusPlus](Inline.CPlusPlus.psx.ps1)  |[C/C++ PipeScript Transpiler.](Inline.CPlusPlus.psx.ps1)             |
-|[CSharp](Inline.CSharp.psx.ps1)        |[C# Inline PipeScript Transpiler.](Inline.CSharp.psx.ps1)            |
-|[CSS](Inline.CSS.psx.ps1)              |[CSS Inline PipeScript Transpiler.](Inline.CSS.psx.ps1)              |
-|[Go](Inline.Go.psx.ps1)                |[Go PipeScript Transpiler.](Inline.Go.psx.ps1)                       |
-|[HLSL](Inline.HLSL.psx.ps1)            |[HLSL Inline PipeScript Transpiler.](Inline.HLSL.psx.ps1)            |
-|[HTML](Inline.HTML.psx.ps1)            |[HTML PipeScript Transpiler.](Inline.HTML.psx.ps1)                   |
-|[Java](Inline.Java.psx.ps1)            |[Java Inline PipeScript Transpiler.](Inline.Java.psx.ps1)            |
-|[JavaScript](Inline.JavaScript.psx.ps1)|[JavaScript Inline PipeScript Transpiler.](Inline.JavaScript.psx.ps1)|
-|[Json](Inline.Json.psx.ps1)            |[JSON PipeScript Transpiler.](Inline.Json.psx.ps1)                   |
-|[Kotlin](Inline.Kotlin.psx.ps1)        |[Kotlin Inline PipeScript Transpiler.](Inline.Kotlin.psx.ps1)        |
-|[Markdown](Inline.Markdown.psx.ps1)    |[Markdown File Transpiler.](Inline.Markdown.psx.ps1)                 |
-|[ObjectiveC](Inline.ObjectiveC.psx.ps1)|[Objective C PipeScript Transpiler.](Inline.ObjectiveC.psx.ps1)      |
-|[OpenSCAD](Inline.OpenSCAD.psx.ps1)    |[OpenSCAD Inline PipeScript Transpiler.](Inline.OpenSCAD.psx.ps1)    |
-|[Perl](Inline.Perl.psx.ps1)            |[Perl Inline PipeScript Transpiler.](Inline.Perl.psx.ps1)            |
-|[PHP](Inline.PHP.psx.ps1)              |[PHP PipeScript Transpiler.](Inline.PHP.psx.ps1)                     |
-|[PSD1](Inline.PSD1.psx.ps1)            |[PSD1 Inline PipeScript Transpiler.](Inline.PSD1.psx.ps1)            |
-|[Python](Inline.Python.psx.ps1)        |[Python Inline PipeScript Transpiler.](Inline.Python.psx.ps1)        |
-|[R](Inline.R.psx.ps1)                  |[R PipeScript Transpiler.](Inline.R.psx.ps1)                         |
-|[Razor](Inline.Razor.psx.ps1)          |[Razor Inline PipeScript Transpiler.](Inline.Razor.psx.ps1)          |
-|[RSS](Inline.RSS.psx.ps1)              |[RSS Inline PipeScript Transpiler.](Inline.RSS.psx.ps1)              |
-|[Ruby](Inline.Ruby.psx.ps1)            |[Ruby Inline PipeScript Transpiler.](Inline.Ruby.psx.ps1)            |
-|[Rust](Inline.Rust.psx.ps1)            |[Rust Inline PipeScript Transpiler.](Inline.Rust.psx.ps1)            |
-|[SQL](Inline.SQL.psx.ps1)              |[SQL PipeScript Transpiler.](Inline.SQL.psx.ps1)                     |
-|[TCL](Inline.TCL.psx.ps1)              |[TCL/TK PipeScript Transpiler.](Inline.TCL.psx.ps1)                  |
-|[TOML](Inline.TOML.psx.ps1)            |[TOML Inline PipeScript Transpiler.](Inline.TOML.psx.ps1)            |
-|[TypeScript](Inline.TypeScript.psx.ps1)|[TypeScript Inline PipeScript Transpiler.](Inline.TypeScript.psx.ps1)|
-|[XML](Inline.XML.psx.ps1)              |[XML Inline PipeScript Transpiler.](Inline.XML.psx.ps1)              |
-|[YAML](Inline.YAML.psx.ps1)            |[Yaml File Transpiler.](Inline.YAML.psx.ps1)                         |
+|Language      |Synopsis                                |Pattern                         |
+|--------------|----------------------------------------|--------------------------------|
+|[ADA]()       |ADA PipeScript Transpiler.              |```\.ad[bs]$```                 |
+|[ATOM]()      |ATOM Inline PipeScript Transpiler.      |```\.atom$```                   |
+|[Bash]()      |Bash PipeScript Transpiler.             |```\.sh$```                     |
+|[Basic]()     |Basic PipeScript Transpiler.            |```\.(?>bas\\|vbs{0,1})$```     |
+|[Batch]()     |Batch PipeScript Transpiler.            |```\.cmd$```                    |
+|[Bicep]()     |Bicep Inline PipeScript Transpiler.     |```\.bicep$```                  |
+|[CPlusPlus]() |C/C++ PipeScript Transpiler.            |```\.(?>c\\|cpp\\|h\\|swig)$``` |
+|[CSharp]()    |C# Inline PipeScript Transpiler.        |```\.cs$```                     |
+|[CSS]()       |CSS Inline PipeScript Transpiler.       |```\.s{0,1}css$```              |
+|[Go]()        |Go PipeScript Transpiler.               |```\.go$```                     |
+|[HLSL]()      |HLSL Inline PipeScript Transpiler.      |```\.hlsl$```                   |
+|[HTML]()      |HTML PipeScript Transpiler.             |```\.htm{0,1}```                |
+|[Java]()      |Java Inline PipeScript Transpiler.      |```\.(?>java)$```               |
+|[JavaScript]()|JavaScript Inline PipeScript Transpiler.|```\.js$```                     |
+|[Json]()      |JSON PipeScript Transpiler.             |```\.json$```                   |
+|[Kotlin]()    |Kotlin Inline PipeScript Transpiler.    |```\.kt$```                     |
+|[Markdown]()  |Markdown File Transpiler.               |```\.(?>md\\|markdown)$```      |
+|[ObjectiveC]()|Objective C PipeScript Transpiler.      |```\.(?>m\\|mm)$```             |
+|[OpenSCAD]()  |OpenSCAD Inline PipeScript Transpiler.  |```\.scad$```                   |
+|[Perl]()      |Perl Inline PipeScript Transpiler.      |```\.(?>pl\\|pod)$```           |
+|[PHP]()       |PHP PipeScript Transpiler.              |```\.php$```                    |
+|[PSD1]()      |PSD1 Inline PipeScript Transpiler.      |```\.psd1$```                   |
+|[Python]()    |Python Inline PipeScript Transpiler.    |```\.py$```                     |
+|[R]()         |R PipeScript Transpiler.                |```\.r$```                      |
+|[Razor]()     |Razor Inline PipeScript Transpiler.     |```\.(cshtml\\|razor)$```       |
+|[RSS]()       |RSS Inline PipeScript Transpiler.       |```\.rss$```                    |
+|[Ruby]()      |Ruby Inline PipeScript Transpiler.      |```\.rb$```                     |
+|[Rust]()      |Rust Inline PipeScript Transpiler.      |```\.rs$```                     |
+|[SQL]()       |SQL PipeScript Transpiler.              |```\.sql$```                    |
+|[TCL]()       |TCL/TK PipeScript Transpiler.           |```\.t(?>cl\\|k)$```            |
+|[TOML]()      |TOML Inline PipeScript Transpiler.      |```\.toml$```                   |
+|[TypeScript]()|TypeScript Inline PipeScript Transpiler.|```\.tsx{0,1}```                |
+|[XML]()       |XML Inline PipeScript Transpiler.       |```\.(?>xml\\|xaml\\|ps1xml)$```|
+|[YAML]()      |Yaml File Transpiler.                   |```\.(?>yml\\|yaml)$```         |
 
 
 
