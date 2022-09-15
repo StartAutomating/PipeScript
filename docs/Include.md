@@ -14,23 +14,23 @@ Includes Files or Functions into a Script.
 #### EXAMPLE 1
 ```PowerShell
 {
-    [Include("Invoke-PipeScript")]$null
-} | .>PipeScript
+    [Include(&quot;Invoke-PipeScript&quot;)]$null
+} | .&gt;PipeScript
 ```
 
 #### EXAMPLE 2
 ```PowerShell
 {
-    [Include("Invoke-PipeScript")]
+    [Include(&quot;Invoke-PipeScript&quot;)]
     param()
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 #### EXAMPLE 3
 ```PowerShell
 {
-    [Include('*-*.ps1')]$psScriptRoot
-} | .>PipeScript
+    [Include(&#39;*-*.ps1&#39;)]$psScriptRoot
+} | .&gt;PipeScript
 ```
 
 ---
@@ -41,9 +41,16 @@ The File Path to Include
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|true    |1      |false        |
+> **Type**: ```[String]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **AsByte**
 
@@ -51,19 +58,33 @@ If set, will include the content as a byte array
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **VariableAst**
 
-|Type                         |Requried|Postion|PipelineInput |
-|-----------------------------|--------|-------|--------------|
-|```[VariableExpressionAst]```|true    |named  |true (ByValue)|
+> **Type**: ```[VariableExpressionAst]```
+
+> **Required**: true
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Include [-FilePath] <String> [-AsByte] -VariableAst <VariableExpressionAst> [<CommonParameters>]
+Include [-FilePath] &lt;String&gt; [-AsByte] -VariableAst &lt;VariableExpressionAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 
