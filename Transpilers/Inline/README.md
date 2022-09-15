@@ -1,6 +1,6 @@
 This directory contains Inline PipeScript transpilers for several languages.
 
-PipeScript can currently be embedded in 30 languages or file types.
+PipeScript can currently be embedded in 32 languages or file types.
 
 ### Supported Languages
 
@@ -10,6 +10,7 @@ PipeScript can currently be embedded in 30 languages or file types.
 |[ADA](Inline.ADA.psx.ps1)              |[ADA PipeScript Transpiler.](Inline.ADA.psx.ps1)                     |
 |[ATOM](Inline.ATOM.psx.ps1)            |[ATOM Inline PipeScript Transpiler.](Inline.ATOM.psx.ps1)            |
 |[Bash](Inline.Bash.psx.ps1)            |[Bash PipeScript Transpiler.](Inline.Bash.psx.ps1)                   |
+|[Basic](Inline.Basic.psx.ps1)          |[Basic PipeScript Transpiler.](Inline.Basic.psx.ps1)                 |
 |[Batch](Inline.Batch.psx.ps1)          |[Batch PipeScript Transpiler.](Inline.Batch.psx.ps1)                 |
 |[Bicep](Inline.Bicep.psx.ps1)          |[Bicep Inline PipeScript Transpiler.](Inline.Bicep.psx.ps1)          |
 |[CPlusPlus](Inline.CPlusPlus.psx.ps1)  |[C/C++ PipeScript Transpiler.](Inline.CPlusPlus.psx.ps1)             |
@@ -29,6 +30,7 @@ PipeScript can currently be embedded in 30 languages or file types.
 |[PHP](Inline.PHP.psx.ps1)              |[PHP PipeScript Transpiler.](Inline.PHP.psx.ps1)                     |
 |[PSD1](Inline.PSD1.psx.ps1)            |[PSD1 Inline PipeScript Transpiler.](Inline.PSD1.psx.ps1)            |
 |[Python](Inline.Python.psx.ps1)        |[Python Inline PipeScript Transpiler.](Inline.Python.psx.ps1)        |
+|[R](Inline.R.psx.ps1)                  |[R PipeScript Transpiler.](Inline.R.psx.ps1)                         |
 |[Razor](Inline.Razor.psx.ps1)          |[Razor Inline PipeScript Transpiler.](Inline.Razor.psx.ps1)          |
 |[RSS](Inline.RSS.psx.ps1)              |[RSS Inline PipeScript Transpiler.](Inline.RSS.psx.ps1)              |
 |[Ruby](Inline.Ruby.psx.ps1)            |[Ruby Inline PipeScript Transpiler.](Inline.Ruby.psx.ps1)            |
