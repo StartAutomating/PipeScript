@@ -23,15 +23,29 @@ A string containing the text contents of the file
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|true    |1      |false        |
+> **Type**: ```[String]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ReplacePattern**
 
-|Type         |Requried|Postion|PipelineInput|
-|-------------|--------|-------|-------------|
-|```[Regex]```|false   |2      |false        |
+> **Type**: ```[Regex]```
+
+> **Required**: false
+
+> **Position**: 2
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **StartPattern**
 
@@ -41,9 +55,16 @@ An expression will match everything until -EndPattern
 
 
 
-|Type         |Requried|Postion|PipelineInput|
-|-------------|--------|-------|-------------|
-|```[Regex]```|false   |3      |false        |
+> **Type**: ```[Regex]```
+
+> **Required**: false
+
+> **Position**: 3
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **EndPattern**
 
@@ -52,9 +73,16 @@ This indicates the end of what should be considered PipeScript.
 
 
 
-|Type         |Requried|Postion|PipelineInput|
-|-------------|--------|-------|-------------|
-|```[Regex]```|false   |4      |false        |
+> **Type**: ```[Regex]```
+
+> **Required**: false
+
+> **Position**: 4
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ReplacementEvaluator**
 
@@ -64,9 +92,16 @@ The output of these scripts will be the replacement text.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[ScriptBlock]```|false   |5      |false        |
+> **Type**: ```[ScriptBlock]```
+
+> **Required**: false
+
+> **Position**: 5
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **NoTranspile**
 
@@ -74,9 +109,16 @@ If set, will not transpile script blocks.
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **SourceFile**
 
@@ -84,9 +126,16 @@ The path to the source file.
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|false   |6      |false        |
+> **Type**: ```[String]```
+
+> **Required**: false
+
+> **Position**: 6
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Begin**
 
@@ -94,9 +143,16 @@ A Script Block that will be injected before each inline is run.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[ScriptBlock]```|false   |7      |false        |
+> **Type**: ```[ScriptBlock]```
+
+> **Required**: false
+
+> **Position**: 7
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ForeachObject**
 
@@ -104,9 +160,16 @@ A Script Block that will be piped to after each output.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[ScriptBlock]```|false   |8      |false        |
+> **Type**: ```[ScriptBlock]```
+
+> **Required**: false
+
+> **Position**: 8
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **End**
 
@@ -114,9 +177,16 @@ A Script Block that will be injected after each inline script is run.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[ScriptBlock]```|false   |9      |false        |
+> **Type**: ```[ScriptBlock]```
+
+> **Required**: false
+
+> **Position**: 9
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Parameter**
 
@@ -124,9 +194,16 @@ A collection of parameters
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |10     |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: 10
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ArgumentList**
 
@@ -134,9 +211,16 @@ An argument list.
 
 
 
-|Type              |Requried|Postion|PipelineInput|
-|------------------|--------|-------|-------------|
-|```[PSObject[]]```|false   |11     |false        |
+> **Type**: ```[PSObject[]]```
+
+> **Required**: false
+
+> **Position**: 11
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **LinePattern**
 
@@ -146,13 +230,20 @@ Only lines beginning with this pattern within -StartPattern and -EndPattern will
 
 
 
-|Type         |Requried|Postion|PipelineInput|
-|-------------|--------|-------|-------------|
-|```[Regex]```|false   |12     |false        |
+> **Type**: ```[Regex]```
+
+> **Required**: false
+
+> **Position**: 12
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-PipeScript.Inline [-SourceText] <String> [[-ReplacePattern] <Regex>] [[-StartPattern] <Regex>] [[-EndPattern] <Regex>] [[-ReplacementEvaluator] <ScriptBlock>] [-NoTranspile] [[-SourceFile] <String>] [[-Begin] <ScriptBlock>] [[-ForeachObject] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [[-LinePattern] <Regex>] [<CommonParameters>]
+PipeScript.Inline [-SourceText] &lt;String&gt; [[-ReplacePattern] &lt;Regex&gt;] [[-StartPattern] &lt;Regex&gt;] [[-EndPattern] &lt;Regex&gt;] [[-ReplacementEvaluator] &lt;ScriptBlock&gt;] [-NoTranspile] [[-SourceFile] &lt;String&gt;] [[-Begin] &lt;ScriptBlock&gt;] [[-ForeachObject] &lt;ScriptBlock&gt;] [[-End] &lt;ScriptBlock&gt;] [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [[-LinePattern] &lt;Regex&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 
