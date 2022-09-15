@@ -18,11 +18,11 @@ PipeScript can be included in a TOML string that starts and ends with ```{}```, 
 #### EXAMPLE 1
 ```PowerShell
 {
-    $tomlContent = @'
+    $tomlContent = @&#39;
 [seed]
-RandomNumber = """{Get-Random}"""
-'@
-    [OutputFile('.\RandomExample.ps1.toml')]$tomlContent
+RandomNumber = &quot;&quot;&quot;{Get-Random}&quot;&quot;&quot;
+&#39;@
+    [OutputFile(&#39;.\RandomExample.ps1.toml&#39;)]$tomlContent
 }
 ```
 .> .\RandomExample.ps1.toml
@@ -34,9 +34,16 @@ The command information.  This will include the path to the file.
 
 
 
-|Type               |Requried|Postion|PipelineInput |
-|-------------------|--------|-------|--------------|
-|```[CommandInfo]```|true    |1      |true (ByValue)|
+> **Type**: ```[CommandInfo]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 #### **Parameter**
 
@@ -44,9 +51,16 @@ A dictionary of parameters.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |2      |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: 2
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ArgumentList**
 
@@ -54,13 +68,20 @@ A list of arguments.
 
 
 
-|Type              |Requried|Postion|PipelineInput|
-|------------------|--------|-------|-------------|
-|```[PSObject[]]```|false   |3      |false        |
+> **Type**: ```[PSObject[]]```
+
+> **Required**: false
+
+> **Position**: 3
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Inline.TOML [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
+Inline.TOML [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 
