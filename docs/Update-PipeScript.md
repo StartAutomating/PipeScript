@@ -24,7 +24,7 @@ Update-PipeScript -ScriptBlock {
 
 #### EXAMPLE 2
 ```PowerShell
-Update-PipeScript -RenameVariable @{x='y'} -ScriptBlock {$x}
+Update-PipeScript -RenameVariable @{x=&#39;y&#39;} -ScriptBlock {$x}
 ```
 
 #### EXAMPLE 3
@@ -34,7 +34,7 @@ Update-PipeScript -ScriptBlock {
     1
     #endregion MyRegion
     2
-} -RegionReplacement @{MyRegion=''}
+} -RegionReplacement @{MyRegion=&#39;&#39;}
 ```
 
 ---
@@ -45,9 +45,16 @@ A Script Block, written in PowerShell or PipeScript.
 
 
 
-|Type               |Requried|Postion|PipelineInput                 |
-|-------------------|--------|-------|------------------------------|
-|```[ScriptBlock]```|false   |1      |true (ByValue, ByPropertyName)|
+> **Type**: ```[ScriptBlock]```
+
+> **Required**: false
+
+> **Position**: 1
+
+> **PipelineInput**:true (ByValue, ByPropertyName)
+
+
+
 ---
 #### **Text**
 
@@ -55,9 +62,16 @@ A block of text.
 
 
 
-|Type          |Requried|Postion|PipelineInput        |
-|--------------|--------|-------|---------------------|
-|```[String]```|false   |2      |true (ByPropertyName)|
+> **Type**: ```[String]```
+
+> **Required**: false
+
+> **Position**: 2
+
+> **PipelineInput**:true (ByPropertyName)
+
+
+
 ---
 #### **TextReplacement**
 
@@ -66,9 +80,16 @@ Keys in the dictionary must be a string describing a character range, in the for
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |3      |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: 3
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **AstReplacement**
 
@@ -76,9 +97,16 @@ If set, will replace items based off of the abstract syntax tree.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |4      |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: 4
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **RegexReplacement**
 
@@ -86,9 +114,16 @@ If provided, will replace regular expression matches.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |5      |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: 5
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **RegionReplacement**
 
@@ -96,9 +131,16 @@ If provided, will replace regions.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |6      |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: 6
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **RemoveParameter**
 
@@ -106,9 +148,16 @@ If provided, will remove one or more parameters from a ScriptBlock.
 
 
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[String[]]```|false   |7      |false        |
+> **Type**: ```[String[]]```
+
+> **Required**: false
+
+> **Position**: 7
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **RenameVariable**
 
@@ -116,9 +165,16 @@ A collection of variables to rename.
 
 
 
-|Type               |Requried|Postion|PipelineInput|
-|-------------------|--------|-------|-------------|
-|```[IDictionary]```|false   |8      |false        |
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: 8
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Transpile**
 
@@ -126,13 +182,20 @@ If set, will transpile the updated script block.
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-RegexReplacement] <IDictionary>] [[-RegionReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-RenameVariable] <IDictionary>] [-Transpile] [<CommonParameters>]
+Update-PipeScript [[-ScriptBlock] &lt;ScriptBlock&gt;] [[-Text] &lt;String&gt;] [[-TextReplacement] &lt;IDictionary&gt;] [[-AstReplacement] &lt;IDictionary&gt;] [[-RegexReplacement] &lt;IDictionary&gt;] [[-RegionReplacement] &lt;IDictionary&gt;] [[-RemoveParameter] &lt;String[]&gt;] [[-RenameVariable] &lt;IDictionary&gt;] [-Transpile] [&lt;CommonParameters&gt;]
 ```
 ---
 
