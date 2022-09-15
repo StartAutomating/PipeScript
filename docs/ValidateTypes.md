@@ -17,19 +17,19 @@ This allows for a single parameter to handle multiple potential types.
 ```PowerShell
 {
     param(
-    [ValidateTypes(TypeName="ScriptBlock","string")]
+    [ValidateTypes(TypeName=&quot;ScriptBlock&quot;,&quot;string&quot;)]
     $In
     )
-} | .>PipeScript
+} | .&gt;PipeScript
 ```
 
 #### EXAMPLE 2
 ```PowerShell
-{"hello world"} |
+{&quot;hello world&quot;} |
     Invoke-PipeScript -ScriptBlock {
         param(
         [vfp()]
-        [ValidateTypes(TypeName="ScriptBlock","string")]            
+        [ValidateTypes(TypeName=&quot;ScriptBlock&quot;,&quot;string&quot;)]            
         $In
         )
 ```
@@ -41,7 +41,7 @@ $In
     Invoke-PipeScript -ScriptBlock {
         param(
         [vfp()]
-        [ValidateTypes(TypeName="ScriptBlock","string")]            
+        [ValidateTypes(TypeName=&quot;ScriptBlock&quot;,&quot;string&quot;)]            
         $In
         )
 ```
@@ -57,9 +57,16 @@ TypeNames will be treated first as real types, then as exact matches, then as wi
 
 
 
-|Type            |Requried|Postion|PipelineInput|
-|----------------|--------|-------|-------------|
-|```[String[]]```|true    |1      |false        |
+> **Type**: ```[String[]]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **VariableAST**
 
@@ -67,16 +74,23 @@ The variable that will be validated.
 
 
 
-|Type                         |Requried|Postion|PipelineInput |
-|-----------------------------|--------|-------|--------------|
-|```[VariableExpressionAst]```|false   |named  |true (ByValue)|
+> **Type**: ```[VariableExpressionAst]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-ValidateTypes [-TypeName] <String[]> [<CommonParameters>]
+ValidateTypes [-TypeName] &lt;String[]&gt; [&lt;CommonParameters&gt;]
 ```
 ```PowerShell
-ValidateTypes [-TypeName] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
+ValidateTypes [-TypeName] &lt;String[]&gt; [-VariableAST &lt;VariableExpressionAst&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 
