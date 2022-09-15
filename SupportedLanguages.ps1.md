@@ -12,7 +12,7 @@ These are all of the transpilers currently included in PipeScript:
             Select-Object @{
                 Name='Language'
                 Expression= {
-                    "[$($_.DisplayName -replace '^Inline\.')]($($_.Name))"
+                    "[$($_.DisplayName -replace '^Inline\.')]($($_.Source -replace '^.+(?=Transpilers)'))"
                 }
             }, @{
                 Name='Synopsis'
