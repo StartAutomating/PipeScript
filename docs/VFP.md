@@ -17,9 +17,16 @@ The parameter set name.
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[String]```|false   |1      |false        |
+> **Type**: ```[String]```
+
+> **Required**: false
+
+> **Position**: 1
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Mandatory**
 
@@ -27,9 +34,16 @@ If set, will mark this parameter as mandatory (within this parameter set).
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **ValueFromPipelineByPropertyName**
 
@@ -37,9 +51,16 @@ If set, will also mark this parameter as taking ValueFromPipelineByPropertyName.
 
 
 
-|Type          |Requried|Postion|PipelineInput|
-|--------------|--------|-------|-------------|
-|```[Switch]```|false   |named  |false        |
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
 ---
 #### **Position**
 
@@ -47,13 +68,20 @@ The position of the parameter.
 
 
 
-|Type         |Requried|Postion|PipelineInput|
-|-------------|--------|-------|-------------|
-|```[Int32]```|false   |2      |false        |
+> **Type**: ```[Int32]```
+
+> **Required**: false
+
+> **Position**: 2
+
+> **PipelineInput**:false
+
+
+
 ---
 ### Syntax
 ```PowerShell
-VFP [[-ParameterSet] <String>] [-Mandatory] [-ValueFromPipelineByPropertyName] [[-Position] <Int32>] [<CommonParameters>]
+VFP [[-ParameterSet] &lt;String&gt;] [-Mandatory] [-ValueFromPipelineByPropertyName] [[-Position] &lt;Int32&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 
