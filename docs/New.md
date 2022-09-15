@@ -48,40 +48,47 @@ If 'new'
 
 #### EXAMPLE 6
 ```PowerShell
-{ new @{RandomNumber = Get-Random; A ='b'}}
+{ new @{RandomNumber = Get-Random; A =&#39;b&#39;}}
 ```
 
 #### EXAMPLE 7
 ```PowerShell
-{ new Diagnostics.ProcessStartInfo @{FileName='f'} }
+{ new Diagnostics.ProcessStartInfo @{FileName=&#39;f&#39;} }
 ```
 
 #### EXAMPLE 8
 ```PowerShell
-{ new ScriptBlock 'Get-Command'}
+{ new ScriptBlock &#39;Get-Command&#39;}
 ```
 
 #### EXAMPLE 9
 ```PowerShell
-{ (new PowerShell).AddScript("Get-Command").Invoke() }
+{ (new PowerShell).AddScript(&quot;Get-Command&quot;).Invoke() }
 ```
 
 #### EXAMPLE 10
 ```PowerShell
-{ new 'https://schema.org/Thing' }
+{ new &#39;https://schema.org/Thing&#39; }
 ```
 
 ---
 ### Parameters
 #### **CommandAst**
 
-|Type              |Requried|Postion|PipelineInput |
-|------------------|--------|-------|--------------|
-|```[CommandAst]```|true    |1      |true (ByValue)|
+> **Type**: ```[CommandAst]```
+
+> **Required**: true
+
+> **Position**: 1
+
+> **PipelineInput**:true (ByValue)
+
+
+
 ---
 ### Syntax
 ```PowerShell
-New [-CommandAst] <CommandAst> [<CommonParameters>]
+New [-CommandAst] &lt;CommandAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 
