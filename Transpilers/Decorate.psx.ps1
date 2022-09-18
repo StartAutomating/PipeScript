@@ -1,8 +1,19 @@
-﻿[Alias('PSTypeName', 'Management.Automation.PSTypeName', 'System.Management.Automation.PSTypeName')]
-[CmdletBinding(DefaultParameterSetName='ScriptBlock')]
+﻿<#
+.SYNOPSIS
+    decorate transpiler
+.DESCRIPTION
+    Applies one or more typenames to an object.
+    By 'decorating' the object with a typename, this enables use of the extended type system.
+.EXAMPLE
+    {
+        $v = [PSCustomObject]@{}
+        [decorate('MyTypeName',Clear,PassThru)]$v
+    }.Transpile()
+#>
+[Alias('PSTypeName', 'Management.Automation.PSTypeName', 'System.Management.Automation.PSTypeName')]
 param(
 # The variable decoration will be applied to.
-[Parameter(Mandatory=$true,ParameterSetName='VariableAST', ValueFromPipeline)]
+[Parameter(Mandatory,ParameterSetName='VariableAST', ValueFromPipeline)]
 [Management.Automation.Language.VariableExpressionast]
 $VariableAst,
 
@@ -31,7 +42,7 @@ process {
                 if ($clear) {
                     $variableText + ".pstypenames.clear()"
                 }
-                foreach ($tn in $PSTypeName) {
+                foreach ($tn in $TypeName) {
                     $stn = $tn.Replace("'","''")
                     $variableText + ".pstypenames.add('$stn')"
                 }
