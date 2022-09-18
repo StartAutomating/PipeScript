@@ -2,7 +2,13 @@
 
 #>
 [ValidateScript({
-    $_.Parent -is [Management.Automation.Language.ParameterAst]
+    if (-not $_.Parent -is [Management.Automation.Language.ParameterAst]) {
+        return $false
+    }
+
+    $isRealType = $_.TypeName.GetReflectionType()
+    if ($isRealType) { return $false }
+    return $true
 })]
 param(
 [Parameter(Mandatory,ParameterSetName='ParameterAst',ValueFromPipeline)]
