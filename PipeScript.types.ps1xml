@@ -428,6 +428,9 @@ $this.Parent.GetType().Name -in 'AssignmentStatementAST', 'HashtableAST'
 elseif ($this.Source -match "\.ps1{0,1}\.(?&lt;ext&gt;[^.]+$)") {
     "SourceGenerator"
 }
+elseif (($this.Source -match '\.[^\.\\/]+\.ps1$') -or ($this.Source -match 'build\.ps1$')) {
+    "BuildScript"
+}
 elseif ($this.Source) {
     "PipeScriptFile"
 }
