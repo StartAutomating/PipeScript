@@ -57,6 +57,41 @@ $NoBlock,
 [switch]
 $NoParameter,
 
+
+[ValidateScript({
+    $validTypeList = [System.String],[System.String[]],[System.Text.RegularExpressions.Regex],
+        [Management.Automation.CommandInfo],[Management.Automation.CommandInfo[]]
+    $thisType = $_.GetType()
+    $IsTypeOk =
+        $(@( foreach ($validType in $validTypeList) {
+            if ($_ -as $validType) {
+                $true;break
+            }
+        }))
+    if (-not $isTypeOk) {
+        throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','string[]','regex','commandinfo','commandinfo[]'."
+    }
+    return $true
+})]
+$IncludeCommand,
+
+[ValidateScript({
+    $validTypeList = [System.String],[System.String[]],[System.Text.RegularExpressions.Regex],
+        [Management.Automation.CommandInfo],[Management.Automation.CommandInfo[]]
+    $thisType = $_.GetType()
+    $IsTypeOk =
+        $(@( foreach ($validType in $validTypeList) {
+            if ($_ -as $validType) {
+                $true;break
+            }
+        }))
+    if (-not $isTypeOk) {
+        throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','string[]','regex','commandinfo','commandinfo[]'."
+    }
+    return $true
+})]
+$ExcludeCommand,
+
 # If set, will ensure that the script block contains types in this list.
 # Passing -IncludeType without -ExcludeType will make -ExcludeType default to *.
 [ValidateScript({
@@ -162,6 +197,81 @@ $validateScripts = @(
 '@
     }
 
+    # If -IncludeCommand or -ExcludeCommand were provided
+    # generate an -ASTCondition to check command inclusion.
+    if ($IncludeCommand -or $ExcludeCommand) {        
+        if (-not $ExcludeCommand) {
+            $ExcludeCommand = '*'
+        }
+        
+        if (-not $IncludeCommand -and $ExcludeCommand -eq '*') {
+            $AstCondition += {
+param($ast)
+if ($ast -is [Management.Automation.Language.CommandAst]) {
+    throw "AST cannot contain commands"
+}
+return $true}
+        }
+        else {
+            $AstCondition += [ScriptBlock]::Create(@"
+param(`$ast)
+`$included = $(
+    if (-not $IncludeCommand) { '$null' }
+    @($(foreach ($inc in $IncludeCommand) {
+    if ($inc -is [string]) {
+        "'$($inc -replace "'","''")'"
+    }
+    elseif ($inc -is [Management.Automation.CommandInfo]) {
+        "'$($inc.Name -replace "'","''")'"
+    }
+    elseif ($inc -is [regex]) {
+        "[Regex]::new('$($inc.ToString().Replace("'","''"))','$($inc.Options)','$($inc.MatchTimeout)')"
+    }
+})) -join ',')
+`$excluded = $(@(
+    if (-not $ExcludeCommand) { '$null' }
+    $(foreach ($exc in $ExcludeCommand) {
+    if ($exc -is [string]) {
+        "'$($exc -replace "'","''")'"
+    }
+    elseif ($exc -is [Management.Automation.CommandInfo]) {
+        "'$($exc.Name -replace "'","''")'"
+    }
+    elseif ($exc -is [regex]) {
+        "[Regex]::new('$($exc.ToString().Replace("'","''"))','$($exc.Options)','$($exc.MatchTimeout)')"
+    }
+})) -join ',')
+if (`$ast -is [Management.Automation.Language.CommandAst]) {
+    `$astCommandName = `$ast.CommandElements[0].Value
+$(if ($IncludeCommand) {
+{
+    foreach ($inc in $included) {
+        if ($inc -is [string] -and $astCommandName -like $inc) {
+            return $true
+        }
+        elseif ($inc -is [Regex] -and $astCommandName -match $inc) {
+            return $true
+        }        
+    }
+}})
+$({
+    $throwMessage = "$astCommandName is not allowed" 
+    foreach ($exc in $excluded) {
+        if ($exc -is [string] -and $astCommandName -like $exc) {
+            throw $throwMessage
+        }
+        elseif ($exc -is [regex] -and $astCommandName -match $exc) {
+            throw $throwMessage
+        }        
+    }
+})
+
+}
+return `$true
+"@)
+        }
+    }
+
     # If -IncludeType or -ExcludeType were provided
     if ($IncludeType -or $ExcludeType) {        
         if (-not $ExcludeType) {
@@ -261,6 +371,10 @@ $({
 return `$true
 "@)
         }
+    }
+
+    if ($IncludeCommand -or $ExcludeCommand) {
+
     }
     
     if ($AstCondition) {
