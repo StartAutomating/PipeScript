@@ -1,3 +1,14 @@
+## 0.1.4:
+* ValidateScriptBlock improvements
+  * Adding -NoLoop/-NoWhileLoop (Fixes #227)
+  * Adding -IncludeCommand/-ExcludeCommand (Fixes #224)
+  * Adding -IncludeType/-ExcludeType (Fixes #225)
+  * Adding -AstCondition (Fixes #226)
+* Improved documentation of [decorate] transpiler (Fixes #222)
+* Core Parameter Transpiler no longer considers real types (Fixes #223)
+* Adding new value for PipeScript.PipeScriptType: BuildScript (Fixes #228)
+---
+
 ## 0.1.3:
 * New Protocols: UDP (Fixes #208)
 * New Inline Language Support:
