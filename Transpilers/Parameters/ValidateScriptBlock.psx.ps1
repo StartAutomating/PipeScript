@@ -301,42 +301,48 @@ return $true}
 param(`$ast)
 `$included = $(
     if (-not $IncludeType) { '$null' }
-    @($(foreach ($incT in $IncludeType) {
-    if ($incT -is [string]) {
-        "'$($incT -replace "'","''")'"
+    @($(foreach ($inc in $IncludeType) {
+    if ($inc -is [string]) {
+        "'$($inc -replace "'","''")'"
     }
-    elseif ($incT -is [type]) {
-        "[$($incT.FullName -replace '^System\.')]"
+    elseif ($inc -is [type]) {
+        "[$($inc.FullName -replace '^System\.')]"
     }
-    elseif ($incT -is [regex]) {
-        "[Regex]::new('$($incT.ToString().Replace("'","''"))','$($incT.Options)','$($incT.MatchTimeout)')"
+    elseif ($inc -is [regex]) {
+        "[Regex]::new('$($inc.ToString().Replace("'","''"))','$($inc.Options)','$($inc.MatchTimeout)')"
     }
 })) -join ',')
 `$excluded = $(@(
     if (-not $ExcludeType) { '$null' }
-    $(foreach ($excT in $ExcludeType) {
-    if ($excT -is [string]) {
-        "'$($excT -replace "'","''")'"
+    $(foreach ($exc in $ExcludeType) {
+    if ($exc -is [string]) {
+        "'$($exc -replace "'","''")'"
     }
-    elseif ($excT -is [type]) {
-        "[$($excT.FullName -replace '^System\.')]"
+    elseif ($exc -is [type]) {
+        "[$($exc.FullName -replace '^System\.')]"
     }
-    elseif ($excT -is [regex]) {
-        "[Regex]::new('$($excT.ToString().Replace("'","''"))','$($excT.Options)','$($excT.MatchTimeout)')"
+    elseif ($exc -is [regex]) {
+        "[Regex]::new('$($exc.ToString().Replace("'","''"))','$($exc.Options)','$($exc.MatchTimeout)')"
     }
 })) -join ',')
-if (`$ast -is [Management.Automation.Language.TypeExpressionAst]) {
+if (`$ast -is [Management.Automation.Language.TypeExpressionAst] -or    
+    `$ast -is [Management.Automation.Language.TypeConstraintAst]) {
+$({
+    $astType = $ast.TypeName
+    $reflectionType = if ($astType) {
+        $astType.GetReflectionType()
+    }
+})    
 $(if ($IncludeType) {
 {
     foreach ($inc in $included) {
-        if ($inc -is [string] -and $ast.TypeName -like $inc) {
+        if ($inc -is [string] -and $astType -like $inc) {
             return $true
         }
-        elseif ($inc -is [Regex] -and $ast.TypeName -match $inc) {
+        elseif ($inc -is [Regex] -and $astType -match $inc) {
             return $true
         }
-        elseif ($inc -is [type]){
-            $reflectionType = $ast.TypeName.GetReflectionType()
+        elseif ($inc -is [type]){            
             if ($inc -eq $reflectionType) { return $true}
             if ($inc.IsSubclassOf($reflectionType) -or $reflectionType.IsSubclassOf($inc)) {
                 return $true
@@ -353,14 +359,13 @@ $(if ($IncludeType) {
 $({
     $throwMessage = "[$($ast.Typename)] is not allowed" 
     foreach ($exc in $excluded) {
-        if ($exc -is [string] -and $ast.TypeName -like $exc) {
+        if ($exc -is [string] -and $astType -like $exc) {
             throw $throwMessage
         }
-        elseif ($exc -is [regex] -and $ast.TypeName -match $exc) {
+        elseif ($exc -is [regex] -and $astType -match $exc) {
             throw $throwMessage
         }
-        elseif ($exc -is [type]) {
-            $reflectionType = $ast.TypeName.GetReflectionType()
+        elseif ($exc -is [type]) {            
             if ($ecx -eq $reflectionType) { 
                 throw $throwMessage
             }
@@ -398,6 +403,7 @@ if ($ast -is [Management.Automation.Language.LoopStatementAst] -and
     $ast.GetType().Name -match '(?>do|while)') {
     throw "ScriptBlock cannot contain $($ast.GetType().Name)"
 }
+return $true
 }
     }
     

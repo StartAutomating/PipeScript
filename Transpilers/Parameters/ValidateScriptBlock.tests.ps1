@@ -18,8 +18,6 @@ describe ValidateScriptBlock {
         {
             & ({
                 [ValidateScriptBlock(NoBlocks)]$Sb = { process { 1 } }
-
-                & $sb
             }.Transpile())
         } | Should -Throw
     }
@@ -27,9 +25,15 @@ describe ValidateScriptBlock {
     it 'Can ensure a ScriptBlock may only -IncludeCommand' {
         {
             & ({
-                [ValidateScriptBlock(IncludeCommand='*-Process')]$Sb = { Get-Command }
+                [ValidateScriptBlock(IncludeCommand='*-Process')]$Sb = { Get-Command }                
+            }.Transpile())
+        } | Should -Throw
+    }
 
-                & $sb
+    it 'Can ensure a ScriptBlock may not -IncludeType' {
+        {
+            & ({
+                [ValidateScriptBlock(IncludeType='[int]')]$Sb = { [string]"hi" }                
             }.Transpile())
         } | Should -Throw
     }
@@ -38,8 +42,6 @@ describe ValidateScriptBlock {
         {
             & ({
                 [ValidateScriptBlock(NoLoop)]$Sb = { foreach ($n in 1..100) {$n} }
-
-                & $sb
             }.Transpile())
         } | Should -Throw
     }
@@ -47,10 +49,14 @@ describe ValidateScriptBlock {
     it 'Can ensure a ScriptBlock has -NoWhileLoop' {
         {
             & ({
-                [ValidateScriptBlock(NoLoop)]$Sb = { while (1) {$n} }
-
-                & $sb
+                [ValidateScriptBlock(NoWhileLoop)]$Sb = { while (1) {$n} }
             }.Transpile())
         } | Should -Throw
+        
+        & ({
+            [ValidateScriptBlock(NoWhileLoop)]$Sb = { foreach ($n in 1..1) { $n } }
+            & $sb
+        }.Transpile()) |
+            Should -be 1
     }
 }
