@@ -177,6 +177,40 @@ Passing -IncludeType without -ExcludeType will make -ExcludeType default to *.
 
 
 ---
+#### **NoLoop**
+
+If set, will ensure that the ScriptBlock does not contain any loops.
+
+
+
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
+---
+#### **NoWhileLoop**
+
+If set, will ensure that the ScriptBlock does not contain any do or while loops.
+
+
+
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
+---
 #### **AstCondition**
 
 One or more AST conditions to validate.
@@ -214,10 +248,10 @@ A VariableExpression.  If provided, the Validation attributes will apply to this
 ---
 ### Syntax
 ```PowerShell
-ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [-IncludeCommand &lt;Object&gt;] [-ExcludeCommand &lt;Object&gt;] [-IncludeType &lt;Object&gt;] [-ExcludeType &lt;Object&gt;] [-AstCondition &lt;ScriptBlock[]&gt;] [&lt;CommonParameters&gt;]
+ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [-IncludeCommand &lt;Object&gt;] [-ExcludeCommand &lt;Object&gt;] [-IncludeType &lt;Object&gt;] [-ExcludeType &lt;Object&gt;] [-NoLoop] [-NoWhileLoop] [-AstCondition &lt;ScriptBlock[]&gt;] [&lt;CommonParameters&gt;]
 ```
 ```PowerShell
-ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [-IncludeCommand &lt;Object&gt;] [-ExcludeCommand &lt;Object&gt;] [-IncludeType &lt;Object&gt;] [-ExcludeType &lt;Object&gt;] [-AstCondition &lt;ScriptBlock[]&gt;] -VariableAST &lt;VariableExpressionAst&gt; [&lt;CommonParameters&gt;]
+ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [-IncludeCommand &lt;Object&gt;] [-ExcludeCommand &lt;Object&gt;] [-IncludeType &lt;Object&gt;] [-ExcludeType &lt;Object&gt;] [-NoLoop] [-NoWhileLoop] [-AstCondition &lt;ScriptBlock[]&gt;] -VariableAST &lt;VariableExpressionAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 
