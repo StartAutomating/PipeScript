@@ -1,4 +1,4 @@
-#region Piecemeal [ 0.3.4 ] : Easy Extensible Plugins for PowerShell
+#region Piecemeal [ 0.3.5 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
 # Install-Piecemeal -ExtensionNoun 'PipeScript' -ExtensionPattern '\.psx\.ps1{0,1}$','\.ps1{0,1}\.(?<ext>[^.]+$)','\.ps1{0,1}$' -ExtensionTypeName 'PipeScript' -OutputPath '.\Get-PipeScript.ps1'
@@ -925,5 +925,5 @@ function Get-PipeScript
         }
     }
 }
-#endregion Piecemeal [ 0.3.4 ] : Easy Extensible Plugins for PowerShell
+#endregion Piecemeal [ 0.3.5 ] : Easy Extensible Plugins for PowerShell
 
