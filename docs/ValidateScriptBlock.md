@@ -115,6 +115,120 @@ If set, will ensure that the [ScriptBlock] has no parameters.
 
 
 ---
+#### **IncludeCommand**
+
+> **Type**: ```[Object]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
+---
+#### **ExcludeCommand**
+
+> **Type**: ```[Object]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
+---
+#### **IncludeType**
+
+If set, will ensure that the script block contains types in this list.
+Passing -IncludeType without -ExcludeType will make -ExcludeType default to *.
+
+
+
+> **Type**: ```[Object]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
+---
+#### **ExcludeType**
+
+If set, will ensure that the script block does not use the types in this list.
+Passing -IncludeType without -ExcludeType will make -ExcludeType default to *.
+
+
+
+> **Type**: ```[Object]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
+---
+#### **NoLoop**
+
+If set, will ensure that the ScriptBlock does not contain any loops.
+
+
+
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
+---
+#### **NoWhileLoop**
+
+If set, will ensure that the ScriptBlock does not contain any do or while loops.
+
+
+
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
+---
+#### **AstCondition**
+
+One or more AST conditions to validate.
+If no results are found or the condition throws, the script block will be considered invalid.
+
+
+
+> **Type**: ```[ScriptBlock[]]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
+---
 #### **VariableAST**
 
 A VariableExpression.  If provided, the Validation attributes will apply to this variable.
@@ -134,10 +248,10 @@ A VariableExpression.  If provided, the Validation attributes will apply to this
 ---
 ### Syntax
 ```PowerShell
-ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [&lt;CommonParameters&gt;]
+ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [-IncludeCommand &lt;Object&gt;] [-ExcludeCommand &lt;Object&gt;] [-IncludeType &lt;Object&gt;] [-ExcludeType &lt;Object&gt;] [-NoLoop] [-NoWhileLoop] [-AstCondition &lt;ScriptBlock[]&gt;] [&lt;CommonParameters&gt;]
 ```
 ```PowerShell
-ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] -VariableAST &lt;VariableExpressionAst&gt; [&lt;CommonParameters&gt;]
+ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [-IncludeCommand &lt;Object&gt;] [-ExcludeCommand &lt;Object&gt;] [-IncludeType &lt;Object&gt;] [-ExcludeType &lt;Object&gt;] [-NoLoop] [-NoWhileLoop] [-AstCondition &lt;ScriptBlock[]&gt;] -VariableAST &lt;VariableExpressionAst&gt; [&lt;CommonParameters&gt;]
 ```
 ---
 

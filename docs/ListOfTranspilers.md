@@ -10,7 +10,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Bash](Transpilers/Wrappers/Bash.psx.ps1)                                                        |Wraps PowerShell in a Bash Script                |
 |[Batch](Transpilers/Wrappers/Batch.psx.ps1)                                                      |Wraps PowerShell in a Windows Batch Script       |
 |[BatchPowerShell](Transpilers/Wrappers/BatchPowerShell.psx.ps1)                                  |Wraps PowerShell in a Windows Batch Script       |
-|[Decorate](Transpilers/Decorate.psx.ps1)                                                         |
+|[Decorate](Transpilers/Decorate.psx.ps1)                                                         |decorate transpiler                              |
 |[Dot](Transpilers/Syntax/Dot.psx.ps1)                                                            |Dot Notation                                     |
 |[EqualityComparison](Transpilers/Syntax/EqualityComparison.psx.ps1)                              |Allows equality comparison.                      |
 |[EqualityTypeComparison](Transpilers/Syntax/EqualityTypeComparison.psx.ps1)                      |Allows equality type comparison.                 |
