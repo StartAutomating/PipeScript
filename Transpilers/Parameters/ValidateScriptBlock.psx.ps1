@@ -128,6 +128,16 @@ return $true
 })]
 $ExcludeType,
 
+# If set, will ensure that the ScriptBlock does not contain any loops.
+[Alias('NoLoops')]
+[switch]
+$NoLoop,
+
+# If set, will ensure that the ScriptBlock does not contain any do or while loops.
+[Alias('NoWhileLoops','NoDoLoops','NoDoLoop')]
+[switch]
+$NoWhileLoop,
+
 # One or more AST conditions to validate.
 # If no results are found or the condition throws, the script block will be considered invalid.
 [Alias('AstConditions', 'IfAst')]
@@ -373,8 +383,22 @@ return `$true
         }
     }
 
-    if ($IncludeCommand -or $ExcludeCommand) {
-
+    if ($NoLoop) {
+        $AstCondition += {
+param($ast)
+if ($ast -is [Management.Automation.Language.LoopStatementAst]) {
+    throw "ScriptBlock cannot contain loops"
+}
+return $true
+}
+    } elseif ($NoWhileLoop) {
+        $AstCondition += {
+param($ast)
+if ($ast -is [Management.Automation.Language.LoopStatementAst] -and 
+    $ast.GetType().Name -match '(?>do|while)') {
+    throw "ScriptBlock cannot contain $($ast.GetType().Name)"
+}
+}
     }
     
     if ($AstCondition) {
