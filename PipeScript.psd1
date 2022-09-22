@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.1.4'
+    ModuleVersion     = '0.1.5'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
