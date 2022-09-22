@@ -8,18 +8,8 @@ function Join-PipeScript
     .EXAMPLE
         Get-Command Join-PipeScript | Join-PipeScript
     .EXAMPLE
-        {
-        param(
-        [string]
-        $x
-        )
-        },
-        {
-        param(            
-        [string]
-        $y
-        )
-        } | 
+        {param([string]$x)},
+        {param([string]$y)} | 
             Join-PipeScript
     .EXAMPLE
         {
@@ -31,6 +21,10 @@ function Join-PipeScript
                 $_ * $factor
             }
         } | Join-PipeScript
+    .EXAMPLE
+        {
+            param($x = 1)
+        } | Join-PipeScript -ExcludeParameter x
     .LINK
         Update-PipeScript
     
@@ -43,30 +37,47 @@ function Join-PipeScript
     [ScriptBlock[]]
     $ScriptBlock,
 
-    # A list of block types to be skipped during a merge of script blocks.
-    # By default, no blocks will be skipped
-    [ValidateSet('using', 'requires', 'help','param','dynamicParam','begin','process','end')]
+    # A list of block types to be excluded during a merge of script blocks.
+    # By default, no blocks will be excluded.
+    [ValidateSet('using', 'requires', 'help','header','param','dynamicParam','begin','process','end')]
+    [Alias('SkipBlockType','SkipBlockTypes','ExcludeBlockTypes')]
     [string[]]
-    $SkipBlockType,
+    $ExcludeBlockType,
 
     # A list of block types to include during a merge of script blocks.
-    [ValidateSet('using', 'requires', 'help','param','dynamicParam','begin','process','end')]
+    [ValidateSet('using', 'requires', 'help','header','param','dynamicParam','begin','process','end')]
+    [Alias('BlockType','BlockTypes','IncludeBlockTypes')]
     [string[]]
-    $BlockType = @('using', 'requires', 'help','param','dynamicParam','begin','process','end'),
+    $IncludeBlockType = @('using', 'requires', 'help','header','param','dynamicParam','begin','process','end'),
 
     # If set, will transpile the joined ScriptBlock.    
     [switch]
-    $Transpile
+    $Transpile,
+
+    # A list of parameters to include.  Can contain wildcards.
+    # If -IncludeParameter is provided without -ExcludeParameter, all other parameters will be excluded.
+    [string[]]
+    $IncludeParameter,
+
+    # A list of parameters to exclude.  Can contain wildcards.
+    # Excluded parameters with default values will declare the default value at the beginnning of the command.
+    [string[]]
+    $ExcludeParameter
     )
 
     begin {
+        # Join-PipeScript is going to join a bunch of script blocks.
         $AllScriptBlocks = @()
+
+        # To do this 'right', we will need some little functions and filters
         
+        # We'll need to indent the start of a script by a given level.
         filter IndentAst {
             $ast = $_            
             (' ' * ($ast | MeasureIndent)) + "$($ast.Extent)"    # combine the statements a newline.            
         }
 
+        # To do that right, we'll need to Measure Indentation (based off of the least indented line)
         filter MeasureIndent {
             $ast = $_
             $parentExtent = $ast.Parent.Extent
@@ -80,21 +91,28 @@ function Join-PipeScript
     }
 
     process {
+        # Our process block is fairly simple, we just collect the [ScriptBlock]s as they come in
         if ($ScriptBlock) {
             $AllScriptBlocks += $ScriptBlock
         }
     }
 
     end {
-        if ($SkipBlockType) {
-            foreach ($skipBlock in $SkipBlockType) {
-                if ($blockType -contains $skipBlock) {
-                    $blockType = $BlockType -ne $skipBlock
+        # Before we go too far, we want both -BlockType and -ExcludeBlockType to work.
+        # and they are both lists with the same finite set of values,
+        # we can simply filter out any -BlockType that are in -ExcludeBlockType.
+        if ($ExcludeBlockType) {
+            foreach ($skipBlock in $ExcludeBlockType) {
+                if ($IncludeBlockType -contains $skipBlock) {
+                    $IncludeBlockType = $IncludeBlockType -ne $skipBlock
                 }
             }
         }
+
+        # Now we collect all of the script blocks to merge
         $AllScriptBlocks  = @(
         foreach ($toMerge in $AllScriptBlocks) {
+            # If the script block had a body (aka a function definition), join the body.
             if ($toMerge.Ast.body) {
                 [ScriptBlock]::Create($toMerge.Ast.Body.Extent.ToString() -replace '^\{' -replace '\}$')
             } else {
@@ -102,85 +120,191 @@ function Join-PipeScript
             }
         })
 
+        # If we have any other named blocks than end, we need to close the end block.
+        # So set up a boolean to track this.
+        [bool]$closeEndBlock = $false
+        
+        # If we're including headers or help
+        if ($IncludeBlockType -contains 'Header' -or $IncludeBlockType -contains 'Help') {            
+            $allHeaderBlocks = @(
+                # walk over each parameter block
+                foreach ($combined in $AllScriptBlocks.Ast.ParamBlock) {
+                    if (-not $combined.Parent.Extent) { continue }
+                    # and extract the difference between the parent and the start of the block
+                    $offsetDifference = $combined.Extent.StartOffset - $combined.Parent.Extent.StartOffset
+                    # (this is where the header and help reside)
+                    # try to strip off leading braces and whitespace
+                    $headerblock = $combined.Parent.Extent.ToString().Substring(0, $offsetDifference) -replace '^[\r\n\s]{0,}\{'
+                    # and remove blank lines
+                    $headerblock = $headerblock -split '(?>\r\n|\n)' -notmatch '^\s{0,}$' -join [Environment]::NewLine
+                    $headerblock
+                }                        
+            )
 
-        $mergedScript = @(
-            if ($BlockType -contains 'using') {
+            # If we had any header blocks
+            if ($allHeaderBlocks) {
+                # We need to sort the header and the help.
+
+                # To do this, we can use this regex to find block comments.
+                $helpRegex = [Regex]::New('
+                \<\# # The opening tag
+                (?<Block> 
+                    (?:.|\s)+?(?=\z|\#>) # anything until the closing tag
+                )
+                \#\> # the closing tag
+                ', 'IgnoreCase,IgnorePatternWhitespace','00:00:05')
+
+                # Now keep track of the rest of the headers and the combined help.
+                $restOfHeaders = @()
+                $combinedHelp  = @() # Walk over each header block
+                foreach ($headerblock in $allHeaderBlocks) {
+                    # If the block had help
+                    if ($headerblock -match $helpRegex) { 
+                        $combinedHelp  += $matches.Block # add it to combined help
+                        # and remove it to get the rest of the headers.
+                        $restOfHeaders += $headerblock -replace $helpRegex
+                    } else {
+                        # otherwise, just add the block to the headers.
+                        $restOfHeaders += $headerblock
+                    }                                        
+                }
+                
+                # Now, collect all of the header blocks
+                $allHeaderBlocks = @(
+                    # If we're including -Help and we have $combinedHelp
+                    if ($IncludeBlockType -contains 'Help' -and $combinedHelp) {                    
+                        "<#"  # create a comment block               
+                        $combinedHelp -join [Environment]::NewLine # and join the content.
+                        '#>'                        
+                    }
+                ) + @(
+                    # If we're including headers, add the rest of the headers.
+                    if ($IncludeBlockType -contains 'Header') {
+                        $restOfHeaders
+                    }
+                )
+
+                # Now that the header is sorted, we're ready to join the script.
+            }
+        }        
+        
+        
+
+        #region Joining the Scripts
+
+        # To join the scripts, we want to go thru block type by block type.
+        $joinScriptLines = @(
+            # First _have_ to be using statements.
+            if ($IncludeBlockType -contains 'using') {
                 foreach ($usingStatement in $AllScriptBlocks.Ast.UsingStatements) {
+                    # They are easy:  just .ToString() their extent.
                     $usingStatement.Extent.ToString()
                 }                
             }
 
-            if ($BlockType -contains 'requires') {
+            # Next we have requirements
+            if ($IncludeBlockType -contains 'requires') {
+                # unfortunately, these do not have an easy .ToString()
+                # (this is why the type has been extended to have a .Script property (#234))                
                 foreach ($requirement in $AllScriptBlocks.Ast.ScriptRequirements) {
-                    if ($requirement.RequirementPSVersion) {
-                        "#requires -Version $($requirement.RequirementPSVersion)"
-                    }
-                    if ($requirement.IsElevationRequired) {
-                        "#requires -RunAsAdministrator"
-                    }
-                    if ($requirement.RequiredModules) {
-                        "#requires -Module $(@(foreach ($reqModule in $requirement.RequiredModules) {
-                            if ($reqModule.Version -or $req.RequiredVersion -or $req.MaximumVersion) {
-                                '@{' + $(@(foreach ($prop in $reqModule.PSObject.Properties) {
-                                    if (-not $prop.Value) { continue }
-                                    if ($prop.Name -in 'Name', 'Version') {
-                                        "Module$($prop.Name)='$($prop.Value.ToString().Replace("'","''"))'"
-                                    } elseif ($prop.Name -eq 'RequiredVersion') {
-                                        "MinimumVersion='$($prop.Value)'" 
-                                    } else {
-                                        "$($prop.Name)='$($prop.Value)'" 
-                                    }
-                                }) -join ';') + '}'
-                            } else {
-                                $reqModule.Name
-                            }
-                        }) -join ',')"
-                    }
-                    if ($requirement.RequiredAssemblies) {
-                        "#requires -Assembly $($requirement.RequiredAssemblies -join ',')"
-                    }
+                    if (-not $requirement) { continue }
+                    $requirement.Script.ToString()
                 }
             }
 
-            if ($BlockType -contains 'param') {
-                foreach ($combined in $AllScriptBlocks.Ast.ParamBlock) {
-                    if (-not $combined.Parent.Extent) { continue }
-                    $offsetDifference = $combined.Extent.StartOffset - $combined.Parent.Extent.StartOffset
-                    $combined.Parent.Extent.ToString().Substring(0, $offsetDifference) -replace '^[\r\n\s]{0,}\{'
-                }
-            }            
-            # Start the param block
+            # If we're including header or help, we'll want to include whatever blocks we have.
+            # (if you recall, we've already filtered this list).
+            if ($IncludeBlockType -contains 'header' -or $IncludeBlockType -contains 'help') {                
+                $allHeaderBlocks
+            }
             
-            $alreadyIncludedParameter = [Ordered]@{}
-            if ($BlockType -contains 'param') {
+            # param is probably the trickiest section, but since we're building this script from top to bottom
+            # it's next on the list.
+
+            # We _might_ need to add some statements to the script (because of -Include/ExcludeParameter)            
+            $StatementsToAdd = @()
+
+            if ($IncludeBlockType -contains 'param') {
+                # To start off with, this is the first block we need to name and indent
+                # (at least, if we have any parameter blocks)
                 if (@($AllScriptBlocks.Ast.ParamBlock) -ne $null) {
+                    # if we do, use the first non-null parameter block to determine the indentation level.
                     ' ' * (@(@($AllScriptBlocks.Ast.ParamBlock) -ne $null)[0] | MeasureIndent) + "param("
-                }                    
-                $paramOut = @(
-                foreach ($combined in $AllScriptBlocks.Ast.ParamBlock) {
-                    # Include any existing parameters                        
+                }
+
+                # Ok, next we go thru each script block and combine the parameters.
+                # Because a parameter may appear more than once, we need to keep track of which ones we have alreadyIncluded.
+                $alreadyIncludedParameter = [Ordered]@{}
+
+                
+                # Now we walk over each param block, and collect output into $paramOut as we go.
+                $paramOut = @(foreach ($paramBlock in $AllScriptBlocks.Ast.ParamBlock) {
+                    # The parameter index for each set of parameters is important, because it dictates where we look for help.
                     $parameterIndex  = 0
-                    foreach ($parameter in $combined.parameters) {
+                    # Now we walk over the parameters from a given paramblock
+                    foreach ($parameter in $paramBlock.parameters) {
+                        # and we determine the name of each parameter.
                         $variableName = $parameter.Name.VariablePath.ToString()
-                    
-                        $inlineParameterHelp =
-                            if ($parameterIndex -gt 0) {
-                                $lastParameter   = $parameter.Parent.Parameters[$parameterIndex - 1]
-                                $relativeOffset  = $lastParameter.Extent.EndOffset + 1 - $parameter.Parent.Extent.StartOffset
-                                $distance        = $parameter.Extent.StartOffset - $lastParameter.Extent.EndOffset - 1
-                                $parameter.Parent.Extent.ToString().Substring($relativeOffset, $distance) -replace '^[\,\s\r\n]+'
-                            } else {
-                                $parentExtent = $parameter.Parent.Extent.ToString()
-                                $afterFirstParens = $parentExtent.IndexOf('(') + 1 
-                                $parentExtent.Substring($afterFirstParens, 
-                                    $parameter.Extent.StartOffset - $parameter.Parent.Extent.StartOffset - $afterFirstParens) -replace '^[\s\r\n]+'
+                        
+                        # With the name in hand, we can check -IncludeParameter and -ExcludeParameter 
+                        if ($IncludeParameter -or $ExcludeParameter) {                            
+                            $shouldIncludeParameter = # If -IncludeParameter was not specified
+                                if (-not $IncludeParameter) { $true } # we should include it
+                                else {
+                                    # otherwise we only include it if any of the wildcards match.
+                                    foreach ($inc in $IncludeParameter) { 
+                                        if ($variableName -like $inc) {
+                                            $true;break
+                                        }
+                                    }
+                                }
+                            
+                            # We should only -Exclude if any of the wildcards match.
+                            $shouldExcludeParameter = 
+                                foreach ($exc in $ExcludeParameter) {
+                                    if ($variableName -like $exc) { $true; break }                                    
+                                }
+
+                            # If we shouldn't include or should exclude any given parameter
+                            if (-not $shouldIncludeParameter -or $shouldExcludeParameter) {
+                                # check for a default value
+                                if ($parameter.DefaultValue) {
+                                    # and add it to the statements to add.
+                                    $statementsToAdd += "`$$($variableName) = $($parameter.DefaultValue)"
+                                }
+
+                                $parameterIndex++
+                                continue
                             }
-
-
-                        if (-not $alreadyIncludedParameter[$variableName]) {
+                        }
+                        
+                        # If we had not already included the parameter
+                        if (-not $alreadyIncludedParameter[$variableName]) {                            
+                            # Get the parameter's inline help.
+                            $inlineParameterHelp = # For the first parameter, this is 
+                                if ($parameterIndex -eq 0) { # For the first parameter
+                                    $parentExtent = $parameter.Parent.Extent.ToString()
+                                    # This starts after the first parenthesis. 
+                                    $afterFirstParens = $parentExtent.IndexOf('(') + 1
+                                    # and goes until the start of the parameter.
+                                    $parentExtent.Substring($afterFirstParens, 
+                                        $parameter.Extent.StartOffset - 
+                                            $parameter.Parent.Extent.StartOffset - 
+                                                $afterFirstParens) -replace '^[\s\r\n]+'
+                                    # (don't forget to trim leading whitespace)
+                                } else {
+                                    # for every other parameter it is the content between parameters.
+                                    $lastParameter   = $parameter.Parent.Parameters[$parameterIndex - 1]                                    
+                                    $relativeOffset  = $lastParameter.Extent.EndOffset + 1 - $parameter.Parent.Extent.StartOffset
+                                    $distance        = $parameter.Extent.StartOffset - $lastParameter.Extent.EndOffset - 1
+                                    # (don't forget to trim leading whitespace and commas)
+                                    $parameter.Parent.Extent.ToString().Substring($relativeOffset,$distance) -replace '^[\,\s\r\n]+'
+                                }
+                            
+                            # Then output the included parameter.
                             $alreadyIncludedParameter[$variableName]  = $inlineParameterHelp + $parameter.Extent.ToString()
                             $alreadyIncludedParameter[$variableName]
-                        } else {
+                        } else {                            
                             $oldParam = "param (" + [Environment]::NewLine + 
                                 $($alreadyIncludedParameter[$variableName]) + 
                                 [Environment]::NewLine + 
@@ -189,100 +313,120 @@ function Join-PipeScript
                             $oldParameter = $oldParamScriptBlock.Ast.ParamBlock.Parameters[0]                                
                                                         
                             # For the moment, parameters are not merged.  This could be improved upon.
-
                         }
                         
                         $parameterIndex++
                     }                                        
                 }) 
+                
+                # Join all parameters by a comma and two newlines.
                 $paramOut -notmatch '^[\s\r\n]$' -join (',' + ([Environment]::NewLine * 2))
+
+                # and close out the parameter block.
                 if (@($AllScriptBlocks.Ast.ParamBlock) -ne $null) {
                     ' ' * (@(@($AllScriptBlocks.Ast.ParamBlock) -ne $null)[0] | MeasureIndent) + ")"
                 }            
             }
-
-            if ($BlockType -contains 'dynamicParam') {
-                $blocks = @($AllScriptBlocks.Ast.DynamicParamBlock)
-                if ($blocks -ne $null) {
-                    $blockOpen = $false
-                    foreach ($block in $blocks) {
-                        if (-not $block) { continue }
-                        if (-not $blockOpen) {
-                            ($block | IndentAst) -replace '\}$'
-                            $blockOpen = $true
-                        } else {
-                            $block.Extent.ToString() -replace '^dynamicParam\s{0,}\{' -replace '\}$'
-                        }
-                    }
-                    ' ' * ($block | MeasureIndent) + '}'
-                }
-            }
-            
-
-            
-            if ($BlockType -contains 'begin') {  # If there were begin blocks,
-                $blocks = @($AllScriptBlocks.Ast.BeginBlock)
-                if ($blocks -ne $null) {
-                    $blockOpen = $false
-                    foreach ($block in $blocks) {
-                        if (-not $block) { continue }
-                        if (-not $blockOpen) {
-                            ($block | IndentAst) -replace '\}$'
-                            $blockOpen = $true
-                        } else {
-                            $block.Extent.ToString() -replace '^begin\s{0,}\{' -replace '\}$'
-                        }
-                    }
-                    ' ' * ($block | MeasureIndent) + '}'
-                }                
+            elseif ($IncludeBlockType -contains 'Header' -or $IncludeBlockType -contains 'Help') {
+                'param()'
             }
 
-            if ($BlockType -contains 'process') {  # If there were process blocks
-                $blocks = @($AllScriptBlocks.Ast.ProcessBlock)
-                if ($blocks -ne $null) {
+
+            # We can do the next three blocks the same way:
+            foreach ($BlockName in 'dynamicParam','begin','process') {
+                # We need to walk thru each named block of a given ScriptBlock
+                # (unless they're not in the list)
+                if ($IncludeBlockType -notcontains $BlockName) { continue }
+                $blocks = @($AllScriptBlocks.Ast."${BlockName}Block")
+                if ($blocks -ne $null) {                    
+                    # If any of these block names exist, we will need to close the end block (if it exists).
+                    $closeEndBlock = $true                    
                     $blockOpen = $false
                     foreach ($block in $blocks) {
-                        if (-not $block) { continue }
-                        if (-not $blockOpen) {
-                            ($block | IndentAst) -replace '\}$'
-                            $blockOpen = $true
+                        if (-not $block) { continue } # (skipping ones that are empty)
+                        if (-not $blockOpen) {  # If the block hasn't been opened yet
+                            $blockOpen = $true # open it
+                            if ($StatementsToAdd) {
+                                $StatementsToAdd -join [Environment]::NewLine
+                                $block.Extent.ToString() -replace "^$blockName\s{0,}\{" -replace '\}$'
+                                $StatementsToAdd = $null
+                            } else {
+                                ($block | IndentAst) -replace '\}$' # and remove trailing curly braces.
+                            }                       
+                            
                         } else {
-                            $block.Extent.ToString() -replace '^process\s{0,}\{' -replace '\}$'
+                            # Otherwise, get the block content, removing the opening and closing braces.
+                            $block.Extent.ToString() -replace "^$blockName\s{0,}\{" -replace '\}$'
                         }
                     }
                     ' ' * ($block | MeasureIndent) + '}'
                 }
             }
 
-            if ($BlockType -contains 'end') {
-                # If there were end blcoks declared
-                
+            if ($IncludeBlockType -contains 'end') {
+                # If there were end blocks declared                
                 $blocks = @($AllScriptBlocks.Ast.EndBlock)
                 if ($blocks -ne $null) {
-                    $blockOpen = $false
+                    $blockOpen = $false # see if there was anything in them.
+                    
                     foreach ($block in $blocks) {
                         if (-not $block) { continue }
                         if (-not $blockOpen -and -not $block.Unnamed) {
-                            ($block | IndentAst) -replace '\}$'
+                            # If the end block was named, it will need to be closed.
+                            if ($StatementsToAdd) {
+                                $StatementsToAdd -join [Environment]::NewLine
+                                $block.Extent.ToString() -replace '^end\s{0,}\{' -replace '\}$' -replace '^param\(\)[\s\r\n]{0,}'
+                                $StatementsToAdd = $null
+                            } else {
+                                ($block | IndentAst) -replace '\}$' # and remove trailing curly braces.
+                            }                            
+                            $closeEndBlock = $true
                             $blockOpen = $true
                         } elseif ($block.Statements.Count) {
+                            # where as if it is a series of statements, it doesn't necessarily need to be.
+                            # Unless it's the first block and it's unnamed.
+                            if ($block.Unnamed -and -not $blockOpen) {
+                                ' ' * ($block | MeasureIndent) + 'end {'
+                                $blockOpen = $true
+                            }
+                            if ($StatementsToAdd) {
+                                $StatementsToAdd -join [Environment]::NewLine
+                                $StatementsToAdd = $null
+                            }
                             $block.Extent.ToString() -replace '^end\s{0,}\{' -replace '\}$' -replace '^param\(\)[\s\r\n]{0,}'
                         }
                     }
-                    if ($beginOrProcess -ne $null) {
-                        ' ' * ($block | MeasureIndent) + '}'
+
+                    if ($StatementsToAdd) {
+                        if ($closeEndBlock -and -not $blockOpen) {
+                            'end {'
+                        }
+                        $StatementsToAdd -join [Environment]::NewLine
+                        $StatementsToAdd = $null
+                    }
+
+                    # If we need to close the end block, and it is open,
+                    if ($closeEndBlock -and $blockOpen) {
+                        if ($block.Statements.Count) {
+                        ' ' * ($block | MeasureIndent) + '}' #  close it.
+                        } else {
+                            '    }'
+                        }
                     }
                 }
             }
         )
 
-        $combinedScriptBlock = [scriptblock]::Create($mergedScript -join [Environment]::NewLine)
+        $joinedScript = $joinScriptLines -join [Environment]::NewLine
+        #endregion Joining the Scripts
+
+        $combinedScriptBlock = [scriptblock]::Create($joinedScript)
         if ($combinedScriptBlock -and $Transpile) {
             $combinedScriptBlock | .>Pipescript
         } elseif ($combinedScriptBlock) {
             $combinedScriptBlock
         } else {
-            $mergedScript -join [Environment]::NewLine
+            $joinScriptLines -join [Environment]::NewLine
         }
     }
 }

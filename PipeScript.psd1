@@ -19,6 +19,12 @@
             BuildModule     = @('EZOut','Piecemeal','PipeScript','HelpOut', 'PSDevOps')
             Tags            = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
+## 0.1.5:
+* Support for [inherit]ing a command (Fixes #235) (finally/wow)
+* Join-PipeScript:  Overhauling (Fixes #231 Fixes #232 Fixes #233 Fixes #236)
+* [Management.Automation.Language] type extensions: Adding .Script property and .ToString() scriptmethod (Fixes #234)
+---
+
 ## 0.1.4:
 * ValidateScriptBlock improvements
   * Adding -NoLoop/-NoWhileLoop (Fixes #227)

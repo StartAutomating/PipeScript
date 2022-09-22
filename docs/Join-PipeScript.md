@@ -24,18 +24,8 @@ Get-Command Join-PipeScript | Join-PipeScript
 
 #### EXAMPLE 2
 ```PowerShell
-{
-param(
-[string]
-$x
-)
-},
-{
-param(            
-[string]
-$y
-)
-} | 
+{param([string]$x)},
+{param([string]$y)} | 
     Join-PipeScript
 ```
 
@@ -50,6 +40,13 @@ $y
         $_ * $factor
     }
 } | Join-PipeScript
+```
+
+#### EXAMPLE 4
+```PowerShell
+{
+    param($x = 1)
+} | Join-PipeScript -ExcludeParameter x
 ```
 
 ---
@@ -71,10 +68,10 @@ A ScriptBlock written in PowerShell or PipeScript.
 
 
 ---
-#### **SkipBlockType**
+#### **ExcludeBlockType**
 
-A list of block types to be skipped during a merge of script blocks.
-By default, no blocks will be skipped
+A list of block types to be excluded during a merge of script blocks.
+By default, no blocks will be excluded.
 
 
 
@@ -83,6 +80,7 @@ Valid Values:
 * using
 * requires
 * help
+* header
 * param
 * dynamicParam
 * begin
@@ -102,7 +100,7 @@ Valid Values:
 
 
 ---
-#### **BlockType**
+#### **IncludeBlockType**
 
 A list of block types to include during a merge of script blocks.
 
@@ -113,6 +111,7 @@ Valid Values:
 * using
 * requires
 * help
+* header
 * param
 * dynamicParam
 * begin
@@ -149,9 +148,45 @@ If set, will transpile the joined ScriptBlock.
 
 
 ---
+#### **IncludeParameter**
+
+A list of parameters to include.  Can contain wildcards.
+If -IncludeParameter is provided without -ExcludeParameter, all other parameters will be excluded.
+
+
+
+> **Type**: ```[String[]]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
+---
+#### **ExcludeParameter**
+
+A list of parameters to exclude.  Can contain wildcards.
+Excluded parameters with default values will declare the default value at the beginnning of the command.
+
+
+
+> **Type**: ```[String[]]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
+---
 ### Syntax
 ```PowerShell
-Join-PipeScript -ScriptBlock &lt;ScriptBlock[]&gt; [-SkipBlockType &lt;String[]&gt;] [-BlockType &lt;String[]&gt;] [-Transpile] [&lt;CommonParameters&gt;]
+Join-PipeScript -ScriptBlock &lt;ScriptBlock[]&gt; [-ExcludeBlockType &lt;String[]&gt;] [-IncludeBlockType &lt;String[]&gt;] [-Transpile] [-IncludeParameter &lt;String[]&gt;] [-ExcludeParameter &lt;String[]&gt;] [&lt;CommonParameters&gt;]
 ```
 ---
 
