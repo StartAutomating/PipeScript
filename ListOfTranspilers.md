@@ -18,6 +18,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Help](Transpilers/Help.psx.ps1)                                                                 |Help Transpiler                                  |
 |[Http.Protocol](Transpilers/Protocols/Http.Protocol.psx.ps1)                                     |http protocol                                    |
 |[Include](Transpilers/Include.psx.ps1)                                                           |Includes Files                                   |
+|[Inherit](Transpilers/Inherit.psx.ps1)                                                           |Inherits a Command                               |
 |[Inline.ADA](Transpilers/Inline/Inline.ADA.psx.ps1)                                              |ADA PipeScript Transpiler.                       |
 |[Inline.ATOM](Transpilers/Inline/Inline.ATOM.psx.ps1)                                            |ATOM Inline PipeScript Transpiler.               |
 |[Inline.Bash](Transpilers/Inline/Inline.Bash.psx.ps1)                                            |Bash PipeScript Transpiler.                      |
