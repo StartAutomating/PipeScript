@@ -186,7 +186,7 @@ Excluded parameters with default values will declare the default value at the be
 ---
 ### Syntax
 ```PowerShell
-Join-PipeScript -ScriptBlock &lt;ScriptBlock[]&gt; [-ExcludeBlockType &lt;String[]&gt;] [-IncludeBlockType &lt;String[]&gt;] [-Transpile] [-IncludeParameter &lt;String[]&gt;] [-ExcludeParameter &lt;String[]&gt;] [&lt;CommonParameters&gt;]
+Join-PipeScript -ScriptBlock <ScriptBlock[]> [-ExcludeBlockType <String[]>] [-IncludeBlockType <String[]>] [-Transpile] [-IncludeParameter <String[]>] [-ExcludeParameter <String[]>] [<CommonParameters>]
 ```
 ---
 
