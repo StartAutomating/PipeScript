@@ -398,13 +398,15 @@ If set, will output the help for the extensions
 
 ---
 ### Outputs
-Extension
+* Extension
+
+
 
 
 ---
 ### Syntax
 ```PowerShell
-Get-Transpiler [[-TranspilerPath] &lt;String&gt;] [-Force] [[-CommandName] &lt;String[]&gt;] [[-TranspilerName] &lt;String[]&gt;] [-Like] [-Match] [-DynamicParameter] [-CouldRun] [[-CouldPipe] &lt;PSObject&gt;] [-Run] [-Stream] [[-DynamicParameterSetName] &lt;String&gt;] [[-DynamicParameterPositionOffset] &lt;Int32&gt;] [-NoMandatoryDynamicParameter] [-RequireTranspilerAttribute] [[-ValidateInput] &lt;PSObject&gt;] [-AllValid] [[-ParameterSetName] &lt;String&gt;] [[-Parameter] &lt;IDictionary&gt;] [-SteppablePipeline] [-Help] [&lt;CommonParameters&gt;]
+Get-Transpiler [[-TranspilerPath] <String>] [-Force] [[-CommandName] <String[]>] [[-TranspilerName] <String[]>] [-Like] [-Match] [-DynamicParameter] [-CouldRun] [[-CouldPipe] <PSObject>] [-Run] [-Stream] [[-DynamicParameterSetName] <String>] [[-DynamicParameterPositionOffset] <Int32>] [-NoMandatoryDynamicParameter] [-RequireTranspilerAttribute] [[-ValidateInput] <PSObject>] [-AllValid] [[-ParameterSetName] <String>] [[-Parameter] <IDictionary>] [-SteppablePipeline] [-Help] [<CommonParameters>]
 ```
 ---
 
