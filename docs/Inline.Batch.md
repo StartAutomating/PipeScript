@@ -29,7 +29,7 @@ Uncommented lines between these two points will be ignored
 #### EXAMPLE 1
 ```PowerShell
 Invoke-PipeScript {
-    $batchScript = &#39;    
+    $batchScript = '    
 :: {
 ```
 Uncommented lines between these two points will be ignored
@@ -100,7 +100,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.Batch [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.Batch [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 
