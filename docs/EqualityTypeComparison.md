@@ -21,7 +21,7 @@ Invoke-PipeScript -ScriptBlock {
     $a = 1
     $number = 1    
     if ($a === $number ) {
-        &quot;A is $a&quot;
+        "A is $a"
     }
 }
 ```
@@ -30,12 +30,12 @@ Invoke-PipeScript -ScriptBlock {
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
     $One = 1
-    $OneIsNotANumber = &quot;1&quot;
+    $OneIsNotANumber = "1"
     if ($one == $OneIsNotANumber) {
-        &#39;With ==, a number can be compared to a string, so $a == &quot;1&quot;&#39;
+        'With ==, a number can be compared to a string, so $a == "1"'
     }
     if (-not ($One === $OneIsNotANumber)) {
-        &quot;With ===, a number isn&#39;t the same type as a string, so this will be false.&quot;            
+        "With ===, a number isn't the same type as a string, so this will be false."            
     }
 }
 ```
@@ -44,7 +44,7 @@ Invoke-PipeScript -ScriptBlock {
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
     if ($null === $null) {
-        &#39;$Null really is $null&#39;
+        '$Null really is $null'
     }
 }
 ```
@@ -54,7 +54,7 @@ Invoke-PipeScript -ScriptBlock {
 Invoke-PipeScript -ScriptBlock {
     $zero = 0
     if (-not ($zero === $null)) {
-        &#39;$zero is not $null&#39;
+        '$zero is not $null'
     }
 }
 ```
@@ -62,9 +62,9 @@ Invoke-PipeScript -ScriptBlock {
 #### EXAMPLE 5
 ```PowerShell
 {
-    $a = &quot;b&quot;
-    $a === &quot;b&quot;
-} | .&gt;PipeScript
+    $a = "b"
+    $a === "b"
+} | .>PipeScript
 ```
 
 ---
@@ -88,7 +88,7 @@ The original assignment statement.
 ---
 ### Syntax
 ```PowerShell
-EqualityTypeComparison [-AssignmentStatementAST] &lt;AssignmentStatementAst&gt; [&lt;CommonParameters&gt;]
+EqualityTypeComparison [-AssignmentStatementAST] <AssignmentStatementAst> [<CommonParameters>]
 ```
 ---
 ### Notes
