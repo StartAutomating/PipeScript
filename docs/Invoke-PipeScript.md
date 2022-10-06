@@ -121,7 +121,7 @@ If this is set, will make ScriptBlockAst values will be run within data language
 ---
 ### Syntax
 ```PowerShell
-Invoke-PipeScript [-InputObject &lt;PSObject&gt;] [[-Command] &lt;PSObject&gt;] [-Parameter &lt;IDictionary&gt;] [-ArgumentList &lt;PSObject[]&gt;] [-SafeScriptBlockAttributeEvaluation] [&lt;CommonParameters&gt;]
+Invoke-PipeScript [-InputObject <PSObject>] [[-Command] <PSObject>] [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [-SafeScriptBlockAttributeEvaluation] [<CommonParameters>]
 ```
 ---
 
