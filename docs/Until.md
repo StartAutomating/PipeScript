@@ -21,13 +21,13 @@ until will always run at least once, and will run until a condition is true.
         $x            
         $x++
     }        
-} |.&gt;PipeScript
+} |.>PipeScript
 ```
 
 #### EXAMPLE 2
 ```PowerShell
 Invoke-PipeScript {
-    until &quot;00:00:05&quot; {
+    until "00:00:05" {
         [DateTime]::Now
         Start-Sleep -Milliseconds 500
     } 
@@ -37,7 +37,7 @@ Invoke-PipeScript {
 #### EXAMPLE 3
 ```PowerShell
 Invoke-PipeScript {
-    until &quot;12:17 pm&quot; {
+    until "12:17 pm" {
         [DateTime]::Now
         Start-Sleep -Milliseconds 500
     } 
@@ -48,18 +48,18 @@ Invoke-PipeScript {
 ```PowerShell
 {
     $eventCounter = 0
-    until &quot;MyEvent&quot; {
+    until "MyEvent" {
         $eventCounter++
         $eventCounter
-        until &quot;00:00:03&quot; {
-            &quot;sleeping a few seconds&quot;
+        until "00:00:03" {
+            "sleeping a few seconds"
             Start-Sleep -Milliseconds 500
         }
         if (-not ($eventCounter % 5)) {
             $null = New-Event -SourceIdentifier MyEvent
         }
     }
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 #### EXAMPLE 5
@@ -67,7 +67,7 @@ Invoke-PipeScript {
 Invoke-PipeScript {
     $tries = 3
     until (-not $tries) {
-        &quot;$tries tries left&quot;
+        "$tries tries left"
         $tries--            
     }
 }
@@ -90,7 +90,7 @@ Invoke-PipeScript {
 ---
 ### Syntax
 ```PowerShell
-Until -CommandAst &lt;CommandAst&gt; [&lt;CommonParameters&gt;]
+Until -CommandAst <CommandAst> [<CommonParameters>]
 ```
 ---
 ### Notes
