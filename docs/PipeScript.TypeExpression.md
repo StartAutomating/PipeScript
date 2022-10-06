@@ -15,7 +15,7 @@ Type Expressions may be transpiled.
 ```PowerShell
 {
     [include[a.ps1]]
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 ---
@@ -39,7 +39,7 @@ The attributed expression
 ---
 ### Syntax
 ```PowerShell
-PipeScript.TypeExpression -TypeExpressionAst &lt;TypeExpressionAst&gt; [&lt;CommonParameters&gt;]
+PipeScript.TypeExpression -TypeExpressionAst <TypeExpressionAst> [<CommonParameters>]
 ```
 ---
 
