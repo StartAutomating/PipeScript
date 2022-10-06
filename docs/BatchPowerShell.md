@@ -56,10 +56,10 @@ If set, will use PowerShell core (pwsh.exe).  If not, will use Windows PowerShel
 ---
 ### Syntax
 ```PowerShell
-BatchPowerShell -ScriptInfo &lt;ExternalScriptInfo&gt; [-Pwsh] [&lt;CommonParameters&gt;]
+BatchPowerShell -ScriptInfo <ExternalScriptInfo> [-Pwsh] [<CommonParameters>]
 ```
 ```PowerShell
-BatchPowerShell -ScriptBlock &lt;ScriptBlock&gt; [-Pwsh] [&lt;CommonParameters&gt;]
+BatchPowerShell -ScriptBlock <ScriptBlock> [-Pwsh] [<CommonParameters>]
 ```
 ---
 
