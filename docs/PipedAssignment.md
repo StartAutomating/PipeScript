@@ -17,7 +17,7 @@ Piped Assignment allows for an expression to be reassigned based off of the pipe
 ```PowerShell
 {
     $Collection |=| Where-Object Name -match $Pattern
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 # This will become:
 
@@ -26,7 +26,7 @@ $Collection = $Collection | Where-Object Name -match $pattern
 ```PowerShell
 {
     $Collection |=| Where-Object Name -match $pattern | Select-Object -ExpandProperty Name
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 # This will become
 
@@ -50,7 +50,7 @@ $Collection = $Collection |
 ---
 ### Syntax
 ```PowerShell
-PipedAssignment [-PipelineAst] &lt;PipelineAst&gt; [&lt;CommonParameters&gt;]
+PipedAssignment [-PipelineAst] <PipelineAst> [<CommonParameters>]
 ```
 ---
 
