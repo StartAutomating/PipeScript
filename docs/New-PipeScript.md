@@ -13,16 +13,16 @@ Creates new PipeScript and PowerShell ScriptBlocks.
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
-New-PipeScript -Parameter @{a=&#39;b&#39;}
+New-PipeScript -Parameter @{a='b'}
 ```
 
 #### EXAMPLE 2
 ```PowerShell
 New-PipeScript -Parameter ([Net.HttpWebRequest].GetProperties()) -ParameterHelp @{
-    Accept=&#39;
+    Accept='
 HTTP Accept.
 HTTP Accept indicates what content types the web request will accept as a response.
-&#39;
+'
 }
 ```
 
@@ -329,7 +329,7 @@ A list of attributes to declare on the scriptblock.
 ---
 ### Syntax
 ```PowerShell
-New-PipeScript [[-Parameter] &lt;Object&gt;] [[-DynamicParameter] &lt;ScriptBlock&gt;] [[-Begin] &lt;ScriptBlock&gt;] [[-Process] &lt;ScriptBlock&gt;] [[-End] &lt;ScriptBlock&gt;] [[-Header] &lt;String&gt;] [-AutoParameter] [[-AutoParameterType] &lt;Type&gt;] [[-ParameterHelp] &lt;IDictionary&gt;] [-WeaklyTyped] [[-FunctionName] &lt;String&gt;] [[-FunctionType] &lt;String&gt;] [[-Description] &lt;String&gt;] [[-Synopsis] &lt;String&gt;] [[-Example] &lt;String[]&gt;] [[-Link] &lt;String[]&gt;] [[-Attribute] &lt;String[]&gt;] [&lt;CommonParameters&gt;]
+New-PipeScript [[-Parameter] <Object>] [[-DynamicParameter] <ScriptBlock>] [[-Begin] <ScriptBlock>] [[-Process] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Header] <String>] [-AutoParameter] [[-AutoParameterType] <Type>] [[-ParameterHelp] <IDictionary>] [-WeaklyTyped] [[-FunctionName] <String>] [[-FunctionType] <String>] [[-Description] <String>] [[-Synopsis] <String>] [[-Example] <String[]>] [[-Link] <String[]>] [[-Attribute] <String[]>] [<CommonParameters>]
 ```
 ---
 
