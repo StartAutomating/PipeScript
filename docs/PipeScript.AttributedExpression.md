@@ -37,7 +37,7 @@ The attributed expression
 ---
 ### Syntax
 ```PowerShell
-PipeScript.AttributedExpression -AttributedExpressionAst &lt;AttributedExpressionAst&gt; [&lt;CommonParameters&gt;]
+PipeScript.AttributedExpression -AttributedExpressionAst <AttributedExpressionAst> [<CommonParameters>]
 ```
 ---
 
