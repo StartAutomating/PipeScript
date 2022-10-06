@@ -39,7 +39,7 @@ Invoke-PipeScript {
 ```PowerShell
 # With a second argument of a string, assert will throw an error
 Invoke-PipeScript {
-    assert ($false) &quot;It&#39;s not true!&quot;
+    assert ($false) "It's not true!"
 } -Debug
 ```
 
@@ -47,7 +47,7 @@ Invoke-PipeScript {
 ```PowerShell
 # Conditions can also be written as a ScriptBlock
 Invoke-PipeScript {
-    assert {$false} &quot;Process id &#39;$pid&#39; Asserted&quot;
+    assert {$false} "Process id '$pid' Asserted"
 } -Verbose
 ```
 
@@ -55,7 +55,7 @@ Invoke-PipeScript {
 ```PowerShell
 # If the assertion action was a ScriptBlock, no exception is automatically thrown
 Invoke-PipeScript {
-    assert ($false) { Write-Information &quot;I Assert There Is a Problem&quot;}
+    assert ($false) { Write-Information "I Assert There Is a Problem"}
 } -Verbose
 ```
 
@@ -63,7 +63,7 @@ Invoke-PipeScript {
 ```PowerShell
 # assert can be used with the object pipeline.  $_ will be the current object.
 Invoke-PipeScript {
-    1..4 | assert {$_ % 2} &quot;$_ is not odd!&quot;
+    1..4 | assert {$_ % 2} "$_ is not odd!"
 } -Debug
 ```
 
@@ -71,7 +71,7 @@ Invoke-PipeScript {
 ```PowerShell
 # You can provide a ```[ScriptBlock]``` as the second argument to see each failure
 Invoke-PipeScript {
-    1..4 | assert {$_ % 2} { Write-Error &quot;$_ is not odd!&quot; }
+    1..4 | assert {$_ % 2} { Write-Error "$_ is not odd!" }
 } -Debug
 ```
 
@@ -96,7 +96,7 @@ The CommandAst
 ---
 ### Syntax
 ```PowerShell
-Assert -CommandAst &lt;CommandAst&gt; [&lt;CommonParameters&gt;]
+Assert -CommandAst <CommandAst> [<CommonParameters>]
 ```
 ---
 
