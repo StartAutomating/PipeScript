@@ -76,7 +76,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.Kotlin [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.Kotlin [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 
