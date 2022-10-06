@@ -27,18 +27,18 @@ The C# Inline Transpiler will consider the following syntax to be empty:
 #### EXAMPLE 1
 ```PowerShell
 {
-    $CSharpLiteral = @&#39;
+    $CSharpLiteral = @'
 namespace TestProgram/*{Get-Random}*/ {
 public static class Program {
     public static void Main(string[] args) {
         string helloMessage = /*{
-            &#39;&quot;hello&quot;&#39;, &#39;&quot;hello world&quot;&#39;, &#39;&quot;hey there&quot;&#39;, &#39;&quot;howdy&quot;&#39; | Get-Random
+            '"hello"', '"hello world"', '"hey there"', '"howdy"' | Get-Random
         }*/ string.Empty; 
         System.Console.WriteLine(helloMessage);
     }
 }
 }    
-&#39;@
+'@
 ```
 [OutputFile(".\HelloWorld.ps1.cs")]$CSharpLiteral
 }
@@ -53,7 +53,7 @@ namespace TestProgram {
     public static class Program {
         public static void Main(string[] args) {
             string helloMessage = /*{
-                &#39;&quot;hello&quot;&#39;, &#39;&quot;hello world&quot;&#39;, &#39;&quot;hey there&quot;&#39;, &#39;&quot;howdy&quot;&#39; | Get-Random
+                '"hello"', '"hello world"', '"hey there"', '"howdy"' | Get-Random
             }*/ string.Empty; 
             System.Console.WriteLine(helloMessage);
         }
@@ -116,7 +116,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.CSharp [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.CSharp [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 
