@@ -18,12 +18,12 @@ PipeScript can be embedded in a Plain Old Document block that starts with ```=be
 #### EXAMPLE 1
 ```PowerShell
 {
-    $HelloWorldPerl = @&#39;
+    $HelloWorldPerl = @'
 =begin PipeScript
-$msg = &quot;hello&quot;, &quot;hi&quot;, &quot;hey&quot;, &quot;howdy&quot; | Get-Random
-&quot;print(&quot; + &#39;&quot;&#39; + $msg + &#39;&quot;);&#39;
+$msg = "hello", "hi", "hey", "howdy" | Get-Random
+"print(" + '"' + $msg + '");'
 =end   PipeScript
-&#39;@
+'@
 ```
 [Save(".\HelloWorld.ps1.pl")]$HelloWorldPerl
 }
@@ -84,7 +84,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.Perl [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.Perl [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 
