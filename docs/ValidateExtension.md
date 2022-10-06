@@ -17,17 +17,17 @@ This creates a [ValidatePattern] that will ensure the extension matches.
 ```PowerShell
 {        
     param(
-    [ValidateExtension(Extension=&quot;.cs&quot;, &quot;.ps1&quot;)]
+    [ValidateExtension(Extension=".cs", ".ps1")]
     $FilePath
     )
-} |.&gt;PipeScript
+} |.>PipeScript
 ```
 
 #### EXAMPLE 2
 ```PowerShell
 {
     param(
-    [ValidateExtension(Extension=&quot;.cs&quot;, &quot;.ps1&quot;)]
+    [ValidateExtension(Extension=".cs", ".ps1")]
     $FilePath
     )
 ```
@@ -37,7 +37,7 @@ $FilePath
 ```PowerShell
 {
     param(
-    [ValidateExtension(Extension=&quot;.cs&quot;, &quot;.ps1&quot;)]
+    [ValidateExtension(Extension=".cs", ".ps1")]
     $FilePath
     )
 ```
@@ -82,10 +82,10 @@ If this is provided, will apply a ```[ValidatePattern({})]``` attribute to the v
 ---
 ### Syntax
 ```PowerShell
-ValidateExtension [-Extension] &lt;String[]&gt; [&lt;CommonParameters&gt;]
+ValidateExtension [-Extension] <String[]> [<CommonParameters>]
 ```
 ```PowerShell
-ValidateExtension [-Extension] &lt;String[]&gt; [-VariableAST &lt;VariableExpressionAst&gt;] [&lt;CommonParameters&gt;]
+ValidateExtension [-Extension] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
 ---
 
