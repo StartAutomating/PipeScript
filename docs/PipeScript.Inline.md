@@ -243,7 +243,7 @@ Only lines beginning with this pattern within -StartPattern and -EndPattern will
 ---
 ### Syntax
 ```PowerShell
-PipeScript.Inline [-SourceText] &lt;String&gt; [[-ReplacePattern] &lt;Regex&gt;] [[-StartPattern] &lt;Regex&gt;] [[-EndPattern] &lt;Regex&gt;] [[-ReplacementEvaluator] &lt;ScriptBlock&gt;] [-NoTranspile] [[-SourceFile] &lt;String&gt;] [[-Begin] &lt;ScriptBlock&gt;] [[-ForeachObject] &lt;ScriptBlock&gt;] [[-End] &lt;ScriptBlock&gt;] [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [[-LinePattern] &lt;Regex&gt;] [&lt;CommonParameters&gt;]
+PipeScript.Inline [-SourceText] <String> [[-ReplacePattern] <Regex>] [[-StartPattern] <Regex>] [[-EndPattern] <Regex>] [[-ReplacementEvaluator] <ScriptBlock>] [-NoTranspile] [[-SourceFile] <String>] [[-Begin] <ScriptBlock>] [[-ForeachObject] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [[-LinePattern] <Regex>] [<CommonParameters>]
 ```
 ---
 
