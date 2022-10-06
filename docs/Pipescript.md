@@ -29,10 +29,10 @@ It will run other converters as directed by the source code.
 ```PowerShell
 {
     function [explicit]ExplicitOutput {
-        &quot;whoops&quot;
+        "whoops"
         return 1
     }
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 #### EXAMPLE 2
@@ -40,11 +40,11 @@ It will run other converters as directed by the source code.
 {        
     [minify]{
         # Requires PSMinifier (this comment will be minified away)
-        &quot;blah&quot;
-            &quot;de&quot;
-                &quot;blah&quot;
+        "blah"
+            "de"
+                "blah"
     }
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 #### EXAMPLE 3
@@ -64,8 +64,8 @@ It will run other converters as directed by the source code.
 #### EXAMPLE 5
 ```PowerShell
 {
-    function [ProxyCommand&lt;&#39;Get-Process&#39;&gt;]GetProcessProxy {}
-} | .&gt;PipeScript
+    function [ProxyCommand<'Get-Process'>]GetProcessProxy {}
+} | .>PipeScript
 ```
 
 ---
@@ -106,7 +106,7 @@ One or more transpilation expressions that apply to the script block.
 ---
 ### Syntax
 ```PowerShell
-Pipescript [-ScriptBlock] &lt;ScriptBlock&gt; [-Transpiler &lt;String[]&gt;] [&lt;CommonParameters&gt;]
+Pipescript [-ScriptBlock] <ScriptBlock> [-Transpiler <String[]>] [<CommonParameters>]
 ```
 ---
 
