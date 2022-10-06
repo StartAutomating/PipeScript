@@ -24,8 +24,8 @@ PipeScript{}
 #### EXAMPLE 1
 ```PowerShell
 Invoke-PipeScript {
-    $bashScript = @&#39;
-    echo &#39;hello world&#39;
+    $bashScript = @'
+    echo 'hello world'
 ```
 <<PipeScript{}
         "echo '$('hi','yo','sup' | Get-Random)'"
@@ -91,7 +91,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.Bash [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.Bash [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 
