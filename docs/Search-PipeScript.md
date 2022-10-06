@@ -24,7 +24,7 @@ Search-PipeScript -ScriptBlock {
     $a
     $b
     $c
-    &quot;text&quot;
+    "text"
 } -AstType Variable
 ```
 
@@ -117,13 +117,15 @@ If set, will search nested script blocks.
 
 ---
 ### Outputs
-Search.PipeScript.Result
+* Search.PipeScript.Result
+
+
 
 
 ---
 ### Syntax
 ```PowerShell
-Search-PipeScript [[-InputObject] &lt;Object&gt;] [[-AstCondition] &lt;ScriptBlock[]&gt;] [[-AstType] &lt;Object&gt;] [[-RegularExpression] &lt;Object&gt;] [-Recurse] [&lt;CommonParameters&gt;]
+Search-PipeScript [[-InputObject] <Object>] [[-AstCondition] <ScriptBlock[]>] [[-AstType] <Object>] [[-RegularExpression] <Object>] [-Recurse] [<CommonParameters>]
 ```
 ---
 
