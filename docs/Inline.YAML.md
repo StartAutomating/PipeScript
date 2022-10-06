@@ -18,10 +18,10 @@ PipeScript can be included in a multiline Yaml string with the Key PipeScript an
 #### EXAMPLE 1
 ```PowerShell
 {
-    $yamlContent = @&#39;
+    $yamlContent = @'
 PipeScript: |
 {
-@{a=&#39;b&#39;}
+@{a='b'}
 }
 ```
 List:
@@ -97,7 +97,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.YAML [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.YAML [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 
