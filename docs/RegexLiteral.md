@@ -18,8 +18,8 @@ The ending slash may be followed by ```[Text.RegularExpressions.RegexOptions]```
 #### EXAMPLE 1
 ```PowerShell
 {
-    &#39;/[a|b]/&#39;
-} | .&gt;PipeScript
+    '/[a|b]/'
+} | .>PipeScript
 ```
 # This will become:
 
@@ -27,15 +27,15 @@ The ending slash may be followed by ```[Text.RegularExpressions.RegexOptions]```
 #### EXAMPLE 2
 ```PowerShell
 Invoke-PipeScript {
-    &#39;/[a|b]/&#39;.Matches(&#39;ab&#39;)
+    '/[a|b]/'.Matches('ab')
 }
 ```
 
 #### EXAMPLE 3
 ```PowerShell
 {
-    &quot;/[$a|$b]/&quot;
-} | .&gt;PipeScript
+    "/[$a|$b]/"
+} | .>PipeScript
 ```
 # This will become:
 
@@ -43,14 +43,14 @@ Invoke-PipeScript {
 #### EXAMPLE 4
 ```PowerShell
 {
-@&#39;
+@'
 /
 # Heredocs Regex literals will have IgnorePatternWhitespace by default, which allows comments
 ^ # Match the string start
-(?&lt;indent&gt;\s{0,1})
+(?<indent>\s{0,1})
 /
-&#39;@
-} | .&gt;PipeScript
+'@
+} | .>PipeScript
 ```
 # This will become:
 
@@ -61,7 +61,7 @@ Invoke-PipeScript {
 '@, 'IgnorePatternWhitespace,IgnoreCase')
 #### EXAMPLE 5
 ```PowerShell
-$Keywords = &quot;looking&quot;, &quot;for&quot;, &quot;these&quot;, &quot;words&quot;
+$Keywords = "looking", "for", "these", "words"
 ```
 {
 @"
@@ -113,10 +113,10 @@ $($Keywords -join '|') # followed by keywords
 ---
 ### Syntax
 ```PowerShell
-RegexLiteral -StringConstantExpression &lt;StringConstantExpressionAst&gt; [&lt;CommonParameters&gt;]
+RegexLiteral -StringConstantExpression <StringConstantExpressionAst> [<CommonParameters>]
 ```
 ```PowerShell
-RegexLiteral -ExpandableStringExpression &lt;ExpandableStringExpressionAst&gt; [&lt;CommonParameters&gt;]
+RegexLiteral -ExpandableStringExpression <ExpandableStringExpressionAst> [<CommonParameters>]
 ```
 ---
 
