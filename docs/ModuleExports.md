@@ -72,10 +72,10 @@ A VariableExpression.  This variable must contain a module.
 ---
 ### Syntax
 ```PowerShell
-ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScript | Application | Script | Configuration | All}] [&lt;CommonParameters&gt;]
+ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScript | Application | Script | Configuration | All}] [<CommonParameters>]
 ```
 ```PowerShell
-ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScript | Application | Script | Configuration | All}] -VariableAST &lt;VariableExpressionAst&gt; [&lt;CommonParameters&gt;]
+ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScript | Application | Script | Configuration | All}] -VariableAST <VariableExpressionAst> [<CommonParameters>]
 ```
 ---
 
