@@ -26,7 +26,7 @@ PipeScript # Returns an unchanged ScriptBlock, because there was nothing to run.
 ---
 ### Syntax
 ```PowerShell
-Use-PipeScript [&lt;CommonParameters&gt;]
+Use-PipeScript [<CommonParameters>]
 ```
 ---
 
