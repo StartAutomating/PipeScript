@@ -14,7 +14,7 @@ Outputs the result of a script into a file.
 #### EXAMPLE 1
 ```PowerShell
 Invoke-PipeScript {
-    [OutputFile(&quot;hello.txt&quot;)]
+    [OutputFile("hello.txt")]
     param()
 ```
 'hello world'
@@ -146,7 +146,7 @@ The serialization depth.  Currently only used when saving to JSON files.
 ---
 ### Syntax
 ```PowerShell
-OutputFile [-OutputPath] &lt;String&gt; [[-ScriptBlock] &lt;ScriptBlock&gt;] [[-VariableAst] &lt;VariableExpressionAst&gt;] [[-Encoding] &lt;String&gt;] [-Force] [[-ExportScript] &lt;ScriptBlock&gt;] [[-Depth] &lt;Int32&gt;] [&lt;CommonParameters&gt;]
+OutputFile [-OutputPath] <String> [[-ScriptBlock] <ScriptBlock>] [[-VariableAst] <VariableExpressionAst>] [[-Encoding] <String>] [-Force] [[-ExportScript] <ScriptBlock>] [[-Depth] <Int32>] [<CommonParameters>]
 ```
 ---
 
