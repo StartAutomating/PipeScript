@@ -33,7 +33,7 @@ rem }
 #### EXAMPLE 1
 ```PowerShell
 Invoke-PipeScript {
-    $VBScript = &#39;    
+    $VBScript = '    
 rem {
 ```
 Uncommented lines between these two points will be ignored
@@ -103,7 +103,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.Basic [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.Basic [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 
