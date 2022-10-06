@@ -15,18 +15,18 @@ Validates that an object has one or more property names.
 ```PowerShell
 {
     param(
-    [ValidatePropertyName(PropertyName=&#39;a&#39;,&#39;b&#39;)]
+    [ValidatePropertyName(PropertyName='a','b')]
     $InputObject
     )
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 #### EXAMPLE 2
 ```PowerShell
-[PSCustomObject]@{a=&#39;a&#39;;b=&#39;b&#39;} |
-    .&gt; {
+[PSCustomObject]@{a='a';b='b'} |
+    .> {
         param(
-        [ValidatePropertyName(PropertyName=&#39;a&#39;,&#39;b&#39;)]
+        [ValidatePropertyName(PropertyName='a','b')]
         [vfp]
         $InputObject
         )
@@ -35,10 +35,10 @@ $InputObject
     }
 #### EXAMPLE 3
 ```PowerShell
-@{a=&#39;a&#39;} |
-    .&gt; {
+@{a='a'} |
+    .> {
         param(
-        [ValidatePropertyName(PropertyName=&#39;a&#39;,&#39;b&#39;)]
+        [ValidatePropertyName(PropertyName='a','b')]
         [vfp]
         $InputObject
         )
@@ -84,10 +84,10 @@ If this is provided, will apply a ```[ValidateScript({})]``` attribute to the va
 ---
 ### Syntax
 ```PowerShell
-ValidatePropertyName [-PropertyName] &lt;String[]&gt; [&lt;CommonParameters&gt;]
+ValidatePropertyName [-PropertyName] <String[]> [<CommonParameters>]
 ```
 ```PowerShell
-ValidatePropertyName [-PropertyName] &lt;String[]&gt; [-VariableAST &lt;VariableExpressionAst&gt;] [&lt;CommonParameters&gt;]
+ValidatePropertyName [-PropertyName] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
 ---
 
