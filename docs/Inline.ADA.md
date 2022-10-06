@@ -20,7 +20,7 @@ Because ADA Scripts only allow single-line comments, this is done using a pair o
 #### EXAMPLE 1
 ```PowerShell
 Invoke-PipeScript {
-    $AdaScript = &#39;    
+    $AdaScript = '    
 with Ada.Text_IO;
 ```
 procedure Hello_World is
@@ -95,7 +95,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.ADA [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.ADA [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 
