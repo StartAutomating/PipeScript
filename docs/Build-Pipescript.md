@@ -32,7 +32,7 @@ One or more input paths.  If no -InputPath is provided, will build all scripts b
 ---
 ### Syntax
 ```PowerShell
-Build-Pipescript [[-InputPath] &lt;String[]&gt;] [&lt;CommonParameters&gt;]
+Build-Pipescript [[-InputPath] <String[]>] [<CommonParameters>]
 ```
 ---
 
