@@ -30,7 +30,7 @@ An abstract syntax tree function definition.
 ---
 ### Syntax
 ```PowerShell
-Pipescript.FunctionDefinition -FunctionDefinition &lt;FunctionDefinitionAst&gt; [&lt;CommonParameters&gt;]
+Pipescript.FunctionDefinition -FunctionDefinition <FunctionDefinitionAst> [<CommonParameters>]
 ```
 ---
 
