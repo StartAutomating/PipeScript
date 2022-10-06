@@ -48,27 +48,27 @@ If 'new'
 
 #### EXAMPLE 6
 ```PowerShell
-{ new @{RandomNumber = Get-Random; A =&#39;b&#39;}}
+{ new @{RandomNumber = Get-Random; A ='b'}}
 ```
 
 #### EXAMPLE 7
 ```PowerShell
-{ new Diagnostics.ProcessStartInfo @{FileName=&#39;f&#39;} }
+{ new Diagnostics.ProcessStartInfo @{FileName='f'} }
 ```
 
 #### EXAMPLE 8
 ```PowerShell
-{ new ScriptBlock &#39;Get-Command&#39;}
+{ new ScriptBlock 'Get-Command'}
 ```
 
 #### EXAMPLE 9
 ```PowerShell
-{ (new PowerShell).AddScript(&quot;Get-Command&quot;).Invoke() }
+{ (new PowerShell).AddScript("Get-Command").Invoke() }
 ```
 
 #### EXAMPLE 10
 ```PowerShell
-{ new &#39;https://schema.org/Thing&#39; }
+{ new 'https://schema.org/Thing' }
 ```
 
 ---
@@ -88,7 +88,7 @@ If 'new'
 ---
 ### Syntax
 ```PowerShell
-New [-CommandAst] &lt;CommandAst&gt; [&lt;CommonParameters&gt;]
+New [-CommandAst] <CommandAst> [<CommonParameters>]
 ```
 ---
 
