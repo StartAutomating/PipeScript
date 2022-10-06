@@ -22,12 +22,12 @@ Renames variables in a ScriptBlock
 {
     [RenameVariable(VariableRename={
         @{
-            x=&#39;x1&#39;
-            y=&#39;y1&#39;
+            x='x1'
+            y='y1'
         }
     })]
     param($x, $y)
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 ---
@@ -68,7 +68,7 @@ The ScriptBlock that declares the parameters.
 ---
 ### Syntax
 ```PowerShell
-RenameVariable [-VariableRename] &lt;IDictionary&gt; -ScriptBlock &lt;ScriptBlock&gt; [&lt;CommonParameters&gt;]
+RenameVariable [-VariableRename] <IDictionary> -ScriptBlock <ScriptBlock> [<CommonParameters>]
 ```
 ---
 
