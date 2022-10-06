@@ -20,7 +20,7 @@ This transpiler enables equality comparison with ==.
 Invoke-PipeScript -ScriptBlock {
     $a = 1    
     if ($a == 1 ) {
-        &quot;A is $a&quot;
+        "A is $a"
     }
 }
 ```
@@ -28,8 +28,8 @@ Invoke-PipeScript -ScriptBlock {
 #### EXAMPLE 2
 ```PowerShell
 {
-    $a == &quot;b&quot;
-} | .&gt;PipeScript
+    $a == "b"
+} | .>PipeScript
 ```
 
 ---
@@ -53,7 +53,7 @@ The original assignment statement.
 ---
 ### Syntax
 ```PowerShell
-EqualityComparison [-AssignmentStatementAST] &lt;AssignmentStatementAst&gt; [&lt;CommonParameters&gt;]
+EqualityComparison [-AssignmentStatementAST] <AssignmentStatementAst> [<CommonParameters>]
 ```
 ---
 ### Notes
