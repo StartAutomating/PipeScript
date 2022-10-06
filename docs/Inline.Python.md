@@ -18,15 +18,15 @@ PipeScript can be included in a Python string that starts and ends with ```{}```
 #### EXAMPLE 1
 ```PowerShell
 {
-   $pythonContent = @&#39;
-&quot;&quot;&quot;{
-$msg = &quot;Hello World&quot;, &quot;Hey There&quot;, &quot;Howdy&quot; | Get-Random
-@&quot;
-print(&quot;$msg&quot;)
-&quot;@
-}&quot;&quot;&quot;
-&#39;@
-    [OutputFile(&#39;.\HelloWorld.ps1.py&#39;)]$PythonContent
+   $pythonContent = @'
+"""{
+$msg = "Hello World", "Hey There", "Howdy" | Get-Random
+@"
+print("$msg")
+"@
+}"""
+'@
+    [OutputFile('.\HelloWorld.ps1.py')]$PythonContent
 }
 ```
 .> .\HelloWorld.ps1.py
@@ -85,7 +85,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.Python [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.Python [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 
