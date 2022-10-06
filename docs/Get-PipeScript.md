@@ -398,13 +398,15 @@ If set, will output the help for the extensions
 
 ---
 ### Outputs
-Extension
+* Extension
+
+
 
 
 ---
 ### Syntax
 ```PowerShell
-Get-PipeScript [[-PipeScriptPath] &lt;String&gt;] [-Force] [[-CommandName] &lt;String[]&gt;] [[-PipeScriptName] &lt;String[]&gt;] [-Like] [-Match] [-DynamicParameter] [-CouldRun] [[-CouldPipe] &lt;PSObject&gt;] [-Run] [-Stream] [[-DynamicParameterSetName] &lt;String&gt;] [[-DynamicParameterPositionOffset] &lt;Int32&gt;] [-NoMandatoryDynamicParameter] [-RequirePipeScriptAttribute] [[-ValidateInput] &lt;PSObject&gt;] [-AllValid] [[-ParameterSetName] &lt;String&gt;] [[-Parameter] &lt;IDictionary&gt;] [-SteppablePipeline] [-Help] [&lt;CommonParameters&gt;]
+Get-PipeScript [[-PipeScriptPath] <String>] [-Force] [[-CommandName] <String[]>] [[-PipeScriptName] <String[]>] [-Like] [-Match] [-DynamicParameter] [-CouldRun] [[-CouldPipe] <PSObject>] [-Run] [-Stream] [[-DynamicParameterSetName] <String>] [[-DynamicParameterPositionOffset] <Int32>] [-NoMandatoryDynamicParameter] [-RequirePipeScriptAttribute] [[-ValidateInput] <PSObject>] [-AllValid] [[-ParameterSetName] <String>] [[-Parameter] <IDictionary>] [-SteppablePipeline] [-Help] [<CommonParameters>]
 ```
 ---
 
