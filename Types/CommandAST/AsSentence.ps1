@@ -289,7 +289,9 @@ foreach ($potentialCommand in $potentialCommands) {
                 }                                     
             }
             $currentParameter = '' # and clear the current parameter.
-            $currentClause = @()            
+            $currentClause = @()
+            $commandElementIndex--
+            continue            
         }
 
 
