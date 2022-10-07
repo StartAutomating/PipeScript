@@ -296,13 +296,41 @@ param()
 
 # Because we want to have flexible open-ended arguments here, we do not hard-code any arguments.
 # we parse them.
-$IsRightToLeft = $false
-foreach ($arg in $arguments) {
-    if ($arg -match '^-{0,2}RightToLeft$') {
+$IsRightToLeft   = $false
+$SpecificCommands = @()
+$specificCommandNames = @()
+for ($argIndex =0 ; $argIndex -lt $args.Count; $argIndex++) {
+    $arg = $args[$argIndex]    
+    if ($arg -is [Management.Automation.CommandInfo]) {
+        $SpecificCommands += $arg
+        $specificCommandNames += $arg.Name
+        continue
+    }
+    if ($arg -match '^[-/]{0,2}(?:Is)?RightToLeft$') {
         # If -RightToLeft was passed
         $IsRightToLeft = $true
+        continue
+    }
+
+    $argCommands = @(
+        $foundTranspiler = Get-Transpiler -TranspilerName $arg 
+        if ($foundTranspiler) {
+            foreach ($transpiler in $foundTranspiler) {
+                if ($transpiler.Validate($arg)) { 
+                    $transpiler
+                }
+            }
+        } else {
+            $ExecutionContext.SessionState.InvokeCommand.GetCommands($arg, 'All', $true)
+        }
+    )
+
+    if ($argCommands) {        
+        $SpecificCommands += $argCommands
+        continue
     }
 }
+
 
 $mappedParameters = [Ordered]@{}
 $sentence = [Ordered]@{
@@ -320,37 +348,52 @@ if ($IsRightToLeft) {
     [Array]::Reverse($commandElements)
 }
 
-# The first command element should be the name of the command.
-$firstCommandElement = $commandElements[0]
-$commandName = ''
-$potentialCommands = 
-    @(if ($firstCommandElement.Value -and $firstCommandElement.StringConstantType -eq 'BareWord') {    
-        $commandName = $firstCommandElement.Value
-        $foundTranspiler = Get-Transpiler -TranspilerName $commandName    
-        if ($foundTranspiler) {
-            foreach ($transpiler in $foundTranspiler) {
-                if ($transpiler.Validate($commandAst)) { 
-                    $transpiler
-                }
-            }
-        } else {
-            $ExecutionContext.SessionState.InvokeCommand.GetCommands($commandName, 'All', $true)
-        }
-    })
 
-if (-not $potentialCommands) {
-    [PSCustomObject][Ordered]@{
-        PSTypeName = 'PipeScript.Sentence'
-        Keyword    = $commandName
-        Command    = $null
-        Arguments  = $commandElements[1..$commandElements.Length]
+if ($SpecificCommands) {
+    $potentialCommandNames = $specificCommandNames
+    $potentialCommands = $SpecificCommands
+} else {
+
+    # The first command element should be the name of the command.
+    $firstCommandElement = $commandElements[0]
+    $commandName = ''
+    $potentialCommandNames = @()
+    $potentialCommands = 
+        @(    
+        if ($firstCommandElement.Value -and $firstCommandElement.StringConstantType -eq 'BareWord') {    
+            $commandName = $firstCommandElement.Value            
+            $foundTranspiler = Get-Transpiler -TranspilerName $commandName    
+            if ($foundTranspiler) {
+                foreach ($transpiler in $foundTranspiler) {
+                    if ($transpiler.Validate($commandAst)) { 
+                        $potentialCommandNames += $commandName
+                        $transpiler
+                    }
+                }
+            } else {
+                foreach ($foundCmd in $ExecutionContext.SessionState.InvokeCommand.GetCommands($commandName, 'All', $true)) {
+                    $foundCmd
+                    $potentialCommandNames += $commandName
+                }                
+            }
+        })
+
+    if (-not $potentialCommands) {
+        [PSCustomObject][Ordered]@{
+            PSTypeName = 'PipeScript.Sentence'
+            Keyword    = ''
+            Command    = $null
+            Arguments  = $commandElements[0..$commandElements.Length]
+        }
     }
 }
 
-
 $mappedParameters = [Ordered]@{}
 
+$potentialCommandIndex = -1
 foreach ($potentialCommand in $potentialCommands) {
+    $potentialCommandIndex++
+    $commandName = $potentialCommandName = $potentialCommandNames[$potentialCommandIndex]
     &lt;#
     Each potential command can be thought of as a simple sentence with (mostly) natural syntax
     
@@ -611,7 +654,7 @@ foreach ($potentialCommand in $potentialCommands) {
     $sentence = 
         [PSCustomObject]@{
             PSTypeName = 'PipeScript.Sentence'
-            Keyword    = $commandName
+            Keyword    = $potentialCommandName
             Command    = $potentialCommand
             Clauses    = $clauses
             Parameters = $mappedParameters
