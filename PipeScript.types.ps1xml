@@ -833,6 +833,54 @@ else {
     </Members>
   </Type>
   <Type>
+    <Name>PipeScript.Sentence</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Argument</Name>
+        <ReferencedMemberName>Arguments</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ArgumentList</Name>
+        <ReferencedMemberName>Arguments</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Parameter</Name>
+        <ReferencedMemberName>Parameters</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptMethod>
+        <Name>Run</Name>
+        <Script>
+                        if (-not $this.Keyword) {
+    throw "Sentence lacks a keyword"
+}
+
+if (-not $this.Command) {
+    throw "Sentence has no command"
+}
+
+$parameters = $this.Parameters
+$arguments  = $this.Arguments
+
+if (-not $parameters -and -not $arguments) {
+    &amp; $this.Command
+}
+elseif (-not $arguments) {
+    &amp; $this.Command @parameters
+}
+elseif (-not $parameters) {
+    &amp; $this.Command @arguments
+}
+else {
+    &amp; $this.Command @arguments @parameters
+}
+
+
+
+                    </Script>
+      </ScriptMethod>
+    </Members>
+  </Type>
+  <Type>
     <Name>System.Management.Automation.ScriptBlock</Name>
     <Members>
       <ScriptMethod>
