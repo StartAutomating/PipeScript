@@ -1852,6 +1852,103 @@ $BackgroundColor
       </TableControl>
     </View>
     <View>
+      <Name>PipeScript.Sentence</Name>
+      <ViewSelectedBy>
+        <TypeName>PipeScript.Sentence</TypeName>
+      </ViewSelectedBy>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+            <CustomItem>
+              <ExpressionBinding>
+                <ScriptBlock>$moduleName = 'PipeScript'
+
+            do {
+                $lm = Get-Module -Name $moduleName -ErrorAction Ignore
+                if (-not $lm) { continue } 
+                if ($lm.FormatPartsLoaded) { break }
+                $wholeScript = @(foreach ($formatFilePath in $lm.exportedFormatFiles) {         
+                    foreach ($partNodeName in Select-Xml -LiteralPath $formatFilePath -XPath "/Configuration/Controls/Control/Name[starts-with(., '$')]") {
+                        $ParentNode = $partNodeName.Node.ParentNode
+                        "$($ParentNode.Name)={
+            $($ParentNode.CustomControl.CustomEntries.CustomEntry.CustomItem.ExpressionBinding.ScriptBlock)}"
+                    }
+                }) -join [Environment]::NewLine
+                New-Module -Name "${ModuleName}.format.ps1xml" -ScriptBlock ([ScriptBlock]::Create(($wholeScript + ';Export-ModuleMember -Variable *'))) |
+                    Import-Module -Global
+                $onRemove = [ScriptBlock]::Create("Remove-Module '${ModuleName}.format.ps1xml'")
+                
+                if (-not $lm.OnRemove) {
+                    $lm.OnRemove = $onRemove
+                } else {
+                    $lm.OnRemove = [ScriptBlock]::Create($onRemove.ToString() + ''  + [Environment]::NewLine + $lm.OnRemove)
+                }
+                $lm | Add-Member NoteProperty FormatPartsLoaded $true -Force
+            
+            } while ($false)
+            
+        
+@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Verbose' -NoClear) -join ''</ScriptBlock>
+              </ExpressionBinding>
+              <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock> $_.Command </ScriptBlock>
+                </ItemSelectionCondition>
+                <PropertyName>Keyword</PropertyName>
+              </ExpressionBinding>
+              <ExpressionBinding>
+                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Verbose' ) -join ''</ScriptBlock>
+              </ExpressionBinding>
+              <ExpressionBinding>
+                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Success' -NoClear) -join ''</ScriptBlock>
+              </ExpressionBinding>
+              <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock> $_.Command </ScriptBlock>
+                </ItemSelectionCondition>
+                <ScriptBlock> " &lt;# $($_.Command) #&gt; " </ScriptBlock>
+              </ExpressionBinding>
+              <ExpressionBinding>
+                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Success' ) -join ''</ScriptBlock>
+              </ExpressionBinding>
+              <ExpressionBinding>
+                <ScriptBlock> ' ' </ScriptBlock>
+              </ExpressionBinding>
+              <ExpressionBinding>
+                <ScriptBlock>
+        @(foreach ($clause in $_.Clauses) {
+            $wordNumber = -1
+            foreach ($word in $clause.Words) {
+                $wordNumber++
+                if (-not $wordNumber) {
+                    &amp; ${PipeScript_Format-RichText} -ForegroundColor Warning -InputObject "$word"
+                } else {
+                    &amp; ${PipeScript_Format-RichText} -InputObject "$word"
+                }
+            }
+        }) -join ' '
+    </ScriptBlock>
+              </ExpressionBinding>
+              <ExpressionBinding>
+                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Magenta' -NoClear) -join ''</ScriptBlock>
+              </ExpressionBinding>
+              <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock> $_.Arguments -and -not $_.Clauses </ScriptBlock>
+                </ItemSelectionCondition>
+                <ScriptBlock>
+        $_.Arguments -join ' '
+    </ScriptBlock>
+              </ExpressionBinding>
+              <ExpressionBinding>
+                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Magenta' ) -join ''</ScriptBlock>
+              </ExpressionBinding>
+            </CustomItem>
+          </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </View>
+    <View>
       <Name>PipeScript.Transpiler</Name>
       <ViewSelectedBy>
         <TypeName>PipeScript.Transpiler</TypeName>
