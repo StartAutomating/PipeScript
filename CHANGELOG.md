@@ -1,3 +1,11 @@
+## 0.1.6:
+* Added 'all' keyword (iterate over everything) (Fixes #244).  
+* Added Natural Language Processing to CommandAST (Fixes #242)
+* New Language Support:
+  * HashiCorp Language (HCL) (Fixes #240 / #241)
+  * WebAssembly (WAT) (Fixes #239)
+---
+
 ## 0.1.5:
 * Support for [inherit]ing a command (Fixes #235) (finally/wow)
 * Join-PipeScript:  Overhauling (Fixes #231 Fixes #232 Fixes #233 Fixes #236)
