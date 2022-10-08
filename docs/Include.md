@@ -14,23 +14,23 @@ Includes Files or Functions into a Script.
 #### EXAMPLE 1
 ```PowerShell
 {
-    [Include(&quot;Invoke-PipeScript&quot;)]$null
-} | .&gt;PipeScript
+    [Include("Invoke-PipeScript")]$null
+} | .>PipeScript
 ```
 
 #### EXAMPLE 2
 ```PowerShell
 {
-    [Include(&quot;Invoke-PipeScript&quot;)]
+    [Include("Invoke-PipeScript")]
     param()
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 #### EXAMPLE 3
 ```PowerShell
 {
-    [Include(&#39;*-*.ps1&#39;)]$psScriptRoot
-} | .&gt;PipeScript
+    [Include('*-*.ps1')]$psScriptRoot
+} | .>PipeScript
 ```
 
 ---
@@ -84,7 +84,7 @@ If set, will include the content as a byte array
 ---
 ### Syntax
 ```PowerShell
-Include [-FilePath] &lt;String&gt; [-AsByte] -VariableAst &lt;VariableExpressionAst&gt; [&lt;CommonParameters&gt;]
+Include [-FilePath] <String> [-AsByte] -VariableAst <VariableExpressionAst> [<CommonParameters>]
 ```
 ---
 

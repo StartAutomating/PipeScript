@@ -32,7 +32,7 @@ Uncommented lines between these two points will be ignored
 #### EXAMPLE 1
 ```PowerShell
 Invoke-PipeScript {
-    $tclScript = &#39;    
+    $tclScript = '    
 # {
 ```
 Uncommented lines between these two points will be ignored
@@ -103,7 +103,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.TCL [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.TCL [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 

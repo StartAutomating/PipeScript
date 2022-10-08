@@ -24,7 +24,7 @@ Update-PipeScript -ScriptBlock {
 
 #### EXAMPLE 2
 ```PowerShell
-Update-PipeScript -RenameVariable @{x=&#39;y&#39;} -ScriptBlock {$x}
+Update-PipeScript -RenameVariable @{x='y'} -ScriptBlock {$x}
 ```
 
 #### EXAMPLE 3
@@ -34,7 +34,7 @@ Update-PipeScript -ScriptBlock {
     1
     #endregion MyRegion
     2
-} -RegionReplacement @{MyRegion=&#39;&#39;}
+} -RegionReplacement @{MyRegion=''}
 ```
 
 ---
@@ -195,7 +195,7 @@ If set, will transpile the updated script block.
 ---
 ### Syntax
 ```PowerShell
-Update-PipeScript [[-ScriptBlock] &lt;ScriptBlock&gt;] [[-Text] &lt;String&gt;] [[-TextReplacement] &lt;IDictionary&gt;] [[-AstReplacement] &lt;IDictionary&gt;] [[-RegexReplacement] &lt;IDictionary&gt;] [[-RegionReplacement] &lt;IDictionary&gt;] [[-RemoveParameter] &lt;String[]&gt;] [[-RenameVariable] &lt;IDictionary&gt;] [-Transpile] [&lt;CommonParameters&gt;]
+Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-RegexReplacement] <IDictionary>] [[-RegionReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-RenameVariable] <IDictionary>] [-Transpile] [<CommonParameters>]
 ```
 ---
 

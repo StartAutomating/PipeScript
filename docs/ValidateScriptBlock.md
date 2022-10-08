@@ -248,10 +248,10 @@ A VariableExpression.  If provided, the Validation attributes will apply to this
 ---
 ### Syntax
 ```PowerShell
-ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [-IncludeCommand &lt;Object&gt;] [-ExcludeCommand &lt;Object&gt;] [-IncludeType &lt;Object&gt;] [-ExcludeType &lt;Object&gt;] [-NoLoop] [-NoWhileLoop] [-AstCondition &lt;ScriptBlock[]&gt;] [&lt;CommonParameters&gt;]
+ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [-IncludeCommand <Object>] [-ExcludeCommand <Object>] [-IncludeType <Object>] [-ExcludeType <Object>] [-NoLoop] [-NoWhileLoop] [-AstCondition <ScriptBlock[]>] [<CommonParameters>]
 ```
 ```PowerShell
-ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [-IncludeCommand &lt;Object&gt;] [-ExcludeCommand &lt;Object&gt;] [-IncludeType &lt;Object&gt;] [-ExcludeType &lt;Object&gt;] [-NoLoop] [-NoWhileLoop] [-AstCondition &lt;ScriptBlock[]&gt;] -VariableAST &lt;VariableExpressionAst&gt; [&lt;CommonParameters&gt;]
+ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [-IncludeCommand <Object>] [-ExcludeCommand <Object>] [-IncludeType <Object>] [-ExcludeType <Object>] [-NoLoop] [-NoWhileLoop] [-AstCondition <ScriptBlock[]>] -VariableAST <VariableExpressionAst> [<CommonParameters>]
 ```
 ---
 

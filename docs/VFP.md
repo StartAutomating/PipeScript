@@ -81,7 +81,7 @@ The position of the parameter.
 ---
 ### Syntax
 ```PowerShell
-VFP [[-ParameterSet] &lt;String&gt;] [-Mandatory] [-ValueFromPipelineByPropertyName] [[-Position] &lt;Int32&gt;] [&lt;CommonParameters&gt;]
+VFP [[-ParameterSet] <String>] [-Mandatory] [-ValueFromPipelineByPropertyName] [[-Position] <Int32>] [<CommonParameters>]
 ```
 ---
 

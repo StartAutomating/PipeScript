@@ -14,7 +14,7 @@ The Help Transpiler allows you to write inline help without directly writing com
 #### EXAMPLE 1
 ```PowerShell
 {
-    [Help(Synopsis=&quot;The Synopsis&quot;, Description=&quot;A Description&quot;)]
+    [Help(Synopsis="The Synopsis", Description="A Description")]
     param()
 ```
 "This Script Has Help, Without Directly Writing Comments"
@@ -24,20 +24,20 @@ The Help Transpiler allows you to write inline help without directly writing com
 ```PowerShell
 {
     param(
-    [Help(Synopsis=&quot;X Value&quot;)]
+    [Help(Synopsis="X Value")]
     $x
     )
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 #### EXAMPLE 3
 ```PowerShell
 {
     param(
-    [Help(&quot;X Value&quot;)]
+    [Help("X Value")]
     $x
     )
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 ---
@@ -109,10 +109,10 @@ The Help Transpiler allows you to write inline help without directly writing com
 ---
 ### Syntax
 ```PowerShell
-Help [-Synopsis] &lt;String&gt; [-Description &lt;String&gt;] [-Example &lt;String[]&gt;] [-Link &lt;String[]&gt;] [&lt;CommonParameters&gt;]
+Help [-Synopsis] <String> [-Description <String>] [-Example <String[]>] [-Link <String[]>] [<CommonParameters>]
 ```
 ```PowerShell
-Help [-Synopsis] &lt;String&gt; [-Description &lt;String&gt;] [-Example &lt;String[]&gt;] [-Link &lt;String[]&gt;] [-ScriptBlock &lt;ScriptBlock&gt;] [&lt;CommonParameters&gt;]
+Help [-Synopsis] <String> [-Description <String>] [-Example <String[]>] [-Link <String[]>] [-ScriptBlock <ScriptBlock>] [<CommonParameters>]
 ```
 ---
 

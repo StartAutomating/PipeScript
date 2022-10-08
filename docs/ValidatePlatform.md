@@ -20,11 +20,11 @@ When used on a ```[Management.Automation.Language.VariableExpressionAst]``` will
 ```PowerShell
 {
     param(
-    [ValidatePlatform(&quot;Windows&quot;)]
+    [ValidatePlatform("Windows")]
     [switch]
     $UseWMI
     )
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 ---
@@ -61,10 +61,10 @@ The name of one or more platforms.  These will be interpreted as wildcards.
 ---
 ### Syntax
 ```PowerShell
-ValidatePlatform [-Platform] &lt;String[]&gt; [&lt;CommonParameters&gt;]
+ValidatePlatform [-Platform] <String[]> [<CommonParameters>]
 ```
 ```PowerShell
-ValidatePlatform [-Platform] &lt;String[]&gt; [-VariableAST &lt;VariableExpressionAst&gt;] [&lt;CommonParameters&gt;]
+ValidatePlatform [-Platform] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
 ---
 

@@ -56,10 +56,10 @@ If set, will use Windows PowerShell core (powershell.exe).  If not, will use Pow
 ---
 ### Syntax
 ```PowerShell
-Batch -ScriptInfo &lt;ExternalScriptInfo&gt; [-WindowsPowerShell] [&lt;CommonParameters&gt;]
+Batch -ScriptInfo <ExternalScriptInfo> [-WindowsPowerShell] [<CommonParameters>]
 ```
 ```PowerShell
-Batch -ScriptBlock &lt;ScriptBlock&gt; [-WindowsPowerShell] [&lt;CommonParameters&gt;]
+Batch -ScriptBlock <ScriptBlock> [-WindowsPowerShell] [<CommonParameters>]
 ```
 ---
 

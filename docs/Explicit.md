@@ -20,8 +20,8 @@ If Write-Output or echo is used, the command will be replaced for more effecient
 Invoke-PipeScript {
     [explicit()]
     param()
-    &quot;This Will Not Output&quot;
-    Write-Output &quot;This Will Output&quot;
+    "This Will Not Output"
+    Write-Output "This Will Output"
 }
 ```
 
@@ -30,9 +30,9 @@ Invoke-PipeScript {
 {
     [explicit]{
         1,2,3,4
-        echo &quot;Output&quot;
+        echo "Output"
     }
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 ---
@@ -55,13 +55,15 @@ The ScriptBlock that will be transpiled.
 
 ---
 ### Outputs
-System.Management.Automation.ScriptBlock
+* [Management.Automation.ScriptBlock](https://learn.microsoft.com/en-us/dotnet/api/System.Management.Automation.ScriptBlock)
+
+
 
 
 ---
 ### Syntax
 ```PowerShell
-Explicit [-ScriptBlock] &lt;ScriptBlock&gt; [&lt;CommonParameters&gt;]
+Explicit [-ScriptBlock] <ScriptBlock> [<CommonParameters>]
 ```
 ---
 

@@ -17,19 +17,19 @@ This allows for a single parameter to handle multiple potential types.
 ```PowerShell
 {
     param(
-    [ValidateTypes(TypeName=&quot;ScriptBlock&quot;,&quot;string&quot;)]
+    [ValidateTypes(TypeName="ScriptBlock","string")]
     $In
     )
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 #### EXAMPLE 2
 ```PowerShell
-{&quot;hello world&quot;} |
+{"hello world"} |
     Invoke-PipeScript -ScriptBlock {
         param(
         [vfp()]
-        [ValidateTypes(TypeName=&quot;ScriptBlock&quot;,&quot;string&quot;)]            
+        [ValidateTypes(TypeName="ScriptBlock","string")]            
         $In
         )
 ```
@@ -41,7 +41,7 @@ $In
     Invoke-PipeScript -ScriptBlock {
         param(
         [vfp()]
-        [ValidateTypes(TypeName=&quot;ScriptBlock&quot;,&quot;string&quot;)]            
+        [ValidateTypes(TypeName="ScriptBlock","string")]            
         $In
         )
 ```
@@ -87,10 +87,10 @@ The variable that will be validated.
 ---
 ### Syntax
 ```PowerShell
-ValidateTypes [-TypeName] &lt;String[]&gt; [&lt;CommonParameters&gt;]
+ValidateTypes [-TypeName] <String[]> [<CommonParameters>]
 ```
 ```PowerShell
-ValidateTypes [-TypeName] &lt;String[]&gt; [-VariableAST &lt;VariableExpressionAst&gt;] [&lt;CommonParameters&gt;]
+ValidateTypes [-TypeName] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
 ---
 

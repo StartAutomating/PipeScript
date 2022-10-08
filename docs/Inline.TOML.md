@@ -18,11 +18,11 @@ PipeScript can be included in a TOML string that starts and ends with ```{}```, 
 #### EXAMPLE 1
 ```PowerShell
 {
-    $tomlContent = @&#39;
+    $tomlContent = @'
 [seed]
-RandomNumber = &quot;&quot;&quot;{Get-Random}&quot;&quot;&quot;
-&#39;@
-    [OutputFile(&#39;.\RandomExample.ps1.toml&#39;)]$tomlContent
+RandomNumber = """{Get-Random}"""
+'@
+    [OutputFile('.\RandomExample.ps1.toml')]$tomlContent
 }
 ```
 .> .\RandomExample.ps1.toml
@@ -81,7 +81,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.TOML [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.TOML [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 

@@ -15,49 +15,49 @@ Generates PowerShell that communicates with a REST api.
 ```PowerShell
 {
     function Get-Sentiment {
-        [Rest(&quot;http://text-processing.com/api/sentiment/&quot;,
-            ContentType=&quot;application/x-www-form-urlencoded&quot;,
-            Method = &quot;POST&quot;,
-            BodyParameter=&quot;Text&quot;,
+        [Rest("http://text-processing.com/api/sentiment/",
+            ContentType="application/x-www-form-urlencoded",
+            Method = "POST",
+            BodyParameter="Text",
             ForeachOutput = {
                 $_ | Select-Object -ExpandProperty Probability -Property Label
             }
         )]
         param()
     } 
-} | .&gt;PipeScript | Set-Content .\Get-Sentiment.ps1
+} | .>PipeScript | Set-Content .\Get-Sentiment.ps1
 ```
 
 #### EXAMPLE 2
 ```PowerShell
 Invoke-PipeScript {
-    [Rest(&quot;http://text-processing.com/api/sentiment/&quot;,
-        ContentType=&quot;application/x-www-form-urlencoded&quot;,
-        Method = &quot;POST&quot;,
-        BodyParameter=&quot;Text&quot;,
+    [Rest("http://text-processing.com/api/sentiment/",
+        ContentType="application/x-www-form-urlencoded",
+        Method = "POST",
+        BodyParameter="Text",
         ForeachOutput = {
             $_ | Select-Object -ExpandProperty Probability -Property Label
         }
     )]
     param()
-} -Parameter @{Text=&#39;wow!&#39;}
+} -Parameter @{Text='wow!'}
 ```
 
 #### EXAMPLE 3
 ```PowerShell
 {
-    [Rest(&quot;https://api.github.com/users/{username}/repos&quot;,
-        QueryParameter={&quot;type&quot;, &quot;sort&quot;, &quot;direction&quot;, &quot;page&quot;, &quot;per_page&quot;}
+    [Rest("https://api.github.com/users/{username}/repos",
+        QueryParameter={"type", "sort", "direction", "page", "per_page"}
     )]
     param()
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 #### EXAMPLE 4
 ```PowerShell
 Invoke-PipeScript {
-    [Rest(&quot;https://api.github.com/users/{username}/repos&quot;,
-        QueryParameter={&quot;type&quot;, &quot;sort&quot;, &quot;direction&quot;, &quot;page&quot;, &quot;per_page&quot;}
+    [Rest("https://api.github.com/users/{username}/repos",
+        QueryParameter={"type", "sort", "direction", "page", "per_page"}
     )]
     param()
 } -UserName StartAutomating
@@ -66,18 +66,18 @@ Invoke-PipeScript {
 #### EXAMPLE 5
 ```PowerShell
 {
-    [Rest(&quot;http://text-processing.com/api/sentiment/&quot;,
-        ContentType=&quot;application/x-www-form-urlencoded&quot;,
-        Method = &quot;POST&quot;,
+    [Rest("http://text-processing.com/api/sentiment/",
+        ContentType="application/x-www-form-urlencoded",
+        Method = "POST",
         BodyParameter={@{
-            Text = &#39;
+            Text = '
                 [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
                 [string]
                 $Text
-            &#39;
+            '
         }})]
     param()
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 ---
@@ -317,7 +317,7 @@ A script block to be run on each output.
 ---
 ### Syntax
 ```PowerShell
-Rest [-ScriptBlock &lt;ScriptBlock&gt;] [-RESTEndpoint] &lt;String[]&gt; [-ContentType &lt;String&gt;] [-Method &lt;String&gt;] [-InvokeCommand &lt;String&gt;] [-InvokeParameterVariable &lt;String&gt;] [-UriParameterHelp &lt;IDictionary&gt;] [-UriParameterType &lt;IDictionary&gt;] [-BodyParameter &lt;PSObject&gt;] [-QueryParameter &lt;PSObject&gt;] [-JoinQueryValue &lt;String&gt;] [-ForEachOutput &lt;ScriptBlock&gt;] [&lt;CommonParameters&gt;]
+Rest [-ScriptBlock <ScriptBlock>] [-RESTEndpoint] <String[]> [-ContentType <String>] [-Method <String>] [-InvokeCommand <String>] [-InvokeParameterVariable <String>] [-UriParameterHelp <IDictionary>] [-UriParameterType <IDictionary>] [-BodyParameter <PSObject>] [-QueryParameter <PSObject>] [-JoinQueryValue <String>] [-ForEachOutput <ScriptBlock>] [<CommonParameters>]
 ```
 ---
 

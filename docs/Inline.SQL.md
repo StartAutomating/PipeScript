@@ -31,7 +31,7 @@ Uncommented lines between these two points will be ignored
 #### EXAMPLE 1
 ```PowerShell
 Invoke-PipeScript {
-    $SQLScript = &#39;    
+    $SQLScript = '    
 -- {
 ```
 Uncommented lines between these two points will be ignored
@@ -101,7 +101,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.SQL [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.SQL [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 

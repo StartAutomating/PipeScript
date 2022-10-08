@@ -39,10 +39,10 @@ Wraps PowerShell in a Bash Script
 ---
 ### Syntax
 ```PowerShell
-Bash -ScriptInfo &lt;ExternalScriptInfo&gt; [&lt;CommonParameters&gt;]
+Bash -ScriptInfo <ExternalScriptInfo> [<CommonParameters>]
 ```
 ```PowerShell
-Bash -ScriptBlock &lt;ScriptBlock&gt; [&lt;CommonParameters&gt;]
+Bash -ScriptBlock <ScriptBlock> [<CommonParameters>]
 ```
 ---
 

@@ -20,9 +20,9 @@ Removes Parameters from a ScriptBlock
 #### EXAMPLE 1
 ```PowerShell
 {
-    [RemoveParameter(&quot;x&quot;)]
+    [RemoveParameter("x")]
     param($x, $y)
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 ---
@@ -63,7 +63,7 @@ The ScriptBlock that declares the parameters.
 ---
 ### Syntax
 ```PowerShell
-RemoveParameter [-ParameterName] &lt;String[]&gt; -ScriptBlock &lt;ScriptBlock&gt; [&lt;CommonParameters&gt;]
+RemoveParameter [-ParameterName] <String[]> -ScriptBlock <ScriptBlock> [<CommonParameters>]
 ```
 ---
 

@@ -20,8 +20,8 @@ In Markdown, PipeScript can also be specified as the language using any two of t
 #### EXAMPLE 1
 ```PowerShell
 {
-    $markdownContent = @&#39;
-# Thinking of a Number Between 1 and 100: ```.&lt;{Get-Random -Min 1 -Max 100}&gt;.``` is the number
+    $markdownContent = @'
+# Thinking of a Number Between 1 and 100: ```.<{Get-Random -Min 1 -Max 100}>.``` is the number
 ```
 ### abc
 
@@ -96,7 +96,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.Markdown [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.Markdown [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 

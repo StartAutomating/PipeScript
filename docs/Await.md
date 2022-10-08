@@ -14,7 +14,7 @@ awaits the result of a task.
 #### EXAMPLE 1
 ```PowerShell
 PipeScript -ScriptBlock {
-    await $Websocket.SendAsync($SendSegment, &#39;Binary&#39;, $true, [Threading.CancellationToken]::new($false))
+    await $Websocket.SendAsync($SendSegment, 'Binary', $true, [Threading.CancellationToken]::new($false))
 }
 ```
 
@@ -42,7 +42,7 @@ PipeScript -ScriptBlock {
 ---
 ### Syntax
 ```PowerShell
-Await [-CommandAst] &lt;CommandAst&gt; [&lt;CommonParameters&gt;]
+Await [-CommandAst] <CommandAst> [<CommonParameters>]
 ```
 ---
 

@@ -27,14 +27,14 @@ The CSS Inline Transpiler will consider the following syntax to be empty:
 #### EXAMPLE 1
 ```PowerShell
 {
-    $StyleSheet = @&#39;
+    $StyleSheet = @'
 MyClass {
-text-color: &quot;#000000&quot; /*{
-&quot;&#39;red&#39;&quot;, &quot;&#39;green&#39;&quot;,&quot;&#39;blue&#39;&quot; | Get-Random
+text-color: "#000000" /*{
+"'red'", "'green'","'blue'" | Get-Random
 }*/;
 }
-&#39;@
-    [Save(&quot;.\StyleSheet.ps1.css&quot;)]$StyleSheet
+'@
+    [Save(".\StyleSheet.ps1.css")]$StyleSheet
 }
 ```
 .> .\StyleSheet.ps1.css
@@ -93,7 +93,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.CSS [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.CSS [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 

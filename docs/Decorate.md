@@ -16,7 +16,7 @@ By 'decorating' the object with a typename, this enables use of the extended typ
 ```PowerShell
 {
     $v = [PSCustomObject]@{}
-    [decorate(&#39;MyTypeName&#39;,Clear,PassThru)]$v
+    [decorate('MyTypeName',Clear,PassThru)]$v
 }.Transpile()
 ```
 
@@ -92,7 +92,7 @@ If set, will clear any underlying typenames.
 ---
 ### Syntax
 ```PowerShell
-Decorate -VariableAst &lt;VariableExpressionAst&gt; [-TypeName] &lt;String[]&gt; [-PassThru] [-Clear] [&lt;CommonParameters&gt;]
+Decorate -VariableAst <VariableExpressionAst> [-TypeName] <String[]> [-PassThru] [-Clear] [<CommonParameters>]
 ```
 ---
 

@@ -25,8 +25,8 @@ The OpenSCAD Inline Transpiler will consider the following syntax to be empty:
 #### EXAMPLE 1
 ```PowerShell
 {
-    $OpenScadWithInlinePipeScript = @&#39;
-Shape = &quot;cube&quot; /*{&#39;&quot;cube&quot;&#39;, &#39;&quot;sphere&quot;&#39;, &#39;&quot;circle&quot;&#39; | Get-Random}*/;
+    $OpenScadWithInlinePipeScript = @'
+Shape = "cube" /*{'"cube"', '"sphere"', '"circle"' | Get-Random}*/;
 Size  = 1 /*{Get-Random -Min 1 -Max 100}*/ ;
 ```
 if (Shape == "cube") {
@@ -99,7 +99,7 @@ A list of arguments.
 ---
 ### Syntax
 ```PowerShell
-Inline.OpenSCAD [-CommandInfo] &lt;CommandInfo&gt; [[-Parameter] &lt;IDictionary&gt;] [[-ArgumentList] &lt;PSObject[]&gt;] [&lt;CommonParameters&gt;]
+Inline.OpenSCAD [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
 

@@ -81,7 +81,7 @@ The position of the parameter.
 ---
 ### Syntax
 ```PowerShell
-VBN [[-ParameterSet] &lt;String&gt;] [-Mandatory] [-ValueFromPipeline] [[-Position] &lt;Int32&gt;] [&lt;CommonParameters&gt;]
+VBN [[-ParameterSet] <String>] [-Mandatory] [-ValueFromPipeline] [[-Position] <Int32>] [<CommonParameters>]
 ```
 ---
 

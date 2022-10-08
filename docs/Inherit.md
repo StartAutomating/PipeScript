@@ -32,7 +32,7 @@ One interesting example is overriding an application
 #### EXAMPLE 1
 ```PowerShell
 Invoke-PipeScript {
-    [inherit(&quot;Get-Command&quot;)]
+    [inherit("Get-Command")]
     param()
 }
 ```
@@ -40,10 +40,10 @@ Invoke-PipeScript {
 #### EXAMPLE 2
 ```PowerShell
 {
-    [inherit(&quot;gh&quot;,Overload)]
+    [inherit("gh",Overload)]
     param()
-    begin { &quot;ABOUT TO CALL GH&quot;}
-    end { &quot;JUST CALLED GH&quot; }
+    begin { "ABOUT TO CALL GH"}
+    end { "JUST CALLED GH" }
 }.Transpile()
 ```
 
@@ -51,7 +51,7 @@ Invoke-PipeScript {
 ```PowerShell
 # Inherit Get-Transpiler abstractly and make it output the parameters passed in.
 {
-    [inherit(&quot;Get-Transpiler&quot;, Abstract)]
+    [inherit("Get-Transpiler", Abstract)]
     param() process { $psBoundParameters }
 }.Transpile()
 ```
@@ -59,9 +59,9 @@ Invoke-PipeScript {
 #### EXAMPLE 4
 ```PowerShell
 {
-    [inherit(&quot;Get-Transpiler&quot;, Dynamic, Abstract)]
+    [inherit("Get-Transpiler", Dynamic, Abstract)]
     param()
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 ---
@@ -284,7 +284,7 @@ Excluded parameters with default values will declare the default value at the be
 ---
 ### Syntax
 ```PowerShell
-Inherit [-Command] &lt;String&gt; [-Abstract] [-Override] [-Dynamic] [-Proxy] [-CommandType &lt;String[]&gt;] [-ExcludeBlockType &lt;String[]&gt;] [-IncludeBlockType &lt;String[]&gt;] [-IncludeParameter &lt;String[]&gt;] [-ExcludeParameter &lt;String[]&gt;] [-ScriptBlock &lt;ScriptBlock&gt;] [&lt;CommonParameters&gt;]
+Inherit [-Command] <String> [-Abstract] [-Override] [-Dynamic] [-Proxy] [-CommandType <String[]>] [-ExcludeBlockType <String[]>] [-IncludeBlockType <String[]>] [-IncludeParameter <String[]>] [-ExcludeParameter <String[]>] [-ScriptBlock <ScriptBlock>] [<CommonParameters>]
 ```
 ---
 

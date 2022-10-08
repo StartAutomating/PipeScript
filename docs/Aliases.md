@@ -18,9 +18,9 @@ When used with a variable, [Aliases] will Set-Alias on each value in the variabl
 #### EXAMPLE 1
 ```PowerShell
 {
-    $aliases = &quot;Foo&quot;, &quot;Bar&quot;, &quot;Baz&quot;
-    [Aliases(Command=&quot;Get-Process&quot;)]$aliases
-} | .&gt;PipeScript
+    $aliases = "Foo", "Bar", "Baz"
+    [Aliases(Command="Get-Process")]$aliases
+} | .>PipeScript
 ```
 
 #### EXAMPLE 2
@@ -28,12 +28,12 @@ When used with a variable, [Aliases] will Set-Alias on each value in the variabl
 {
     param(
     [Aliases(Aliases={
-       ([char]&#39;a&#39;..[char]&#39;z&#39;)
+       ([char]'a'..[char]'z')
     })]
     [string]
     $Drive
     )
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 ---
@@ -139,10 +139,10 @@ If provided, this will be treated as the alias name or list of alias names.
 ---
 ### Syntax
 ```PowerShell
-Aliases -Aliases &lt;String[]&gt; [-Prefix &lt;String&gt;] [-Suffix &lt;String&gt;] [&lt;CommonParameters&gt;]
+Aliases -Aliases <String[]> [-Prefix <String>] [-Suffix <String>] [<CommonParameters>]
 ```
 ```PowerShell
-Aliases [-Prefix &lt;String&gt;] [-Suffix &lt;String&gt;] -Command &lt;String&gt; [-PassThru] -VariableAST &lt;VariableExpressionAst&gt; [&lt;CommonParameters&gt;]
+Aliases [-Prefix <String>] [-Suffix <String>] -Command <String> [-PassThru] -VariableAST <VariableExpressionAst> [<CommonParameters>]
 ```
 ---
 

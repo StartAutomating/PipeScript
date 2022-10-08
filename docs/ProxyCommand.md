@@ -19,8 +19,8 @@ Generates a Proxy Command for an underlying PowerShell or PipeScript command.
 #### EXAMPLE 2
 ```PowerShell
 {
-    function [ProxyCommand&lt;&#39;Get-Process&#39;&gt;]GetProcessProxy {}
-} | .&gt;PipeScript
+    function [ProxyCommand<'Get-Process'>]GetProcessProxy {}
+} | .>PipeScript
 ```
 
 #### EXAMPLE 3
@@ -30,16 +30,16 @@ ProxyCommand -CommandName Get-Process -RemoveParameter *
 
 #### EXAMPLE 4
 ```PowerShell
-Invoke-PipeScript -ScriptBlock {[ProxyCommand(&#39;Get-Process&#39;)]param()}
+Invoke-PipeScript -ScriptBlock {[ProxyCommand('Get-Process')]param()}
 ```
 
 #### EXAMPLE 5
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
-    [ProxyCommand(&#39;Get-Process&#39;, 
-        RemoveParameter=&#39;*&#39;,
+    [ProxyCommand('Get-Process', 
+        RemoveParameter='*',
         DefaultParameter={
-            @{id=&#39;$pid&#39;}
+            @{id='$pid'}
         })]
         param()
 }
@@ -49,14 +49,14 @@ Invoke-PipeScript -ScriptBlock {
 ```PowerShell
 { 
     function Get-MyProcess {
-        [ProxyCommand(&#39;Get-Process&#39;, 
-            RemoveParameter=&#39;*&#39;,
+        [ProxyCommand('Get-Process', 
+            RemoveParameter='*',
             DefaultParameter={
-                @{id=&#39;$pid&#39;}
+                @{id='$pid'}
             })]
             param()
     } 
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 ---
@@ -131,7 +131,7 @@ Any default parameters for the ProxyCommand.
 ---
 ### Syntax
 ```PowerShell
-ProxyCommand [-ScriptBlock &lt;ScriptBlock&gt;] [-CommandName] &lt;String&gt; [-RemoveParameter &lt;String[]&gt;] [-DefaultParameter &lt;IDictionary&gt;] [&lt;CommonParameters&gt;]
+ProxyCommand [-ScriptBlock <ScriptBlock>] [-CommandName] <String> [-RemoveParameter <String[]>] [-DefaultParameter <IDictionary>] [<CommonParameters>]
 ```
 ---
 

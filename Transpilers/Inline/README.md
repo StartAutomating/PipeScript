@@ -1,6 +1,6 @@
 This directory contains Inline PipeScript transpilers for several languages.
 
-PipeScript can currently be embedded in 34 languages or file types.
+PipeScript can currently be embedded in 35 languages or file types.
 
 ### Supported Languages
 
@@ -17,6 +17,7 @@ PipeScript can currently be embedded in 34 languages or file types.
 |[CSharp](Inline.CSharp.psx.ps1)        |C# Inline PipeScript Transpiler.        |```\.cs$```                     |
 |[CSS](Inline.CSS.psx.ps1)              |CSS Inline PipeScript Transpiler.       |```\.s{0,1}css$```              |
 |[Go](Inline.Go.psx.ps1)                |Go PipeScript Transpiler.               |```\.go$```                     |
+|[HCL](Inline.HCL.psx.ps1)              |HCL PipeScript Transpiler.              |```\.hcl$```                    |
 |[HLSL](Inline.HLSL.psx.ps1)            |HLSL Inline PipeScript Transpiler.      |```\.hlsl$```                   |
 |[HTML](Inline.HTML.psx.ps1)            |HTML PipeScript Transpiler.             |```\.htm{0,1}```                |
 |[Java](Inline.Java.psx.ps1)            |Java Inline PipeScript Transpiler.      |```\.(?>java)$```               |

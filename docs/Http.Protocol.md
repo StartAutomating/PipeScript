@@ -22,14 +22,14 @@ Converts an http[s] protocol command to PowerShell.
 ```PowerShell
 {
     get https://api.github.com/repos/StartAutomating/PipeScript
-} | .&gt;PipeScript
+} | .>PipeScript
 ```
 
 #### EXAMPLE 3
 ```PowerShell
 Invoke-PipeScript {
-    $GitHubApi = &#39;api.github.com&#39;
-    $UserName  = &#39;StartAutomating&#39;
+    $GitHubApi = 'api.github.com'
+    $UserName  = 'StartAutomating'
     https://$GitHubApi/users/$UserName
 }
 ```
@@ -60,7 +60,7 @@ Invoke-PipeScript {
 #### EXAMPLE 7
 ```PowerShell
 {
-    http://text-processing.com/api/sentiment/ -Method POST -ContentType &#39;application/x-www-form-urlencoded&#39; -Body &quot;text=amazing!&quot; |
+    http://text-processing.com/api/sentiment/ -Method POST -ContentType 'application/x-www-form-urlencoded' -Body "text=amazing!" |
         Select-Object -ExpandProperty Probability -Property Label
 }
 ```
@@ -116,7 +116,7 @@ The Command's Abstract Syntax Tree
 ---
 ### Syntax
 ```PowerShell
-Http.Protocol [-CommandUri] &lt;Uri&gt; [-CommandAst] &lt;CommandAst&gt; [[-Method] &lt;String&gt;] [&lt;CommonParameters&gt;]
+Http.Protocol [-CommandUri] <Uri> [-CommandAst] <CommandAst> [[-Method] <String>] [<CommonParameters>]
 ```
 ---
 

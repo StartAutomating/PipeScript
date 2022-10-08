@@ -31,7 +31,7 @@ If the type name does not exist, and is not [ordered], PipeScript will search fo
 ---
 ### Syntax
 ```PowerShell
-PipeScript.ParameterTypeConstraint -TypeConstraintAST &lt;TypeConstraintAst&gt; [&lt;CommonParameters&gt;]
+PipeScript.ParameterTypeConstraint -TypeConstraintAST <TypeConstraintAst> [<CommonParameters>]
 ```
 ---
 
