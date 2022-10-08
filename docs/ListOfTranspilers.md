@@ -5,6 +5,7 @@ These are all of the transpilers currently included in PipeScript:
 |Name                                                                                             |Synopsis                                         |
 |-------------------------------------------------------------------------------------------------|-------------------------------------------------|
 |[Aliases](Transpilers/Parameters/Aliases.psx.ps1)                                                |Dynamically Defines Aliases                      |
+|[All](Transpilers/Keywords/All.psx.ps1)                                                          |all keyword                                      |
 |[Assert](Transpilers/Keywords/Assert.psx.ps1)                                                    |Assert keyword                                   |
 |[Await](Transpilers/Keywords/Await.psx.ps1)                                                      |awaits asynchronous operations                   |
 |[Bash](Transpilers/Wrappers/Bash.psx.ps1)                                                        |Wraps PowerShell in a Bash Script                |
