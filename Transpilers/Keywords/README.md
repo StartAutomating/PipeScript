@@ -9,6 +9,7 @@ This directory contains the implementations of PipeScript language keywords.
 
 |DisplayName             |Synopsis                                       |
 |------------------------|-----------------------------------------------|
+|[All](All.psx.ps1)      |[all keyword](All.psx.ps1)                     |
 |[Assert](Assert.psx.ps1)|[Assert keyword](Assert.psx.ps1)               |
 |[Await](Await.psx.ps1)  |[awaits asynchronous operations](Await.psx.ps1)|
 |[New](New.psx.ps1)      |['new' keyword](New.psx.ps1)                   |
@@ -17,6 +18,46 @@ This directory contains the implementations of PipeScript language keywords.
 
 
 # Examples
+
+## All Example 1
+
+
+~~~PowerShell
+    & {
+    $glitters = @{glitters=$true}
+    all that glitters
+    }.Transpile()
+~~~
+
+## All Example 2
+
+
+~~~PowerShell
+    function mallard([switch]$Quack) { $Quack }
+    Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Unique
+    . {all functions that quack are ducks}.Transpile()
+    Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Unique
+~~~
+
+## All Example 3
+
+
+~~~PowerShell
+    
+    . {
+        $numbers = 1..100
+        $null = all $numbers where { ($_ % 2) -eq 1 } are odd
+        $null = all $numbers where { ($_ % 2) -eq 0 } are even
+    }.Transpile()
+
+    @(
+        . { all even $numbers }.Transpile()
+    ).Length
+
+    @(
+        . { all odd $numbers }.Transpile()
+    ).Length
+~~~
 
 ## Assert Example 1
 
