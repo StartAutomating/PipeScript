@@ -571,7 +571,9 @@ foreach ($potentialCommand in $potentialCommands) {
                 }                                     
             }
             $currentParameter = '' # and clear the current parameter.
-            $currentClause = @()            
+            $currentClause = @()
+            $commandElementIndex--
+            continue            
         }
 
 
@@ -664,7 +666,6 @@ foreach ($potentialCommand in $potentialCommands) {
     $sentence                
 
 }
-
                     </Script>
       </ScriptMethod>
       <ScriptProperty>
