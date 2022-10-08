@@ -30,6 +30,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Inline.CSharp](Transpilers/Inline/Inline.CSharp.psx.ps1)                                        |C# Inline PipeScript Transpiler.                 |
 |[Inline.CSS](Transpilers/Inline/Inline.CSS.psx.ps1)                                              |CSS Inline PipeScript Transpiler.                |
 |[Inline.Go](Transpilers/Inline/Inline.Go.psx.ps1)                                                |Go PipeScript Transpiler.                        |
+|[Inline.HCL](Transpilers/Inline/Inline.HCL.psx.ps1)                                              |HCL PipeScript Transpiler.                       |
 |[Inline.HLSL](Transpilers/Inline/Inline.HLSL.psx.ps1)                                            |HLSL Inline PipeScript Transpiler.               |
 |[Inline.HTML](Transpilers/Inline/Inline.HTML.psx.ps1)                                            |HTML PipeScript Transpiler.                      |
 |[Inline.Java](Transpilers/Inline/Inline.Java.psx.ps1)                                            |Java Inline PipeScript Transpiler.               |
