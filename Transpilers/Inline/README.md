@@ -1,6 +1,6 @@
 This directory contains Inline PipeScript transpilers for several languages.
 
-PipeScript can currently be embedded in 35 languages or file types.
+PipeScript can currently be embedded in 37 languages or file types.
 
 ### Supported Languages
 
@@ -24,6 +24,8 @@ PipeScript can currently be embedded in 35 languages or file types.
 |[JavaScript](Inline.JavaScript.psx.ps1)|JavaScript Inline PipeScript Transpiler.|```\.js$```                     |
 |[Json](Inline.Json.psx.ps1)            |JSON PipeScript Transpiler.             |```\.json$```                   |
 |[Kotlin](Inline.Kotlin.psx.ps1)        |Kotlin Inline PipeScript Transpiler.    |```\.kt$```                     |
+|[Latex](Inline.Latex.psx.ps1)          |Latex Inline PipeScript Transpiler.     |```\.(?>latex\\|tex)$```        |
+|[LUA](Inline.LUA.psx.ps1)              |LUA Inline PipeScript Transpiler.       |```\.lua$```                    |
 |[Markdown](Inline.Markdown.psx.ps1)    |Markdown File Transpiler.               |```\.(?>md\\|markdown)$```      |
 |[ObjectiveC](Inline.ObjectiveC.psx.ps1)|Objective C PipeScript Transpiler.      |```\.(?>m\\|mm)$```             |
 |[OpenSCAD](Inline.OpenSCAD.psx.ps1)    |OpenSCAD Inline PipeScript Transpiler.  |```\.scad$```                   |

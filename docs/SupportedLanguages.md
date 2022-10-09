@@ -21,6 +21,8 @@ These are all of the transpilers currently included in PipeScript:
 |[JavaScript](Transpilers/Inline/Inline.JavaScript.psx.ps1)|JavaScript Inline PipeScript Transpiler.|```\.js$```                     |
 |[Json](Transpilers/Inline/Inline.Json.psx.ps1)            |JSON PipeScript Transpiler.             |```\.json$```                   |
 |[Kotlin](Transpilers/Inline/Inline.Kotlin.psx.ps1)        |Kotlin Inline PipeScript Transpiler.    |```\.kt$```                     |
+|[Latex](Transpilers/Inline/Inline.Latex.psx.ps1)          |Latex Inline PipeScript Transpiler.     |```\.(?>latex\\|tex)$```        |
+|[LUA](Transpilers/Inline/Inline.LUA.psx.ps1)              |LUA Inline PipeScript Transpiler.       |```\.lua$```                    |
 |[Markdown](Transpilers/Inline/Inline.Markdown.psx.ps1)    |Markdown File Transpiler.               |```\.(?>md\\|markdown)$```      |
 |[ObjectiveC](Transpilers/Inline/Inline.ObjectiveC.psx.ps1)|Objective C PipeScript Transpiler.      |```\.(?>m\\|mm)$```             |
 |[OpenSCAD](Transpilers/Inline/Inline.OpenSCAD.psx.ps1)    |OpenSCAD Inline PipeScript Transpiler.  |```\.scad$```                   |
