@@ -1,3 +1,9 @@
+## 0.1.7:
+* Added LATEX / TEX support (Fixes #230)
+* Adding LUA support (Fixes #246)
+* Fixing Core Transpiler Attribute Behavior (Fixes #247)
+---
+
 ## 0.1.6:
 * Added 'all' keyword (iterate over everything) (Fixes #244).  
 * Added Natural Language Processing to CommandAST (Fixes #242)
