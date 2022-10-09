@@ -91,7 +91,14 @@ process {
                     @(
                         # check each ScriptBlock attribute
                         foreach ($attrAst in $ScriptBlock.Ast.ParamBlock.Attributes) {
-                            $attrRealType = $attrAst.TypeName.ToString() -as [type]
+                            
+                            $attrRealType = 
+                                if ($attrAst.TypeName.GetReflectionType) {
+                                    $attrAst.TypeName.GetReflectionType()
+                                } elseif ($attrAst.TypeName.ToString) {
+                                    $attrAst.TypeName.ToString() -as [type]
+                                }
+                                
                             if (-not $attrRealType) {
                                 $attrAst
                             }
