@@ -1,6 +1,7 @@
 ---
 
 title: PipeScript 0.0.8
+sourceURL: https://github.com/StartAutomating/PipeScript/releases/tag/v0.0.8
 tag: release
 ---
 ## 0.0.8:

@@ -2,6 +2,7 @@
 
 title: Commands could be read as sentences
 author: StartAutomating
+sourceURL: https://github.com/StartAutomating/PipeScript/issues/242
 tag: enhancement
 ---
 Almost any given sentence could be considered valid PowerShell (including this one).

@@ -1,6 +1,7 @@
 ---
 
 title: PipeScript 0.0.12
+sourceURL: https://github.com/StartAutomating/PipeScript/releases/tag/v0.0.12
 tag: release
 ---
 ## 0.0.12:
