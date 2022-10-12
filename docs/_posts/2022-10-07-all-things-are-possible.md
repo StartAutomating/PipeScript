@@ -18,13 +18,18 @@ The [all keyword](https://github.com/StartAutomating/PipeScript/blob/main/Transp
 
 `all` can be followed by a number of modifiers or an input variable.
 
-~~~PowerShell
-all functions      # returns all functions
-all aliases          # returns all aliases
-all cmdlets        # returns all cmdlets
-all applications # returns all applications
-all commands   # returns all commands
-all variables      # returns all variables
-all things          # returns all variables, functions, cmdlets, aliases
-all $numbers    # returns everything in numbers
-~~~
+Here's a table of some simple ways to use `all`
+
+|Example              | Description                                                         |
+|------------------:|:----------------------------------------------------|
+|`all functions`      | outputs all functions                                          |
+|`all aliases`          | outputs all aliases                                               |
+|`all cmdlets`        | outputs all cmdlets                                             |
+|`all applications` | outputs all applications                                      |
+|`all commands ` | outputs all commands                                        |
+|`all variables`      | outputs all variables                                           |
+|`all things`          | outputs all variables, functions, cmdlets, aliases|
+|`all $numbers`    | outputs everything in numbers                          |
+
+
+
