@@ -75,10 +75,10 @@ $($Keywords -join '|') # followed by keywords
 (?<HereDoc>@){0,1}            # Optional heredoc start
 ['`"]                         # String start
 (?(HereDoc)([\r\n]{1,2}))     # If we found a heredoc, the next portion of the match must be 1-2 newlines/carriage returns
-/                             # Followed by a slash
+/
 '@, Options='IgnoreCase,IgnorePatternWhitespace')]
 [ValidatePattern(@'
-/                             # closing slash
+/                             # a closing slash
 (?<Options>[\w,]+){0,1}       # optional options
 (?(HereDoc)([\r\n]{1,2}))     # If we found a heredoc, the next portion of the match must be 1-2 newlines/carriage returns
 ['`"]
@@ -114,7 +114,11 @@ process {
             $ExpandableStringExpression.Extent.ToString(), $ExpandableStringExpression.StringConstantType
         }
 
-    $sparseStringExpr = $StringExpr -replace $startRegex -replace $endRegex
+    
+    $sparseStringExpr = $StringExpr -replace $endRegex -replace $startRegex
+    if ($sparseStringExpr -match '^@{0,1}["'']') {
+        return
+    }
     $null = $StringExpr -match $endRegex
     $stringStart, $stringEnd = 
         if ($stringType -eq 'SingleQuotedHereString') {
