@@ -157,9 +157,18 @@ foreach ($potentialCommand in $potentialCommands) {
         $commandElement = $CommandElements[$commandElementIndex]
         # by default, we assume we haven't found a parameter.
         $parameterFound  = $false
+        
+        $barewordSequenece = 
+            @(for ($cei = $commandElementIndex; $cei  -lt $commandElements.Count; $cei++) {
+                if (
+                    $commandElements[$cei] -isnot [Management.Automation.Language.StringConstantExpressionAst] -or 
+                    $commandElements[$cei].StringConstantType -ne 'Bareword'
+                ) { break }
+                $commandElements[$cei].Value
+            })
 
         # That assumption is quickly challenged if the AST type was CommandParameter
-        if ($commandElement -is [CommandParameterAst]) {
+        if ($commandElement -is [Management.Automation.Language.CommandParameterAst]) {
             # If there were already clauses, finalize them before we start this clause
             if ($currentClause) {                
                 $clauses += [PSCustomObject][Ordered]@{
@@ -219,11 +228,13 @@ foreach ($potentialCommand in $potentialCommands) {
             # Since we have found a parameter, we advance the index.
             $commandElementIndex++
         }
+        
         # If the command element was a bareword, it could also be the name of a parameter
-        elseif ($commandElement.Value -and $commandElement.StringConstantType -eq 'Bareword') {
+        elseif ($barewordSequenece) {
             # We need to know the name of the parameter as it was written.
             # However, we also want to allow --parameters and /parameters,
-            $potentialParameterName = $commandElement.Value
+            $potentialParameterName = $barewordSequenece[0]
+            $barewordSequenece = $barewordSequenece -join ' ' -replace '[-/]'
             # therefore, we will compare against the potential name without leading dashes or slashes.
             $dashAndSlashlessName   = $potentialParameterName -replace '^[-/]{0,}'
 
@@ -238,11 +249,17 @@ foreach ($potentialCommand in $potentialCommands) {
                         $true # we've found it,
                     } else {
                         # otherwise, we have to check each alias.
-                        foreach ($potentialAlias in $potentialParameter.Aliases) {
-                            if ($potentialAlias -eq $dashAndSlashlessName) {
+                        :nextAlias foreach ($potentialAlias in $potentialParameter.Aliases) {
+                            if ($potentialAlias -match '\s' -and 
+                                $potentialAlias -eq $barewordSequenece) {
+                                $potentialParameterName = $barewordSequenece
+                                $true
+                                break
+                            } elseif ($potentialAlias -eq $dashAndSlashlessName) {
                                 $true                                    
                                 break
                             }
+                            
                         }
                     }    
                 )
@@ -262,7 +279,12 @@ foreach ($potentialCommand in $potentialCommands) {
                     $currentParameter = $potentialParameterName                    
                     $currentParameterMetadata = $potentialParameter                    
                     $currentClause = @($commandElement)
-                    $commandElementIndex++
+                    if ($currentParameter -match '\s') {
+                        $commandElementIndex += @($currentParameter -split '\s').Length
+                    } else {
+                        $commandElementIndex++
+                    }
+                    
                     break
                 }
                 else {
