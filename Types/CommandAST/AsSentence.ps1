@@ -249,8 +249,8 @@ foreach ($potentialCommand in $potentialCommands) {
                         $true # we've found it,
                     } else {
                         # otherwise, we have to check each alias.
-                        :nextAlias foreach ($potentialAlias in $potentialParameter.Aliases) {
-                            if ($potentialAlias -match '\s' -and 
+                        foreach ($potentialAlias in $potentialParameter.Aliases) {
+                            if ($barewordSequenece -match '\s' -and 
                                 $potentialAlias -eq $barewordSequenece) {
                                 $potentialParameterName = $barewordSequenece
                                 $true
@@ -258,8 +258,7 @@ foreach ($potentialCommand in $potentialCommands) {
                             } elseif ($potentialAlias -eq $dashAndSlashlessName) {
                                 $true                                    
                                 break
-                            }
-                            
+                            }                            
                         }
                     }    
                 )
@@ -278,11 +277,14 @@ foreach ($potentialCommand in $potentialCommands) {
                     # keep track of of it and advance the index.
                     $currentParameter = $potentialParameterName                    
                     $currentParameterMetadata = $potentialParameter                    
-                    $currentClause = @($commandElement)
+                    
                     if ($currentParameter -match '\s') {
-                        $commandElementIndex += @($currentParameter -split '\s').Length
+                        $barewordCount = @($currentParameter -split '\s').Length
+                        $currentClause = @($commandElements[$commandElementIndex..($commandElementIndex + $barewordCount - 1)])
+                        $commandElementIndex += $barewordCount                        
                     } else {
                         $commandElementIndex++
+                        $currentClause = @($commandElement)
                     }
                     
                     break
