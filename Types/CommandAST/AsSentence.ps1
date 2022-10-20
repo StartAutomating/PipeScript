@@ -108,6 +108,10 @@ if ($SpecificCommands) {
 
 $mappedParameters = [Ordered]@{}
 
+if (-not $Script:SentenceWordCache) {
+    $Script:SentenceWordCache = @{}
+}
+
 $potentialCommandIndex = -1
 foreach ($potentialCommand in $potentialCommands) {
     $potentialCommandIndex++
@@ -234,8 +238,18 @@ foreach ($potentialCommand in $potentialCommands) {
             # We need to know the name of the parameter as it was written.
             # However, we also want to allow --parameters and /parameters,
             $potentialParameterName = $barewordSequenece[0]
-            $barewordSequenece = $barewordSequenece -join ' ' -replace '[-/]'
             # therefore, we will compare against the potential name without leading dashes or slashes.
+            
+            $potentialBarewordList  =@(
+                for (
+                    $barewordSequenceIndex = $barewordSequenece.Length; 
+                    $barewordSequenceIndex -ge 0;
+                    $barewordSequenceIndex--
+                ) {
+                    $barewordSequenece[0..$barewordSequenceIndex] -join ' ' -replace '^[-/]{0,}'
+                }
+            )
+            
             $dashAndSlashlessName   = $potentialParameterName -replace '^[-/]{0,}'
 
             # If no parameter was found but a parameter has ValueFromRemainingArguments, we will map to that.                        
@@ -245,18 +259,14 @@ foreach ($potentialCommand in $potentialCommands) {
             foreach ($potentialParameter in $potentialParameters.Values) {
                 $parameterFound = $(
                     # If the parameter name matches,
-                    if ($potentialParameter.Name -eq $dashAndSlashlessName) {
+                    if ($potentialBarewordList -contains $potentialParameter.Name) {
                         $true # we've found it,
                     } else {
                         # otherwise, we have to check each alias.
-                        foreach ($potentialAlias in $potentialParameter.Aliases) {
-                            if ($barewordSequenece -match '\s' -and 
-                                $potentialAlias -eq $barewordSequenece) {
-                                $potentialParameterName = $barewordSequenece
+                        :nextAlias foreach ($potentialAlias in $potentialParameter.Aliases) {                            
+                            if ($potentialBarewordList -contains $potentialAlias) {                                                                
+                                $potentialParameterName = $potentialAlias
                                 $true
-                                break
-                            } elseif ($potentialAlias -eq $dashAndSlashlessName) {
-                                $true                                    
                                 break
                             }                            
                         }
