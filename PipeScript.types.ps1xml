@@ -540,18 +540,20 @@ foreach ($potentialCommand in $potentialCommands) {
             # Walk over each potential parameter in the command
             foreach ($potentialParameter in $potentialParameters.Values) {
                 $parameterFound = $(
+                    # otherwise, we have to check each alias.
+                    :nextAlias foreach ($potentialAlias in $potentialParameter.Aliases) {
+                        if ($potentialBarewordList -contains $potentialAlias) {
+                            $potentialParameterName = $potentialAlias
+                            $true
+                            break
+                        }                            
+                    }
+                    
                     # If the parameter name matches,
                     if ($potentialBarewordList -contains $potentialParameter.Name) {
                         $true # we've found it,
                     } else {
-                        # otherwise, we have to check each alias.
-                        :nextAlias foreach ($potentialAlias in $potentialParameter.Aliases) {                            
-                            if ($potentialBarewordList -contains $potentialAlias) {                                                                
-                                $potentialParameterName = $potentialAlias
-                                $true
-                                break
-                            }                            
-                        }
+                        
                     }    
                 )
 
