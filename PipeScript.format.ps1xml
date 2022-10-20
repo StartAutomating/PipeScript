@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-16"?>
-<!-- Generated with EZOut 1.9.6: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
+<!-- Generated with EZOut 1.9.7: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
 <Configuration>
   <Controls>
     <Control>
@@ -222,7 +222,7 @@
 
         $n =0
         $cssClasses = @()
-        $styleAttributes =
+        $colorAttributes =         
             @(:nextColor foreach ($hc in $ForegroundColor,$BackgroundColor) {
                 $n++
                 if (-not $hc) { continue }
@@ -354,6 +354,7 @@
                 
             })
         
+        $styleAttributes = @() + $colorAttributes
         
         $styleAttributes += @(
             if ($Bold) {
@@ -428,7 +429,7 @@
                 "&lt;/span&gt;"
             }
             elseif ($canUseANSI) {
-                if ($Bold -or $Faint) {        
+                if ($Bold -or $Faint -or $colorAttributes -match '\[1;') {
                     "$esc[22m"
                 }
                 if ($Italic) {
@@ -1888,7 +1889,7 @@ $BackgroundColor
             } while ($false)
             
         
-@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Verbose' -NoClear) -join ''</ScriptBlock>
+@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Warning' -NoClear) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
                 <ItemSelectionCondition>
@@ -1897,10 +1898,10 @@ $BackgroundColor
                 <PropertyName>Keyword</PropertyName>
               </ExpressionBinding>
               <ExpressionBinding>
-                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Verbose' ) -join ''</ScriptBlock>
+                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Warning' ) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
-                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Success' -NoClear) -join ''</ScriptBlock>
+                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'green' -NoClear) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
                 <ItemSelectionCondition>
@@ -1909,7 +1910,7 @@ $BackgroundColor
                 <ScriptBlock> " &lt;# $($_.Command) #&gt; " </ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
-                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Success' ) -join ''</ScriptBlock>
+                <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'green' ) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
                 <ScriptBlock> ' ' </ScriptBlock>
@@ -1918,13 +1919,25 @@ $BackgroundColor
                 <ScriptBlock>
         @(foreach ($clause in $_.Clauses) {
             $wordNumber = -1
-            foreach ($word in $clause.Words) {
+            $wordSkipCount = 0
+            if ($clause.Name) {
+                $wordSkipCount = @($clause.Name -split '\s').Count
+                &amp; ${PipeScript_Format-RichText} -InputObject " $($clause.Name)" -ForegroundColor Cyan -Italic
+            }
+
+            if ($clause.ParameterName) {
+                 &amp; ${PipeScript_Format-RichText} -InputObject " &lt;# -$($clause.ParameterName) #&gt;" -ForegroundColor green
+            }
+
+            foreach ($word in $clause.Words | Select-Object -Skip $wordSkipCount) {
                 $wordNumber++
-                if (-not $wordNumber) {
-                    &amp; ${PipeScript_Format-RichText} -ForegroundColor Warning -InputObject "$word"
-                } else {
-                    &amp; ${PipeScript_Format-RichText} -InputObject "$word"
-                }
+                if ("$word" -match '^[\$\@]') {
+                    &amp; ${PipeScript_Format-RichText} -InputObject "$word" -ForegroundColor Success
+                } elseif ($wordSkipCount) {
+                    &amp; ${PipeScript_Format-RichText} -InputObject "$word"                
+                } else {                    
+                    &amp; ${PipeScript_Format-RichText} -InputObject "$word" -ForegroundColor Magenta
+                }                
             }
         }) -join ' '
     </ScriptBlock>
