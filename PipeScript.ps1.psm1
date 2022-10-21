@@ -7,8 +7,8 @@ $aliasList +=
 $aliasList +=
     [SmartAlias(Command='Use-PipeScript',Prefix='.<',Suffix='>',PassThru)]$transpilerNames
 
-$pipeScriptKeywords = 
-    Get-Transpiler | 
+$pipeScriptKeywords =
+    Get-Transpiler |
     Where-Object { $_.Metadata.'PipeScript.Keyword' }  |
     Select-Object -ExpandProperty DisplayName
 
