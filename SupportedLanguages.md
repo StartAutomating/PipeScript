@@ -14,6 +14,7 @@ These are all of the transpilers currently included in PipeScript:
 |[CSharp](Transpilers/Inline/Inline.CSharp.psx.ps1)        |C# Inline PipeScript Transpiler.        |```\.cs$```                     |
 |[CSS](Transpilers/Inline/Inline.CSS.psx.ps1)              |CSS Inline PipeScript Transpiler.       |```\.s{0,1}css$```              |
 |[Go](Transpilers/Inline/Inline.Go.psx.ps1)                |Go PipeScript Transpiler.               |```\.go$```                     |
+|[HAXE](Transpilers/Inline/Inline.HAXE.psx.ps1)            |Haxe PipeScript Transpiler.             |```\.hx$```                     |
 |[HCL](Transpilers/Inline/Inline.HCL.psx.ps1)              |HCL PipeScript Transpiler.              |```\.hcl$```                    |
 |[HLSL](Transpilers/Inline/Inline.HLSL.psx.ps1)            |HLSL Inline PipeScript Transpiler.      |```\.hlsl$```                   |
 |[HTML](Transpilers/Inline/Inline.HTML.psx.ps1)            |HTML PipeScript Transpiler.             |```\.htm{0,1}```                |
@@ -31,6 +32,7 @@ These are all of the transpilers currently included in PipeScript:
 |[PSD1](Transpilers/Inline/Inline.PSD1.psx.ps1)            |PSD1 Inline PipeScript Transpiler.      |```\.psd1$```                   |
 |[Python](Transpilers/Inline/Inline.Python.psx.ps1)        |Python Inline PipeScript Transpiler.    |```\.py$```                     |
 |[R](Transpilers/Inline/Inline.R.psx.ps1)                  |R PipeScript Transpiler.                |```\.r$```                      |
+|[Racket](Transpilers/Inline/Inline.Racket.psx.ps1)        |Racket Inline PipeScript Transpiler.    |```\.rkt$```                    |
 |[Razor](Transpilers/Inline/Inline.Razor.psx.ps1)          |Razor Inline PipeScript Transpiler.     |```\.(cshtml\\|razor)$```       |
 |[RSS](Transpilers/Inline/Inline.RSS.psx.ps1)              |RSS Inline PipeScript Transpiler.       |```\.rss$```                    |
 |[Ruby](Transpilers/Inline/Inline.Ruby.psx.ps1)            |Ruby Inline PipeScript Transpiler.      |```\.rb$```                     |

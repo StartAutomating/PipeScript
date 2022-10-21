@@ -19,6 +19,18 @@ $aliasList +=
     })
     
 
+$pipeScriptKeywords =
+    Get-Transpiler |
+    Where-Object { $_.Metadata.'PipeScript.Keyword' }  |
+    Select-Object -ExpandProperty DisplayName
+
+$aliasList +=
+    
+    @(foreach ($alias in @($pipeScriptKeywords)) {
+        Set-Alias "$alias" "Use-PipeScript" -PassThru:$True
+    })
+    
+
 $MyModule = $MyInvocation.MyCommand.ScriptBlock.Module
 $aliasList +=
     

@@ -108,6 +108,10 @@ if ($SpecificCommands) {
 
 $mappedParameters = [Ordered]@{}
 
+if (-not $Script:SentenceWordCache) {
+    $Script:SentenceWordCache = @{}
+}
+
 $potentialCommandIndex = -1
 foreach ($potentialCommand in $potentialCommands) {
     $potentialCommandIndex++
@@ -157,9 +161,18 @@ foreach ($potentialCommand in $potentialCommands) {
         $commandElement = $CommandElements[$commandElementIndex]
         # by default, we assume we haven't found a parameter.
         $parameterFound  = $false
+        
+        $barewordSequenece = 
+            @(for ($cei = $commandElementIndex; $cei  -lt $commandElements.Count; $cei++) {
+                if (
+                    $commandElements[$cei] -isnot [Management.Automation.Language.StringConstantExpressionAst] -or 
+                    $commandElements[$cei].StringConstantType -ne 'Bareword'
+                ) { break }
+                $commandElements[$cei].Value
+            })
 
         # That assumption is quickly challenged if the AST type was CommandParameter
-        if ($commandElement -is [CommandParameterAst]) {
+        if ($commandElement -is [Management.Automation.Language.CommandParameterAst]) {
             # If there were already clauses, finalize them before we start this clause
             if ($currentClause) {                
                 $clauses += [PSCustomObject][Ordered]@{
@@ -219,12 +232,24 @@ foreach ($potentialCommand in $potentialCommands) {
             # Since we have found a parameter, we advance the index.
             $commandElementIndex++
         }
+        
         # If the command element was a bareword, it could also be the name of a parameter
-        elseif ($commandElement.Value -and $commandElement.StringConstantType -eq 'Bareword') {
+        elseif ($barewordSequenece) {
             # We need to know the name of the parameter as it was written.
             # However, we also want to allow --parameters and /parameters,
-            $potentialParameterName = $commandElement.Value
+            $potentialParameterName = $barewordSequenece[0]
             # therefore, we will compare against the potential name without leading dashes or slashes.
+            
+            $potentialBarewordList  =@(
+                for (
+                    $barewordSequenceIndex = $barewordSequenece.Length; 
+                    $barewordSequenceIndex -ge 0;
+                    $barewordSequenceIndex--
+                ) {
+                    $barewordSequenece[0..$barewordSequenceIndex] -join ' ' -replace '^[-/]{0,}'
+                }
+            )
+            
             $dashAndSlashlessName   = $potentialParameterName -replace '^[-/]{0,}'
 
             # If no parameter was found but a parameter has ValueFromRemainingArguments, we will map to that.                        
@@ -233,17 +258,20 @@ foreach ($potentialCommand in $potentialCommands) {
             # Walk over each potential parameter in the command
             foreach ($potentialParameter in $potentialParameters.Values) {
                 $parameterFound = $(
+                    # otherwise, we have to check each alias.
+                    :nextAlias foreach ($potentialAlias in $potentialParameter.Aliases) {
+                        if ($potentialBarewordList -contains $potentialAlias) {
+                            $potentialParameterName = $potentialAlias
+                            $true
+                            break
+                        }                            
+                    }
+                    
                     # If the parameter name matches,
-                    if ($potentialParameter.Name -eq $dashAndSlashlessName) {
+                    if ($potentialBarewordList -contains $potentialParameter.Name) {
                         $true # we've found it,
                     } else {
-                        # otherwise, we have to check each alias.
-                        foreach ($potentialAlias in $potentialParameter.Aliases) {
-                            if ($potentialAlias -eq $dashAndSlashlessName) {
-                                $true                                    
-                                break
-                            }
-                        }
+                        
                     }    
                 )
 
@@ -261,8 +289,16 @@ foreach ($potentialCommand in $potentialCommands) {
                     # keep track of of it and advance the index.
                     $currentParameter = $potentialParameterName                    
                     $currentParameterMetadata = $potentialParameter                    
-                    $currentClause = @($commandElement)
-                    $commandElementIndex++
+                    
+                    if ($currentParameter -match '\s') {
+                        $barewordCount = @($currentParameter -split '\s').Length
+                        $currentClause = @($commandElements[$commandElementIndex..($commandElementIndex + $barewordCount - 1)])
+                        $commandElementIndex += $barewordCount                        
+                    } else {
+                        $commandElementIndex++
+                        $currentClause = @($commandElement)
+                    }
+                    
                     break
                 }
                 else {

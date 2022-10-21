@@ -64,6 +64,7 @@
         )
     )
 })]
+[Reflection.AssemblyMetadata("PipeScript.Keyword",$true)]
 param(
 [Parameter(Mandatory,ValueFromPipeline,ParameterSetName='CommandAst')]
 [Management.Automation.Language.CommandAst]
@@ -130,7 +131,7 @@ process {
         }
         else {
             $beforeLoop = "$untilVar = [DateTime]::Now"
-            $condition  = 'Get-Event -SourceIdentifier ' + "'$condition'" + " -ErrorAction Ignore | Where-Object TimeGenerated -ge $untilVar" 
+            $condition  = '(Get-Event -SourceIdentifier ' + "'$condition'" + " -ErrorAction Ignore | Where-Object TimeGenerated -ge $untilVar)" 
         }
     }
     
