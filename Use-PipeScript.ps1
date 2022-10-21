@@ -16,20 +16,23 @@
 
     dynamicParam {
         # If we didn't have a Converter library, create one.
-        if (-not $PipeScriptConverters) { $script:PipeScriptConverters = @{} }
+        if (-not $script:PipeScriptConverters) { $script:PipeScriptConverters = @{} }
 
         $myInv = $MyInvocation
         # Then, determine what the name of the pattern in the library would be.
         $NameRegex = '[=\.\<\>@\$\!\*]+(?<Name>[\p{L}\p{N}\-\.\+]+)[=\.\<\>@\$\!\*]{0,}'
 
+        $myInvocationName = ''
+
         $mySafeName =
             if ('.', '&' -contains $myInv.InvocationName -and
-                (
-                    $myInv.Line.Substring($MyInvocation.OffsetInLine) -match
-                    "^\s{0,}$NameRegex"
-                ) -or (
-                    $myInv.Line.Substring($MyInvocation.OffsetInLine) -match
-                    "^\s{0,}\$\{$NameRegex}"
+                $(
+                    $myInvocationName = $myInv.Line.Substring($MyInvocation.OffsetInLine)
+                    $myInvocationName -match "^\s{0,}$NameRegex"
+                ) -or 
+                $(
+                    $myInvocationName = $myInv.Line.Substring($MyInvocation.OffsetInLine) -match
+                    $myInvocationName -match "^\s{0,}\$\{$NameRegex}"
                 )
             )
             {
@@ -38,6 +41,7 @@
             elseif ($MyInv.InvocationName)
             {
                 $myInv.InvocationName -replace $NameRegex, '${Name}'
+                $myInvocationName = $myInv.InvocationName
             }
             else {
                 $callstackPeek = @(Get-PSCallStack)[-1]
@@ -50,6 +54,7 @@
                     }
 
                 if ($callerName) {
+                    $myInvocationName = $CallerName
                     $callerName -replace $NameRegex, '${Name}'
                 }
             }
@@ -58,9 +63,37 @@
             $mySafeName = 'PipeScript'
         }
 
-        # Find the Converter in the library.
-        $converter = Get-Transpiler | Where-Object DisplayName -eq $mySafeName
-        if ($converter) {
+        # Find the Converter in the library
+        if (-not $script:PipeScriptConverters[$mySafeName]) {
+            $converter = Get-Transpiler | Where-Object DisplayName -eq $mySafeName
+            $script:PipeScriptConverters[$mySafeName] = $converter
+        }
+
+        $converter = $script:PipeScriptConverters[$mySafeName]
+        
+        
+        if ($converter.Metadata.'PipeScript.Keyword') {                        
+            $keywordDynamicParameters = [Management.Automation.RuntimeDefinedParameterDictionary]::new()            
+            $keywordDynamicParameters.Add('ArgumentList', [Management.Automation.RuntimeDefinedParameter]::new(
+                'ArgumentList',
+                ([PSObject[]]),
+                @(
+                    $paramAttr = [Management.Automation.ParameterAttribute]::new()
+                    $paramAttr.ValueFromRemainingArguments = $true
+                    $paramAttr                
+                )
+            ))
+            $keywordDynamicParameters.Add('InputObject', [Management.Automation.RuntimeDefinedParameter]::new(
+                'InputObject',
+                ([PSObject]),
+                @(
+                    $paramAttr = [Management.Automation.ParameterAttribute]::new()
+                    $paramAttr.ValueFromPipeline = $true
+                    $paramAttr                
+                )
+            ))
+            $keywordDynamicParameters            
+        } elseif ($converter) {
             $converter.GetDynamicParameters()
         }
 
@@ -68,20 +101,43 @@
 
     begin {
         $steppablePipelines =
-            @(if (-not $mySafeName -and $psBoundParameters['Name']) {
-                $names = $psBoundParameters['Name']
-                $null  = $psBoundParameters.Remove('Name')
+            @(if ($mySafeName -or $psBoundParameters['Name']) {
+                $names = @($mySafeName) + $psBoundParameters['Name']
+                if ($names) {                
+                    $null  = $psBoundParameters.Remove('Name')
+                }
                 foreach ($cmd in $script:PipeScriptConverters[$names]) {
+                    if ($cmd.Metadata.'PipeScript.Keyword') {
+                        continue
+                    }
                     $steppablePipeline = {& $cmd @PSBoundParameters }.GetSteppablePipeline($MyInvocation.CommandOrigin)
                     $null = $steppablePipeline.Begin($PSCmdlet)
                     $steppablePipeline
                 }
                 $psBoundParameters['Name'] = $names
             })
+
+        $keywordScript = 
+            if (-not $steppablePipelines) {
+                $myInv = $myinvocation
+                $callstackPeek = @(Get-PSCallStack)[1]
+                $CommandAst = if ($callstackPeek.InvocationInfo.MyCommand.ScriptBlock) {
+                    @($callstackPeek.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
+                        param($ast) 
+                            $ast.Extent.StartLineNumber -eq $myInv.ScriptLineNumber -and
+                            $ast.Extent.StartColumnNumber -eq $myInv.OffsetInLine -and 
+                            $ast -is [Management.Automation.Language.CommandAst]
+                    },$true))
+                }
+                $commandAst | & $converter
+            }
+
+        $accumulatedInput = [Collections.Queue]::new()
     }
 
     process {
-        if (-not $mySafeName -and -not $steppablePipelines) {
+        $myParams = @{} + $psBoundParameters
+        if (-not $mySafeName) {
             Write-Error "Must call Use-Pipescript with one of it's aliases."
             return
         }
@@ -91,12 +147,28 @@
                 $sp.Process($in)
             }
             return
+        } elseif (-not $steppablePipelines) {
+            
+            if ($myParams["InputObject"]) {
+                $accumulatedInput.Enqueue($myParams["InputObject"])
+            } else {
+                & $keywordScript
+            }
         }
-        $paramCopy = [Ordered]@{} + $psBoundParameters
-        & $Converter @paramCopy
+        
     }
 
     end {
+        if ($accumulatedInput.Count -and $keywordScript) {
+            # When a script is returned for a given keyword, it will likely be wrapped in a process block
+            # because that is what allows the transpiled code to run the most effeciently.
+            # Since we're running this ad-hoc, we need to change the statement slightly,
+            # so we're left with a script block that has a process block.
+            if ($keywordScript -match '^[\.\&]\s{0,}\{') {
+                $keywordScript = [ScriptBlock]::Create(($keywordScript -replace '^[\.\&]\s{0,}\{' -replace '\}$'))
+            }
+            $accumulatedInput.ToArray() | & $keywordScript
+        }
         foreach ($sp in $steppablePipelines) {
             $sp.End()
         }
