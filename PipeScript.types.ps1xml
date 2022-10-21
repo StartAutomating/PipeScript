@@ -746,6 +746,22 @@ for (
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>IsPipedFrom</Name>
+        <GetScriptBlock>
+                        if ($this.Parent -isnot [Management.Automation.Language.PipelineAst]) { return $false }
+$this.Parent.PipelineElements.IndexOf($this) -lt ($this.Parent.PipelineElements.Count - 1)
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>IsPipedTo</Name>
+        <GetScriptBlock>
+                        if ($this.Parent -isnot [Management.Automation.Language.PipelineAst]) { return $false }
+$this.Parent.PipelineElements.IndexOf($this) -gt 0
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Parameter</Name>
         <GetScriptBlock>
                         $commandAst = $this
