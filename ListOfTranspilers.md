@@ -30,6 +30,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Inline.CSharp](Transpilers/Inline/Inline.CSharp.psx.ps1)                                        |C# Inline PipeScript Transpiler.                 |
 |[Inline.CSS](Transpilers/Inline/Inline.CSS.psx.ps1)                                              |CSS Inline PipeScript Transpiler.                |
 |[Inline.Go](Transpilers/Inline/Inline.Go.psx.ps1)                                                |Go PipeScript Transpiler.                        |
+|[Inline.HAXE](Transpilers/Inline/Inline.HAXE.psx.ps1)                                            |Haxe PipeScript Transpiler.                      |
 |[Inline.HCL](Transpilers/Inline/Inline.HCL.psx.ps1)                                              |HCL PipeScript Transpiler.                       |
 |[Inline.HLSL](Transpilers/Inline/Inline.HLSL.psx.ps1)                                            |HLSL Inline PipeScript Transpiler.               |
 |[Inline.HTML](Transpilers/Inline/Inline.HTML.psx.ps1)                                            |HTML PipeScript Transpiler.                      |
@@ -47,6 +48,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Inline.PSD1](Transpilers/Inline/Inline.PSD1.psx.ps1)                                            |PSD1 Inline PipeScript Transpiler.               |
 |[Inline.Python](Transpilers/Inline/Inline.Python.psx.ps1)                                        |Python Inline PipeScript Transpiler.             |
 |[Inline.R](Transpilers/Inline/Inline.R.psx.ps1)                                                  |R PipeScript Transpiler.                         |
+|[Inline.Racket](Transpilers/Inline/Inline.Racket.psx.ps1)                                        |Racket Inline PipeScript Transpiler.             |
 |[Inline.Razor](Transpilers/Inline/Inline.Razor.psx.ps1)                                          |Razor Inline PipeScript Transpiler.              |
 |[Inline.RSS](Transpilers/Inline/Inline.RSS.psx.ps1)                                              |RSS Inline PipeScript Transpiler.                |
 |[Inline.Ruby](Transpilers/Inline/Inline.Ruby.psx.ps1)                                            |Ruby Inline PipeScript Transpiler.               |
