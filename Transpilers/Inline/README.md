@@ -1,6 +1,6 @@
 This directory contains Inline PipeScript transpilers for several languages.
 
-PipeScript can currently be embedded in 37 languages or file types.
+PipeScript can currently be embedded in 39 languages or file types.
 
 ### Supported Languages
 
@@ -17,6 +17,7 @@ PipeScript can currently be embedded in 37 languages or file types.
 |[CSharp](Inline.CSharp.psx.ps1)        |C# Inline PipeScript Transpiler.        |```\.cs$```                     |
 |[CSS](Inline.CSS.psx.ps1)              |CSS Inline PipeScript Transpiler.       |```\.s{0,1}css$```              |
 |[Go](Inline.Go.psx.ps1)                |Go PipeScript Transpiler.               |```\.go$```                     |
+|[HAXE](Inline.HAXE.psx.ps1)            |Haxe PipeScript Transpiler.             |```\.hx$```                     |
 |[HCL](Inline.HCL.psx.ps1)              |HCL PipeScript Transpiler.              |```\.hcl$```                    |
 |[HLSL](Inline.HLSL.psx.ps1)            |HLSL Inline PipeScript Transpiler.      |```\.hlsl$```                   |
 |[HTML](Inline.HTML.psx.ps1)            |HTML PipeScript Transpiler.             |```\.htm{0,1}```                |
@@ -34,6 +35,7 @@ PipeScript can currently be embedded in 37 languages or file types.
 |[PSD1](Inline.PSD1.psx.ps1)            |PSD1 Inline PipeScript Transpiler.      |```\.psd1$```                   |
 |[Python](Inline.Python.psx.ps1)        |Python Inline PipeScript Transpiler.    |```\.py$```                     |
 |[R](Inline.R.psx.ps1)                  |R PipeScript Transpiler.                |```\.r$```                      |
+|[Racket](Inline.Racket.psx.ps1)        |Racket Inline PipeScript Transpiler.    |```\.rkt$```                    |
 |[Razor](Inline.Razor.psx.ps1)          |Razor Inline PipeScript Transpiler.     |```\.(cshtml\\|razor)$```       |
 |[RSS](Inline.RSS.psx.ps1)              |RSS Inline PipeScript Transpiler.       |```\.rss$```                    |
 |[Ruby](Inline.Ruby.psx.ps1)            |Ruby Inline PipeScript Transpiler.      |```\.rb$```                     |
