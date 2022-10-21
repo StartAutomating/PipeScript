@@ -1,4 +1,3 @@
-using namespace System.Management.Automation.Language
 <#
 .SYNOPSIS
     all keyword
@@ -34,6 +33,9 @@ using namespace System.Management.Automation.Language
     
     
 #>
+
+using namespace System.Management.Automation.Language
+
 [ValidateScript({
     $validateVar = $_
     if ($validateVar -is [CommandAst]) {
@@ -44,6 +46,7 @@ using namespace System.Management.Automation.Language
     }
     return $false
 })]
+[Reflection.AssemblyMetadata("PipeScript.Keyword",$true)]
 param(
 # If set, include all functions in the input.
 [Alias('Function')]
@@ -89,13 +92,24 @@ $InputObject,
 
 # An optional condition
 [Parameter(ValueFromPipelineByPropertyName,Position=1)]
-[Alias('That','Condition')]
+[Alias('That Are', 'That Have', 'That','Condition','Where-Object', 'With a', 'With the', 'With')]
 $Where,
 
 # The action that will be run
 [Parameter(ValueFromPipelineByPropertyName,Position=2)]
-[Alias('Is','Are','Foreach','Can','Could','Should')]
+[Alias('Is','Are','Foreach','Foreach-Object','Can','Could','Should')]
 $For,
+
+# The way to sort data before it is outputted.
+[Parameter(ValueFromPipelineByPropertyName,Position=3)]
+[Alias('sorted by','sort by','sort on','sorted on','sorted','Sort-Object')]
+$Sort,
+
+# If output should be sorted in descending order.
+[Parameter(ValueFromPipelineByPropertyName)]
+[Alias('ascending')]
+[switch]
+$Descending,
 
 # The Command AST
 [Parameter(Mandatory,ParameterSetName='CommandAST',ValueFromPipeline)]
@@ -148,6 +162,9 @@ process {
                 elseif ($myParam.Name -eq 'Scripts') {
                     $commandTypes = $commandTypes -bor [Management.Automation.CommandTypes]'ExternalScript'
                 }
+                elseif ($myParam.Name -eq 'Commands') {
+                    $commandTypes = 'All'
+                }
             }
         }    
 
@@ -164,7 +181,11 @@ process {
                 } else {
                     $InputObject.Extent.ToString()
                 }
-            } else {
+            } 
+            elseif ($InputObject -is [scriptblock]) {
+                "& {$($InputObject)}"
+            }
+            else {
                 $InputObject
             }
         }
@@ -191,16 +212,32 @@ process {
         }
     }
 
+    if ($CommandAst.IsPiped) {
+        if ($inputSet) {
+            $inputSet = @({$_}) + $inputSet
+        } else {
+            $inputSet = @({$_})
+        }
+    }
 
-    # If we still don't have an inputset, default it to 'things'
+    
     if (-not $InputSet) {
+        # If we still don't have an input set, grab any variables from the arguments.
         $InputSet =
             if ($mySentence.Arguments) {
-                $mySentence.Arguments
-            } else {
+                foreach ($sentenceArg in $mySentence.Arguments) {
+                    if ($sentenceArg -is [Management.Automation.Language.VariableExpressionAst]) {
+                        $sentenceArg
+                    }
+                }
+            }
+        # If we still don't have an inputset, default it to 'things'
+        if (-not $inputSet) {
+            $inputSet = @(
                 {$ExecutionContext.SessionState.InvokeCommand.GetCommands('*', 'Alias,Function,Filter,Cmdlet', $true)}, 
                 {Get-ChildItem -Path variable:}
-            }
+            )
+        }            
     }
 
     # Note: there's still a lot of room for this syntax to grow and become even more natural.
@@ -227,7 +264,9 @@ $inputCollection =' + $(
 "
 # 'unroll' the collection by iterating over it once.
 `$filteredCollection = `$inputCollection =
-    @(foreach (`$in in `$inputCollection) { `$in })
+    @(foreach (`$in in `$inputCollection) {
+        `$in
+    })
 "
 
 if ($Where) {
@@ -236,39 +275,76 @@ if ($Where) {
 
 "
 # Since filtering conditions have been passed, we must filter item-by-item
-`$filteredCollection = foreach (`$item in `$inputCollection) {
+`$filteredCollection = :nextItem foreach (`$item in `$inputCollection) {
     # we set `$this, `$psItem, and `$_ for ease-of-use.
     `$this = `$_ = `$psItem = `$item
-    "    
-    foreach ($wh in $where) {
-        if ($wh -is [ScriptBlockExpressionAst]) {
-            $wh = $wh.ConvertFromAST()
-        }
-        if ($wh -is [ScriptBlock] -or $wh -is [Ast]) {
-            "if (-not `$($($wh.Transpile())
-)) { continue } "
-        }
-        elseif ($wh -is [string]) {
-            $safeStr = $($wh -replace "'", "''")
-            "if (-not (                                          # Unless it 
-                (`$null -ne `$item.'$safeStr') -or               # has a '$safeStr' property
-                (`$null -ne `$item.value.'$safeStr') -or         # or it's value has the property '$safeStr'
-                (`$null -ne `$item.Parameters.'$safeStr') -or    # or it's parameters have the property '$safeStr'
-                (`$item.pstypenames -contains '$safeStr')        # or it's typenames have the property '$safeStr'
-)) {
-    continue # keep moving
-}"
-        }
+ 
+    # Some of the items may be variables.
+    if (`$item -is [Management.Automation.PSVariable]) {
+        # In this case, reassign them to their value.
+        `$this = `$_ = `$psItem = `$item = `$item.Value
     }
+    
+    # Some of the items may be enumerables
+    `$unrolledItems = 
+        if (`$item.GetEnumerator -and `$item -isnot [string]) {
+            @(`$item.GetEnumerator())
+        } else {
+            `$item
+        }
+    foreach (`$item in `$unrolledItems) {
+        `$this = `$_ = `$psItem = `$item
+        $(
+            foreach ($wh in $where) {
+                if ($wh -is [ScriptBlockExpressionAst]) {
+                    $wh = $wh.ConvertFromAST()
+                }
+                if ($wh -is [ScriptBlock] -or $wh -is [Ast]) {
+                    "if (-not `$($($wh.Transpile())
+        )) { continue } "
+                }
+                elseif ($wh -is [string]) {
+                    $safeStr = $($wh -replace "'", "''")
+                    "if (-not (                                          # Unless it 
+                        (`$null -ne `$item.'$safeStr') -or               # has a '$safeStr' property                
+                        (`$null -ne `$item.Parameters.'$safeStr') -or    # or it's parameters have the property '$safeStr'
+                        (`$item.pstypenames -contains '$safeStr')        # or it's typenames have the property '$safeStr'
+        )) {    
+            continue # keep moving
+        }"
+                }
+            }
+        )
+        `$item
+    }
+    "    
+    
 "
-    `$item
+    
 }"
 )
 }
 
+if ($Sort) {
+    # If -Sort was specified, we generate code to walk over each sorted item.
+    $actualSort =
+        @(foreach ($sorter in $sort) {
+            if ($sorter -is [string]) {
+               "'$($sorter -replace "'","''")'" 
+            } elseif ($sorter -is [ScriptBlockExpressionAst]) {
+                "{$($sorter.ConvertFromAST.Transpile())}"
+            } elseif ($sorter -is [HashtableAst]) {
+                $sorter.Extent.ToString()
+            }
+        }) -join ','
+
+"
+`$filteredCollection = `$filteredCollection | Sort-Object $Sort$(if ($Descending) { ' -Descending'})
+"
+}
 
 if ($For) {
-# If -For was 
+# If -For was specified, we generate code to walk over each item in the filtered collection
 "
 # Walk over each item in the filtered collection
 foreach (`$item in `$filteredCollection) {
@@ -295,13 +371,13 @@ if (`$item.value -and `$item.value.pstypenames.insert) {
 elseif (`$item.pstypenames.insert -and `$item.pstypenames -notcontains '$safeStr') {
     `$item.pstypenames.insert(0, '$safeStr')
 }
+`$item
             "
         }
 
     }
 
 "
-`$item
 }
 "    
 } else {
@@ -318,7 +394,7 @@ elseif (`$item.pstypenames.insert -and `$item.pstypenames -notcontains '$safeStr
     # If the command was piped to, wrap the script in a command expression.
     if ($CommandAst.IsPiped) {
         $generatedScript = "& { process {
-            $generatedScript
+$generatedScript
 } }"  
     }
     
