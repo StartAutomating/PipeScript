@@ -38,6 +38,7 @@
     $CommandAst = $_
     return ($commandAst -and $CommandAst.CommandElements[0].Value -eq 'new')
 })]
+[Reflection.AssemblyMetadata("PipeScript.Keyword",$true)]
 param(
 [Parameter(Mandatory,ValueFromPipeline)]
 [Management.Automation.Language.CommandAst]
@@ -164,8 +165,15 @@ process {
         $newNew = "`$($newNew)"
     }
 
+    
     if ($newNew) {
-        [scriptblock]::Create($newNew)
+        if ($CommandAst.IsPiped) {
+            [scriptblock]::create(". { process {
+$newNew
+            } }")
+        } else {
+            [scriptblock]::Create($newNew)    
+        }        
     } else {
         Write-Error "Unable to create '$newTypeName'"
         return
