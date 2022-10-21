@@ -570,7 +570,7 @@ jobs:
               }
           }
           } @Parameters
-  UsePiecemeal: 
+  BuildPipescript: 
     runs-on: ubuntu-latest
     if: ${{ success() }}
     steps: 
@@ -578,31 +578,10 @@ jobs:
         uses: actions/checkout@v2
       - name: UsePiecemeal
         uses: StartAutomating/Piecemeal@main
-  BuildPipeScript: 
-    runs-on: ubuntu-latest
-    if: ${{ success() }}
-    steps: 
-      - name: Check out repository
-        uses: actions/checkout@v2
       - name: BuildPipeScript
         uses: StartAutomating/PipeScript@main
-  RunEZOut: 
-    runs-on: ubuntu-latest
-    if: ${{ success() }}
-    steps: 
-      - name: Check out repository
-        uses: actions/checkout@v2
       - name: UseEZOut
         uses: StartAutomating/EZOut@master
-      - name: Push Changes
-        shell: pwsh
-        run: git push; exit 0
-  HelpOut: 
-    runs-on: ubuntu-latest
-    if: ${{ success() }}
-    steps: 
-      - name: Check out repository
-        uses: actions/checkout@v2
       - name: UseHelpOut
         uses: StartAutomating/HelpOut@master
 env: 
