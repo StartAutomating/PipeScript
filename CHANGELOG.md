@@ -1,7 +1,19 @@
+## 0.1.8:
+* Improvements to 'all' keyword (#264 #263 #260 #253)
+* Keywords can now be run interactively (#263)
+* New keyword can be piped to (#265)
+* Sentences can now map multi-word aliases (#260)
+* New [CommandAST] properties: .IsPipedTo .IsPipedFrom
+* Added Inline HAXE and Inline Racket support (#259 #262)
+
+---
+
+
 ## 0.1.7:
 * Added LATEX / TEX support (Fixes #230)
 * Adding LUA support (Fixes #246)
 * Fixing Core Transpiler Attribute Behavior (Fixes #247)
+
 ---
 
 ## 0.1.6:
@@ -10,12 +22,14 @@
 * New Language Support:
   * HashiCorp Language (HCL) (Fixes #240 / #241)
   * WebAssembly (WAT) (Fixes #239)
+
 ---
 
 ## 0.1.5:
 * Support for [inherit]ing a command (Fixes #235) (finally/wow)
 * Join-PipeScript:  Overhauling (Fixes #231 Fixes #232 Fixes #233 Fixes #236)
 * [Management.Automation.Language] type extensions: Adding .Script property and .ToString() scriptmethod (Fixes #234)
+
 ---
 
 ## 0.1.4:
@@ -27,6 +41,7 @@
 * Improved documentation of [decorate] transpiler (Fixes #222)
 * Core Parameter Transpiler no longer considers real types (Fixes #223)
 * Adding new value for PipeScript.PipeScriptType: BuildScript (Fixes #228)
+
 ---
 
 ## 0.1.3:
@@ -51,6 +66,7 @@
 * ParameterTypeConstraint now ignores [ordered] (Fixes #190)
 * Extended Type System Improvements:
   * [ScriptBlock].Transpile() now throws (Fixes #212)
+
 ---
 
 ## 0.1.2:
@@ -71,6 +87,7 @@
   * Adding Hashtable formatter (Fixes #187)
   * HTTP Protocol: Enabling Splatting (Fixes #183)
   * Requiring Inline Transpilers accept [Management.Automation.CommandInfo] from the Pipeline (Fixes #184)
+
 ---
 
 ## 0.1.1:
@@ -90,6 +107,7 @@
   * CommandAST:  Fixing .GetParameter (Fixes #175)
   * Updating PSToken control (more colorization) (Fixes #166)
   * YAML Formatter indent / primitive support (Fixes #180)
+
 ---
 
 ## 0.1:
@@ -113,6 +131,7 @@
   * Not running when there is not a current branch (#158)
   * Improving email determination (#156)
 * Invoke-PipeScript terminates transpiler errors when run interactively (#161)
+
 ---
 
 ## 0.0.13:
@@ -126,9 +145,8 @@
   * Now Supporting Inline PipeScript in YAML (#147)
 * General Improvements:
   * Extending AST Types (#145)
-  * Adding tests for keywords
----
 
+---
 
 ## 0.0.12:
 * Adding assert keyword (#143)
@@ -137,11 +155,13 @@
   * Handling multiple QueryString values (#139)
   * Only passing ContentType to invoker if invoker supports it (#141)
   * Defaulting to JSON body when ContentType is unspecified (#140)
+
 ---
 
 ## 0.0.11:
 * Source Generators Now Support Parameters / Arguments (#75)
 * Invoke-PipeScript Terminating Build Errors (#135)
+
 ---
 
 ## 0.0.10:
@@ -156,6 +176,7 @@
   * Join-PipeScript (#124)
     * Adding .Examples
     * Fixing parameter joining issues
+
 ---
 
 ## 0.0.9:
@@ -166,6 +187,7 @@
   * REST Transpiler automatically coerces [DateTime] and [switch] parameters (#118)
   * Join-PipeScript:  Fixing multiparam error (#124)
   * ValidateScriptBlock:  Only validing ScriptBlocks (#125)
+
 ---
 
 ## 0.0.8:
@@ -182,6 +204,7 @@
   * Shared Context within Inline Transpilers (#112)
   * Fixing Include Transpiler Pattern (#96)
   * Join-PipeScript interactive .Substring error (#116)
+
 ---
 
 ## 0.0.7:
@@ -196,6 +219,7 @@
   * Explicit Transpiler returns modified ScriptBlock (#102)
   * .psm1 alias export fix (#100)
   * Include improvements (#96)
+
 ---
 
 ## 0.0.6:
@@ -206,6 +230,7 @@
 * PipeScript.psm1 is now build with PipeScript (#95)
 * Join-PipeScript:  Fixing -BlockType (#97)
 * GitHub Action will now look for PipeScript.psd1 in the workspace first (#98)
+
 ---
 
 ## 0.0.5
@@ -219,6 +244,7 @@
 * Inline PipeScript Support for New Languages
   * .>Inline.PSD1 (#89)
   * .>Inline.XML now handles .PS1XML (#91)
+
 ---
 
 ## 0.0.4
@@ -226,13 +252,14 @@
   * .>RegexLiteral (#77)
 * Improved Transpilers:
   * .>PipeScript.Inline now supports -ReplacePattern (#84)
-  * .>Include now supports wildcards (#81)  
+  * .>Include now supports wildcards (#81)
 * Inline PipeScript Support for New Languages
   * ATOM (#79)
   * Bicep (#73)
   * HLSL (#76)
   * Perl / POD (#74)
   * RSS (#80)
+
 ---
 
 ## 0.0.3
@@ -248,6 +275,7 @@
   * .>ValidateTypes transpiler now returns true (#65)
   * .>ValidateTypes transpiler now can apply to a [VariableExpressionAST] (#66)
 * Building PipeScript with PipeScript (#54)
+
 ---
 
 ## 0.0.2
@@ -258,6 +286,8 @@
 * Transpiler Fixes
   * .>VBN now supports -Position (#57)
 * GitHub Action Bugfix (#55)
+
 ---
+
 ## 0.0.1
 Initial Commit.
