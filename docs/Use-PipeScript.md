@@ -1,4 +1,3 @@
-
 Use-PipeScript
 --------------
 ### Synopsis
@@ -29,5 +28,3 @@ PipeScript # Returns an unchanged ScriptBlock, because there was nothing to run.
 Use-PipeScript [<CommonParameters>]
 ```
 ---
-
-
