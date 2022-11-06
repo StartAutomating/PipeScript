@@ -1,4 +1,3 @@
-
 ValidatePlatform
 ----------------
 ### Synopsis
@@ -67,6 +66,4 @@ ValidatePlatform [-Platform] <String[]> [<CommonParameters>]
 ValidatePlatform [-Platform] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
 ---
-
-
 
