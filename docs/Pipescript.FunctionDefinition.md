@@ -1,4 +1,3 @@
-
 Pipescript.FunctionDefinition
 -----------------------------
 ### Synopsis
@@ -33,6 +32,4 @@ An abstract syntax tree function definition.
 Pipescript.FunctionDefinition -FunctionDefinition <FunctionDefinitionAst> [<CommonParameters>]
 ```
 ---
-
-
 
