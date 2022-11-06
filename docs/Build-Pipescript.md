@@ -1,4 +1,3 @@
-
 Build-Pipescript
 ----------------
 ### Synopsis
@@ -35,5 +34,3 @@ One or more input paths.  If no -InputPath is provided, will build all scripts b
 Build-Pipescript [[-InputPath] <String[]>] [<CommonParameters>]
 ```
 ---
-
-
