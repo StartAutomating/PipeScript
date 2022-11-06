@@ -1,4 +1,3 @@
-
 Inline.Bash
 -----------
 ### Synopsis
@@ -94,6 +93,4 @@ A list of arguments.
 Inline.Bash [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
