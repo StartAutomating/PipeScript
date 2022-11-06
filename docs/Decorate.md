@@ -1,4 +1,3 @@
-
 Decorate
 --------
 ### Synopsis
@@ -95,6 +94,4 @@ If set, will clear any underlying typenames.
 Decorate -VariableAst <VariableExpressionAst> [-TypeName] <String[]> [-PassThru] [-Clear] [<CommonParameters>]
 ```
 ---
-
-
 
