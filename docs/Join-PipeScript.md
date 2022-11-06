@@ -1,4 +1,3 @@
-
 Join-PipeScript
 ---------------
 ### Synopsis
@@ -189,5 +188,3 @@ Excluded parameters with default values will declare the default value at the be
 Join-PipeScript -ScriptBlock <ScriptBlock[]> [-ExcludeBlockType <String[]>] [-IncludeBlockType <String[]>] [-Transpile] [-IncludeParameter <String[]>] [-ExcludeParameter <String[]>] [<CommonParameters>]
 ```
 ---
-
-
