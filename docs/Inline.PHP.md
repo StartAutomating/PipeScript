@@ -1,4 +1,3 @@
-
 Inline.PHP
 ----------
 ### Synopsis
@@ -71,6 +70,4 @@ A list of arguments.
 Inline.PHP [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
