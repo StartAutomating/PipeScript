@@ -1,4 +1,3 @@
-
 Inline.JavaScript
 -----------------
 ### Synopsis
@@ -80,6 +79,4 @@ A list of arguments.
 Inline.JavaScript [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
