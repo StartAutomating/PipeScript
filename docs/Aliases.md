@@ -1,4 +1,3 @@
-
 Aliases
 -------
 ### Synopsis
@@ -145,6 +144,4 @@ Aliases -Aliases <String[]> [-Prefix <String>] [-Suffix <String>] [<CommonParame
 Aliases [-Prefix <String>] [-Suffix <String>] -Command <String> [-PassThru] -VariableAST <VariableExpressionAst> [<CommonParameters>]
 ```
 ---
-
-
 
