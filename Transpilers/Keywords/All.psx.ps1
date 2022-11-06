@@ -73,6 +73,11 @@ $Aliases,
 [switch]
 $Applications,
 
+# If set, include all applications in the input
+[Alias('ExternalScript','Script','ExternalScripts')]
+[switch]
+$Scripts,
+
 # If set, include all variables in the inputObject.
 [Parameter()]
 [Alias('Variable')]
@@ -158,10 +163,7 @@ process {
                 }
                 elseif ($myParam.Name -eq 'Things') {
                     $commandTypes = $commandTypes -bor [Management.Automation.CommandTypes]'Alias,Function,Filter,Cmdlet'
-                }
-                elseif ($myParam.Name -eq 'Scripts') {
-                    $commandTypes = $commandTypes -bor [Management.Automation.CommandTypes]'ExternalScript'
-                }
+                }                
                 elseif ($myParam.Name -eq 'Commands') {
                     $commandTypes = 'All'
                 }
@@ -175,18 +177,50 @@ process {
             {Get-ChildItem -Path variable:}
         }
         if ($InputObject) {
-            if ($InputObject -is [Ast]) {
-                if ($InputObject -is [ScriptBlockExpressionAst]) {
-                    $InputObject.ConvertFromAST()
-                } else {
-                    $InputObject.Extent.ToString()
+            $InputObjectToInclude = 
+                if ($InputObject -is [Ast]) {
+                    if ($InputObject -is [ScriptBlockExpressionAst]) {
+                        $InputObject.ConvertFromAST()
+                    } else {
+                        $InputObject.Extent.ToString()
+                    }
+                } 
+                elseif ($InputObject -is [scriptblock]) {
+                    "& {$($InputObject)}"
                 }
-            } 
-            elseif ($InputObject -is [scriptblock]) {
-                "& {$($InputObject)}"
-            }
-            else {
-                $InputObject
+                else {
+                    $InputObject
+                }
+
+            if ($Scripts) {
+                "($InputObjectToInclude |" + {
+    & { process {
+        $inObj = $_
+        if ($inObj -is [Management.Automation.CommandInfo]) {
+            $inObj
+        }
+        elseif ($inObj -is [IO.FileInfo] -and $inObj.Extension -eq '.ps1') {
+            $ExecutionContext.SessionState.InvokeCommand.GetCommand($inObj.Fullname, 'ExternalScript')
+        }
+        elseif ($inObj -is [string] -or $inObj -is [Management.Automation.PathInfo]) {
+            $resolvedPath = $ExecutionContext.SessionState.Path.GetResolvedPSPathFromPSPath($inObj)
+            if ($resolvedPath) {
+                $pathItem = Get-item -LiteralPath $resolvedPath
+                if ($pathItem -is [IO.FileInfo] -and $pathItem.Extension -eq '.ps1') {
+                    $ExecutionContext.SessionState.InvokeCommand.GetCommand($pathItem.FullName, 'ExternalScript')
+                } else {                    
+                    foreach ($pathItem in @(Get-ChildItem -LiteralPath $pathItem -File -Recurse)) {
+                        if ($pathItem.Extension -eq '.ps1') {
+                            $ExecutionContext.SessionState.InvokeCommand.GetCommand($pathItem.FullName, 'ExternalScript')
+                        }
+                    }
+                }
+            }            
+        }
+    } }
+} + ')'
+            } else {
+                $InputObjectToInclude
             }
         }
     )
@@ -378,7 +412,7 @@ elseif (`$item.pstypenames.insert -and `$item.pstypenames -notcontains '$safeStr
     }
 
 "
-}
+}   
 "    
 } else {
     "`$filteredCollection"        
