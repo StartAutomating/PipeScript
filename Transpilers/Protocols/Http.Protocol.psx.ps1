@@ -39,10 +39,22 @@
 #>
 [ValidateScript({
     $commandAst = $_
+
+    # If neither command element contained a URI
     if (-not ($commandAst.CommandElements[0..1].Value -match '^https{0,1}://')) {
-        return $false
-    }    
-    return $true
+        return $false # return false
+    }
+    
+    # If the first element is not the URI
+    if ($commandAst.CommandElements[0].Value -notmatch '^https{0,1}://')  {
+        # then we are only valid if the first element is a WebRequestMethod
+        return $commandAst.CommandElements[0].Value -in (
+            [Enum]::GetValues([Microsoft.PowerShell.Commands.WebRequestMethod]) -ne 'Default'
+        )
+    }
+
+    # If we're here, then the first element is a HTTP uri, 
+    return $true # so we return true.
 })]
 param(
 # The URI.
