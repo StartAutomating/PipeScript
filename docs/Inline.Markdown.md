@@ -1,4 +1,3 @@
-
 Inline.Markdown
 ---------------
 ### Synopsis
@@ -99,6 +98,4 @@ A list of arguments.
 Inline.Markdown [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
