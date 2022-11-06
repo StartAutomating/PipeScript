@@ -1,4 +1,3 @@
-
 PipedAssignment
 ---------------
 ### Synopsis
@@ -53,6 +52,4 @@ $Collection = $Collection |
 PipedAssignment [-PipelineAst] <PipelineAst> [<CommonParameters>]
 ```
 ---
-
-
 
