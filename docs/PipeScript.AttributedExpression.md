@@ -1,4 +1,3 @@
-
 PipeScript.AttributedExpression
 -------------------------------
 ### Synopsis
@@ -40,6 +39,4 @@ The attributed expression
 PipeScript.AttributedExpression -AttributedExpressionAst <AttributedExpressionAst> [<CommonParameters>]
 ```
 ---
-
-
 
