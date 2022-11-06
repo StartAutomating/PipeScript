@@ -90,9 +90,9 @@ process {
     }
 
     $foundTranspiler = 
-        Get-Transpiler -CouldPipe $commandUri -ValidateInput $CommandAst -CouldRun -Parameter $commandAstSplat
+        @(Get-Transpiler -CouldPipe $commandUri -ValidateInput $CommandAst -CouldRun -Parameter $commandAstSplat)
 
-    if (-not $foundTranspiler) {
+    if (-not $foundTranspiler -and -not $CommandMethod) {
         Write-Error "Could not find a transpiler for $commandAst"
         return
     }
