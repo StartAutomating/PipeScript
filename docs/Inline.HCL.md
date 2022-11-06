@@ -1,4 +1,3 @@
-
 Inline.HCL
 ----------
 ### Synopsis
@@ -76,6 +75,4 @@ A list of arguments.
 Inline.HCL [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
