@@ -1,4 +1,3 @@
-
 Inline.OpenSCAD
 ---------------
 ### Synopsis
@@ -102,6 +101,4 @@ A list of arguments.
 Inline.OpenSCAD [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
