@@ -1,4 +1,3 @@
-
 Inline.CPlusPlus
 ----------------
 ### Synopsis
@@ -79,6 +78,4 @@ A list of arguments.
 Inline.CPlusPlus [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
