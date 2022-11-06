@@ -38,7 +38,7 @@
         if ($PotentialCommand -is [string])      { return $true }
         if ($PotentialCommand -is [Management.Automation.CommandInfo]) { return $true }
         if ($PotentialCommand.GetType().Namespace -eq 'System.Management.Automation.Language' -and
-            $PotentialCommand.GetType().Name -in 'AttributeAST', 'TypeExpressionAST','InvokeMemberExpressionAst') {
+            $PotentialCommand.GetType().Name -in 'AttributeAST', 'TypeConstraintAst','TypeExpressionAST','InvokeMemberExpressionAst') {
             return $true
         }
 
