@@ -1,4 +1,3 @@
-
 Inline.PSD1
 -----------
 ### Synopsis
@@ -74,6 +73,4 @@ A list of arguments.
 Inline.PSD1 [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
