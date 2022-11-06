@@ -1,4 +1,3 @@
-
 Inline.Batch
 ------------
 ### Synopsis
@@ -103,6 +102,4 @@ A list of arguments.
 Inline.Batch [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
