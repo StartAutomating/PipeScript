@@ -1,4 +1,3 @@
-
 Inline.SQL
 ----------
 ### Synopsis
@@ -104,6 +103,4 @@ A list of arguments.
 Inline.SQL [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
