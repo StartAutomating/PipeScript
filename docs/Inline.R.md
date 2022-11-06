@@ -1,4 +1,3 @@
-
 Inline.R
 --------
 ### Synopsis
@@ -106,6 +105,4 @@ A list of arguments.
 Inline.R [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
