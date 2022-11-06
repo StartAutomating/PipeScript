@@ -1,4 +1,3 @@
-
 Inline.HAXE
 -----------
 ### Synopsis
@@ -79,6 +78,4 @@ A list of arguments.
 Inline.HAXE [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
