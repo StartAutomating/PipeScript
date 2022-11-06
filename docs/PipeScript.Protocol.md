@@ -1,4 +1,3 @@
-
 PipeScript.Protocol
 -------------------
 ### Synopsis
@@ -68,7 +67,4 @@ PipeScript.Protocol [-CommandAst] <CommandAst> [<CommonParameters>]
 ---
 ### Notes
 This transpiler will match any command whose first or second element contains ```://```
-
-
-
 
