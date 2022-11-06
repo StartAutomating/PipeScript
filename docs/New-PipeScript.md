@@ -1,4 +1,3 @@
-
 New-PipeScript
 --------------
 ### Synopsis
@@ -332,5 +331,3 @@ A list of attributes to declare on the scriptblock.
 New-PipeScript [[-Parameter] <Object>] [[-DynamicParameter] <ScriptBlock>] [[-Begin] <ScriptBlock>] [[-Process] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Header] <String>] [-AutoParameter] [[-AutoParameterType] <Type>] [[-ParameterHelp] <IDictionary>] [-WeaklyTyped] [[-FunctionName] <String>] [[-FunctionType] <String>] [[-Description] <String>] [[-Synopsis] <String>] [[-Example] <String[]>] [[-Link] <String[]>] [[-Attribute] <String[]>] [<CommonParameters>]
 ```
 ---
-
-
