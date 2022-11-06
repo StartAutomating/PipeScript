@@ -1,4 +1,3 @@
-
 All
 ---
 ### Synopsis
@@ -272,6 +271,4 @@ The Command AST
 All [-Functions] [-Commands] [-Cmdlets] [-Aliases] [-Applications] [-Variables] [-Things] [[-InputObject] <Object>] [[-Where] <Object>] [[-For] <Object>] [[-Sort] <Object>] [-Descending] -CommandAst <CommandAst> [<CommonParameters>]
 ```
 ---
-
-
 
