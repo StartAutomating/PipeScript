@@ -1,4 +1,3 @@
-
 Inline.Razor
 ------------
 ### Synopsis
@@ -73,6 +72,4 @@ A list of arguments.
 Inline.Razor [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
