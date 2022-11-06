@@ -1,4 +1,3 @@
-
 Search-PipeScript
 -----------------
 ### Synopsis
@@ -128,5 +127,3 @@ If set, will search nested script blocks.
 Search-PipeScript [[-InputObject] <Object>] [[-AstCondition] <ScriptBlock[]>] [[-AstType] <Object>] [[-RegularExpression] <Object>] [-Recurse] [<CommonParameters>]
 ```
 ---
-
-
