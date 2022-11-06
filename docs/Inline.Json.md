@@ -1,4 +1,3 @@
-
 Inline.Json
 -----------
 ### Synopsis
@@ -76,6 +75,4 @@ A list of arguments.
 Inline.Json [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
