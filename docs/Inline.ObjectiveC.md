@@ -1,4 +1,3 @@
-
 Inline.ObjectiveC
 -----------------
 ### Synopsis
@@ -80,6 +79,4 @@ A list of arguments.
 Inline.ObjectiveC [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
