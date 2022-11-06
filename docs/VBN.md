@@ -1,4 +1,3 @@
-
 VBN
 ---
 ### Synopsis
@@ -84,6 +83,4 @@ The position of the parameter.
 VBN [[-ParameterSet] <String>] [-Mandatory] [-ValueFromPipeline] [[-Position] <Int32>] [<CommonParameters>]
 ```
 ---
-
-
 
