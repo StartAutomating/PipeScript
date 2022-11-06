@@ -1,4 +1,3 @@
-
 PipeScript.TypeExpression
 -------------------------
 ### Synopsis
@@ -42,6 +41,4 @@ The attributed expression
 PipeScript.TypeExpression -TypeExpressionAst <TypeExpressionAst> [<CommonParameters>]
 ```
 ---
-
-
 
