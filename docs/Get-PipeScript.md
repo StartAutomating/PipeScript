@@ -1,4 +1,3 @@
-
 Get-PipeScript
 --------------
 ### Synopsis
@@ -409,5 +408,3 @@ If set, will output the help for the extensions
 Get-PipeScript [[-PipeScriptPath] <String>] [-Force] [[-CommandName] <String[]>] [[-PipeScriptName] <String[]>] [-Like] [-Match] [-DynamicParameter] [-CouldRun] [[-CouldPipe] <PSObject>] [-Run] [-Stream] [[-DynamicParameterSetName] <String>] [[-DynamicParameterPositionOffset] <Int32>] [-NoMandatoryDynamicParameter] [-RequirePipeScriptAttribute] [[-ValidateInput] <PSObject>] [-AllValid] [[-ParameterSetName] <String>] [[-Parameter] <IDictionary>] [-SteppablePipeline] [-Help] [<CommonParameters>]
 ```
 ---
-
-
