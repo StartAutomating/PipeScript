@@ -1,4 +1,3 @@
-
 Inline.Rust
 -----------
 ### Synopsis
@@ -69,6 +68,4 @@ A list of arguments.
 Inline.Rust [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
