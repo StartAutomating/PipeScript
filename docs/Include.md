@@ -1,4 +1,3 @@
-
 Include
 -------
 ### Synopsis
@@ -87,6 +86,4 @@ If set, will include the content as a byte array
 Include [-FilePath] <String> [-AsByte] -VariableAst <VariableExpressionAst> [<CommonParameters>]
 ```
 ---
-
-
 
