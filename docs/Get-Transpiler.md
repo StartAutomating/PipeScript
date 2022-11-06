@@ -1,4 +1,3 @@
-
 Get-Transpiler
 --------------
 ### Synopsis
@@ -409,5 +408,3 @@ If set, will output the help for the extensions
 Get-Transpiler [[-TranspilerPath] <String>] [-Force] [[-CommandName] <String[]>] [[-TranspilerName] <String[]>] [-Like] [-Match] [-DynamicParameter] [-CouldRun] [[-CouldPipe] <PSObject>] [-Run] [-Stream] [[-DynamicParameterSetName] <String>] [[-DynamicParameterPositionOffset] <Int32>] [-NoMandatoryDynamicParameter] [-RequireTranspilerAttribute] [[-ValidateInput] <PSObject>] [-AllValid] [[-ParameterSetName] <String>] [[-Parameter] <IDictionary>] [-SteppablePipeline] [-Help] [<CommonParameters>]
 ```
 ---
-
-
