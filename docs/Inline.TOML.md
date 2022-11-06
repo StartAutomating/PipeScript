@@ -1,4 +1,3 @@
-
 Inline.TOML
 -----------
 ### Synopsis
@@ -84,6 +83,4 @@ A list of arguments.
 Inline.TOML [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
