@@ -1,4 +1,3 @@
-
 RemoveParameter
 ---------------
 ### Synopsis
@@ -66,6 +65,4 @@ The ScriptBlock that declares the parameters.
 RemoveParameter [-ParameterName] <String[]> -ScriptBlock <ScriptBlock> [<CommonParameters>]
 ```
 ---
-
-
 
