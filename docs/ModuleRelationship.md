@@ -1,4 +1,3 @@
-
 ModuleRelationship
 ------------------
 ### Synopsis
@@ -48,6 +47,4 @@ A VariableExpression.  This variable must contain a module or name of module.
 ModuleRelationship -VariableAST <VariableExpressionAst> [<CommonParameters>]
 ```
 ---
-
-
 
