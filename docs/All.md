@@ -130,6 +130,23 @@ If set, include all applications in the input
 
 
 ---
+#### **Scripts**
+
+If set, include all applications in the input
+
+
+
+> **Type**: ```[Switch]```
+
+> **Required**: false
+
+> **Position**: named
+
+> **PipelineInput**:false
+
+
+
+---
 #### **Variables**
 
 If set, include all variables in the inputObject.
@@ -268,7 +285,7 @@ The Command AST
 ---
 ### Syntax
 ```PowerShell
-All [-Functions] [-Commands] [-Cmdlets] [-Aliases] [-Applications] [-Variables] [-Things] [[-InputObject] <Object>] [[-Where] <Object>] [[-For] <Object>] [[-Sort] <Object>] [-Descending] -CommandAst <CommandAst> [<CommonParameters>]
+All [-Functions] [-Commands] [-Cmdlets] [-Aliases] [-Applications] [-Scripts] [-Variables] [-Things] [[-InputObject] <Object>] [[-Where] <Object>] [[-For] <Object>] [[-Sort] <Object>] [-Descending] -CommandAst <CommandAst> [<CommonParameters>]
 ```
 ---
 
