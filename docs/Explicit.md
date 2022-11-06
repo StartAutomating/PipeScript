@@ -1,4 +1,3 @@
-
 Explicit
 --------
 ### Synopsis
@@ -66,6 +65,4 @@ The ScriptBlock that will be transpiled.
 Explicit [-ScriptBlock] <ScriptBlock> [<CommonParameters>]
 ```
 ---
-
-
 
