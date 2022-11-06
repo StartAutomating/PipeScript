@@ -1,4 +1,3 @@
-
 Help
 ----
 ### Synopsis
@@ -115,6 +114,4 @@ Help [-Synopsis] <String> [-Description <String>] [-Example <String[]>] [-Link <
 Help [-Synopsis] <String> [-Description <String>] [-Example <String[]>] [-Link <String[]>] [-ScriptBlock <ScriptBlock>] [<CommonParameters>]
 ```
 ---
-
-
 
