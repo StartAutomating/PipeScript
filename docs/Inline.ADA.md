@@ -1,4 +1,3 @@
-
 Inline.ADA
 ----------
 ### Synopsis
@@ -98,6 +97,4 @@ A list of arguments.
 Inline.ADA [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 
