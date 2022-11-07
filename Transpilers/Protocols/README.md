@@ -118,7 +118,7 @@ To be considered a protocol transpiler, a transpiler must:
 
 
 ~~~PowerShell
-    udp:// -Host [ipaddress]::broadcast 911 -Send "It's an emergency!"
+    udp:// -Host [ipaddress]::broadcast -port 911 -Send "It's an emergency!"
 ~~~
 
 ## UDP.Protocol Example 3
