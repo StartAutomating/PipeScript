@@ -1,4 +1,3 @@
-using namespace System.Management.Automation.Language;
 <#
 .SYNOPSIS
     udp protocol
@@ -7,7 +6,7 @@ using namespace System.Management.Automation.Language;
 .EXAMPLE
     udp://127.0.0.1:8568  # Creates a UDP Client
 .EXAMPLE
-    udp:// -Host [ipaddress]::broadcast 911 -Send "It's an emergency!"
+    udp:// -Host [ipaddress]::broadcast -port 911 -Send "It's an emergency!"
 .EXAMPLE
     {send udp:// -Host [ipaddress]::broadcast -Port 911 "It's an emergency!"}.Transpile()
 .EXAMPLE
@@ -17,11 +16,19 @@ using namespace System.Management.Automation.Language;
 
     Invoke-PipeScript { receive udp://*:911 -Keep } 
 #>
+using namespace System.Management.Automation.Language
+
 [ValidateScript({
     $commandAst = $_    
     if ($commandAst.CommandElements[0..1] -match '^udp://' -ne $null) {
+        if ($commandAst.CommandElements[0] -notmatch '^udp://') {
+            if ($commandAst.CommandElements[0].value -notin 'send', 'receive') {
+                return $false
+            }
+        }        
         return $true
     }
+
     return $false
 })]
 param(
