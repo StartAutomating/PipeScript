@@ -1,4 +1,3 @@
-
 Inline.LUA
 ----------
 ### Synopsis
@@ -69,6 +68,4 @@ A list of arguments.
 Inline.LUA [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

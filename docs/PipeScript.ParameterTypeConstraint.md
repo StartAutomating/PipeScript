@@ -1,4 +1,3 @@
-
 PipeScript.ParameterTypeConstraint
 ----------------------------------
 ### Synopsis
@@ -34,6 +33,4 @@ If the type name does not exist, and is not [ordered], PipeScript will search fo
 PipeScript.ParameterTypeConstraint -TypeConstraintAST <TypeConstraintAst> [<CommonParameters>]
 ```
 ---
-
-
 

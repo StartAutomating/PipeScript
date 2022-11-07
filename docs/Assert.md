@@ -1,4 +1,3 @@
-
 Assert
 ------
 ### Synopsis
@@ -99,6 +98,4 @@ The CommandAst
 Assert -CommandAst <CommandAst> [<CommonParameters>]
 ```
 ---
-
-
 

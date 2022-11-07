@@ -1,4 +1,3 @@
-
 RegexLiteral
 ------------
 ### Synopsis
@@ -119,6 +118,4 @@ RegexLiteral -StringConstantExpression <StringConstantExpressionAst> [<CommonPar
 RegexLiteral -ExpandableStringExpression <ExpandableStringExpressionAst> [<CommonParameters>]
 ```
 ---
-
-
 

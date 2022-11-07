@@ -1,4 +1,3 @@
-
 Inline.RSS
 ----------
 ### Synopsis
@@ -69,6 +68,4 @@ A list of arguments.
 Inline.RSS [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

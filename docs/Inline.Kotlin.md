@@ -1,4 +1,3 @@
-
 Inline.Kotlin
 -------------
 ### Synopsis
@@ -79,6 +78,4 @@ A list of arguments.
 Inline.Kotlin [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

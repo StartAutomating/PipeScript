@@ -1,4 +1,3 @@
-
 Update-PipeScript
 -----------------
 ### Synopsis
@@ -198,5 +197,3 @@ If set, will transpile the updated script block.
 Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-RegexReplacement] <IDictionary>] [[-RegionReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-RenameVariable] <IDictionary>] [-Transpile] [<CommonParameters>]
 ```
 ---
-
-

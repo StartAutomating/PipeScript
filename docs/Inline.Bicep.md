@@ -1,4 +1,3 @@
-
 Inline.Bicep
 ------------
 ### Synopsis
@@ -74,6 +73,4 @@ A list of arguments.
 Inline.Bicep [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

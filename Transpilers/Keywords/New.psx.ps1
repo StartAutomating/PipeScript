@@ -90,7 +90,7 @@ process {
                     "'" + $constructorArg.Value.Replace("'","''") + "'"
                 }
             } else {
-                $constructorArg
+                $constructorArg.Transpile()
             }
         }
     )

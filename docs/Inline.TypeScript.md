@@ -1,4 +1,3 @@
-
 Inline.TypeScript
 -----------------
 ### Synopsis
@@ -80,6 +79,4 @@ A list of arguments.
 Inline.TypeScript [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

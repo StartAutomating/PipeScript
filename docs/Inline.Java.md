@@ -1,4 +1,3 @@
-
 Inline.Java
 -----------
 ### Synopsis
@@ -79,6 +78,4 @@ A list of arguments.
 Inline.Java [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

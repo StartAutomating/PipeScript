@@ -1,4 +1,3 @@
-
 Inline.Racket
 -------------
 ### Synopsis
@@ -74,6 +73,4 @@ A list of arguments.
 Inline.Racket [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

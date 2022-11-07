@@ -1,4 +1,3 @@
-
 Inline.TCL
 ----------
 ### Synopsis
@@ -106,6 +105,4 @@ A list of arguments.
 Inline.TCL [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

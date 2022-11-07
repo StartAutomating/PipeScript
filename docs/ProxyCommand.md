@@ -1,4 +1,3 @@
-
 ProxyCommand
 ------------
 ### Synopsis
@@ -134,6 +133,4 @@ Any default parameters for the ProxyCommand.
 ProxyCommand [-ScriptBlock <ScriptBlock>] [-CommandName] <String> [-RemoveParameter <String[]>] [-DefaultParameter <IDictionary>] [<CommonParameters>]
 ```
 ---
-
-
 

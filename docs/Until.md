@@ -1,4 +1,3 @@
-
 Until
 -----
 ### Synopsis
@@ -95,7 +94,4 @@ Until -CommandAst <CommandAst> [<CommonParameters>]
 ---
 ### Notes
 until will become a ```do {} while ()``` statement in PowerShell.
-
-
-
 

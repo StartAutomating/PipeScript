@@ -1,4 +1,3 @@
-
 Inline.Latex
 ------------
 ### Synopsis
@@ -69,6 +68,4 @@ A list of arguments.
 Inline.Latex [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

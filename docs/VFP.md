@@ -1,4 +1,3 @@
-
 VFP
 ---
 ### Synopsis
@@ -84,6 +83,4 @@ The position of the parameter.
 VFP [[-ParameterSet] <String>] [-Mandatory] [-ValueFromPipelineByPropertyName] [[-Position] <Int32>] [<CommonParameters>]
 ```
 ---
-
-
 

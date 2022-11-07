@@ -1,4 +1,3 @@
-
 ValidatePropertyName
 --------------------
 ### Synopsis
@@ -90,6 +89,4 @@ ValidatePropertyName [-PropertyName] <String[]> [<CommonParameters>]
 ValidatePropertyName [-PropertyName] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
 ---
-
-
 

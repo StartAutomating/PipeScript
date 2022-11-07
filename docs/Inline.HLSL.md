@@ -1,4 +1,3 @@
-
 Inline.HLSL
 -----------
 ### Synopsis
@@ -69,6 +68,4 @@ A list of arguments.
 Inline.HLSL [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

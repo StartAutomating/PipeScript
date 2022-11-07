@@ -1,4 +1,3 @@
-
 BatchPowerShell
 ---------------
 ### Synopsis
@@ -62,6 +61,4 @@ BatchPowerShell -ScriptInfo <ExternalScriptInfo> [-Pwsh] [<CommonParameters>]
 BatchPowerShell -ScriptBlock <ScriptBlock> [-Pwsh] [<CommonParameters>]
 ```
 ---
-
-
 

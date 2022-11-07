@@ -1,4 +1,3 @@
-
 Inline.XML
 ----------
 ### Synopsis
@@ -69,6 +68,4 @@ A list of arguments.
 Inline.XML [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

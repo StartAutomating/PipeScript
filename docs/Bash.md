@@ -1,4 +1,3 @@
-
 Bash
 ----
 ### Synopsis
@@ -45,6 +44,4 @@ Bash -ScriptInfo <ExternalScriptInfo> [<CommonParameters>]
 Bash -ScriptBlock <ScriptBlock> [<CommonParameters>]
 ```
 ---
-
-
 

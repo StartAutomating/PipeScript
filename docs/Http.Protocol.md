@@ -1,4 +1,3 @@
-
 Http.Protocol
 -------------
 ### Synopsis
@@ -119,6 +118,4 @@ The Command's Abstract Syntax Tree
 Http.Protocol [-CommandUri] <Uri> [-CommandAst] <CommandAst> [[-Method] <String>] [<CommonParameters>]
 ```
 ---
-
-
 

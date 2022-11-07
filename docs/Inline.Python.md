@@ -1,4 +1,3 @@
-
 Inline.Python
 -------------
 ### Synopsis
@@ -88,6 +87,4 @@ A list of arguments.
 Inline.Python [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

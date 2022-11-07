@@ -1,4 +1,3 @@
-
 Inline.Go
 ---------
 ### Synopsis
@@ -79,6 +78,4 @@ A list of arguments.
 Inline.Go [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

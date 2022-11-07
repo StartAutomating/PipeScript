@@ -1,4 +1,3 @@
-
 ValidateExtension
 -----------------
 ### Synopsis
@@ -88,6 +87,4 @@ ValidateExtension [-Extension] <String[]> [<CommonParameters>]
 ValidateExtension [-Extension] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
 ---
-
-
 

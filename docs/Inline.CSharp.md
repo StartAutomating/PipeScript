@@ -1,4 +1,3 @@
-
 Inline.CSharp
 -------------
 ### Synopsis
@@ -119,6 +118,4 @@ A list of arguments.
 Inline.CSharp [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

@@ -1,4 +1,3 @@
-
 PipeScript.Inline
 -----------------
 ### Synopsis
@@ -246,6 +245,4 @@ Only lines beginning with this pattern within -StartPattern and -EndPattern will
 PipeScript.Inline [-SourceText] <String> [[-ReplacePattern] <Regex>] [[-StartPattern] <Regex>] [[-EndPattern] <Regex>] [[-ReplacementEvaluator] <ScriptBlock>] [-NoTranspile] [[-SourceFile] <String>] [[-Begin] <ScriptBlock>] [[-ForeachObject] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [[-LinePattern] <Regex>] [<CommonParameters>]
 ```
 ---
-
-
 

@@ -1,4 +1,3 @@
-
 EqualityTypeComparison
 ----------------------
 ### Synopsis
@@ -97,7 +96,4 @@ This will not work if there is a constant on both sides of the expression
 
 if ($one === $one) { "this will work"} 
 if ('' === '')     { "this will not"}
-
-
-
 

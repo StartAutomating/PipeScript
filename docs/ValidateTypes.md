@@ -1,4 +1,3 @@
-
 ValidateTypes
 -------------
 ### Synopsis
@@ -93,6 +92,4 @@ ValidateTypes [-TypeName] <String[]> [<CommonParameters>]
 ValidateTypes [-TypeName] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
 ---
-
-
 

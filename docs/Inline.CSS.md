@@ -1,4 +1,3 @@
-
 Inline.CSS
 ----------
 ### Synopsis
@@ -96,6 +95,4 @@ A list of arguments.
 Inline.CSS [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

@@ -1,4 +1,3 @@
-
 RenameVariable
 --------------
 ### Synopsis
@@ -71,6 +70,4 @@ The ScriptBlock that declares the parameters.
 RenameVariable [-VariableRename] <IDictionary> -ScriptBlock <ScriptBlock> [<CommonParameters>]
 ```
 ---
-
-
 

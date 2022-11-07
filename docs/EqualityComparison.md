@@ -1,4 +1,3 @@
-
 EqualityComparison
 ------------------
 ### Synopsis
@@ -62,7 +61,4 @@ This will not work if there is a constant on both sides of the expression
 
 if ($null == $null) { "this will work"} 
 if ('' == '') { "this will not"}
-
-
-
 

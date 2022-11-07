@@ -1,4 +1,3 @@
-
 New
 ---
 ### Synopsis
@@ -91,6 +90,4 @@ If 'new'
 New [-CommandAst] <CommandAst> [<CommonParameters>]
 ```
 ---
-
-
 

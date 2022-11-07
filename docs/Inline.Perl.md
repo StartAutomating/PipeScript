@@ -1,4 +1,3 @@
-
 Inline.Perl
 -----------
 ### Synopsis
@@ -87,6 +86,4 @@ A list of arguments.
 Inline.Perl [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

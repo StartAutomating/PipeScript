@@ -1,4 +1,3 @@
-
 Inline.ATOM
 -----------
 ### Synopsis
@@ -69,6 +68,4 @@ A list of arguments.
 Inline.ATOM [-CommandInfo] <CommandInfo> [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [<CommonParameters>]
 ```
 ---
-
-
 

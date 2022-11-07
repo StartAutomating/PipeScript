@@ -1,4 +1,3 @@
-
 Await
 -----
 ### Synopsis
@@ -45,6 +44,4 @@ PipeScript -ScriptBlock {
 Await [-CommandAst] <CommandAst> [<CommonParameters>]
 ```
 ---
-
-
 

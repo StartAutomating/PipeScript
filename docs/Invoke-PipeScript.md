@@ -1,4 +1,3 @@
-
 Invoke-PipeScript
 -----------------
 ### Synopsis
@@ -124,5 +123,3 @@ If this is set, will make ScriptBlockAst values will be run within data language
 Invoke-PipeScript [-InputObject <PSObject>] [[-Command] <PSObject>] [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [-SafeScriptBlockAttributeEvaluation] [<CommonParameters>]
 ```
 ---
-
-

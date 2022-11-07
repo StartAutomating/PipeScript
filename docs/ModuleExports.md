@@ -1,4 +1,3 @@
-
 ModuleExports
 -------------
 ### Synopsis
@@ -78,6 +77,4 @@ ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScri
 ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScript | Application | Script | Configuration | All}] -VariableAST <VariableExpressionAst> [<CommonParameters>]
 ```
 ---
-
-
 
