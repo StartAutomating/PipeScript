@@ -67,9 +67,10 @@ if ($IsRightToLeft) {
 }
 
 
-if ($SpecificCommands) {
-    $potentialCommandNames = $specificCommandNames
+$sentences = @()
+if ($SpecificCommands) {    
     $potentialCommands = $SpecificCommands
+    $potentialCommandNames = @($SpecificCommands | Select-Object -ExpandProperty Name)
 } else {
 
     # The first command element should be the name of the command.
@@ -329,7 +330,24 @@ foreach ($potentialCommand in $potentialCommands) {
             $commandElementIndex--
             continue            
         }
-
+        elseif ($currentParameter) {
+            if ($mappedParameters.Contains($currentParameter) -and
+                $currentParameter.ParameterType -isnot [Collections.IList] -and
+                $currentParameter.ParameterType -isnot [PSObject]                
+            ) {
+                $clauses += [PSCustomObject][Ordered]@{
+                    PSTypeName    = 'PipeScript.Sentence.Clause'
+                    Name          = if ($currentParameter) { $currentParameter} else { '' }
+                    ParameterName = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+                    Words         = $currentClause
+                }
+                $currentParameter = $null
+                $currentParameterMetadata = $null
+                $currentClause = @()
+                $commandElementIndex--
+                continue
+            }
+        }
 
         # Refersh our $commandElement, as the index may have changed.
         $commandElement = $CommandElements[$commandElementIndex]
@@ -344,7 +362,10 @@ foreach ($potentialCommand in $potentialCommands) {
 
         # If we have a current parameter
         if ($currentParameter) {
+            
             # Map the current element to this parameter.
+            
+            
             $mappedParameters[$currentParameter] = 
                 if ($mappedParameters[$currentParameter]) {
                     @($mappedParameters[$currentParameter]) + @($commandElement)
@@ -360,6 +381,8 @@ foreach ($potentialCommand in $potentialCommands) {
                     }
                 }
             $currentClause += $commandElement
+            
+            
         } else {
             # otherwise add the command element to our unbound parameters.
             $unboundParameters +=
@@ -383,8 +406,10 @@ foreach ($potentialCommand in $potentialCommands) {
             Name          = if ($currentParameter) { $currentParameter} else { '' }
             ParameterName = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
             Words         = $currentClause
-        }                   
+        }                        
     }
+
+    
 
     if ($potentialCommand -isnot [Management.Automation.ApplicationInfo] -and 
         @($mappedParameters.Keys) -match '^[-/]') {
@@ -416,7 +441,6 @@ foreach ($potentialCommand in $potentialCommands) {
             Parameters = $mappedParameters
             Arguments  = $unboundParameters
         }
-
-    $sentence                
-
+    $sentences+= $sentence
+    $sentence
 }
