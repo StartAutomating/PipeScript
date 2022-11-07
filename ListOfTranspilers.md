@@ -59,6 +59,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Inline.TypeScript](Transpilers/Inline/Inline.TypeScript.psx.ps1)                                |TypeScript Inline PipeScript Transpiler.         |
 |[Inline.XML](Transpilers/Inline/Inline.XML.psx.ps1)                                              |XML Inline PipeScript Transpiler.                |
 |[Inline.YAML](Transpilers/Inline/Inline.YAML.psx.ps1)                                            |Yaml File Transpiler.                            |
+|[JSONSchema.Protocol](Transpilers/Protocols/JSONSchema.Protocol.psx.ps1)                         |json schema protocol                             |
 |[ModuleExports](Transpilers/Modules/ModuleExports.psx.ps1)                                       |Gets Module Exports                              |
 |[ModuleRelationship](Transpilers/Modules/ModuleRelationship.psx.ps1)                             |Gets Module Relationships                        |
 |[New](Transpilers/Keywords/New.psx.ps1)                                                          |'new' keyword                                    |
