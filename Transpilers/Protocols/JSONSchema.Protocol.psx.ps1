@@ -10,7 +10,6 @@
         [JSONSchema(SchemaURI='https://aka.ms/terminal-profiles-schema#/$defs/Profile')]
         param()
     }.Transpile()
-
 #>
 [ValidateScript({
     $commandAst = $_
@@ -262,7 +261,6 @@ process {
 
                 # create a validateset.
                 "[ValidateSet('$($validSet -join "','")')]"
-                "[string]"
             }
             # If there was a validation pattern
             elseif ($propertyTypeInfo.pattern) 
