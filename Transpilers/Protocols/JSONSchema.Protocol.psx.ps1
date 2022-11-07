@@ -5,6 +5,12 @@
     Converts a json schema to PowerShell.
 .EXAMPLE
     jsonschema https://aka.ms/terminal-profiles-schema#/$defs/Profile
+.EXAMPLE
+    {
+        [JSONSchema(SchemaURI='https://aka.ms/terminal-profiles-schema#/$defs/Profile')]
+        param()
+    }.Transpile()
+
 #>
 [ValidateScript({
     $commandAst = $_
