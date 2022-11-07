@@ -103,3 +103,7 @@ Will not interactively transpile {$callingScriptBlock} ( because it would overwr
 
     return    
 }
+
+$MyInvocation.MyCommand.Module.OnRemove = {
+    $global:ExecutionContext.SessionState.InvokeCommand.CommandNotFoundAction = $null
+}
