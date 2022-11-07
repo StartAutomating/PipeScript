@@ -97,6 +97,16 @@ To be considered a protocol transpiler, a transpiler must:
     jsonschema https://aka.ms/terminal-profiles-schema#/$defs/Profile
 ~~~
 
+## JSONSchema.Protocol Example 2
+
+
+~~~PowerShell
+    {
+        [JSONSchema(SchemaURI='https://aka.ms/terminal-profiles-schema#/$defs/Profile')]
+        param()
+    }.Transpile()
+~~~
+
 ## UDP.Protocol Example 1
 
 
