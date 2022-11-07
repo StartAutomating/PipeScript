@@ -258,6 +258,8 @@ process {
                                     $AstReplacements[$item] = $pso # and store the replacement.                                    
                                 }
                             }
+                            # If the transpiler had output, do not process any more transpilers.
+                            if ($pipeScriptOutput) { break }
                         }                
                 } 
             }
