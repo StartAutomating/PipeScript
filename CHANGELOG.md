@@ -1,3 +1,17 @@
+## 0.1.9:
+* Protocol Transpilers
+  * Adding JSONSchema transpiler (Fixes #274)
+  * HTTP Protocol: Only allowing HTTP Methods (Fixes #275)
+* Keyword improvements:
+  * all scripts in $directory (Fixes #277)
+  * 'new' keyword recursively transpiles constructor arguments (Fixes #271) 
+* Core improvements:
+  * Core Transpiler stops transpilation of an item after any output (Fixes #280)
+  * [CommandAst].AsSentence now maps singleton values correctly (Fixes #279)
+  * PipeScript now handles CommandNotFound, enabling interactive use (Fixes #281)
+  
+---
+
 ## 0.1.8:
 * Improvements to 'all' keyword (#264 #263 #260 #253)
 * Keywords can now be run interactively (#263)

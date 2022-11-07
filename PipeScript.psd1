@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.1.8'
+    ModuleVersion     = '0.1.9'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -19,14 +19,18 @@
             BuildModule     = @('EZOut','Piecemeal','PipeScript','HelpOut', 'PSDevOps')
             Tags            = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
-## 0.1.8:
-* Improvements to 'all' keyword (#264 #263 #260 #253)
-* Keywords can now be run interactively (#263)
-* New keyword can be piped to (#265)
-* Sentences can now map multi-word aliases (#260)
-* New [CommandAST] properties: .IsPipedTo .IsPipedFrom
-* Added Inline HAXE and Inline Racket support (#259 #262)
-
+## 0.1.9:
+* Protocol Transpilers
+    * Adding JSONSchema transpiler (Fixes #274)
+    * HTTP Protocol: Only allowing HTTP Methods (Fixes #275)
+* Keyword improvements:
+    * all scripts in $directory (Fixes #277)
+    * 'new' keyword recursively transpiles constructor arguments (Fixes #271) 
+* Core improvements:
+    * Core Transpiler stops transpilation of an item after any output (Fixes #280)
+    * [CommandAst].AsSentence now maps singleton values correctly (Fixes #279)
+    * PipeScript now handles CommandNotFound, enabling interactive use (Fixes #281)    
+            
 Additional history in [CHANGELOG](https://pipescript.start-automating.com/CHANGELOG)
 '@
         }
