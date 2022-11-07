@@ -15,6 +15,14 @@ Converts a json schema to PowerShell.
 jsonschema https://aka.ms/terminal-profiles-schema#/$defs/Profile
 ```
 
+#### EXAMPLE 2
+```PowerShell
+{
+    [JSONSchema(SchemaURI='https://aka.ms/terminal-profiles-schema#/$defs/Profile')]
+    param()
+}.Transpile()
+```
+
 ---
 ### Parameters
 #### **SchemaUri**
