@@ -1,6 +1,6 @@
-This directory contains Inline PipeScript transpilers for several languages.
+This directory contains Template transpilers for several languages.
 
-PipeScript can currently be embedded in ```.>{@(Get-Transpiler -TranspilerPath $pwd).Count}<.``` languages or file types.
+PipeScript can be used to generate ```.>{@(Get-Transpiler -TranspilerPath $pwd).Count}<.``` languages or file types.
 
 ### Supported Languages
 
@@ -10,7 +10,7 @@ PipeScript can currently be embedded in ```.>{@(Get-Transpiler -TranspilerPath $
             Select-Object @{
                 Name='Language'
                 Expression= {
-                    "[$($_.DisplayName -replace '^Inline\.')]($($_.Name))"
+                    "[$($_.DisplayName -replace '\.Template$')]($($_.Name))"
                 }
             }, @{
                 Name='Synopsis'
