@@ -373,7 +373,7 @@ foreach ($potentialCommand in $potentialCommands) {
                     if ($commandElement.Value) {
                         $commandElement.Value
                     } 
-                    elseif ($commandElement -is [ScriptBlockExpressionAst]) {
+                    elseif ($commandElement -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
                         [ScriptBlock]::Create($commandElement.Extent.ToString() -replace '^\{' -replace '\}$')
                     }
                     else {
@@ -386,7 +386,8 @@ foreach ($potentialCommand in $potentialCommands) {
         } else {
             # otherwise add the command element to our unbound parameters.
             $unboundParameters +=
-                if ($commandElement.Value) {
+                if ($commandElement.Value -and 
+                    $commandElement -isnot [Management.Automation.Language.ExpandableStringExpressionAst]) {
                     $commandElement.Value
                 } 
                 elseif ($commandElement -is [ScriptBlockExpressionAst]) {
