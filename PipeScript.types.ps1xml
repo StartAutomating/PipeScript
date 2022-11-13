@@ -1088,6 +1088,73 @@ elseif ($TranspilerWarnings) {
   <Type>
     <Name>System.Management.Automation.Language.TypeConstraintAst</Name>
     <Members>
+      <AliasProperty>
+        <Name>Args</Name>
+        <ReferencedMemberName>ArgumentList</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Arguments</Name>
+        <ReferencedMemberName>ArgumentList</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Parameters</Name>
+        <ReferencedMemberName>Parameter</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptProperty>
+        <Name>ArgumentList</Name>
+        <GetScriptBlock>
+                        if (-not $this.TypeName.IsGeneric) { return @() }
+@(foreach ($typeName in $this.TypeName.GenericArguments ) {
+    if ($TypeName.IsGeneric) { continue }
+    if (-not $TypeName.IsArray) {
+        $TypeName.Name
+    }
+})
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Parameter</Name>
+        <GetScriptBlock>
+                        
+
+function TypeConstraintToArguments (
+    [Parameter(ValueFromPipeline)]
+    $TypeName
+) {
+    begin {
+        $TypeNameArgs = @()
+        $TypeNameParams = [Ordered]@{}
+        
+    }
+    process {
+
+        if ($TypeName.IsGeneric) {            
+            $TypeNameParams[$typeName.TypeName.Name] = 
+                $typeName.GenericArguments |
+                    TypeConstraintToArguments                        
+        } elseif (-not $TypeName.IsArray) {    
+            $TypeNameArgs += $TypeName.Name
+        }
+    }
+    end {
+        if ($TypeNameParams.Count) {
+            $TypeNameParams
+        } elseif ($TypeNameArgs) {
+            $TypeNameArgs
+        }                        
+    }
+}
+
+if (-not $this.TypeName.IsGeneric) { return @{} }
+foreach ($arg in @($this.TypeName.GenericArguments | TypeConstraintToArguments)) {
+    if ($arg -is [Collections.IDictionary]) {
+        $arg
+    }
+}
+
+                    </GetScriptBlock>
+      </ScriptProperty>
       <ScriptProperty>
         <Name>ResolvedCommand</Name>
         <GetScriptBlock>
