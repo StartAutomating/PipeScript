@@ -390,7 +390,7 @@ foreach ($potentialCommand in $potentialCommands) {
                     $commandElement -isnot [Management.Automation.Language.ExpandableStringExpressionAst]) {
                     $commandElement.Value
                 } 
-                elseif ($commandElement -is [ScriptBlockExpressionAst]) {
+                elseif ($commandElement -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
                     [ScriptBlock]::Create($commandElement.Extent.ToString() -replace '^\{' -replace '\}$')
                 }
                 else {
