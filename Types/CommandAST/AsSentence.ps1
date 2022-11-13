@@ -360,45 +360,34 @@ foreach ($potentialCommand in $potentialCommands) {
             $currentClause = @()
         }
 
+        $commandElementValue =
+            if ($commandElement.Value -and 
+                $commandElement -isnot [Management.Automation.Language.ExpandableStringExpressionAst]) {
+                $commandElement.Value
+            } 
+            elseif ($commandElement -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
+                [ScriptBlock]::Create($commandElement.Extent.ToString() -replace '^\{' -replace '\}$')
+            }
+            else {
+                $commandElement
+            }
+
         # If we have a current parameter
         if ($currentParameter) {
             
             # Map the current element to this parameter.
-            
-            
-            $mappedParameters[$currentParameter] = 
+            $mappedParameters[$currentParameter] =
                 if ($mappedParameters[$currentParameter]) {
-                    @($mappedParameters[$currentParameter]) + @($commandElement)
+                    @($mappedParameters[$currentParameter]) + $commandElementValue
                 } else {
-                    if ($commandElement.Value) {
-                        $commandElement.Value
-                    } 
-                    elseif ($commandElement -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
-                        [ScriptBlock]::Create($commandElement.Extent.ToString() -replace '^\{' -replace '\}$')
-                    }
-                    else {
-                        $commandElement
-                    }
+                    $commandElementValue
                 }
             $currentClause += $commandElement
-            
-            
         } else {
             # otherwise add the command element to our unbound parameters.
-            $unboundParameters +=
-                if ($commandElement.Value -and 
-                    $commandElement -isnot [Management.Automation.Language.ExpandableStringExpressionAst]) {
-                    $commandElement.Value
-                } 
-                elseif ($commandElement -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
-                    [ScriptBlock]::Create($commandElement.Extent.ToString() -replace '^\{' -replace '\}$')
-                }
-                else {
-                    $commandElement
-                }
+            $unboundParameters += $commandElementValue                
             $currentClause += $commandElement
         }
-
     }
 
     if ($currentClause) {
