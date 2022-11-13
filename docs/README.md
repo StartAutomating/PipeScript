@@ -50,7 +50,7 @@ Often, programming involves implementing small functional changes within a speci
 
 For example, if implementing an interface or subclass, the only things that will change are the class name and method details.
 
-PipeScript can be be embedded within 39 languages.
+PipeScript can be be embedded within 40 languages.
 
 Embedding PipeScript within any of these languages allows you to generate any of these languages with parameterized scripts, thus removing some of the tedium of programming.
 
@@ -104,5 +104,4 @@ It allows you to pipe structured data, not text, from one step to the next.
 By using the object pipeline, you loosely couple each step and allow steps to easily take input from structured files or APIs.
 
 PipeScript allows you to transpile using an Object Pipeline.
-
 
