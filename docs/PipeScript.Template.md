@@ -15,6 +15,13 @@ Inline PipeScript will be embedded within the file (usually in comments).
 If a Regular Expression can match each section, then the content in each section can be replaced.
 
 ---
+### Examples
+#### EXAMPLE 1
+```PowerShell
+</div>" -ClassName MyClass -Content MyContent
+```
+
+---
 ### Parameters
 #### **SourceText**
 
@@ -24,7 +31,7 @@ A string containing the text contents of the file
 
 > **Type**: ```[String]```
 
-> **Required**: true
+> **Required**: false
 
 > **Position**: 1
 
@@ -46,6 +53,23 @@ A string containing the text contents of the file
 
 
 ---
+#### **TemplateName**
+
+The name of the template.  This can be implied by the pattern.
+
+
+
+> **Type**: ```[Object]```
+
+> **Required**: false
+
+> **Position**: 3
+
+> **PipelineInput**:false
+
+
+
+---
 #### **StartPattern**
 
 The Start Pattern.
@@ -58,7 +82,7 @@ An expression will match everything until -EndPattern
 
 > **Required**: false
 
-> **Position**: 3
+> **Position**: 4
 
 > **PipelineInput**:false
 
@@ -76,7 +100,7 @@ This indicates the end of what should be considered PipeScript.
 
 > **Required**: false
 
-> **Position**: 4
+> **Position**: 5
 
 > **PipelineInput**:false
 
@@ -95,7 +119,7 @@ The output of these scripts will be the replacement text.
 
 > **Required**: false
 
-> **Position**: 5
+> **Position**: 6
 
 > **PipelineInput**:false
 
@@ -129,7 +153,7 @@ The path to the source file.
 
 > **Required**: false
 
-> **Position**: 6
+> **Position**: 7
 
 > **PipelineInput**:false
 
@@ -146,7 +170,7 @@ A Script Block that will be injected before each inline is run.
 
 > **Required**: false
 
-> **Position**: 7
+> **Position**: 8
 
 > **PipelineInput**:false
 
@@ -163,7 +187,7 @@ A Script Block that will be piped to after each output.
 
 > **Required**: false
 
-> **Position**: 8
+> **Position**: 9
 
 > **PipelineInput**:false
 
@@ -180,7 +204,7 @@ A Script Block that will be injected after each inline script is run.
 
 > **Required**: false
 
-> **Position**: 9
+> **Position**: 10
 
 > **PipelineInput**:false
 
@@ -197,7 +221,7 @@ A collection of parameters
 
 > **Required**: false
 
-> **Position**: 10
+> **Position**: 11
 
 > **PipelineInput**:false
 
@@ -214,7 +238,7 @@ An argument list.
 
 > **Required**: false
 
-> **Position**: 11
+> **Position**: 12
 
 > **PipelineInput**:false
 
@@ -233,16 +257,33 @@ Only lines beginning with this pattern within -StartPattern and -EndPattern will
 
 > **Required**: false
 
-> **Position**: 12
+> **Position**: 13
 
 > **PipelineInput**:false
 
 
 
 ---
+#### **CommandAst**
+
+The Command Abstract Syntax Tree.  If this is provided, we are transpiling a template keyword.
+
+
+
+> **Type**: ```[CommandAst]```
+
+> **Required**: false
+
+> **Position**: 14
+
+> **PipelineInput**:true (ByValue)
+
+
+
+---
 ### Syntax
 ```PowerShell
-PipeScript.Template [-SourceText] <String> [[-ReplacePattern] <Regex>] [[-StartPattern] <Regex>] [[-EndPattern] <Regex>] [[-ReplacementEvaluator] <ScriptBlock>] [-NoTranspile] [[-SourceFile] <String>] [[-Begin] <ScriptBlock>] [[-ForeachObject] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [[-LinePattern] <Regex>] [<CommonParameters>]
+PipeScript.Template [[-SourceText] <String>] [[-ReplacePattern] <Regex>] [[-TemplateName] <Object>] [[-StartPattern] <Regex>] [[-EndPattern] <Regex>] [[-ReplacementEvaluator] <ScriptBlock>] [-NoTranspile] [[-SourceFile] <String>] [[-Begin] <ScriptBlock>] [[-ForeachObject] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [[-LinePattern] <Regex>] [[-CommandAst] <CommandAst>] [<CommonParameters>]
 ```
 ---
 
