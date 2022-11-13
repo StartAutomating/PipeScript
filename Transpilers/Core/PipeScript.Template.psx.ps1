@@ -376,6 +376,17 @@ process {
             return $ReplacePattern.Replace($fileText, $ReplacementEvaluator)
         }
 
+        $templateToString = {
+            param()
+            
+            if ($args) {
+                $this.Evaluate($args)
+            }
+            else {
+                $this.Evaluate()
+            }
+        }
+
         $SaveTemplate = {
             param()
 
@@ -403,7 +414,7 @@ process {
             
             if (-not (Test-Path $Name)) {
                 $null = New-Item -ItemType $file -Path $name -Force                
-            }
+            }            
             $evaluated | Set-Content -Path $name
             Get-Item -Path $name        
         }
@@ -452,6 +463,8 @@ $GetInlineScript
 $EvaluateTemplate
 } .Save = {
 $SaveTemplate
+} .ToString = {
+$TemplateToString
 } .Context = (New-Module -ScriptBlock {}
 ) .ForeachObject = $(if ($ForeachObject) { "{ 
 $foreachObject
