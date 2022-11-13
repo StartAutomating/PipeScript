@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    TypeScript Inline PipeScript Transpiler.
+    TypeScript Template Transpiler.
 .DESCRIPTION
-    Transpiles TypeScript with Inline PipeScript into TypeScript.
+    Allows PipeScript to generate TypeScript.
 
     Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
@@ -59,6 +59,11 @@ process {
     if ($Parameter) { $splat.Parameter = $Parameter }
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
 
-    # Call the core inline transpiler.
-    .>PipeScript.Inline @Splat
+    # If we are being used within a keyword,
+    if ($AsTemplateObject) {
+        $splat # output the parameters we would use to evaluate this file.
+    } else {
+        # Otherwise, call the core template transpiler
+        .>PipeScript.Template @Splat # and output the changed file.
+    }
 }

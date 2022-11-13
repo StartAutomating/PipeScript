@@ -71,7 +71,12 @@ process {
     if ($Parameter) { $splat.Parameter = $Parameter }
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
 
-    # Call the core inline transpiler.
-    .>PipeScript.Template @Splat
+    # If we are being used within a keyword,
+    if ($AsTemplateObject) {
+        $splat # output the parameters we would use to evaluate this file.
+    } else {
+        # Otherwise, call the core template transpiler
+        .>PipeScript.Template @Splat # and output the changed file.
+    }
 }
 

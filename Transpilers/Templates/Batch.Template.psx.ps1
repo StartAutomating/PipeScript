@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    Batch PipeScript Transpiler.
+    Batch Template Transpiler.
 .DESCRIPTION
-    Transpiles Windows Batch with Inline PipeScript into Batch Scripts.
+    Allows PipeScript to generate Windows Batch Scripts.
 
     Because Batch Scripts only allow single-line comments, this is done using a pair of comment markers.
             
@@ -76,6 +76,11 @@ process {
     if ($Parameter) { $splat.Parameter = $Parameter }
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
 
-    # Call the core inline transpiler.
-    .>PipeScript.Inline @Splat
+    # If we are being used within a keyword,
+    if ($AsTemplateObject) {
+        $splat # output the parameters we would use to evaluate this file.
+    } else {
+        # Otherwise, call the core template transpiler
+        .>PipeScript.Template @Splat # and output the changed file.
+    }
 }

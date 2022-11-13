@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    Python Inline PipeScript Transpiler.
+    Python Template Transpiler.
 .DESCRIPTION
-    Transpiles Python with Inline PipeScript into Python.
+    Allows PipeScript to generate Python.
 
     Because Python does not support multiline comment blocks, PipeScript can be written inline inside of multiline string
 
@@ -61,6 +61,11 @@ process {
     if ($Parameter) { $splat.Parameter = $Parameter }
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
 
-    # Call the core inline transpiler.
-    .>PipeScript.Inline @Splat
+    # If we are being used within a keyword,
+    if ($AsTemplateObject) {
+        $splat # output the parameters we would use to evaluate this file.
+    } else {
+        # Otherwise, call the core template transpiler
+        .>PipeScript.Template @Splat # and output the changed file.
+    }
 }

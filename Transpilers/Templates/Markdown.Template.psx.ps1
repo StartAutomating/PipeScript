@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    Markdown File Transpiler.
+    Markdown Template Transpiler.
 .DESCRIPTION
-    Transpiles Markdown with Inline PipeScript into Markdown.
+    Allows PipeScript to generate Markdown.
 
     Because Markdown does not support comment blocks, PipeScript can be written inline inside of specialized Markdown code blocks.
 
@@ -106,6 +106,11 @@ process {
             }
         }
     }
-    # Call the core inline transpiler.
-    .>PipeScript.Inline @Splat
+    # If we are being used within a keyword,
+    if ($AsTemplateObject) {
+        $splat # output the parameters we would use to evaluate this file.
+    } else {
+        # Otherwise, call the core template transpiler
+        .>PipeScript.Template @Splat # and output the changed file.
+    }
 }

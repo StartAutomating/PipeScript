@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-    OpenSCAD Inline PipeScript Transpiler.
+    OpenSCAD Template Transpiler.
 .DESCRIPTION
-    Transpiles OpenSCAD with Inline PipeScript into OpenSCAD.
-
+    Allows PipeScript to generate OpenSCAD.
+    
     Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
     Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
@@ -78,6 +78,11 @@ process {
     if ($Parameter) { $splat.Parameter = $Parameter }
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
 
-    # Call the core inline transpiler.
-    .>PipeScript.Inline @Splat
+    # If we are being used within a keyword,
+    if ($AsTemplateObject) {
+        $splat # output the parameters we would use to evaluate this file.
+    } else {
+        # Otherwise, call the core template transpiler
+        .>PipeScript.Template @Splat # and output the changed file.
+    }
 }

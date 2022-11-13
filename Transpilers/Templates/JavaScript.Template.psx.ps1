@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    JavaScript Inline PipeScript Transpiler.
+    JavaScript Template Transpiler.
 .DESCRIPTION
-    Transpiles JavaScript with Inline PipeScript into JavaScript.
+    Allows PipeScript to generate JavaScript.
 
     Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
@@ -20,9 +20,14 @@
 [ValidatePattern('\.js$')]
 param(
 # The command information.  This will include the path to the file.
-[Parameter(Mandatory,ValueFromPipeline)]
+[Parameter(Mandatory,ValueFromPipeline,ParameterSetName='TemplateFile')]
 [Management.Automation.CommandInfo]
 $CommandInfo,
+
+# If set, will return the information required to dynamically apply this template to any text.
+[Parameter(Mandatory,ParameterSetName='TemplateObject')]
+[switch]
+$AsTemplateObject,
 
 # A dictionary of parameters.
 [Collections.IDictionary]
@@ -54,11 +59,20 @@ begin {
 
 process {
     # Add parameters related to the file
-    $Splat.SourceFile = $commandInfo.Source -as [IO.FileInfo]
-    $Splat.SourceText = [IO.File]::ReadAllText($commandInfo.Source)
+    if ($CommandInfo) {
+        $Splat.SourceFile = $commandInfo.Source -as [IO.FileInfo]
+        $Splat.SourceText = [IO.File]::ReadAllText($commandInfo.Source)
+    }
+
     if ($Parameter) { $splat.Parameter = $Parameter }
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
 
-    # Call the core inline transpiler.
-    .>PipeScript.Inline @Splat
+    # If we are being used within a keyword,
+    if ($AsTemplateObject) {
+        $splat # output the parameters we would use to evaluate this file.
+    } else {
+        # Otherwise, call the core template transpiler
+        .>PipeScript.Template @Splat # and output the changed file.
+    }
+    
 }

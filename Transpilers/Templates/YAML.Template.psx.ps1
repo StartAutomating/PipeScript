@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    Yaml File Transpiler.
+    Yaml Template Transpiler.
 .DESCRIPTION
-    Transpiles Yaml with Inline PipeScript into Yaml.
+    Allows PipeScript to generate Yaml.
 
     Because Yaml does not support comment blocks, PipeScript can be written inline inside of specialized Yaml string.
 
@@ -128,6 +128,11 @@ process {
             }) -join [Environment]::Newline
         }
     }
-    # Call the core inline transpiler.
-    .>PipeScript.Inline @Splat
+    # If we are being used within a keyword,
+    if ($AsTemplateObject) {
+        $splat # output the parameters we would use to evaluate this file.
+    } else {
+        # Otherwise, call the core template transpiler
+        .>PipeScript.Template @Splat # and output the changed file.
+    }
 }

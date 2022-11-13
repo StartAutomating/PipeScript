@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    TCL/TK PipeScript Transpiler.
+    TCL/TK Template Transpiler.
 .DESCRIPTION
-    Transpiles TCL or TK with Inline PipeScript into TCL or TK.
+    Allows PipeScript to generate TCL or TK.
 
     Because TCL Scripts only allow single-line comments, this is done using a pair of comment markers.
 
