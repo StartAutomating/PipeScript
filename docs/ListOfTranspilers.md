@@ -4,80 +4,78 @@ These are all of the transpilers currently included in PipeScript:
 
 |Name                                                                                             |Synopsis                                         |
 |-------------------------------------------------------------------------------------------------|-------------------------------------------------|
+|[ADA.Template](Transpilers/Templates/ADA.Template.psx.ps1)                                       |ADA Template Transpiler.                         |
 |[Aliases](Transpilers/Parameters/Aliases.psx.ps1)                                                |Dynamically Defines Aliases                      |
 |[All](Transpilers/Keywords/All.psx.ps1)                                                          |all keyword                                      |
 |[Assert](Transpilers/Keywords/Assert.psx.ps1)                                                    |Assert keyword                                   |
+|[ATOM.Template](Transpilers/Templates/ATOM.Template.psx.ps1)                                     |ATOM Template Transpiler.                        |
 |[Await](Transpilers/Keywords/Await.psx.ps1)                                                      |awaits asynchronous operations                   |
 |[Bash](Transpilers/Wrappers/Bash.psx.ps1)                                                        |Wraps PowerShell in a Bash Script                |
+|[Bash.Template](Transpilers/Templates/Bash.Template.psx.ps1)                                     |Bash Template Transpiler.                        |
+|[Basic.Template](Transpilers/Templates/Basic.Template.psx.ps1)                                   |Basic Template Transpiler.                       |
 |[Batch](Transpilers/Wrappers/Batch.psx.ps1)                                                      |Wraps PowerShell in a Windows Batch Script       |
+|[Batch.Template](Transpilers/Templates/Batch.Template.psx.ps1)                                   |Batch Template Transpiler.                       |
 |[BatchPowerShell](Transpilers/Wrappers/BatchPowerShell.psx.ps1)                                  |Wraps PowerShell in a Windows Batch Script       |
+|[Bicep.Template](Transpilers/Templates/Bicep.Template.psx.ps1)                                   |Bicep Template Transpiler.                       |
+|[CPlusPlus.Template](Transpilers/Templates/CPlusPlus.Template.psx.ps1)                           |C/C++ Template Transpiler.                       |
+|[CSharp.Template](Transpilers/Templates/CSharp.Template.psx.ps1)                                 |C# Template Transpiler.                          |
+|[CSS.Template](Transpilers/Templates/CSS.Template.psx.ps1)                                       |CSS Template Transpiler.                         |
 |[Decorate](Transpilers/Decorate.psx.ps1)                                                         |decorate transpiler                              |
 |[Dot](Transpilers/Syntax/Dot.psx.ps1)                                                            |Dot Notation                                     |
 |[EqualityComparison](Transpilers/Syntax/EqualityComparison.psx.ps1)                              |Allows equality comparison.                      |
 |[EqualityTypeComparison](Transpilers/Syntax/EqualityTypeComparison.psx.ps1)                      |Allows equality type comparison.                 |
 |[Explicit](Transpilers/Explicit.psx.ps1)                                                         |Makes Output from a PowerShell function Explicit.|
+|[Go.Template](Transpilers/Templates/Go.Template.psx.ps1)                                         |Go Template Transpiler.                          |
+|[HAXE.Template](Transpilers/Templates/HAXE.Template.psx.ps1)                                     |Haxe Template Transpiler.                        |
+|[HCL.Template](Transpilers/Templates/HCL.Template.psx.ps1)                                       |HCL Template Transpiler.                         |
 |[Help](Transpilers/Help.psx.ps1)                                                                 |Help Transpiler                                  |
+|[HLSL.Template](Transpilers/Templates/HLSL.Template.psx.ps1)                                     |HLSL Template Transpiler.                        |
+|[HTML.Template](Transpilers/Templates/HTML.Template.psx.ps1)                                     |HTML PipeScript Transpiler.                      |
 |[Http.Protocol](Transpilers/Protocols/Http.Protocol.psx.ps1)                                     |http protocol                                    |
 |[Include](Transpilers/Include.psx.ps1)                                                           |Includes Files                                   |
 |[Inherit](Transpilers/Inherit.psx.ps1)                                                           |Inherits a Command                               |
-|[Inline.ADA](Transpilers/Inline/Inline.ADA.psx.ps1)                                              |ADA PipeScript Transpiler.                       |
-|[Inline.ATOM](Transpilers/Inline/Inline.ATOM.psx.ps1)                                            |ATOM Inline PipeScript Transpiler.               |
-|[Inline.Bash](Transpilers/Inline/Inline.Bash.psx.ps1)                                            |Bash PipeScript Transpiler.                      |
-|[Inline.Basic](Transpilers/Inline/Inline.Basic.psx.ps1)                                          |Basic PipeScript Transpiler.                     |
-|[Inline.Batch](Transpilers/Inline/Inline.Batch.psx.ps1)                                          |Batch PipeScript Transpiler.                     |
-|[Inline.Bicep](Transpilers/Inline/Inline.Bicep.psx.ps1)                                          |Bicep Inline PipeScript Transpiler.              |
-|[Inline.CPlusPlus](Transpilers/Inline/Inline.CPlusPlus.psx.ps1)                                  |C/C++ PipeScript Transpiler.                     |
-|[Inline.CSharp](Transpilers/Inline/Inline.CSharp.psx.ps1)                                        |C# Inline PipeScript Transpiler.                 |
-|[Inline.CSS](Transpilers/Inline/Inline.CSS.psx.ps1)                                              |CSS Inline PipeScript Transpiler.                |
-|[Inline.Go](Transpilers/Inline/Inline.Go.psx.ps1)                                                |Go PipeScript Transpiler.                        |
-|[Inline.HAXE](Transpilers/Inline/Inline.HAXE.psx.ps1)                                            |Haxe PipeScript Transpiler.                      |
-|[Inline.HCL](Transpilers/Inline/Inline.HCL.psx.ps1)                                              |HCL PipeScript Transpiler.                       |
-|[Inline.HLSL](Transpilers/Inline/Inline.HLSL.psx.ps1)                                            |HLSL Inline PipeScript Transpiler.               |
-|[Inline.HTML](Transpilers/Inline/Inline.HTML.psx.ps1)                                            |HTML PipeScript Transpiler.                      |
-|[Inline.Java](Transpilers/Inline/Inline.Java.psx.ps1)                                            |Java Inline PipeScript Transpiler.               |
-|[Inline.JavaScript](Transpilers/Inline/Inline.JavaScript.psx.ps1)                                |JavaScript Inline PipeScript Transpiler.         |
-|[Inline.Json](Transpilers/Inline/Inline.Json.psx.ps1)                                            |JSON PipeScript Transpiler.                      |
-|[Inline.Kotlin](Transpilers/Inline/Inline.Kotlin.psx.ps1)                                        |Kotlin Inline PipeScript Transpiler.             |
-|[Inline.Latex](Transpilers/Inline/Inline.Latex.psx.ps1)                                          |Latex Inline PipeScript Transpiler.              |
-|[Inline.LUA](Transpilers/Inline/Inline.LUA.psx.ps1)                                              |LUA Inline PipeScript Transpiler.                |
-|[Inline.Markdown](Transpilers/Inline/Inline.Markdown.psx.ps1)                                    |Markdown File Transpiler.                        |
-|[Inline.ObjectiveC](Transpilers/Inline/Inline.ObjectiveC.psx.ps1)                                |Objective C PipeScript Transpiler.               |
-|[Inline.OpenSCAD](Transpilers/Inline/Inline.OpenSCAD.psx.ps1)                                    |OpenSCAD Inline PipeScript Transpiler.           |
-|[Inline.Perl](Transpilers/Inline/Inline.Perl.psx.ps1)                                            |Perl Inline PipeScript Transpiler.               |
-|[Inline.PHP](Transpilers/Inline/Inline.PHP.psx.ps1)                                              |PHP PipeScript Transpiler.                       |
-|[Inline.PSD1](Transpilers/Inline/Inline.PSD1.psx.ps1)                                            |PSD1 Inline PipeScript Transpiler.               |
-|[Inline.Python](Transpilers/Inline/Inline.Python.psx.ps1)                                        |Python Inline PipeScript Transpiler.             |
-|[Inline.R](Transpilers/Inline/Inline.R.psx.ps1)                                                  |R PipeScript Transpiler.                         |
-|[Inline.Racket](Transpilers/Inline/Inline.Racket.psx.ps1)                                        |Racket Inline PipeScript Transpiler.             |
-|[Inline.Razor](Transpilers/Inline/Inline.Razor.psx.ps1)                                          |Razor Inline PipeScript Transpiler.              |
-|[Inline.RSS](Transpilers/Inline/Inline.RSS.psx.ps1)                                              |RSS Inline PipeScript Transpiler.                |
-|[Inline.Ruby](Transpilers/Inline/Inline.Ruby.psx.ps1)                                            |Ruby Inline PipeScript Transpiler.               |
-|[Inline.Rust](Transpilers/Inline/Inline.Rust.psx.ps1)                                            |Rust Inline PipeScript Transpiler.               |
-|[Inline.SQL](Transpilers/Inline/Inline.SQL.psx.ps1)                                              |SQL PipeScript Transpiler.                       |
-|[Inline.TCL](Transpilers/Inline/Inline.TCL.psx.ps1)                                              |TCL/TK PipeScript Transpiler.                    |
-|[Inline.TOML](Transpilers/Inline/Inline.TOML.psx.ps1)                                            |TOML Inline PipeScript Transpiler.               |
-|[Inline.TypeScript](Transpilers/Inline/Inline.TypeScript.psx.ps1)                                |TypeScript Inline PipeScript Transpiler.         |
-|[Inline.XML](Transpilers/Inline/Inline.XML.psx.ps1)                                              |XML Inline PipeScript Transpiler.                |
-|[Inline.YAML](Transpilers/Inline/Inline.YAML.psx.ps1)                                            |Yaml File Transpiler.                            |
+|[Java.Template](Transpilers/Templates/Java.Template.psx.ps1)                                     |Java Template Transpiler.                        |
+|[JavaScript.Template](Transpilers/Templates/JavaScript.Template.psx.ps1)                         |JavaScript Template Transpiler.                  |
+|[Json.Template](Transpilers/Templates/Json.Template.psx.ps1)                                     |JSON PipeScript Transpiler.                      |
 |[JSONSchema.Protocol](Transpilers/Protocols/JSONSchema.Protocol.psx.ps1)                         |json schema protocol                             |
+|[Kotlin.Template](Transpilers/Templates/Kotlin.Template.psx.ps1)                                 |Kotlin Template Transpiler.                      |
+|[Latex.Template](Transpilers/Templates/Latex.Template.psx.ps1)                                   |Latex Template Transpiler.                       |
+|[LUA.Template](Transpilers/Templates/LUA.Template.psx.ps1)                                       |LUA Template Transpiler.                         |
+|[Markdown.Template](Transpilers/Templates/Markdown.Template.psx.ps1)                             |Markdown Template Transpiler.                    |
 |[ModuleExports](Transpilers/Modules/ModuleExports.psx.ps1)                                       |Gets Module Exports                              |
 |[ModuleRelationship](Transpilers/Modules/ModuleRelationship.psx.ps1)                             |Gets Module Relationships                        |
 |[New](Transpilers/Keywords/New.psx.ps1)                                                          |'new' keyword                                    |
+|[ObjectiveC.Template](Transpilers/Templates/ObjectiveC.Template.psx.ps1)                         |Objective Template Transpiler.                   |
+|[OpenSCAD.Template](Transpilers/Templates/OpenSCAD.Template.psx.ps1)                             |OpenSCAD Template Transpiler.                    |
 |[OutputFile](Transpilers/OutputFile.psx.ps1)                                                     |Outputs to a File                                |
+|[Perl.Template](Transpilers/Templates/Perl.Template.psx.ps1)                                     |Perl Template Transpiler.                        |
+|[PHP.Template](Transpilers/Templates/PHP.Template.psx.ps1)                                       |PHP Template Transpiler.                         |
 |[PipedAssignment](Transpilers/Syntax/PipedAssignment.psx.ps1)                                    |Piped Assignment Transpiler                      |
 |[PipeScript.AttributedExpression](Transpilers/Core/PipeScript.AttributedExpression.psx.ps1)      |The PipeScript AttributedExpression Transpiler   |
 |[Pipescript.FunctionDefinition](Transpilers/Core/Pipescript.FunctionDefinition.psx.ps1)          |PipeScript Function Transpiler                   |
-|[PipeScript.Inline](Transpilers/Core/PipeScript.Inline.psx.ps1)                                  |Inline Transpiler                                |
 |[PipeScript.ParameterAttribute](Transpilers/Core/PipeScript.ParameterAttribute.psx.ps1)          |
 |[PipeScript.ParameterTypeConstraint](Transpilers/Core/PipeScript.ParameterTypeConstraint.psx.ps1)|Transpiles Parameter Type Constraints            |
 |[PipeScript.Protocol](Transpilers/Core/PipeScript.Protocol.psx.ps1)                              |Core Protocol Transpiler                         |
 |[Pipescript](Transpilers/Core/Pipescript.psx.ps1)                                                |The Core PipeScript Transpiler                   |
+|[PipeScript.Template](Transpilers/Core/PipeScript.Template.psx.ps1)                              |Inline Transpiler                                |
 |[PipeScript.TypeExpression](Transpilers/Core/PipeScript.TypeExpression.psx.ps1)                  |The PipeScript TypeExpression Transpiler         |
 |[ProxyCommand](Transpilers/ProxyCommand.psx.ps1)                                                 |Creates Proxy Commands                           |
+|[PSD1.Template](Transpilers/Templates/PSD1.Template.psx.ps1)                                     |PSD1 Template Transpiler.                        |
+|[Python.Template](Transpilers/Templates/Python.Template.psx.ps1)                                 |Python Template Transpiler.                      |
+|[R.Template](Transpilers/Templates/R.Template.psx.ps1)                                           |R Template Transpiler.                           |
+|[Racket.Template](Transpilers/Templates/Racket.Template.psx.ps1)                                 |Racket Template Transpiler.                      |
+|[Razor.Template](Transpilers/Templates/Razor.Template.psx.ps1)                                   |Razor Template Transpiler.                       |
 |[RegexLiteral](Transpilers/Syntax/RegexLiteral.psx.ps1)                                          |Regex Literal Transpiler                         |
 |[RemoveParameter](Transpilers/Parameters/RemoveParameter.psx.ps1)                                |Removes Parameters from a ScriptBlock            |
 |[RenameVariable](Transpilers/RenameVariable.psx.ps1)                                             |Renames variables                                |
 |[Rest](Transpilers/Rest.psx.ps1)                                                                 |Generates PowerShell to talk to a REST api.      |
+|[RSS.Template](Transpilers/Templates/RSS.Template.psx.ps1)                                       |RSS Template Transpiler.                         |
+|[Ruby.Template](Transpilers/Templates/Ruby.Template.psx.ps1)                                     |Ruby Template Transpiler.                        |
+|[Rust.Template](Transpilers/Templates/Rust.Template.psx.ps1)                                     |Rust Template Transpiler.                        |
+|[SQL.Template](Transpilers/Templates/SQL.Template.psx.ps1)                                       |SQL Template Transpiler.                         |
+|[TCL.Template](Transpilers/Templates/TCL.Template.psx.ps1)                                       |TCL/TK Template Transpiler.                      |
+|[TOML.Template](Transpilers/Templates/TOML.Template.psx.ps1)                                     |TOML Template Transpiler.                        |
+|[TypeScript.Template](Transpilers/Templates/TypeScript.Template.psx.ps1)                         |TypeScript Template Transpiler.                  |
 |[UDP.Protocol](Transpilers/Protocols/UDP.Protocol.psx.ps1)                                       |udp protocol                                     |
 |[Until](Transpilers/Keywords/Until.psx.ps1)                                                      |until keyword                                    |
 |[ValidateExtension](Transpilers/Parameters/ValidateExtension.psx.ps1)                            |Validates Extensions                             |
@@ -87,6 +85,9 @@ These are all of the transpilers currently included in PipeScript:
 |[ValidateTypes](Transpilers/Parameters/ValidateTypes.psx.ps1)                                    |Validates if an object is one or more types.     |
 |[VBN](Transpilers/Parameters/VBN.psx.ps1)                                                        |ValueFromPiplineByPropertyName Shorthand         |
 |[VFP](Transpilers/Parameters/VFP.psx.ps1)                                                        |ValueFromPipline Shorthand                       |
+|[WebAssembly.Template](Transpilers/Templates/WebAssembly.Template.psx.ps1)                       |WebAssembly Template Transpiler.                 |
+|[XML.Template](Transpilers/Templates/XML.Template.psx.ps1)                                       |XML Template Transpiler.                         |
+|[YAML.Template](Transpilers/Templates/YAML.Template.psx.ps1)                                     |Yaml Template Transpiler.                        |
 
 
 
