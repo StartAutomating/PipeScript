@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    WebAssembly Inline PipeScript Transpiler.
+    WebAssembly Template Transpiler.
 .DESCRIPTION
-    Transpiles WebAssembly with Inline PipeScript into WebAssembly.
+    Allows PipeScript to generate WebAssembly.    
 
     Multiline comments blocks like this ```(;{
 
@@ -11,9 +11,14 @@
 [ValidatePattern('\.wat$')]
 param(
 # The command information.  This will include the path to the file.
-[Parameter(Mandatory,ValueFromPipeline)]
+[Parameter(Mandatory,ValueFromPipeline,ParameterSetName='TemplateFile')]
 [Management.Automation.CommandInfo]
 $CommandInfo,
+
+# If set, will return the information required to dynamically apply this template to any text.
+[Parameter(Mandatory,ParameterSetName='TemplateObject')]
+[switch]
+$AsTemplateObject,
 
 # A dictionary of parameters.
 [Collections.IDictionary]
@@ -48,6 +53,11 @@ process {
     if ($Parameter) { $splat.Parameter = $Parameter }
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
 
-    # Call the core inline transpiler.
-    .>PipeScript.Inline @Splat
+    # If we are being used within a keyword,
+    if ($AsTemplateObject) {
+        $splat # output the parameters we would use to evaluate this file.
+    } else {
+        # Otherwise, call the core template transpiler
+        .>PipeScript.Template @Splat # and output the changed file.
+    }
 }

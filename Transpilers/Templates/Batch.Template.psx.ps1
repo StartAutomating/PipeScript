@@ -40,9 +40,14 @@
 [ValidatePattern('\.cmd$')]
 param(
 # The command information.  This will include the path to the file.
-[Parameter(Mandatory,ValueFromPipeline)]
+[Parameter(Mandatory,ValueFromPipeline,ParameterSetName='TemplateFile')]
 [Management.Automation.CommandInfo]
 $CommandInfo,
+
+# If set, will return the information required to dynamically apply this template to any text.
+[Parameter(Mandatory,ParameterSetName='TemplateObject')]
+[switch]
+$AsTemplateObject,
 
 # A dictionary of parameters.
 [Collections.IDictionary]
