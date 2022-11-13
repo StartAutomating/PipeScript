@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-    ATOM Inline PipeScript Transpiler.
+    ATOM Template Transpiler.
 .DESCRIPTION
-    Transpiles ATOM with Inline PipeScript into ATOM.
-
+    Allows PipeScript to be used to generate ATOM.
+    
     Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
 #>
 [ValidatePattern('\.atom$')]
@@ -47,5 +47,5 @@ process {
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
 
     # Call the core inline transpiler.
-    .>PipeScript.Inline @Splat
+    .>PipeScript.Template @Splat
 }
