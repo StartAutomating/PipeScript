@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-    ADA PipeScript Transpiler.
+    ADA Template Transpiler.
 .DESCRIPTION
-    Transpiles ADA with Inline PipeScript into ADA.
-
+    Allows PipeScript to be used to generate ADA.
+    
     Because ADA Scripts only allow single-line comments, this is done using a pair of comment markers.
 
     -- { or -- PipeScript{  begins a PipeScript block
@@ -45,7 +45,7 @@ $Parameter,
 
 # A list of arguments.
 [PSObject[]]
-$ArgumentList    
+$ArgumentList
 )
 
 begin {
@@ -72,6 +72,6 @@ process {
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
 
     # Call the core inline transpiler.
-    .>PipeScript.Inline @Splat
+    .>PipeScript.Template @Splat
 }
 
