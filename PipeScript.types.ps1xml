@@ -615,7 +615,8 @@ foreach ($potentialCommand in $potentialCommands) {
         elseif ($currentParameter) {
             if ($mappedParameters.Contains($currentParameter) -and
                 $currentParameterMetadata.ParameterType -ne [Collections.IList] -and
-                $currentParameterMetadata.ParameterType -ne [PSObject]
+                $currentParameterMetadata.ParameterType -ne [PSObject] -and
+                $currentParameterMetadata.ParameterType -ne [Object]
             ) {
                 $clauses += [PSCustomObject][Ordered]@{
                     PSTypeName    = 'PipeScript.Sentence.Clause'
