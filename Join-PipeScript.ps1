@@ -388,21 +388,27 @@ function Join-PipeScript
                             if ($block.Unnamed -and -not $blockOpen) {
                                 ' ' * ($block | MeasureIndent) + 'end {'
                                 $blockOpen = $true
+                                $closeEndBlock = $true
                             }
                             if ($StatementsToAdd) {
                                 $StatementsToAdd -join [Environment]::NewLine
                                 $StatementsToAdd = $null
                             }
-                            $block.Extent.ToString() -replace '^end\s{0,}\{' -replace '\}$' -replace '^param\(\)[\s\r\n]{0,}'
+                            if ($block.Unnamed) {
+                                $block.Extent.ToString()
+                            } else {
+                                $block.Extent.ToString() -replace '^end\s{0,}\{' -replace '\}$' -replace '^param\(\)[\s\r\n]{0,}'
+                            }                            
                         }
                     }
 
                     if ($StatementsToAdd) {
                         if ($closeEndBlock -and -not $blockOpen) {
                             'end {'
+                            $blockOpen = $true
                         }
                         $StatementsToAdd -join [Environment]::NewLine
-                        $StatementsToAdd = $null
+                        $StatementsToAdd = $null                        
                     }
 
                     # If we need to close the end block, and it is open,
