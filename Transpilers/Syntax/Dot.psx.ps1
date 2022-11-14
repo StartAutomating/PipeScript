@@ -76,8 +76,30 @@ process {
     $DotChainPart = ''
     $DotChainPattern = '^\.\p{L}'
 
+    $targetCommandAst = $CommandAst
+    $commandSequence  = @()
+    $lastCommandAst   = $null
     # Then, walk over each element of the commands
-    $CommandElements = $CommandAst.CommandElements
+    $CommandElements = @(do {
+        $lastCommandAst = $targetCommandAst
+        $commandSequence += $targetCommandAst
+        $targetCommandAst.CommandElements
+        $nextStatementIndex = $commandAst.Parent.Parent.Statements.IndexOf($targetCommandAst.Parent) + 1
+        $nextStatement      = $CommandAst.Parent.Parent.Statements[$nextStatementIndex]         
+        if ($nextStatement -isnot [Management.Automation.Language.PipelineAst]) {
+            break
+        }
+        if ($nextStatement.PipelineElements[0] -isnot 
+            [Management.Automation.Language.CommandAst]) {
+            break
+        }
+        if ($nextStatement.PipelineElements[0].CommandElements[0].Value -notmatch 
+            $DotChainPattern) {
+            break
+        }
+        $targetCommandAst = $CommandAst.Parent.Parent.Statements[$nextStatementIndex].PipelineElements[0]
+    } while ($targetCommandAst))
+            
     for ( $elementIndex =0 ; $elementIndex -lt $CommandElements.Count; $elementIndex++) {
         # If we are on the first element, or the command element starts with the DotChainPattern
         if ($elementIndex -eq 0 -or $CommandElements[$elementIndex].Value -match $DotChainPattern) {
@@ -124,11 +146,7 @@ process {
 
     $NewScript = @()
     $indent    = 0
-    $WasPipedTo =
-        $CommandAst.Parent -and 
-        $CommandAst.Parent.PipelineElements -and 
-        $CommandAst.Parent.PipelineElements.IndexOf($CommandAst) -gt 0
-        
+    $WasPipedTo = $CommandAst.IsPipedTo        
 
     # By default, we are not creating a property bag.
     # This default will change if:
@@ -137,7 +155,7 @@ process {
     $isPropertyBag = $false
 
     # If we were piped to, adjust indent (for now)
-    if ($WasPipedTo ) {
+    if ($WasPipedTo) {
         $indent += 4
     }
 
@@ -286,5 +304,10 @@ $(' ' * ($indent + 4))$thisSegement
     $NewScript = $NewScript -join [Environment]::Newline
 
     # Return the created script.
-    [scriptblock]::Create($NewScript)
+    $newScriptBlock = [scriptblock]::Create($NewScript)
+
+    if ($targetCommandAst -ne $CommandAst) {
+        $newScriptBlock | Add-Member NoteProperty SkipUntil $commandSequence
+    }
+    $newScriptBlock
 }
