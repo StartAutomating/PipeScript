@@ -2,7 +2,11 @@
 .SYNOPSIS
     requires one or more modules, variables, or types.    
 .DESCRIPTION
-    Requires will require on or more modules, variables, or types to exist.   
+    Requires will require on or more modules, variables, or types to exist.
+.EXAMPLE
+    requires latest pipescript  # will require the latest version of pipescript
+.EXAMPLE
+    requires variable $pid $sid # will error, because there is no $sid
 #>
 
 using namespace System.Management.Automation.Language
