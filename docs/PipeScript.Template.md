@@ -10,11 +10,17 @@ The PipeScript Core Template Transpiler.
 
 This allows PipeScript to generate many other languages.
 
-Regardless of underlying source language, a source generator works in a fairly straightforward way.
+Regardless of the underlying language, the core template transpiler works in a fairly straightforward way.
 
-Inline PipeScript will be embedded within the file (usually in comments).
+A language will contain PipeScript within the file (usually in comments).
 
 If a Regular Expression can match each section, then the content in each section can be replaced.
+
+When a file that can be transpiled is encountered,
+the template transpiler for that file type will call the core template transpiler.
+
+When templates are used as a keyword,
+the template transpiler will produce an object that can evaluate the template on demand.
 
 ---
 ### Parameters
