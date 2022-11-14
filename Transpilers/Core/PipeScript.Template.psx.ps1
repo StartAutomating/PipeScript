@@ -1,16 +1,16 @@
 <#
 .Synopsis
-    Inline Transpiler
+    Template Transpiler
 .Description
-    The PipeScript Core Inline Transpiler.  This makes Source Generators with inline PipeScript work.
+    The PipeScript Core Template Transpiler.
+    
+    This allows PipeScript to generate many other languages.
 
     Regardless of underlying source language, a source generator works in a fairly straightforward way.
 
     Inline PipeScript will be embedded within the file (usually in comments).
 
-    If a Regular Expression can match each section, then the content in each section can be replaced.
-.EXAMPLE
-    template html "<div class='/*{param($className)}*/'></div>" -ClassName MyClass -Content MyContent
+    If a Regular Expression can match each section, then the content in each section can be replaced.    
 #>
 
 [ValidateScript({
@@ -378,7 +378,7 @@ process {
 
         $templateToString = {
             param()
-            
+
             if ($args) {
                 $this.Evaluate($args)
             }
@@ -434,6 +434,9 @@ process {
             }            
         }
         $null, $templateElements = foreach ($sentenceArg in $mySentence.ArgumentList) {
+            if ($sentenceArg.StringConstantType -eq 'Bareword' -and $sentenceArg.Value -eq 'template') {
+                continue
+            }
             $convertedAst = 
                 if ($sentenceArg.ConvertFromAst) {
                     $sentenceArg.ConvertFromAst()
