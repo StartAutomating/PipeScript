@@ -291,7 +291,7 @@ process {
                                                 }
                                             }
                                         }
-                                    }                                    
+                                    }
                                 }
 
                                 #.ToRemove,.RemoveAST, or .RemoveElement will remove AST elements or ranges
@@ -302,7 +302,7 @@ process {
                                         } elseif ($toRemove -match '^\d+,\d+$') {
                                             $Replacements[$toRemove] = ''
                                         }
-                                    }                                    
+                                    }
                                 }
 
                                 #.ToReplace,.ReplaceAST or .ReplaceElement will replace elements or ranges.
