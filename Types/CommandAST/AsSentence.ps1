@@ -9,6 +9,31 @@
     For the purposes of natural language processing ValueFromPipeline will be ignored.
     
     The order the parameters is declared takes precedence over Position attributes.
+.NOTES
+    Each potential command can be thought of as a simple sentence with (mostly) natural syntax
+    
+    command <parametername> ...<parameterargument> (etc)     
+        
+    either more natural or PowerShell syntax should be allowed, for example:
+
+    all functions can Quack {
+        "quack"
+    }
+
+    would map to the command all and the parameters -Function and -Can (with the arguments Quack and {"quack"})
+
+    Assuming -Functions was a `[switch]` or an alias to a `[switch]`, it will match that `[switch]` and only that switch.
+
+    If -Functions was not a `[switch]`, it will match values from that point.
+
+    If the parameter type is not a list or PSObject, only the next parameter will be matched.
+
+    If the parameter type *is* a list or an PSObject, 
+    or ValueFromRemainingArguments is present and no named parameters were found,
+    then all remaining arguments will be matched until the next named parameter is found.
+    
+    _Aliasing is important_ when working with a given parameter.
+    The alias, _not_ the parameter name, will be what is mapped in .Parameters.
 #>
 param()
 
@@ -67,6 +92,20 @@ if ($IsRightToLeft) {
 }
 
 
+$commandElements = # Walk thru each command element 
+    @(foreach ($element in $commandElements) {
+        # If the element is an array literal, expand it
+        if ($element -is [Management.Automation.Language.ArrayLiteralAst]) {
+            $element.Elements
+        } else {
+            # otherwise, include it as is.
+            $element
+        }
+    })
+
+# Now we have all of the words in a sentence.
+# We can still determine if an item in a list was in a list by inspecting it's parent.
+
 $sentences = @()
 if ($SpecificCommands) {    
     $potentialCommands = $SpecificCommands
@@ -117,32 +156,6 @@ $potentialCommandIndex = -1
 foreach ($potentialCommand in $potentialCommands) {
     $potentialCommandIndex++
     $commandName = $potentialCommandName = $potentialCommandNames[$potentialCommandIndex]
-    <#
-    Each potential command can be thought of as a simple sentence with (mostly) natural syntax
-    
-    command <parametername> ...<parameterargument> (etc)     
-        
-    either more natural or PowerShell syntax should be allowed, for example:
-
-    all functions can Quack {
-        "quack"
-    }
-
-    would map to the command all and the parameters -Function and -Can (with the arguments Quack and {"quack"})
-
-    Assuming -Functions was a `[switch]` or an alias to a `[switch]`, it will match that `[switch]` and only that switch.
-
-    If -Functions was not a `[switch]`, it will match values from that point.
-
-    If the parameter type is not a list or PSObject, only the next parameter will be matched.
-
-    If the parameter type *is* a list or an PSObject, 
-    or ValueFromRemainingArguments is present and no named parameters were found,
-    then all remaining arguments will be matched until the next named parameter is found.
-    
-    _Aliasing is important_ when working with a given parameter.  The alias, _not_ the parameter name, will be what is mapped.
-
-    #>
 
     # Cache the potential parameters
     $potentialParameters = $potentialCommand.Parameters
@@ -332,8 +345,9 @@ foreach ($potentialCommand in $potentialCommands) {
         }
         elseif ($currentParameter) {
             if ($mappedParameters.Contains($currentParameter) -and
-                $currentParameter.ParameterType -isnot [Collections.IList] -and
-                $currentParameter.ParameterType -isnot [PSObject]                
+                $currentParameterMetadata.ParameterType -ne [Collections.IList] -and
+                $currentParameterMetadata.ParameterType -ne [PSObject] -and
+                $currentParameterMetadata.ParameterType -ne [Object]
             ) {
                 $clauses += [PSCustomObject][Ordered]@{
                     PSTypeName    = 'PipeScript.Sentence.Clause'
@@ -360,44 +374,34 @@ foreach ($potentialCommand in $potentialCommands) {
             $currentClause = @()
         }
 
+        $commandElementValue =
+            if ($commandElement.Value -and 
+                $commandElement -isnot [Management.Automation.Language.ExpandableStringExpressionAst]) {
+                $commandElement.Value
+            } 
+            elseif ($commandElement -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
+                [ScriptBlock]::Create($commandElement.Extent.ToString() -replace '^\{' -replace '\}$')
+            }
+            else {
+                $commandElement
+            }
+
         # If we have a current parameter
         if ($currentParameter) {
             
             # Map the current element to this parameter.
-            
-            
-            $mappedParameters[$currentParameter] = 
+            $mappedParameters[$currentParameter] =
                 if ($mappedParameters[$currentParameter]) {
-                    @($mappedParameters[$currentParameter]) + @($commandElement)
+                    @($mappedParameters[$currentParameter]) + $commandElementValue
                 } else {
-                    if ($commandElement.Value) {
-                        $commandElement.Value
-                    } 
-                    elseif ($commandElement -is [ScriptBlockExpressionAst]) {
-                        [ScriptBlock]::Create($commandElement.Extent.ToString() -replace '^\{' -replace '\}$')
-                    }
-                    else {
-                        $commandElement
-                    }
+                    $commandElementValue
                 }
             $currentClause += $commandElement
-            
-            
         } else {
             # otherwise add the command element to our unbound parameters.
-            $unboundParameters +=
-                if ($commandElement.Value) {
-                    $commandElement.Value
-                } 
-                elseif ($commandElement -is [ScriptBlockExpressionAst]) {
-                    [ScriptBlock]::Create($commandElement.Extent.ToString() -replace '^\{' -replace '\}$')
-                }
-                else {
-                    $commandElement
-                }
+            $unboundParameters += $commandElementValue                
             $currentClause += $commandElement
         }
-
     }
 
     if ($currentClause) {

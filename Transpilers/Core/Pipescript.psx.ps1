@@ -91,38 +91,45 @@ process {
                     @(
                         # check each ScriptBlock attribute
                         foreach ($attrAst in $ScriptBlock.Ast.ParamBlock.Attributes) {
-                            
+                            # and see if it is a real type.
                             $attrRealType = 
                                 if ($attrAst.TypeName.GetReflectionType) {
                                     $attrAst.TypeName.GetReflectionType()
                                 } elseif ($attrAst.TypeName.ToString) {
                                     $attrAst.TypeName.ToString() -as [type]
                                 }
-                                
+                            
+                            # If it is not a real type, 
                             if (-not $attrRealType) {
-                                $attrAst
+                                $attrAst # we will transpile it with the whole script block as input.
                             }
                         }
                     )
                 
+                # Now, we strip away any Attribute Based Composition.
                 $replacements = [Ordered]@{}
                 $myOffset     = 0
-                foreach ($moreTo in $moreToPreTranspile) {
+                # To do this effeciently, we collect all of the attributes left to pretranspile
+                foreach ($moreTo in $moreToPreTranspile) {                                        
                     $TranspilerAttributes += $moreTo.Extent.ToString()
                     $start = $scriptText.IndexOf($moreTo.extent.text, $myOffset)
                     $end   = $start + $moreTo.Extent.Text.Length
-                    $replacements["$start,$end"] = ''
+                    $replacements["$start,$end"] = '' # and replace each of them with a blank.
                 }
 
+                # get the updated script,
                 $UpdatedScript = Update-PipeScript -ScriptReplacement $replacements -ScriptBlock $ScriptBlock
-
-                $scriptBlock = $UpdatedScript
+                $scriptBlock = $UpdatedScript # and replace $ScriptBlock.
             }
 
-            $scriptText = "$scriptBlock"
-            
 
-            $PreTranspile = 
+            # Now we set the to the contents of the scriptblock.
+            $scriptText = "$scriptBlock"
+
+            # If there was no ScriptBlock, return
+            if (-not $ScriptBlock) { return }
+
+            $PreTranspile =
                 if ($transpilerAttributes) {
                     [ScriptBlock]::Create(
                         ($TranspilerAttributes -join [Environment]::NewLine) + $(
@@ -132,8 +139,6 @@ process {
                         ) + $ScriptBlock
                     )
                 }
-
-            if (-not $ScriptBlock) { return }
 
             # If there were any attributes that can be pre-transpiled, convert them.
             if ($PreTranspile.Ast.ParamBlock.Attributes) {
@@ -206,9 +211,11 @@ process {
 
                 $itemTypeName = $item.GetType().Fullname
                 if (-not $script:TranspilerAstTypes[$itemTypeName]) {
-                    $script:TranspilerAstTypes[$itemTypeName] = Get-Transpiler -CouldPipe $item |
-                        Where-Object { 
-                            $_.ExtensionCommand.CouldRun(@{} + $_.ExtensionParameter)
+                    $script:TranspilerAstTypes[$itemTypeName] = 
+                        foreach ($couldPipe in Get-Transpiler -CouldPipe $item) {
+                            if ($couldPipe.ExtensionCommand.CouldRun(@{} + $couldPipe.ExtensionParameter)) {
+                                $couldPipe
+                            }
                         }
                 }
 
@@ -228,44 +235,102 @@ process {
                     }
 
                 # If we found any matching pipescripts
-                if ($pipescripts) {                    
-                    :NextPipeScript 
-                        foreach ($ps in $pipescripts) {
-                            $pipeScriptOutput = Invoke-PipeScript -InputObject $item -CommandInfo $ps.ExtensionCommand
-                            foreach ($pso in $pipeScriptOutput) {
-                                if ($pso -is [Collections.IDictionary]) {
-                                    $psoCopy = [Ordered]@{} + $pso                             
-                                    foreach ($kv in @($psoCopy.GetEnumerator())) {
-                                        if ($kv.Key -is [Management.Automation.Language.Ast]) {
-                                            $astReplacements[$kv.Key] = $kv.Value
-                                            $psoCopy.Remove($kv.Key)
-                                        } elseif ($kv.Key -match '^\d,\d$') {
-                                            $textReplacements["$($kv.Key)"] = $kv.Value
-                                            $psoCopy.Remove($kv.Key)
+                if ($pipescripts) {
+                    # try to run each one.
+                    :NextPipeScript foreach ($ps in $pipescripts) {
+                        # If it had output
+                        $pipeScriptOutput = Invoke-PipeScript -InputObject $item -CommandInfo $ps.ExtensionCommand
+                        # Walk over each potential output
+                        foreach ($pso in $pipeScriptOutput) {
+                            # If the output was a dictionary, treat it as a series of replacements.
+                            if ($pso -is [Collections.IDictionary]) {                                
+                                $psoCopy = [Ordered]@{} + $pso
+                                foreach ($kv in @($psoCopy.GetEnumerator())) {
+                                    # If the key was an AST element
+                                    if ($kv.Key -is [Management.Automation.Language.Ast]) {
+                                        # replace the element with it's value
+                                        $astReplacements[$kv.Key] = $kv.Value
+                                        $psoCopy.Remove($kv.Key)
+                                    } elseif ($kv.Key -match '^\d+,\d+$') {
+                                        # otherwise, it the key was a pair of digits, replace that span.
+                                        $Replacements["$($kv.Key)"] = $kv.Value
+                                        $psoCopy.Remove($kv.Key)
+                                    }
+                                }
+                                if ($psoCopy.Count) {
+                                    $updateSplats += $psoCopy
+                                }                            
+                            }
+                            # If we have ouput from any of the scripts (and we have not yet replaced anything)
+                            elseif ($pso -and -not $AstReplacements[$item]) 
+                            { 
+                                # determine the end of this AST element
+                                $start = $scriptText.IndexOf($item.Extent.Text, $myOffset) 
+                                $end   = $start + $item.Extent.Text.Length
+                                $skipUntil = $end # set SkipUntil
+                                $AstReplacements[$item] = $pso # and store the replacement.
+
+                                #region Special Properties
+                                # Because PowerShell can attach properties to any object,
+                                # we can use the presence of attached properties to change context around the replacement.
+
+                                # .SkipUntil or .IgnoreUntil can specify a new index or AST end point
+                                foreach ($toSkipAlias in 'SkipUntil', 'IgnoreUntil') {                                    
+                                    foreach ($toSkipUntil in $pso.$toSkipAlias) {
+                                        if ($toSkipUntil -is [int] -and $toSkipUntil -gt $end) {
+                                            $skipUntil = $toSkipUntil
+                                        } elseif ($toSkipUntil -is [Management.Automation.Language.Ast]) {
+                                            $newSkipStart = $scriptText.IndexOf($toSkipUntil.Extent.Text, $myOffset)
+                                            if ($newSkipStart -ne -1) {
+                                                $end   = $newSkipStart + $toSkipUntil.Extent.Text.Length
+                                                if ($end -gt $skipUntil) {
+                                                    $skipUntil = $end
+                                                }
+                                                if ($toSkipUntil -ne $item) {
+                                                    $AstReplacements[$toSkipUntil] = ''
+                                                }
+                                            }
                                         }
                                     }
-                                    if ($psoCopy.Count) {
-                                        $updateSplats += $psoCopy
-                                    }                            
                                 }
-                                # If we have ouput from any of the scripts (and we have not yet replaced anything)
-                                elseif ($pso -and -not $AstReplacements[$item]) 
-                                { 
-                                    # determine the end of this AST element
-                                    $start = $scriptText.IndexOf($item.Extent.Text, $myOffset) 
-                                    $end   = $start + $item.Extent.Text.Length
-                                    $skipUntil = $end # set SkipUntil
-                                    $AstReplacements[$item] = $pso # and store the replacement.                                    
+
+                                #.ToRemove,.RemoveAST, or .RemoveElement will remove AST elements or ranges
+                                foreach ($toRemoveAlias in 'ToRemove','RemoveAST','RemoveElement') {
+                                    foreach ($toRemove in $pso.$toRemoveAlias) {
+                                        if ($toRemove -is [Management.Automation.Language.Ast]) {
+                                            $AstReplacements[$toRemove] = ''
+                                        } elseif ($toRemove -match '^\d+,\d+$') {
+                                            $Replacements[$toRemove] = ''
+                                        }
+                                    }
                                 }
+
+                                #.ToReplace,.ReplaceAST or .ReplaceElement will replace elements or ranges.
+                                foreach ($toReplaceAlias in 'ToReplace','ReplaceAST','ReplaceElement') {
+                                    foreach ($toReplace in $pso.$toReplaceAlias) {
+                                        if ($toReplace -isnot [Collections.IDictionary]) {
+                                            continue
+                                        }
+                                        foreach ($tr in $toReplace.GetEnumerator()) {
+                                            if ($tr.Key -is [Management.Automaton.Language.Ast]) {
+                                                $AstReplacements[$tr.Key] = $tr.Value
+                                            } elseif ($tr.Key -match '^\d+,\d+$') {
+                                                $textReplacements["$($tr.Key)"] = $tr.Value
+                                            }
+                                        }
+                                    }
+                                }
+                                #endregion Special Properties
                             }
-                            # If the transpiler had output, do not process any more transpilers.
-                            if ($pipeScriptOutput) { break }
-                        }                
+                        }
+                        # If the transpiler had output, do not process any more transpilers.
+                        if ($pipeScriptOutput) { break }
+                    }                
                 } 
             }
             
-            $newScript =
-                if ($AstReplacements.Count) {            
+            $newScript =            
+                if ($AstReplacements.Count) {
                     Update-PipeScript -ScriptBlock $ScriptBlock -ScriptReplacement $replacements -AstReplacement $AstReplacements
                 } elseif ($updateSplats) {
                     foreach ($upSplat in $updateSplats) {

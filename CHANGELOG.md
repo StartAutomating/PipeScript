@@ -1,3 +1,19 @@
+## 0.2:
+
+* Massive Improvements in Templating
+  * Templates can be used interactively (Fixes #285)
+  * Renaming all Inline Transpilers to Template Transpilers
+* Natural Parsing Improvements
+  * ArrayLiterals are expanded (Fixes #291)
+  * AsSentence now only allows one value into a singleton (Fixes #279)
+  * Not expanding expandable strings (Fixes #286)
+* Transpilers can change nearby context (Fixes #292)
+* Allowing dot syntax to extend across multiple statements (Fixes #273)
+* Adding requires keyword (Fixes #293)
+* PipeScript modifies its own manifest (Fixes #294)
+
+---
+
 ## 0.1.9:
 * Protocol Transpilers
   * Adding JSONSchema transpiler (Fixes #274)

@@ -2,47 +2,48 @@ These are all of the transpilers currently included in PipeScript:
 
 
 
-|Language                                                  |Synopsis                                |Pattern                         |
-|----------------------------------------------------------|----------------------------------------|--------------------------------|
-|[ADA](Transpilers/Inline/Inline.ADA.psx.ps1)              |ADA PipeScript Transpiler.              |```\.ad[bs]$```                 |
-|[ATOM](Transpilers/Inline/Inline.ATOM.psx.ps1)            |ATOM Inline PipeScript Transpiler.      |```\.atom$```                   |
-|[Bash](Transpilers/Inline/Inline.Bash.psx.ps1)            |Bash PipeScript Transpiler.             |```\.sh$```                     |
-|[Basic](Transpilers/Inline/Inline.Basic.psx.ps1)          |Basic PipeScript Transpiler.            |```\.(?>bas\\|vbs{0,1})$```     |
-|[Batch](Transpilers/Inline/Inline.Batch.psx.ps1)          |Batch PipeScript Transpiler.            |```\.cmd$```                    |
-|[Bicep](Transpilers/Inline/Inline.Bicep.psx.ps1)          |Bicep Inline PipeScript Transpiler.     |```\.bicep$```                  |
-|[CPlusPlus](Transpilers/Inline/Inline.CPlusPlus.psx.ps1)  |C/C++ PipeScript Transpiler.            |```\.(?>c\\|cpp\\|h\\|swig)$``` |
-|[CSharp](Transpilers/Inline/Inline.CSharp.psx.ps1)        |C# Inline PipeScript Transpiler.        |```\.cs$```                     |
-|[CSS](Transpilers/Inline/Inline.CSS.psx.ps1)              |CSS Inline PipeScript Transpiler.       |```\.s{0,1}css$```              |
-|[Go](Transpilers/Inline/Inline.Go.psx.ps1)                |Go PipeScript Transpiler.               |```\.go$```                     |
-|[HAXE](Transpilers/Inline/Inline.HAXE.psx.ps1)            |Haxe PipeScript Transpiler.             |```\.hx$```                     |
-|[HCL](Transpilers/Inline/Inline.HCL.psx.ps1)              |HCL PipeScript Transpiler.              |```\.hcl$```                    |
-|[HLSL](Transpilers/Inline/Inline.HLSL.psx.ps1)            |HLSL Inline PipeScript Transpiler.      |```\.hlsl$```                   |
-|[HTML](Transpilers/Inline/Inline.HTML.psx.ps1)            |HTML PipeScript Transpiler.             |```\.htm{0,1}```                |
-|[Java](Transpilers/Inline/Inline.Java.psx.ps1)            |Java Inline PipeScript Transpiler.      |```\.(?>java)$```               |
-|[JavaScript](Transpilers/Inline/Inline.JavaScript.psx.ps1)|JavaScript Inline PipeScript Transpiler.|```\.js$```                     |
-|[Json](Transpilers/Inline/Inline.Json.psx.ps1)            |JSON PipeScript Transpiler.             |```\.json$```                   |
-|[Kotlin](Transpilers/Inline/Inline.Kotlin.psx.ps1)        |Kotlin Inline PipeScript Transpiler.    |```\.kt$```                     |
-|[Latex](Transpilers/Inline/Inline.Latex.psx.ps1)          |Latex Inline PipeScript Transpiler.     |```\.(?>latex\\|tex)$```        |
-|[LUA](Transpilers/Inline/Inline.LUA.psx.ps1)              |LUA Inline PipeScript Transpiler.       |```\.lua$```                    |
-|[Markdown](Transpilers/Inline/Inline.Markdown.psx.ps1)    |Markdown File Transpiler.               |```\.(?>md\\|markdown)$```      |
-|[ObjectiveC](Transpilers/Inline/Inline.ObjectiveC.psx.ps1)|Objective C PipeScript Transpiler.      |```\.(?>m\\|mm)$```             |
-|[OpenSCAD](Transpilers/Inline/Inline.OpenSCAD.psx.ps1)    |OpenSCAD Inline PipeScript Transpiler.  |```\.scad$```                   |
-|[Perl](Transpilers/Inline/Inline.Perl.psx.ps1)            |Perl Inline PipeScript Transpiler.      |```\.(?>pl\\|pod)$```           |
-|[PHP](Transpilers/Inline/Inline.PHP.psx.ps1)              |PHP PipeScript Transpiler.              |```\.php$```                    |
-|[PSD1](Transpilers/Inline/Inline.PSD1.psx.ps1)            |PSD1 Inline PipeScript Transpiler.      |```\.psd1$```                   |
-|[Python](Transpilers/Inline/Inline.Python.psx.ps1)        |Python Inline PipeScript Transpiler.    |```\.py$```                     |
-|[R](Transpilers/Inline/Inline.R.psx.ps1)                  |R PipeScript Transpiler.                |```\.r$```                      |
-|[Racket](Transpilers/Inline/Inline.Racket.psx.ps1)        |Racket Inline PipeScript Transpiler.    |```\.rkt$```                    |
-|[Razor](Transpilers/Inline/Inline.Razor.psx.ps1)          |Razor Inline PipeScript Transpiler.     |```\.(cshtml\\|razor)$```       |
-|[RSS](Transpilers/Inline/Inline.RSS.psx.ps1)              |RSS Inline PipeScript Transpiler.       |```\.rss$```                    |
-|[Ruby](Transpilers/Inline/Inline.Ruby.psx.ps1)            |Ruby Inline PipeScript Transpiler.      |```\.rb$```                     |
-|[Rust](Transpilers/Inline/Inline.Rust.psx.ps1)            |Rust Inline PipeScript Transpiler.      |```\.rs$```                     |
-|[SQL](Transpilers/Inline/Inline.SQL.psx.ps1)              |SQL PipeScript Transpiler.              |```\.sql$```                    |
-|[TCL](Transpilers/Inline/Inline.TCL.psx.ps1)              |TCL/TK PipeScript Transpiler.           |```\.t(?>cl\\|k)$```            |
-|[TOML](Transpilers/Inline/Inline.TOML.psx.ps1)            |TOML Inline PipeScript Transpiler.      |```\.toml$```                   |
-|[TypeScript](Transpilers/Inline/Inline.TypeScript.psx.ps1)|TypeScript Inline PipeScript Transpiler.|```\.tsx{0,1}```                |
-|[XML](Transpilers/Inline/Inline.XML.psx.ps1)              |XML Inline PipeScript Transpiler.       |```\.(?>xml\\|xaml\\|ps1xml)$```|
-|[YAML](Transpilers/Inline/Inline.YAML.psx.ps1)            |Yaml File Transpiler.                   |```\.(?>yml\\|yaml)$```         |
+|Language                                                                  |Synopsis                        |Pattern                         |
+|--------------------------------------------------------------------------|--------------------------------|--------------------------------|
+|[ADA.Template](Transpilers/Templates/ADA.Template.psx.ps1)                |ADA Template Transpiler.        |```\.ad[bs]$```                 |
+|[ATOM.Template](Transpilers/Templates/ATOM.Template.psx.ps1)              |ATOM Template Transpiler.       |```\.atom$```                   |
+|[Bash.Template](Transpilers/Templates/Bash.Template.psx.ps1)              |Bash Template Transpiler.       |```\.sh$```                     |
+|[Basic.Template](Transpilers/Templates/Basic.Template.psx.ps1)            |Basic Template Transpiler.      |```\.(?>bas\\|vbs{0,1})$```     |
+|[Batch.Template](Transpilers/Templates/Batch.Template.psx.ps1)            |Batch Template Transpiler.      |```\.cmd$```                    |
+|[Bicep.Template](Transpilers/Templates/Bicep.Template.psx.ps1)            |Bicep Template Transpiler.      |```\.bicep$```                  |
+|[CPlusPlus.Template](Transpilers/Templates/CPlusPlus.Template.psx.ps1)    |C/C++ Template Transpiler.      |```\.(?>c\\|cpp\\|h\\|swig)$``` |
+|[CSharp.Template](Transpilers/Templates/CSharp.Template.psx.ps1)          |C# Template Transpiler.         |```\.cs$```                     |
+|[CSS.Template](Transpilers/Templates/CSS.Template.psx.ps1)                |CSS Template Transpiler.        |```\.s{0,1}css$```              |
+|[Go.Template](Transpilers/Templates/Go.Template.psx.ps1)                  |Go Template Transpiler.         |```\.go$```                     |
+|[HAXE.Template](Transpilers/Templates/HAXE.Template.psx.ps1)              |Haxe Template Transpiler.       |```\.hx$```                     |
+|[HCL.Template](Transpilers/Templates/HCL.Template.psx.ps1)                |HCL Template Transpiler.        |```\.hcl$```                    |
+|[HLSL.Template](Transpilers/Templates/HLSL.Template.psx.ps1)              |HLSL Template Transpiler.       |```\.hlsl$```                   |
+|[HTML.Template](Transpilers/Templates/HTML.Template.psx.ps1)              |HTML PipeScript Transpiler.     |```\.htm{0,1}```                |
+|[Java.Template](Transpilers/Templates/Java.Template.psx.ps1)              |Java Template Transpiler.       |```\.(?>java)$```               |
+|[JavaScript.Template](Transpilers/Templates/JavaScript.Template.psx.ps1)  |JavaScript Template Transpiler. |```\.js$```                     |
+|[Json.Template](Transpilers/Templates/Json.Template.psx.ps1)              |JSON PipeScript Transpiler.     |```\.json$```                   |
+|[Kotlin.Template](Transpilers/Templates/Kotlin.Template.psx.ps1)          |Kotlin Template Transpiler.     |```\.kt$```                     |
+|[Latex.Template](Transpilers/Templates/Latex.Template.psx.ps1)            |Latex Template Transpiler.      |```\.(?>latex\\|tex)$```        |
+|[LUA.Template](Transpilers/Templates/LUA.Template.psx.ps1)                |LUA Template Transpiler.        |```\.lua$```                    |
+|[Markdown.Template](Transpilers/Templates/Markdown.Template.psx.ps1)      |Markdown Template Transpiler.   |```\.(?>md\\|markdown)$```      |
+|[ObjectiveC.Template](Transpilers/Templates/ObjectiveC.Template.psx.ps1)  |Objective Template Transpiler.  |```\.(?>m\\|mm)$```             |
+|[OpenSCAD.Template](Transpilers/Templates/OpenSCAD.Template.psx.ps1)      |OpenSCAD Template Transpiler.   |```\.scad$```                   |
+|[Perl.Template](Transpilers/Templates/Perl.Template.psx.ps1)              |Perl Template Transpiler.       |```\.(?>pl\\|pod)$```           |
+|[PHP.Template](Transpilers/Templates/PHP.Template.psx.ps1)                |PHP Template Transpiler.        |```\.php$```                    |
+|[PSD1.Template](Transpilers/Templates/PSD1.Template.psx.ps1)              |PSD1 Template Transpiler.       |```\.psd1$```                   |
+|[Python.Template](Transpilers/Templates/Python.Template.psx.ps1)          |Python Template Transpiler.     |```\.py$```                     |
+|[R.Template](Transpilers/Templates/R.Template.psx.ps1)                    |R Template Transpiler.          |```\.r$```                      |
+|[Racket.Template](Transpilers/Templates/Racket.Template.psx.ps1)          |Racket Template Transpiler.     |```\.rkt$```                    |
+|[Razor.Template](Transpilers/Templates/Razor.Template.psx.ps1)            |Razor Template Transpiler.      |```\.(cshtml\\|razor)$```       |
+|[RSS.Template](Transpilers/Templates/RSS.Template.psx.ps1)                |RSS Template Transpiler.        |```\.rss$```                    |
+|[Ruby.Template](Transpilers/Templates/Ruby.Template.psx.ps1)              |Ruby Template Transpiler.       |```\.rb$```                     |
+|[Rust.Template](Transpilers/Templates/Rust.Template.psx.ps1)              |Rust Template Transpiler.       |```\.rs$```                     |
+|[SQL.Template](Transpilers/Templates/SQL.Template.psx.ps1)                |SQL Template Transpiler.        |```\.sql$```                    |
+|[TCL.Template](Transpilers/Templates/TCL.Template.psx.ps1)                |TCL/TK Template Transpiler.     |```\.t(?>cl\\|k)$```            |
+|[TOML.Template](Transpilers/Templates/TOML.Template.psx.ps1)              |TOML Template Transpiler.       |```\.toml$```                   |
+|[TypeScript.Template](Transpilers/Templates/TypeScript.Template.psx.ps1)  |TypeScript Template Transpiler. |```\.tsx{0,1}```                |
+|[WebAssembly.Template](Transpilers/Templates/WebAssembly.Template.psx.ps1)|WebAssembly Template Transpiler.|```\.wat$```                    |
+|[XML.Template](Transpilers/Templates/XML.Template.psx.ps1)                |XML Template Transpiler.        |```\.(?>xml\\|xaml\\|ps1xml)$```|
+|[YAML.Template](Transpilers/Templates/YAML.Template.psx.ps1)              |Yaml Template Transpiler.       |```\.(?>yml\\|yaml)$```         |
 
 
 

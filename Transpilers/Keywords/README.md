@@ -7,13 +7,14 @@ This directory contains the implementations of PipeScript language keywords.
 ## Keyword List
 
 
-|DisplayName             |Synopsis                                       |
-|------------------------|-----------------------------------------------|
-|[All](All.psx.ps1)      |[all keyword](All.psx.ps1)                     |
-|[Assert](Assert.psx.ps1)|[Assert keyword](Assert.psx.ps1)               |
-|[Await](Await.psx.ps1)  |[awaits asynchronous operations](Await.psx.ps1)|
-|[New](New.psx.ps1)      |['new' keyword](New.psx.ps1)                   |
-|[Until](Until.psx.ps1)  |[until keyword](Until.psx.ps1)                 |
+|DisplayName                 |Synopsis                                                              |
+|----------------------------|----------------------------------------------------------------------|
+|[All](All.psx.ps1)          |[all keyword](All.psx.ps1)                                            |
+|[Assert](Assert.psx.ps1)    |[Assert keyword](Assert.psx.ps1)                                      |
+|[Await](Await.psx.ps1)      |[awaits asynchronous operations](Await.psx.ps1)                       |
+|[New](New.psx.ps1)          |['new' keyword](New.psx.ps1)                                          |
+|[Requires](Requires.psx.ps1)|[requires one or more modules, variables, or types.](Requires.psx.ps1)|
+|[Until](Until.psx.ps1)      |[until keyword](Until.psx.ps1)                                        |
 
 
 
@@ -205,6 +206,20 @@ This directory contains the implementations of PipeScript language keywords.
 
 ~~~PowerShell
     .> { new 'https://schema.org/Thing' }
+~~~
+
+## Requires Example 1
+
+
+~~~PowerShell
+    requires latest pipescript  # will require the latest version of pipescript
+~~~
+
+## Requires Example 2
+
+
+~~~PowerShell
+    requires variable $pid $sid # will error, because there is no $sid
 ~~~
 
 ## Until Example 1
