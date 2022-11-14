@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.1.9'
+    ModuleVersion     = '0.2'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -10,6 +10,7 @@
     CompanyName       = 'Start-Automating'
     Copyright         = '2022 Start-Automating'
     Author            = 'James Brundage'
+    FunctionsToExport = 'Build-PipeScript','Get-PipeScript','Get-Transpiler','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript'
     PrivateData = @{
         PSData = @{
             ProjectURI = 'https://github.com/StartAutomating/PipeScript'
@@ -19,20 +20,25 @@
             BuildModule     = @('EZOut','Piecemeal','PipeScript','HelpOut', 'PSDevOps')
             Tags            = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
-## 0.1.9:
-* Protocol Transpilers
-    * Adding JSONSchema transpiler (Fixes #274)
-    * HTTP Protocol: Only allowing HTTP Methods (Fixes #275)
-* Keyword improvements:
-    * all scripts in $directory (Fixes #277)
-    * 'new' keyword recursively transpiles constructor arguments (Fixes #271) 
-* Core improvements:
-    * Core Transpiler stops transpilation of an item after any output (Fixes #280)
-    * [CommandAst].AsSentence now maps singleton values correctly (Fixes #279)
-    * PipeScript now handles CommandNotFound, enabling interactive use (Fixes #281)    
+## 0.2:
+
+* Massive Improvements in Templating
+  * Templates can be used interactively (Fixes #285)
+  * Renaming all Inline Transpilers to Template Transpilers
+* Natural Parsing Improvements
+  * ArrayLiterals are expanded (Fixes #291)
+  * AsSentence now only allows one value into a singleton (Fixes #279)
+  * Not expanding expandable strings (Fixes #286)
+* Transpilers can change nearby context (Fixes #292)
+* Allowing dot syntax to extend across multiple statements (Fixes #273)
+* Adding requires keyword (Fixes #293)
+* PipeScript modifies its own manifest (Fixes #294)
+
+---
             
 Additional history in [CHANGELOG](https://pipescript.start-automating.com/CHANGELOG)
 '@
         }
     }
 }
+
