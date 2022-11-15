@@ -86,6 +86,10 @@ $($Keywords -join '|') # followed by keywords
 ### Parameters
 #### **StringConstantExpression**
 
+A RegexLiteral can be any string constant expression (as long as it's not in an attribute).
+
+
+
 > **Type**: ```[StringConstantExpressionAst]```
 
 > **Required**: true
@@ -98,6 +102,10 @@ $($Keywords -join '|') # followed by keywords
 
 ---
 #### **ExpandableStringExpression**
+
+It can also by any expandable string, which allows you to construct Regexes using PowerShell variables and subexpressions.
+
+
 
 > **Type**: ```[ExpandableStringExpressionAst]```
 
