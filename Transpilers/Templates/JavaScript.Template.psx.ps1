@@ -16,6 +16,21 @@
     * ```null```
     * ```""```
     * ```''```
+.EXAMPLE
+    $helloJs = Hello.js template '
+    msg = null /*{param($msg = ''hello world'') "`"$msg`""}*/ ;
+    if (console) {
+        console.log(msg);
+    }
+    '
+.EXAMPLE
+    $helloMsg = {param($msg = 'hello world') "`"$msg`""}
+    $helloJs = HelloWorld.js template "
+    msg = null /*{$helloMsg}*/;
+    if (console) {
+        console.log(msg);
+    }
+    "
 #>
 [ValidatePattern('\.js$')]
 param(
@@ -58,8 +73,9 @@ begin {
 }
 
 process {
-    # Add parameters related to the file
+    # If we have been passed a command
     if ($CommandInfo) {
+        # add parameters related to the file.
         $Splat.SourceFile = $commandInfo.Source -as [IO.FileInfo]
         $Splat.SourceText = [IO.File]::ReadAllText($commandInfo.Source)
     }
