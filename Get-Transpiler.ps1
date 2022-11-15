@@ -1,4 +1,4 @@
-#region Piecemeal [ 0.3.5 ] : Easy Extensible Plugins for PowerShell
+#region Piecemeal [ 0.3.6 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
 # Install-Piecemeal -ExtensionNoun 'Transpiler' -ExtensionPattern '\.psx\.ps1$' -ExtensionTypeName 'PipeScript.Transpiler' -OutputPath '.\Get-Transpiler.ps1'
@@ -602,11 +602,20 @@ function Get-Transpiler
                     $params = @{}
                     $mappedParams = [Ordered]@{} # Create a collection of mapped parameters
                     # Walk thru each parameter of this command
-                    foreach ($myParam in $paramSet.Parameters) {
+                    :nextParameter foreach ($myParam in $paramSet.Parameters) {
                         # If the parameter is ValueFromPipeline
                         if ($myParam.ValueFromPipeline) {
+                            $potentialPSTypeNames = @($myParam.Attributes.PSTypeName) -ne ''
+                            if ($potentialPSTypeNames)  {                                
+                                foreach ($potentialTypeName in $potentialPSTypeNames) {
+                                    if ($potentialTypeName -and $InputObject.pstypenames -contains $potentialTypeName) {
+                                        $mappedParams[$myParam.Name] = $params[$myParam.Name] = $InputObject
+                                        continue nextParameter
+                                    }
+                                }                                    
+                            }
                             # and we have an input object
-                            if ($null -ne $inputObject -and
+                            elseif ($null -ne $inputObject -and
                                 (
                                     # of the exact type
                                     $myParam.ParameterType -eq $inputObject.GetType() -or
@@ -925,5 +934,5 @@ function Get-Transpiler
         }
     }
 }
-#endregion Piecemeal [ 0.3.5 ] : Easy Extensible Plugins for PowerShell
+#endregion Piecemeal [ 0.3.6 ] : Easy Extensible Plugins for PowerShell
 
