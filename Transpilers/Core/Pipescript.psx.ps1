@@ -268,60 +268,63 @@ process {
                                 $start = $scriptText.IndexOf($item.Extent.Text, $myOffset) 
                                 $end   = $start + $item.Extent.Text.Length
                                 $skipUntil = $end # set SkipUntil
-                                $AstReplacements[$item] = $pso # and store the replacement.
-
-                                #region Special Properties
-                                # Because PowerShell can attach properties to any object,
-                                # we can use the presence of attached properties to change context around the replacement.
-
-                                # .SkipUntil or .IgnoreUntil can specify a new index or AST end point
-                                foreach ($toSkipAlias in 'SkipUntil', 'IgnoreUntil') {                                    
-                                    foreach ($toSkipUntil in $pso.$toSkipAlias) {
-                                        if ($toSkipUntil -is [int] -and $toSkipUntil -gt $end) {
-                                            $skipUntil = $toSkipUntil
-                                        } elseif ($toSkipUntil -is [Management.Automation.Language.Ast]) {
-                                            $newSkipStart = $scriptText.IndexOf($toSkipUntil.Extent.Text, $myOffset)
-                                            if ($newSkipStart -ne -1) {
-                                                $end   = $newSkipStart + $toSkipUntil.Extent.Text.Length
-                                                if ($end -gt $skipUntil) {
-                                                    $skipUntil = $end
-                                                }
-                                                if ($toSkipUntil -ne $item) {
-                                                    $AstReplacements[$toSkipUntil] = ''
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                #.ToRemove,.RemoveAST, or .RemoveElement will remove AST elements or ranges
-                                foreach ($toRemoveAlias in 'ToRemove','RemoveAST','RemoveElement') {
-                                    foreach ($toRemove in $pso.$toRemoveAlias) {
-                                        if ($toRemove -is [Management.Automation.Language.Ast]) {
-                                            $AstReplacements[$toRemove] = ''
-                                        } elseif ($toRemove -match '^\d+,\d+$') {
-                                            $Replacements[$toRemove] = ''
-                                        }
-                                    }
-                                }
-
-                                #.ToReplace,.ReplaceAST or .ReplaceElement will replace elements or ranges.
-                                foreach ($toReplaceAlias in 'ToReplace','ReplaceAST','ReplaceElement') {
-                                    foreach ($toReplace in $pso.$toReplaceAlias) {
-                                        if ($toReplace -isnot [Collections.IDictionary]) {
-                                            continue
-                                        }
-                                        foreach ($tr in $toReplace.GetEnumerator()) {
-                                            if ($tr.Key -is [Management.Automaton.Language.Ast]) {
-                                                $AstReplacements[$tr.Key] = $tr.Value
-                                            } elseif ($tr.Key -match '^\d+,\d+$') {
-                                                $textReplacements["$($tr.Key)"] = $tr.Value
-                                            }
-                                        }
-                                    }
-                                }
-                                #endregion Special Properties
+                                $AstReplacements[$item] = $pso # and store the replacement.                                
                             }
+
+                            #region Special Properties
+
+                            # Because PowerShell can attach properties to any object,
+                            # we can use the presence of attached properties to change context around the replacement.
+                            # This happens regardless of if there is already a replacement for the current item.
+
+                            # .SkipUntil or .IgnoreUntil can specify a new index or AST end point
+                            foreach ($toSkipAlias in 'SkipUntil', 'IgnoreUntil') {                                    
+                                foreach ($toSkipUntil in $pso.$toSkipAlias) {
+                                    if ($toSkipUntil -is [int] -and $toSkipUntil -gt $end) {
+                                        $skipUntil = $toSkipUntil
+                                    } elseif ($toSkipUntil -is [Management.Automation.Language.Ast]) {
+                                        $newSkipStart = $scriptText.IndexOf($toSkipUntil.Extent.Text, $myOffset)
+                                        if ($newSkipStart -ne -1) {
+                                            $end   = $newSkipStart + $toSkipUntil.Extent.Text.Length
+                                            if ($end -gt $skipUntil) {
+                                                $skipUntil = $end
+                                            }
+                                            if ($toSkipUntil -ne $item) {
+                                                $AstReplacements[$toSkipUntil] = ''
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            #.ToRemove,.RemoveAST, or .RemoveElement will remove AST elements or ranges
+                            foreach ($toRemoveAlias in 'ToRemove','RemoveAST','RemoveElement') {
+                                foreach ($toRemove in $pso.$toRemoveAlias) {
+                                    if ($toRemove -is [Management.Automation.Language.Ast]) {
+                                        $AstReplacements[$toRemove] = ''
+                                    } elseif ($toRemove -match '^\d+,\d+$') {
+                                        $Replacements[$toRemove] = ''
+                                    }
+                                }
+                            }
+
+                            #.ToReplace,.ReplaceAST or .ReplaceElement will replace elements or ranges.
+                            foreach ($toReplaceAlias in 'ToReplace','ReplaceAST','ReplaceElement') {
+                                foreach ($toReplace in $pso.$toReplaceAlias) {
+                                    if ($toReplace -isnot [Collections.IDictionary]) {
+                                        continue
+                                    }
+                                    foreach ($tr in $toReplace.GetEnumerator()) {
+                                        if ($tr.Key -is [Management.Automaton.Language.Ast]) {
+                                            $AstReplacements[$tr.Key] = $tr.Value
+                                        } elseif ($tr.Key -match '^\d+,\d+$') {
+                                            $textReplacements["$($tr.Key)"] = $tr.Value
+                                        }
+                                    }
+                                }
+                            }
+                            #endregion Special Properties
+
                         }
                         # If the transpiler had output, do not process any more transpilers.
                         if ($pipeScriptOutput) { break }
