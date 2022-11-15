@@ -85,11 +85,20 @@ $($Keywords -join '|') # followed by keywords
 (?<HereDoc>@){0,1}            # Optional heredoc end
 $                        # string end.     
 '@, Options='IgnoreCase,IgnorePatternWhitespace, RightToLeft')]
+[ValidateScript({
+    $validating = $_
+    if ($validating.Parent -is [Management.Automation.Language.AttributeAST]) {
+        return $false
+    }
+    return $true
+})]
 param(
+# A RegexLiteral can be any string constant expression (as long as it's not in an attribute).
 [Parameter(Mandatory,ValueFromPipeline,ParameterSetName='StringConstantExpressionAST')]
 [Management.Automation.Language.StringConstantExpressionAST]
 $StringConstantExpression,
 
+# It can also by any expandable string, which allows you to construct Regexes using PowerShell variables and subexpressions.
 [Parameter(Mandatory,ValueFromPipeline,ParameterSetName='ExpandableStringExpressionAst')]
 [Management.Automation.Language.ExpandableStringExpressionAst]
 $ExpandableStringExpression
