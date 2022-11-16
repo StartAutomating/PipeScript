@@ -12,7 +12,7 @@ This directory includes uncategorized or 'common' transpilers.
 |DisplayName                             |Synopsis                                                             |
 |----------------------------------------|---------------------------------------------------------------------|
 |[Decorate](Decorate.psx.ps1)            |[decorate transpiler](Decorate.psx.ps1)                              |
-|[Define](Define.psx.ps1)                |[defines a variable](Define.psx.ps1)                                 |
+|[Define](Define.psx.ps1)                |[Defines a variable](Define.psx.ps1)                                 |
 |[Explicit](Explicit.psx.ps1)            |[Makes Output from a PowerShell function Explicit.](Explicit.psx.ps1)|
 |[Help](Help.psx.ps1)                    |[Help Transpiler](Help.psx.ps1)                                      |
 |[Include](Include.psx.ps1)              |[Includes Files](Include.psx.ps1)                                    |
