@@ -419,7 +419,7 @@ process {
                 }
             
             if (-not (Test-Path $Name)) {
-                $null = New-Item -ItemType $file -Path $name -Force                
+                $null = New-Item -ItemType File -Path $name -Force
             }            
             $evaluated | Set-Content -Path $name
             Get-Item -Path $name        

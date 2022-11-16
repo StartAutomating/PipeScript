@@ -22,6 +22,29 @@ The JavaScript Inline Transpiler will consider the following syntax to be empty:
 * ```''```
 
 ---
+### Examples
+#### EXAMPLE 1
+```PowerShell
+$helloJs = Hello.js template '
+msg = null /*{param($msg = ''hello world'') "`"$msg`""}*/ ;
+if (console) {
+    console.log(msg);
+}
+'
+```
+
+#### EXAMPLE 2
+```PowerShell
+$helloMsg = {param($msg = 'hello world') "`"$msg`""}
+$helloJs = HelloWorld.js template "
+msg = null /*{$helloMsg}*/;
+if (console) {
+    console.log(msg);
+}
+"
+```
+
+---
 ### Parameters
 #### **CommandInfo**
 

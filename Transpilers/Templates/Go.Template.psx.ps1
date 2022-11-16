@@ -15,6 +15,37 @@
     * ```nil```
     * ```""```
     * ```''```
+.EXAMPLE    
+    $helloGo = HelloWorld.go template '
+    package main
+
+    import "fmt"
+    func main() {
+        fmt.Println("/*{param($msg = "hello world") "`"$msg`""}*/")
+    }
+    '
+.EXAMPLE
+    $HelloWorld = {param([Alias('msg')]$message = "Hello world") "`"$message`""}
+    $helloGo = HelloWorld.go template "
+    package main
+
+    import `"fmt`"
+    func main() {
+        fmt.Println(`"/*{$helloWorld}*/`")
+    }
+    "
+
+    $helloGo.Save() | 
+        Foreach-Object { 
+            $file = $_
+            if (Get-Command go -commandType Application) {
+                $null = go build $file.FullName
+                & ".\$($file.Name.Replace($file.Extension, '.exe'))"
+            } else {
+                Write-Error "Go install Go"
+            }
+        }
+
 #>
 [ValidatePattern('\.go$')]
 param(
@@ -57,9 +88,12 @@ begin {
 }
 
 process {
-    # Add parameters related to the file
-    $Splat.SourceFile = $commandInfo.Source -as [IO.FileInfo]
-    $Splat.SourceText = [IO.File]::ReadAllText($commandInfo.Source)
+    # If we have been passed a command
+    if ($CommandInfo) {
+        # add parameters related to the file.
+        $Splat.SourceFile = $commandInfo.Source -as [IO.FileInfo]
+        $Splat.SourceText = [IO.File]::ReadAllText($commandInfo.Source)
+    }
     if ($Parameter) { $splat.Parameter = $Parameter }
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
 

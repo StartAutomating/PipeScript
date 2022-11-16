@@ -78,9 +78,12 @@ begin {
 }
 
 process {
-    # Add parameters related to the file
-    $Splat.SourceFile = $commandInfo.Source -as [IO.FileInfo]
-    $Splat.SourceText = [IO.File]::ReadAllText($commandInfo.Source)
+    # If we have been passed a command
+    if ($CommandInfo) {
+        # add parameters related to the file.
+        $Splat.SourceFile = $commandInfo.Source -as [IO.FileInfo]
+        $Splat.SourceText = [IO.File]::ReadAllText($commandInfo.Source)
+    }
     if ($Parameter) { $splat.Parameter = $Parameter }
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
 
