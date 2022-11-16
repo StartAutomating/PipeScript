@@ -1,12 +1,12 @@
 Define
 ------
 ### Synopsis
-defines a variable
+Defines a variable
 
 ---
 ### Description
 
-Defines a variable using a value provided during a build
+Defines a variable using a value provided at build time.
 
 ---
 ### Examples
@@ -61,23 +61,6 @@ The variable the definition will be applied to.
 
 
 ---
-#### **ScriptBlock**
-
-A scriptblock the definition will be applied to
-
-
-
-> **Type**: ```[ScriptBlock]```
-
-> **Required**: true
-
-> **Position**: named
-
-> **PipelineInput**:true (ByValue)
-
-
-
----
 #### **VariableName**
 
 The name of the variable.  If define is applied as an attribute of a variable, this does not need to be provided.
@@ -98,9 +81,6 @@ The name of the variable.  If define is applied as an attribute of a variable, t
 ### Syntax
 ```PowerShell
 Define -Value <PSObject> -VariableAst <VariableExpressionAst> [-VariableName <String>] [<CommonParameters>]
-```
-```PowerShell
-Define -Value <PSObject> -ScriptBlock <ScriptBlock> [-VariableName <String>] [<CommonParameters>]
 ```
 ---
 
