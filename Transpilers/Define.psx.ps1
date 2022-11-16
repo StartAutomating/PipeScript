@@ -1,8 +1,8 @@
 <#
 .SYNOPSIS
-    defines a variable
+    Defines a variable
 .DESCRIPTION
-    Defines a variable using a value provided during a build
+    Defines a variable using a value provided at build time.
 .EXAMPLE
     {
         [Define(Value={Get-Random})]$RandomNumber
@@ -24,11 +24,6 @@ $Value,
 [Parameter(Mandatory,ParameterSetName='VariableAST', ValueFromPipeline)]
 [Management.Automation.Language.VariableExpressionast]
 $VariableAst,
-
-# A scriptblock the definition will be applied to
-[Parameter(Mandatory,ParameterSetName='ScriptBlock', ValueFromPipeline)]
-[scriptblock]
-$ScriptBlock = {},
 
 # The name of the variable.  If define is applied as an attribute of a variable, this does not need to be provided.
 [Alias('Name')]
@@ -122,14 +117,14 @@ $($value | ConvertTo-Json -Depth 100)
                 "begin"
             } elseif ($scriptBlock.Ast.processblock.Statements) {
                 "process"
-            } else {
-                ""   
+            } else { ''}
+        $toCreate = 
+            if ($blockName) {
+                "$blockName {`$$VariableName =$definedValue }"
             }
-        if ($blockName) {
-            [ScriptBlock]::Create("$blockName {'$' + $VariableName + ' = ' + $definedValue}"), $ScriptBlock | Join-PipeScript
-        }
-        else {
-            [ScriptBlock]::Create('$' + $VariableName + ' = ' + $definedValue), $ScriptBlock | Join-PipeScript
-        }        
+            else {
+                "param() `$$VariableName = $definedValue"
+            }
+        [scriptblock]::Create($toCreate), $scriptblock | Join-PipeScript
     }
 }
