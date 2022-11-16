@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.2'
+    ModuleVersion     = '0.2.1'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -25,19 +25,13 @@
             BuildModule     = @('EZOut','Piecemeal','PipeScript','HelpOut', 'PSDevOps')
             Tags            = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
-## 0.2:
+## 0.2.1:
 
-* Massive Improvements in Templating
-  * Templates can be used interactively (Fixes #285)
-  * Renaming all Inline Transpilers to Template Transpilers
-* Natural Parsing Improvements
-  * ArrayLiterals are expanded (Fixes #291)
-  * AsSentence now only allows one value into a singleton (Fixes #279)
-  * Not expanding expandable strings (Fixes #286)
-* Transpilers can change nearby context (Fixes #292)
-* Allowing dot syntax to extend across multiple statements (Fixes #273)
-* Adding requires keyword (Fixes #293)
-* PipeScript modifies its own manifest (Fixes #294)
+* Adding preliminary 'define' transpiler (Fixes #299)
+* Improving interactive templates (now supported for all languages) (Fixes #285)
+* Fixing sequence dotting within non-statements (Fixes #298)
+* Allow multiple transpiler outputs to update nearby context (Fixes #297)
+* No longer expanding Regex Literals in attributes (Fixes #290)
 
 ---
             
