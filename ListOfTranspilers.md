@@ -21,7 +21,7 @@ These are all of the transpilers currently included in PipeScript:
 |[CSharp.Template](Transpilers/Templates/CSharp.Template.psx.ps1)                                 |C# Template Transpiler.                           |
 |[CSS.Template](Transpilers/Templates/CSS.Template.psx.ps1)                                       |CSS Template Transpiler.                          |
 |[Decorate](Transpilers/Decorate.psx.ps1)                                                         |decorate transpiler                               |
-|[Define](Transpilers/Define.psx.ps1)                                                             |defines a variable                                |
+|[Define](Transpilers/Define.psx.ps1)                                                             |Defines a variable                                |
 |[Dot](Transpilers/Syntax/Dot.psx.ps1)                                                            |Dot Notation                                      |
 |[EqualityComparison](Transpilers/Syntax/EqualityComparison.psx.ps1)                              |Allows equality comparison.                       |
 |[EqualityTypeComparison](Transpilers/Syntax/EqualityTypeComparison.psx.ps1)                      |Allows equality type comparison.                  |
