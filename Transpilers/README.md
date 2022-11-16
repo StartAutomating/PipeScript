@@ -12,6 +12,7 @@ This directory includes uncategorized or 'common' transpilers.
 |DisplayName                             |Synopsis                                                             |
 |----------------------------------------|---------------------------------------------------------------------|
 |[Decorate](Decorate.psx.ps1)            |[decorate transpiler](Decorate.psx.ps1)                              |
+|[Define](Define.psx.ps1)                |[defines a variable](Define.psx.ps1)                                 |
 |[Explicit](Explicit.psx.ps1)            |[Makes Output from a PowerShell function Explicit.](Explicit.psx.ps1)|
 |[Help](Help.psx.ps1)                    |[Help Transpiler](Help.psx.ps1)                                      |
 |[Include](Include.psx.ps1)              |[Includes Files](Include.psx.ps1)                                    |
@@ -32,6 +33,24 @@ This directory includes uncategorized or 'common' transpilers.
     {
         $v = [PSCustomObject]@{}
         [decorate('MyTypeName',Clear,PassThru)]$v
+    }.Transpile()
+~~~
+
+#### Define Example 1
+
+
+~~~PowerShell
+    {
+        [Define(Value={Get-Random})]$RandomNumber
+    }.Transpile()
+~~~
+
+#### Define Example 2
+
+
+~~~PowerShell
+    {
+        [Define(Value={$global:ThisValueExistsAtBuildTime})]$MyVariable
     }.Transpile()
 ~~~
 
