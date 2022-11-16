@@ -1,3 +1,13 @@
+## 0.2.1:
+
+* Adding preliminary 'define' transpiler (Fixes #299)
+* Improving interactive templates (now supported for all languages) (Fixes #285)
+* Fixing sequence dotting within non-statements (Fixes #298)
+* Allow multiple transpiler outputs to update nearby context (Fixes #297)
+* No longer expanding Regex Literals in attributes (Fixes #290)
+
+---
+
 ## 0.2:
 
 * Massive Improvements in Templating
