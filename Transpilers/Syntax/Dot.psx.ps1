@@ -84,6 +84,8 @@ process {
         $lastCommandAst = $targetCommandAst
         $commandSequence += $targetCommandAst
         $targetCommandAst.CommandElements
+        # If the grandparent didn't have a list of statements, this is the only dot sequence in the chain.
+        if (-not $CommandAst.Parent.Parent.Statements) { break }
         $nextStatementIndex = $commandAst.Parent.Parent.Statements.IndexOf($targetCommandAst.Parent) + 1
         $nextStatement      = $CommandAst.Parent.Parent.Statements[$nextStatementIndex]         
         if ($nextStatement -isnot [Management.Automation.Language.PipelineAst]) {
