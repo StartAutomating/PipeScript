@@ -1,4 +1,4 @@
-#region Piecemeal [ 0.3.6 ] : Easy Extensible Plugins for PowerShell
+#region Piecemeal [ 0.3.7 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
 # Install-Piecemeal -ExtensionNoun 'PipeScript' -ExtensionPattern '\.psx\.ps1{0,1}$','\.ps1{0,1}\.(?<ext>[^.]+$)','\.ps1{0,1}$' -ExtensionTypeName 'PipeScript' -OutputPath '.\Get-PipeScript.ps1'
@@ -418,7 +418,7 @@ function Get-PipeScript
                         }
                     }
                     elseif ($attr -is [Management.Automation.ValidatePatternAttribute]) {
-                        $matched = [Regex]::new($attr.RegexPattern, $attr.Options, [Timespan]::FromSeconds(1)).Match($ValidateInput)
+                        $matched = [Regex]::new($attr.RegexPattern, $attr.Options, [Timespan]::FromSeconds(1)).Match("$ValidateInput")
                         if (-not $matched.Success) {
                             if ($allValid) {
                                 if ($ErrorActionPreference -eq 'ignore') {
@@ -934,5 +934,5 @@ function Get-PipeScript
         }
     }
 }
-#endregion Piecemeal [ 0.3.6 ] : Easy Extensible Plugins for PowerShell
+#endregion Piecemeal [ 0.3.7 ] : Easy Extensible Plugins for PowerShell
 
