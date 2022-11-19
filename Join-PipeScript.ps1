@@ -395,7 +395,7 @@ function Join-PipeScript
                                 $StatementsToAdd = $null
                             }
                             if ($block.Unnamed) {
-                                $block.Extent.ToString()
+                                $block.Extent.ToString() -replace '^param\(\)[\s\r\n]{0,}'
                             } else {
                                 $block.Extent.ToString() -replace '^end\s{0,}\{' -replace '\}$' -replace '^param\(\)[\s\r\n]{0,}'
                             }                            
