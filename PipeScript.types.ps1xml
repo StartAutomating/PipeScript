@@ -890,7 +890,7 @@ $this.Parent.Extent.ToString().Substring(0, $offsetDifference) -replace '^[\r\n\
     </Members>
   </Type>
   <Type>
-    <Name>System.Management.Automation.Language.ParamBlockAst</Name>
+    <Name>System.Management.Automation.Language.ParameterAST</Name>
     <Members>
       <ScriptProperty>
         <Name>Help</Name>
