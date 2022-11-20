@@ -348,19 +348,19 @@
                 } else {
                     [Regex]::new($repl.Key,'IgnoreCase,IgnorePatternWhitespace','00:00:05')
                 }
-                $newScript = $text = $replRegex.Replace($text, $repl.Value)
+                $updatedText = $text = $replRegex.Replace($text, $repl.Value)
             }
         }
         #endregion Replace Regex
 
         if ($ScriptBlock) {
             if ($Transpile) {
-                [ScriptBlock]::Create($newScript) | .>Pipescript
+                [ScriptBlock]::Create($updatedText) | .>Pipescript
             } else {
-                [ScriptBlock]::Create($newScript)
+                [ScriptBlock]::Create($updatedText)
             }
         } else {
-            $newScript
+            $updatedText
         }
     }
 }
