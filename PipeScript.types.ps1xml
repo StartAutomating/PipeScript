@@ -918,6 +918,13 @@ if ($parameterIndex -eq 0) { # For the first parameter
 }
                     </GetScriptBlock>
       </ScriptProperty>
+      <ScriptProperty>
+        <Name>Index</Name>
+        <GetScriptBlock>
+                        $this.Parent.Parameters.IndexOf($this)
+
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>
