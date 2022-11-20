@@ -892,6 +892,116 @@ $this.Parent.Extent.ToString().Substring(0, $offsetDifference) -replace '^[\r\n\
   <Type>
     <Name>System.Management.Automation.Language.ParameterAST</Name>
     <Members>
+      <AliasProperty>
+        <Name>FriendlyName</Name>
+        <ReferencedMemberName>DisplayName</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ValueByName</Name>
+        <ReferencedMemberName>ByPropertyName</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ValueFromPipeline</Name>
+        <ReferencedMemberName>FromPipeline</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ValueFromPipelineByPropertyName</Name>
+        <ReferencedMemberName>ByPropertyName</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ValueFromRemaining</Name>
+        <ReferencedMemberName>FromUnbound</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ValueFromRemainingArguments</Name>
+        <ReferencedMemberName>FromUnbound</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>VBN</Name>
+        <ReferencedMemberName>ByPropertyName</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>VFP</Name>
+        <ReferencedMemberName>FromPipeline</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>VFPBN</Name>
+        <ReferencedMemberName>ByPropertyName</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptProperty>
+        <Name>ByPropertyName</Name>
+        <GetScriptBlock>
+                        foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [Management.Automation.ParameterAttribute]) {
+        continue
+    }
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -ne 'ValueFromPipelineByPropertyName') {
+            continue            
+        }
+        if ($namedArgument.Argument -and $namedArgument.Argument.Value) {
+            return $true
+        } elseif (-not $namedArgument.Argument) {
+            return $true
+        }
+    }
+}
+
+return $false
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>DisplayName</Name>
+        <GetScriptBlock>
+                        foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [ComponentModel.DisplayNameAttribute]) {
+        continue
+    }
+    
+    foreach ($positionalParameter in $attr.PositionalArguments) {
+        return $positionalParameter.Value
+    }
+
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -eq 'DisplayName') {
+            return $namedArgument.Argument.Value
+        }
+    }
+}
+
+return $this.Name.VariablePath.ToString()
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>FromPipeline</Name>
+        <GetScriptBlock>
+                        foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [Management.Automation.ParameterAttribute]) {
+        continue
+    }
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -ne 'ValueFromPipeline') {
+            continue
+        }
+        if ($namedArgument.Argument -and $namedArgument.Argument.Value) {
+            return $true
+        } elseif (-not $namedArgument.Argument) {
+            return $true
+        }    
+    }
+}
+
+return $false
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>FromUnbound</Name>
+        <GetScriptBlock>
+        </GetScriptBlock>
+      </ScriptProperty>
       <ScriptProperty>
         <Name>Help</Name>
         <GetScriptBlock>
@@ -923,6 +1033,87 @@ if ($parameterIndex -eq 0) { # For the first parameter
         <GetScriptBlock>
                         $this.Parent.Parameters.IndexOf($this)
 
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Metadata</Name>
+        <GetScriptBlock>
+                        $metadata = [Ordered]@{}
+
+foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [Reflection.AssemblyMetadataAttribute]) {
+        continue
+    }
+    $key, $value =
+        foreach ($positionalParameter in $attr.PositionalArguments) {
+            $positionalParameter.Value
+        }
+
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -eq 'Key') {
+            $key = $namedArgument.Argument.Value
+        }
+        elseif ($namedArgument.ArgumentName -eq 'Value') {
+            $value = $namedArgument.Argument.Value
+        }
+    }
+    if (-not $metadata[$key]) {
+        $metadata[$key] = $value
+    } else {
+        $metadata[$key] = @($metadata[$key]) + $value
+    }
+}
+
+return $metadata
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ParameterSets</Name>
+        <GetScriptBlock>
+                        $parameterSetNames = @(foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [Management.Automation.ParameterAttribute]) {
+        continue
+    }
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -eq 'ParameterSetName') {
+            $namedArgument.Argument.Value
+        }
+    }
+})
+
+if ($parameterSetNames) {
+    $parameterSetNames -as [string[]]
+} else {
+    "__AllParameterSets" -as [string[]]
+}
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Position</Name>
+        <GetScriptBlock>
+                        $positions = @(
+:nextAttribute foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [Management.Automation.ParameterAttribute]) {
+        continue
+    }
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -eq 'Position') {
+            $namedArgument.Argument.Value
+            continue nextAttribute
+        }
+    }
+})
+
+if ($positions.Length -gt 1) {
+    $positions -as [int[]]
+} elseif ($positions) {
+    $positions[0]
+} else {
+    $null
+}
                     </GetScriptBlock>
       </ScriptProperty>
     </Members>
