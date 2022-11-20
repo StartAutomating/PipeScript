@@ -1,1 +1,1 @@
-System.Management.Automation.Language.ParamBlockAst
+System.Management.Automation.Language.ParameterAST
