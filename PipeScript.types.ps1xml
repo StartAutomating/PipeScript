@@ -875,6 +875,21 @@ if ($foundTranspiler) {
     </Members>
   </Type>
   <Type>
+    <Name>System.Management.Automation.Language.ParamBlockAst</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>Header</Name>
+        <GetScriptBlock>
+                        # and extract the difference between the parent and the start of the block
+$offsetDifference = $this.Extent.StartOffset - $this.Parent.Extent.StartOffset
+# (this is where the header and help reside)
+# try to strip off leading braces and whitespace
+$this.Parent.Extent.ToString().Substring(0, $offsetDifference) -replace '^[\r\n\s]{0,}\{'
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
     <Name>System.Management.Automation.Language.PipelineAST</Name>
     <Members>
       <ScriptProperty>
