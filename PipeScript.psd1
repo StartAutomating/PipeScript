@@ -10,7 +10,7 @@
     CompanyName       = 'Start-Automating'
     Copyright         = '2022 Start-Automating'
     Author            = 'James Brundage'
-    FunctionsToExport = 'Build-PipeScript','Get-PipeScript','Get-Transpiler','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript'
+    FunctionsToExport = 'Build-PipeScript','Get-PipeScript','Get-Transpiler','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Search-PipeScript.tests','Update-PipeScript','Use-PipeScript'
     PrivateData = @{
         PSData = @{
             ProjectURI = 'https://github.com/StartAutomating/PipeScript'
