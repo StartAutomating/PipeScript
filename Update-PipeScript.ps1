@@ -37,7 +37,7 @@
 
     # Replaces sections within text.  -TextReplacement is a dictionary of replacements.
     # Keys in the dictionary must be a string describing a character range, in the form start,end.
-    [Alias('ScriptReplacements','TextReplacements','ScriptReplacement')]
+    [Alias('ScriptReplacements','TextReplacements','ScriptReplacement', 'ReplaceText')]
     [ValidateScript({
         if (-not $_.Count) { return $true }
         $badKeys = $_.Keys -notmatch '^\d+,\d+$'
@@ -50,7 +50,7 @@
     $TextReplacement,
 
     # If set, will replace items based off of the abstract syntax tree.
-    [Alias('AstReplacements')]
+    [Alias('AstReplacements', 'ReplaceAST')]
     [ValidateScript({
         $badKeys =
             foreach ($k in $_.Keys) {
@@ -67,16 +67,26 @@
     $AstReplacement = [Ordered]@{},
 
     # If provided, will replace regular expression matches.
+    [Alias('ReplaceRegex', 'RegexReplacements')]
     [Collections.IDictionary]
     $RegexReplacement = [Ordered]@{},
 
     # If provided, will replace regions.
+    [Alias('ReplaceRegion')]
     [Collections.IDictionary]
     $RegionReplacement,
 
     # If provided, will remove one or more parameters from a ScriptBlock.
     [string[]]
     $RemoveParameter,
+
+    # If provided, will insert text before any regular epxression match.
+    [Collections.IDictionary]
+    $InsertBefore,
+
+    # If provided, will insert text after any regular expression match.
+    [Collections.IDictionary]
+    $InsertAfter,
 
     # A collection of variables to rename.
     [Collections.IDictionary]
@@ -311,7 +321,7 @@
         #endregion Replace Text Spans
 
         # Update $text before we continue
-        $text = $updatedText
+        $text = $updatedText        
 
         #region Replace Regions
         if ($RegionReplacement.Count) {
@@ -340,6 +350,39 @@
         }
         #endregion Replace Regions
 
+        #region Insert Before/After
+
+        # If we have any -InsertBefore 
+        if ($InsertBefore.Count) {
+            # Walk thru each insertion
+            foreach ($kv in @($InsertBefore.GetEnumerator())) {                
+                if (                    
+                    $kv.Value -is [string] -and # If the value was a string and
+                    -not $kv.Value.Contains('$&') # it did not include the substitution.
+                ) {
+                    $kv.Value += '$&' # subsitute the match at the end.
+                }
+                # Add our insertion to the regular expression replacements.
+                $RegexReplacement[$kv.Key] = $kv.Value
+            }
+        }
+
+        # If we had any -InsertAfter
+        if ($InsertAfter.Count) {
+            # Walk thru each insertion
+            foreach ($kv in @($InsertAfter.GetEnumerator())) {
+                if (                    
+                    $kv.Value -is [string] -and # If the value was a string and
+                    -not $kv.Value.Contains('$&') # it did not include the substitution.
+                ) {
+                    $kv.Value = '$&' + $kv.Value # subsitute the match at the start.
+                }
+                # Add our insertion to the regular expression replacements.
+                $RegexReplacement[$kv.Key] = $kv.Value
+            }
+        }
+        #endregion Insert Before/After
+
         #region Replace Regex
         if ($RegexReplacement.Count) {
             foreach ($repl in $RegexReplacement.GetEnumerator()) {
@@ -354,10 +397,11 @@
         #endregion Replace Regex
 
         if ($ScriptBlock) {
+            $updatedScriptBlock = [ScriptBlock]::Create($updatedText)
             if ($Transpile) {
-                [ScriptBlock]::Create($updatedText) | .>Pipescript
+                $updatedScriptBlock | .>Pipescript
             } else {
-                [ScriptBlock]::Create($updatedText)
+                $updatedScriptBlock
             }
         } else {
             $updatedText
