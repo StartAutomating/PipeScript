@@ -12,7 +12,7 @@
     Author            = 'James Brundage'
     FunctionsToExport = '' <#{
         $exportNames = Get-ChildItem -Recurse -Filter '*-*.ps1' |
-            Where-Object Name -notmatch '\.ps1{0,1}\.ps1' |
+            Where-Object Name -notmatch '\.[^\.]+\.ps1' |
             Foreach-Object { $_.Name.Substring(0, $_.Name.Length - $_.Extension.Length) }
         "'$($exportNames -join "','")'"
     }#>
