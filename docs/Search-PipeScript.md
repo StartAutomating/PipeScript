@@ -31,7 +31,8 @@ Search-PipeScript -ScriptBlock {
 ### Parameters
 #### **InputObject**
 
-The ScriptBlock that will be searched.
+The input to search.
+This can be a `[string]`, `[ScriptBlock]`, `[IO.FileInfo]`, or `[Ast]`.
 
 
 
@@ -49,7 +50,7 @@ The ScriptBlock that will be searched.
 #### **AstCondition**
 
 The AST Condition.
-These Script Blocks
+These conditions will apply when the input is a `[ScriptBlock]`, `[Ast]`, or PowerShell file.
 
 
 
