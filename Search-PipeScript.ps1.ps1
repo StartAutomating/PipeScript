@@ -20,14 +20,15 @@ function Search-PipeScript
     [OutputType('Search.PipeScript.Result')]
     [Alias('Search-ScriptBlock')]
     param(
-    # The ScriptBlock that will be searched.
+    # The input to search.
+    # This can be a `[string]`, `[ScriptBlock]`, `[IO.FileInfo]`, or `[Ast]`.
     [Parameter(ValueFromPipeline,ValueFromPipelineByPropertyName)]
     [Alias('ScriptBlock','Text')]
-    [ValidateTypes(TypeName={[string], [scriptblock],[IO.FileInfo]})]
+    [ValidateTypes(TypeName={[string], [scriptblock],[IO.FileInfo], [Management.Automation.Language.Ast]})]
     $InputObject,
 
     # The AST Condition.
-    # These Script Blocks
+    # These conditions will apply when the input is a `[ScriptBlock]`, `[Ast]`, or PowerShell file.
     [Parameter(ValueFromPipelineByPropertyName)]
     [Alias('ASTDelegate')]
     [ScriptBlock[]]
@@ -80,12 +81,22 @@ function Search-PipeScript
                 # Read the file contents as text.
                 $text = [IO.File]::ReadAllText($inputCommand.Source)
             }
-        }        
+        }
+
+        $ast = $null
 
         # If the inputObject was a [ScriptBlock]
         if ($InputObject -is [scriptblock]) {
             $scriptBlock = $InputObject # set $ScriptBlock
-        }
+            $ast = $scriptBlock.Ast      # and set $ast to the $ScriptBlock`s AST.
+            # Reset $text to the ScriptBlock contents.
+            $Text = "$scriptBlock"
+        } elseif ($InputObject -is [Management.Automation.Language.Ast]) {
+            # If the input was an [AST]            
+            # set the AST.
+            $ast = $InputObject
+            $text = $ast.Extent.ToString()
+        }        
 
         # If the InputObject is a string
         if ($InputObject -is [string]) {
@@ -93,10 +104,7 @@ function Search-PipeScript
         }
 
         # If we have a ScriptBlock
-        if ($scriptBlock) {
-            # Reset $text to the ScriptBlock contents.
-            $Text = "$scriptBlock"
-
+        if ($ast) {            
             # If we have an ASTType to find
             if ($AstType) {
                 foreach ($astTypeName in $AstType) {
@@ -151,7 +159,7 @@ function Search-PipeScript
             if ($AstCondition) {
                 foreach ($condition in $AstCondition) {
                     # Find all of the results.
-                    $ScriptBlock.Ast.FindAll($condition, ($Recurse -as [bool])) | 
+                    $Ast.FindAll($condition, ($Recurse -as [bool])) | 
                         .InputObject = $inputObject .Result { 
                             $_
                         } .Expression = $condition .ScriptBlock {
