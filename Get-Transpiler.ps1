@@ -1,4 +1,4 @@
-#region Piecemeal [ 0.3.6 ] : Easy Extensible Plugins for PowerShell
+#region Piecemeal [ 0.3.7 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
 # Install-Piecemeal -ExtensionNoun 'Transpiler' -ExtensionPattern '\.psx\.ps1$' -ExtensionTypeName 'PipeScript.Transpiler' -OutputPath '.\Get-Transpiler.ps1'
@@ -418,7 +418,7 @@ function Get-Transpiler
                         }
                     }
                     elseif ($attr -is [Management.Automation.ValidatePatternAttribute]) {
-                        $matched = [Regex]::new($attr.RegexPattern, $attr.Options, [Timespan]::FromSeconds(1)).Match($ValidateInput)
+                        $matched = [Regex]::new($attr.RegexPattern, $attr.Options, [Timespan]::FromSeconds(1)).Match("$ValidateInput")
                         if (-not $matched.Success) {
                             if ($allValid) {
                                 if ($ErrorActionPreference -eq 'ignore') {
@@ -934,5 +934,5 @@ function Get-Transpiler
         }
     }
 }
-#endregion Piecemeal [ 0.3.6 ] : Easy Extensible Plugins for PowerShell
+#endregion Piecemeal [ 0.3.7 ] : Easy Extensible Plugins for PowerShell
 

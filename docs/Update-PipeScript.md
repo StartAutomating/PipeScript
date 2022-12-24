@@ -158,6 +158,40 @@ If provided, will remove one or more parameters from a ScriptBlock.
 
 
 ---
+#### **InsertBefore**
+
+If provided, will insert text before any regular epxression match.
+
+
+
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: 8
+
+> **PipelineInput**:false
+
+
+
+---
+#### **InsertAfter**
+
+If provided, will insert text after any regular expression match.
+
+
+
+> **Type**: ```[IDictionary]```
+
+> **Required**: false
+
+> **Position**: 9
+
+> **PipelineInput**:false
+
+
+
+---
 #### **RenameVariable**
 
 A collection of variables to rename.
@@ -168,7 +202,7 @@ A collection of variables to rename.
 
 > **Required**: false
 
-> **Position**: 8
+> **Position**: 10
 
 > **PipelineInput**:false
 
@@ -194,6 +228,6 @@ If set, will transpile the updated script block.
 ---
 ### Syntax
 ```PowerShell
-Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-RegexReplacement] <IDictionary>] [[-RegionReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-RenameVariable] <IDictionary>] [-Transpile] [<CommonParameters>]
+Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-RegexReplacement] <IDictionary>] [[-RegionReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-InsertBefore] <IDictionary>] [[-InsertAfter] <IDictionary>] [[-RenameVariable] <IDictionary>] [-Transpile] [<CommonParameters>]
 ```
 ---

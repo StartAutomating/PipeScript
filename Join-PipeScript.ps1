@@ -294,7 +294,7 @@ function Join-PipeScript
                                     # (don't forget to trim leading whitespace)
                                 } else {
                                     # for every other parameter it is the content between parameters.
-                                    $lastParameter   = $parameter.Parent.Parameters[$parameterIndex - 1]                                    
+                                    $lastParameter   = $parameter.Parent.Parameters[$parameterIndex - 1]
                                     $relativeOffset  = $lastParameter.Extent.EndOffset + 1 - $parameter.Parent.Extent.StartOffset
                                     $distance        = $parameter.Extent.StartOffset - $lastParameter.Extent.EndOffset - 1
                                     # (don't forget to trim leading whitespace and commas)
@@ -395,7 +395,7 @@ function Join-PipeScript
                                 $StatementsToAdd = $null
                             }
                             if ($block.Unnamed) {
-                                $block.Extent.ToString()
+                                $block.Extent.ToString() -replace '^param\(\)[\s\r\n]{0,}'
                             } else {
                                 $block.Extent.ToString() -replace '^end\s{0,}\{' -replace '\}$' -replace '^param\(\)[\s\r\n]{0,}'
                             }                            
@@ -427,6 +427,13 @@ function Join-PipeScript
         #endregion Joining the Scripts
 
         $combinedScriptBlock = [scriptblock]::Create($joinedScript)
+        if ((-not $combinedScriptBlock.Ast.EndBlock.Unnamed) -and -not (
+            $combinedScriptBlock.Ast.ProcessBlock -or 
+            $combinedScriptBlock.Ast.BeginBlock -or 
+            $combinedScriptBlock.Ast.DynamicParameterBlock
+        )) {
+            $combinedScriptBlock = [ScriptBlock]::Create($combinedScriptBlock.Ast.EndBlock.ToString() -replace '^end\s{0,}\{' -replace '\}$')
+        }
         if ($combinedScriptBlock -and $Transpile) {
             $combinedScriptBlock | .>Pipescript
         } elseif ($combinedScriptBlock) {
