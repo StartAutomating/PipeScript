@@ -24,28 +24,42 @@ function Export-Pipescript {
         $filesToBuild = 
             @(if (-not $InputPath) {
                 Get-PipeScript -PipeScriptPath $pwd |
-                    Where-Object PipeScriptType -In SourceGenerator, Template
+                    Where-Object PipeScriptType -In Template, BuildScript |
+                    Sort-Object PipeScriptType, Source
             } else {
                 foreach ($inPath in $InputPath) {
                     Get-PipeScript -PipeScriptPath $inPath |
-                        Where-Object PipeScriptType -In SourceGenerator, Template
+                        Where-Object PipeScriptType -In Template, BuildScript |
+                        Sort-Object PipeScriptType, Source
                 }
             })
         
         $buildStarted = [DateTime]::Now
+        $alreadyBuilt = [Ordered]@{}
         $filesToBuildCount, $filesToBuildTotal, $filesToBuildID  = 0, $filesToBuild.Length, $(Get-Random)
         foreach ($buildFile in $filesToBuild) {
-            $ThisBuildStartedAt = [DateTime]::Now
+            
+            $ThisBuildStartedAt = [DateTime]::Now                
+
             Write-Progress "Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" "$($buildFile.Source) " -PercentComplete $(
                 $FilesToBuildCount++
                 $FilesToBuildCount * 100 / $filesToBuildTotal 
             ) -id $filesToBuildID
+
+            if ($alreadyBuilt[$buildFile.Source]) { continue }
+
+            $buildFileTemplate = $buildFile.Template
+            if ($buildFileTemplate -and $buildFile.PipeScriptType -ne 'Template') {
+                Invoke-PipeScript $buildFileTemplate.Source
+                $alreadyBuilt[$buildFileTemplate.Source] = $true
+            }
 
             $EventsFromThisBuild = Get-Event | 
                 Where-Object TimeGenerated -gt $ThisBuildStartedAt |
                 Where-Object SourceIdentifier -Like 'PipeScript.*'
             
             Invoke-PipeScript $buildFile.Source 
+            $alreadyBuilt[$buildFile.Source] = $true
         }
 
 
