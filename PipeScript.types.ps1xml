@@ -933,6 +933,42 @@ $this.Parent.Extent.ToString().Substring(0, $offsetDifference) -replace '^[\r\n\
         <ReferencedMemberName>ByPropertyName</ReferencedMemberName>
       </AliasProperty>
       <ScriptProperty>
+        <Name>Binding</Name>
+        <GetScriptBlock>
+                        $isBindable = $false
+foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ((-not $reflectedType) -or 
+        $reflectedType -notin [ComponentModel.DefaultBindingPropertyAttribute],
+        [ComponentModel.BindableAttribute],
+        [ComponentModel.ComplexBindingPropertiesAttribute]) {        
+        continue
+    }
+    
+    $positionalArguments = @(
+        foreach ($positionalParameter in $attr.PositionalArguments) {
+            $positionalParameter.Value
+        }
+    )
+    $realAttribute = 
+        if ($positionalArguments) {
+            $reflectedType::new($positionalArguments)
+        } else {
+            $reflectedType::new()
+        }
+    
+    
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -eq 'Name') {
+            $realAttribute.$($namedArgument.ArgumentName) = $namedArgument.Argument.Value
+        }
+    }
+    $realAttribute
+}
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>ByPropertyName</Name>
         <GetScriptBlock>
                         foreach ($attr in $this.Attributes) {
@@ -953,6 +989,42 @@ $this.Parent.Extent.ToString().Substring(0, $offsetDifference) -replace '^[\r\n\
 }
 
 return $false
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>DefaultBindingProperty</Name>
+        <GetScriptBlock>
+                        $isBindable = $false
+foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [ComponentModel.DefaultBindingPropertyAttribute]) {
+        if ($reflectedType -eq [ComponentModel.BindableAttribute]) {
+            if ($attr.PositionalArguments.Value -eq $false) {
+                return ''
+            } else {
+                $isBindable = $true
+            }
+        }
+        continue
+    }
+    
+    foreach ($positionalParameter in $attr.PositionalArguments) {
+        return $positionalParameter.Value
+    }
+
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -eq 'Name') {
+            return $namedArgument.Argument.Value
+        }
+    }    
+}
+
+
+if ($isBindable) {
+    return $this.Name.VariablePath.ToString()
+} else {
+    return ''
+}
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
