@@ -893,6 +893,10 @@ $this.Parent.Extent.ToString().Substring(0, $offsetDifference) -replace '^[\r\n\
     <Name>System.Management.Automation.Language.ParameterAST</Name>
     <Members>
       <AliasProperty>
+        <Name>Aliases</Name>
+        <ReferencedMemberName>ParameterNames</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>FriendlyName</Name>
         <ReferencedMemberName>DisplayName</ReferencedMemberName>
       </AliasProperty>
@@ -1084,6 +1088,29 @@ foreach ($attr in $this.Attributes) {
 }
 
 return $metadata
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ParameterNames</Name>
+        <GetScriptBlock>
+                        @(foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [Alias]) {        
+        continue
+    }
+    
+    foreach ($positionalParameter in $attr.PositionalArguments) {
+        $positionalParameter.Value
+    }
+
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -eq 'AliasNames') {
+            $namedArgument.Argument.Value
+        }
+    }    
+}
+
+$this.Name.VariablePath.ToString())
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
