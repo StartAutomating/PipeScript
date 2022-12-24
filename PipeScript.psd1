@@ -10,8 +10,26 @@
     CompanyName       = 'Start-Automating'
     Copyright         = '2022 Start-Automating'
     Author            = 'James Brundage'
-    FunctionsToExport = 'Build-PipeScript','Get-PipeScript','Get-Transpiler','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript'
+    FunctionsToExport = 'Build-PipeScript','Export-PipeScript','Get-PipeScript','Get-Transpiler','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Split-PipeScript','Update-PipeScript','Use-PipeScript'
     PrivateData = @{
+        FileTypes = @{
+            Transpiler = @{
+                Pattern = '\.psx\.ps1$'
+                Wildcard  = '*.psx.ps1'
+                Description = @'               
+Transpiles an object into anything.
+'@                
+            }
+            PipeScript = @{
+                Pattern = '\.psx\.ps1{0,1}$',
+                    '\.ps1{0,1}\.(?<ext>[^.]+$)',
+                    '\.ps1{0,1}$'
+                Description = @'
+PipeScript files.
+'@
+                IsBuildFile = $true
+            }
+        }
         PSData = @{
             ProjectURI = 'https://github.com/StartAutomating/PipeScript'
             LicenseURI = 'https://github.com/StartAutomating/PipeScript/blob/main/LICENSE'
