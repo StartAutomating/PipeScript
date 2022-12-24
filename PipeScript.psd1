@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.2.1'
+    ModuleVersion     = '0.2.2'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -38,13 +38,22 @@ PipeScript files.
             BuildModule     = @('EZOut','Piecemeal','PipeScript','HelpOut', 'PSDevOps')
             Tags            = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
-## 0.2.1:
+## PipeScript 0.2.2:
 
-* Adding preliminary 'define' transpiler (Fixes #299)
-* Improving interactive templates (now supported for all languages) (Fixes #285)
-* Fixing sequence dotting within non-statements (Fixes #298)
-* Allow multiple transpiler outputs to update nearby context (Fixes #297)
-* No longer expanding Regex Literals in attributes (Fixes #290)
+* Build-PipeScript is now Export-PipeScript (aliases remain) (Fixes #312)
+* Export-PipeScript: Running BuildScripts first (Fixes #316)
+* Join-PipeScript
+  * Ensuring end blocks remain unnamed if they can be (Fixes #317)
+  * Trmming empty param blocks from end (Fixes #302)
+* Update-PipeScript:
+  * Adding -InsertBefore/After (Fixes #309).  Improving aliasing (Fixes #310)
+  * Aliasing RenameVariable to RenameParameter (Fixes #303). Improving inner docs
+* requires transpiler: Caching Find-Module results (Fixes #318)
+* Extending Types:
+  * Adding PipeScript.Template (Fixes #315)
+  * Adding 'ExtensionScript' to PipeScript.PipeScriptType (Fixes #313)
+  * Greatly extending ParameterAst (Fixes #305)
+  * Extending ParamBlockAst (Fixes #304)
 
 ---
             
