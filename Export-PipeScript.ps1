@@ -1,13 +1,17 @@
-function Build-Pipescript {
+function Export-Pipescript {
     <#
     .Synopsis
-        Builds PipeScript Files
+        Builds and Exports using PipeScript
     .Description
-        Builds PipeScript Files.
+        Builds and Exports a path, using PipeScript.
         
         Any Source Generator Files Discovered by PipeScript will be run, which will convert them into source code.
+    .EXAMPLE
+        Export-PipeScript
+    .EXAMPLE
+        Build-PipeScript
     #>
-    [Alias('bps')]
+    [Alias('Build-PipeScript','bps','eps')]
     param(
     # One or more input paths.  If no -InputPath is provided, will build all scripts beneath the current directory.
     [Parameter(ValueFromPipelineByPropertyName)]
