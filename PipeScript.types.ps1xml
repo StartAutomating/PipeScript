@@ -1159,7 +1159,7 @@ $this.Parent.GetType().Name -in 'AssignmentStatementAST', 'HashtableAST'
     "Transpiler"
 }
 elseif ($this.Source -match "\.ps1{0,1}\.(?&lt;ext&gt;[^.]+$)") {
-    "SourceGenerator"
+    "Template"
 }
 elseif ($this.Source -match '(?&lt;=(?&gt;^|\.))build\.ps1$') {
     "BuildScript"
