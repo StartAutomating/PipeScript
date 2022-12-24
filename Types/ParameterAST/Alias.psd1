@@ -8,4 +8,5 @@
     ValueFromPipeline = "FromPipeline"
     ValueFromRemainingArguments = "FromUnbound"
     ValueFromRemaining = "FromUnbound"
+    Aliases = "ParameterNames"
 }
