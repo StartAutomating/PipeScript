@@ -24,14 +24,13 @@ function Export-Pipescript {
         $filesToBuild = 
             @(if (-not $InputPath) {
                 Get-PipeScript -PipeScriptPath $pwd |
-                    Where-Object PipeScriptType -In SourceGenerator
+                    Where-Object PipeScriptType -In SourceGenerator, Template
             } else {
                 foreach ($inPath in $InputPath) {
                     Get-PipeScript -PipeScriptPath $inPath |
-                        Where-Object PipeScriptType -In SourceGenerator
+                        Where-Object PipeScriptType -In SourceGenerator, Template
                 }
             })
-        
         
         $buildStarted = [DateTime]::Now
         $filesToBuildCount, $filesToBuildTotal, $filesToBuildID  = 0, $filesToBuild.Length, $(Get-Random)
