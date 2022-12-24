@@ -134,7 +134,15 @@ process {
         if ($foundModuleRequirement -and $requireLatest) {
             # then find if there is a more recent version.
             Write-Verbose "Searching for a more recent version of $($foundModuleRequirement.Name)@$($foundModuleRequirement.Version)"
-            $foundModuleInGallery = Find-Module -Name $foundModuleRequirement.Name
+
+            if (-not $script:FoundModuleVersions) {
+                $script:FoundModuleVersions = @{}
+            }
+
+            if (-not $script:FoundModuleVersions[$foundModuleRequirement.Name]) {
+                $script:FoundModuleVersions[$foundModuleRequirement.Name] = Find-Module -Name $foundModuleRequirement.Name            
+            }
+            $foundModuleInGallery = $script:FoundModuleVersions[$foundModuleRequirement.Name]
             if ($foundModuleInGallery -and 
                 ([Version]$foundModuleInGallery.Version -gt [Version]$foundModuleRequirement.Version)) {
                 Write-Verbose "$($foundModuleInGallery.Name)@$($foundModuleInGallery.Version)"
