@@ -887,6 +887,14 @@ $offsetDifference = $this.Extent.StartOffset - $this.Parent.Extent.StartOffset
 $this.Parent.Extent.ToString().Substring(0, $offsetDifference) -replace '^[\r\n\s]{0,}\{'
                     </GetScriptBlock>
       </ScriptProperty>
+      <ScriptProperty>
+        <Name>ParameterNames</Name>
+        <GetScriptBlock>
+                        @(foreach ($parameter in $this.Parameters) {
+    $parameter.ParameterNames
+})
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>
