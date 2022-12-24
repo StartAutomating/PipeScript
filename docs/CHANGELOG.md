@@ -1,3 +1,22 @@
+## PipeScript 0.2.2:
+
+* Build-PipeScript is now Export-PipeScript (aliases remain) (Fixes #312)
+* Export-PipeScript: Running BuildScripts first (Fixes #316)
+* Join-PipeScript
+  * Ensuring end blocks remain unnamed if they can be (Fixes #317)
+  * Trmming empty param blocks from end (Fixes #302)
+* Update-PipeScript:
+  * Adding -InsertBefore/After (Fixes #309).  Improving aliasing (Fixes #310)
+  * Aliasing RenameVariable to RenameParameter (Fixes #303). Improving inner docs
+* requires transpiler: Caching Find-Module results (Fixes #318)
+* Extending Types:
+  * Adding PipeScript.Template (Fixes #315)
+  * Adding 'ExtensionScript' to PipeScript.PipeScriptType (Fixes #313)
+  * Greatly extending ParameterAst (Fixes #305)
+  * Extending ParamBlockAst (Fixes #304)
+
+---
+
 ## 0.2.1:
 
 * Adding preliminary 'define' transpiler (Fixes #299)
