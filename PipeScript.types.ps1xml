@@ -881,16 +881,33 @@ if ($foundTranspiler) {
     </Members>
   </Type>
   <Type>
-    <Name>System.Management.Automation.AliasInfo</Name>
+    <Name>System.Management.Automation.CommandInfo</Name>
     <Members>
-      <AliasProperty>
-        <Name>Namespace</Name>
-        <ReferencedMemberName>CommandNamespace</ReferencedMemberName>
-      </AliasProperty>
       <ScriptProperty>
         <Name>CommandNamespace</Name>
         <GetScriptBlock>
                         if ($this.Namespace) {
+    $this.Namespace
+} else {
+    $matched = $this.NamespaceSeparator.Match($this.Name)
+    if ($matched.Success -and $matched.Index -gt 0) {
+        $this.Name.Substring(0,$matched.Index)
+    }
+    else {
+        ''
+    }
+}
+
+
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Namespaces</Name>
+        <GetScriptBlock>
+                        
+if ($this.Namespace) {
+    
     $this.Namespace
 } else {
     $matched = $this.NamespaceSeparator.Match($this.Name)
