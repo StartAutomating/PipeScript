@@ -12,26 +12,24 @@ Wraps PowerShell in a Bash Script
 ### Parameters
 #### **ScriptInfo**
 
-> **Type**: ```[ExternalScriptInfo]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                  |Required|Position|PipelineInput |
+|----------------------|--------|--------|--------------|
+|`[ExternalScriptInfo]`|true    |named   |true (ByValue)|
 
 
 
 ---
 #### **ScriptBlock**
 
-> **Type**: ```[ScriptBlock]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type           |Required|Position|PipelineInput |
+|---------------|--------|--------|--------------|
+|`[ScriptBlock]`|true    |named   |true (ByValue)|
 
 
 
