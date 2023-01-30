@@ -72,13 +72,12 @@ The URI.
 
 
 
-> **Type**: ```[Uri]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:true (ByValue)
+|Type   |Required|Position|PipelineInput |
+|-------|--------|--------|--------------|
+|`[Uri]`|true    |1       |true (ByValue)|
 
 
 
@@ -89,26 +88,24 @@ The Command's Abstract Syntax Tree
 
 
 
-> **Type**: ```[CommandAst]```
 
-> **Required**: true
 
-> **Position**: 2
 
-> **PipelineInput**:false
+|Type          |Required|Position|PipelineInput|
+|--------------|--------|--------|-------------|
+|`[CommandAst]`|true    |2       |false        |
 
 
 
 ---
 #### **Method**
 
-> **Type**: ```[String]```
 
-> **Required**: false
 
-> **Position**: 3
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |3       |false        |
 
 
 
