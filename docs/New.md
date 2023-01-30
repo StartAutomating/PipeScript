@@ -74,13 +74,12 @@ If 'new'
 ### Parameters
 #### **CommandAst**
 
-> **Type**: ```[CommandAst]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:true (ByValue)
+|Type          |Required|Position|PipelineInput |
+|--------------|--------|--------|--------------|
+|`[CommandAst]`|true    |1       |true (ByValue)|
 
 
 
