@@ -17,13 +17,12 @@ If the type name does not exist, and is not [ordered], PipeScript will search fo
 ### Parameters
 #### **TypeConstraintAST**
 
-> **Type**: ```[TypeConstraintAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                 |Required|Position|PipelineInput |
+|---------------------|--------|--------|--------------|
+|`[TypeConstraintAst]`|true    |named   |true (ByValue)|
 
 
 
