@@ -33,13 +33,12 @@ When this value is provided within an attribute as a ScriptBlock, the ScriptBloc
 
 
 
-> **Type**: ```[PSObject]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[PSObject]`|true    |named   |false        |
 
 
 
@@ -50,13 +49,12 @@ The variable the definition will be applied to.
 
 
 
-> **Type**: ```[VariableExpressionAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                     |Required|Position|PipelineInput |
+|-------------------------|--------|--------|--------------|
+|`[VariableExpressionAst]`|true    |named   |true (ByValue)|
 
 
 
@@ -67,13 +65,12 @@ The name of the variable.  If define is applied as an attribute of a variable, t
 
 
 
-> **Type**: ```[String]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |named   |false        |
 
 
 
