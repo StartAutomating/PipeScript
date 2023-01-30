@@ -88,13 +88,12 @@ If not empty, the contents of this ScriptBlock will preceed the REST api call.
 
 
 
-> **Type**: ```[ScriptBlock]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type           |Required|Position|PipelineInput |
+|---------------|--------|--------|--------------|
+|`[ScriptBlock]`|false   |named   |true (ByValue)|
 
 
 
@@ -105,13 +104,12 @@ One or more REST endpoints.  This endpoint will be parsed for REST variables.
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|true    |1       |false        |
 
 
 
@@ -122,13 +120,12 @@ The content type.  If provided, this parameter will be passed to the -InvokeComm
 
 
 
-> **Type**: ```[String]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |named   |false        |
 
 
 
@@ -139,13 +136,12 @@ The method.  If provided, this parameter will be passed to the -InvokeCommand.
 
 
 
-> **Type**: ```[String]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |named   |false        |
 
 
 
@@ -156,13 +152,12 @@ The invoke command.  This command _must_ have a parameter -URI.
 
 
 
-> **Type**: ```[String]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |named   |false        |
 
 
 
@@ -174,13 +169,12 @@ By default, this is 'InvokeParams'
 
 
 
-> **Type**: ```[String]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |named   |false        |
 
 
 
@@ -191,13 +185,12 @@ A dictionary of help for uri parameters.
 
 
 
-> **Type**: ```[IDictionary]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |named   |false        |
 
 
 
@@ -208,13 +201,12 @@ A dictionary of URI parameter types.
 
 
 
-> **Type**: ```[IDictionary]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |named   |false        |
 
 
 
@@ -238,13 +230,12 @@ If a parameter is a [switch], it will be turned into a [bool].
 
 
 
-> **Type**: ```[PSObject]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[PSObject]`|false   |named   |false        |
 
 
 
@@ -268,13 +259,12 @@ If a parameter is a [switch], it will be turned into a [bool].
 
 
 
-> **Type**: ```[PSObject]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[PSObject]`|false   |named   |false        |
 
 
 
@@ -286,13 +276,12 @@ If the string is '&', each value will be provided as a key-value pair.
 
 
 
-> **Type**: ```[String]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |named   |false        |
 
 
 
@@ -303,13 +292,12 @@ A script block to be run on each output.
 
 
 
-> **Type**: ```[ScriptBlock]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[ScriptBlock]`|false   |named   |false        |
 
 
 
