@@ -2,6 +2,24 @@
 <!-- Generated with EZOut 1.9.9: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
 <Types>
   <Type>
+    <Name>System.Management.Automation.AliasInfo</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Namespace</Name>
+        <ReferencedMemberName>CommandNamespace</ReferencedMemberName>
+      </AliasProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.ApplicationInfo</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Namespace</Name>
+        <ReferencedMemberName>CommandNamespace</ReferencedMemberName>
+      </AliasProperty>
+    </Members>
+  </Type>
+  <Type>
     <Name>System.Management.Automation.Language.Ast</Name>
     <Members>
       <ScriptMethod>
@@ -863,8 +881,12 @@ if ($foundTranspiler) {
     </Members>
   </Type>
   <Type>
-    <Name>System.Management.Automation.CommandInfo</Name>
+    <Name>System.Management.Automation.AliasInfo</Name>
     <Members>
+      <AliasProperty>
+        <Name>Namespace</Name>
+        <ReferencedMemberName>CommandNamespace</ReferencedMemberName>
+      </AliasProperty>
       <ScriptProperty>
         <Name>CommandNamespace</Name>
         <GetScriptBlock>
@@ -931,6 +953,24 @@ else
 
                     </Script>
       </ScriptMethod>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.ExternalScriptInfo</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Namespace</Name>
+        <ReferencedMemberName>CommandNamespace</ReferencedMemberName>
+      </AliasProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.FunctionInfo</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Namespace</Name>
+        <ReferencedMemberName>CommandNamespace</ReferencedMemberName>
+      </AliasProperty>
     </Members>
   </Type>
   <Type>
