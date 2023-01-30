@@ -50,13 +50,12 @@ The extensions being validated.
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|true    |1       |false        |
 
 
 
@@ -68,13 +67,12 @@ If this is provided, will apply a ```[ValidatePattern({})]``` attribute to the v
 
 
 
-> **Type**: ```[VariableExpressionAst]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                     |Required|Position|PipelineInput |
+|-------------------------|--------|--------|--------------|
+|`[VariableExpressionAst]`|false   |named   |true (ByValue)|
 
 
 
