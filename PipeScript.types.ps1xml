@@ -890,18 +890,9 @@ if ($foundTranspiler) {
     return $this.Namespace
 } 
 
-$fullName = 
-    if ($this -is [Management.Automation.ExternalScriptInfo]) {
-        $this.Source
-    } elseif ($this.Module) {
-        '' + $this.Module + '\' + $this.Name        
-    } else {
-        $this.Name
-    }
-
-$matched = $this.NamespaceSeparator.Match($fullName)
+$matched = $this.NamespaceSeparator.Match($this.FullName)
 if ($matched.Success -and $matched.Index -gt 0) {
-    $this.Name.Substring(0,$matched.Index)
+    $this.FullName.Substring(0,$matched.Index)
 }
 else {
     ''
@@ -910,6 +901,18 @@ else {
 
 
 
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Fullname</Name>
+        <GetScriptBlock>
+                        if ($this -is [Management.Automation.ExternalScriptInfo]) {
+    $this.Source
+} elseif ($this.Module) {
+    '' + $this.Module + '\' + $this.Name
+} else {
+    $this.Name
+}
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
