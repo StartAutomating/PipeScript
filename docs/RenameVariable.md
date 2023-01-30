@@ -37,13 +37,12 @@ The name of one or more parameters to remove
 
 
 
-> **Type**: ```[IDictionary]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|true    |1       |false        |
 
 
 
@@ -54,13 +53,12 @@ The ScriptBlock that declares the parameters.
 
 
 
-> **Type**: ```[ScriptBlock]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type           |Required|Position|PipelineInput |
+|---------------|--------|--------|--------------|
+|`[ScriptBlock]`|true    |named   |true (ByValue)|
 
 
 
