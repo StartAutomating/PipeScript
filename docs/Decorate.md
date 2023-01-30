@@ -27,13 +27,12 @@ The variable decoration will be applied to.
 
 
 
-> **Type**: ```[VariableExpressionAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                     |Required|Position|PipelineInput |
+|-------------------------|--------|--------|--------------|
+|`[VariableExpressionAst]`|true    |named   |true (ByValue)|
 
 
 
@@ -44,13 +43,12 @@ The TypeName(s) used to decorate the object.
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|true    |1       |false        |
 
 
 
@@ -61,13 +59,12 @@ If set, will output the object after it has been decorated
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -78,13 +75,12 @@ If set, will clear any underlying typenames.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
