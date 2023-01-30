@@ -866,6 +866,25 @@ if ($foundTranspiler) {
     <Name>System.Management.Automation.CommandInfo</Name>
     <Members>
       <ScriptProperty>
+        <Name>CommandNamespace</Name>
+        <GetScriptBlock>
+                        if ($this.Namespace) {
+    $this.Namespace
+} else {
+    $matched = $this.NamespaceSeparator.Match($this.Name)
+    if ($matched.Success -and $matched.Index -gt 0) {
+        $this.Name.Substring(0,$matched.Index)
+    }
+    else {
+        ''
+    }
+}
+
+
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>NamespaceSeparator</Name>
         <GetScriptBlock>
                         # Allowing this to be set (caching what what set in .`.NamespaceSeparator`)
