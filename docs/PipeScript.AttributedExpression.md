@@ -23,13 +23,12 @@ The attributed expression
 
 
 
-> **Type**: ```[AttributedExpressionAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                       |Required|Position|PipelineInput |
+|---------------------------|--------|--------|--------------|
+|`[AttributedExpressionAst]`|true    |named   |true (ByValue)|
 
 
 
