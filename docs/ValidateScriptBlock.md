@@ -52,13 +52,12 @@ This will attempt to recreate the Script Block as a datalanguage block and execu
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -69,13 +68,12 @@ If set, will ensure that the [ScriptBlock] only has parameters
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -86,13 +84,12 @@ If set, will ensure that the [ScriptBlock] has no named blocks.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -103,39 +100,36 @@ If set, will ensure that the [ScriptBlock] has no parameters.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
 ---
 #### **IncludeCommand**
 
-> **Type**: ```[Object]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Object]`|false   |named   |false        |
 
 
 
 ---
 #### **ExcludeCommand**
 
-> **Type**: ```[Object]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Object]`|false   |named   |false        |
 
 
 
@@ -147,13 +141,12 @@ Passing -IncludeType without -ExcludeType will make -ExcludeType default to *.
 
 
 
-> **Type**: ```[Object]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Object]`|false   |named   |false        |
 
 
 
@@ -165,13 +158,12 @@ Passing -IncludeType without -ExcludeType will make -ExcludeType default to *.
 
 
 
-> **Type**: ```[Object]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Object]`|false   |named   |false        |
 
 
 
@@ -182,13 +174,12 @@ If set, will ensure that the ScriptBlock does not contain any loops.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -199,13 +190,12 @@ If set, will ensure that the ScriptBlock does not contain any do or while loops.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -217,13 +207,12 @@ If no results are found or the condition throws, the script block will be consid
 
 
 
-> **Type**: ```[ScriptBlock[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type             |Required|Position|PipelineInput|
+|-----------------|--------|--------|-------------|
+|`[ScriptBlock[]]`|false   |named   |false        |
 
 
 
@@ -234,13 +223,12 @@ A VariableExpression.  If provided, the Validation attributes will apply to this
 
 
 
-> **Type**: ```[VariableExpressionAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                     |Required|Position|PipelineInput |
+|-------------------------|--------|--------|--------------|
+|`[VariableExpressionAst]`|true    |named   |true (ByValue)|
 
 
 
