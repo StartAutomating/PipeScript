@@ -37,13 +37,12 @@ If no -Command is provided and -InputObject is a [ScriptBlock]
 
 
 
-> **Type**: ```[PSObject]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type        |Required|Position|PipelineInput |
+|------------|--------|--------|--------------|
+|`[PSObject]`|false   |named   |true (ByValue)|
 
 
 
@@ -54,13 +53,12 @@ The Command that will be run.
 
 
 
-> **Type**: ```[PSObject]```
 
-> **Required**: false
 
-> **Position**: 1
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[PSObject]`|false   |1       |false        |
 
 
 
@@ -71,13 +69,12 @@ A collection of named parameters.  These will be directly passed to the underlyi
 
 
 
-> **Type**: ```[IDictionary]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |named   |false        |
 
 
 
@@ -88,13 +85,12 @@ A list of positional arguments.  These will be directly passed to the underlying
 
 
 
-> **Type**: ```[PSObject[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type          |Required|Position|PipelineInput|
+|--------------|--------|--------|-------------|
+|`[PSObject[]]`|false   |named   |false        |
 
 
 
@@ -107,13 +103,12 @@ If this is set, will make ScriptBlockAst values will be run within data language
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
