@@ -886,11 +886,7 @@ if ($foundTranspiler) {
       <ScriptProperty>
         <Name>CommandNamespace</Name>
         <GetScriptBlock>
-                        if ($this -is [Management.Automation.CmdletInfo]) {    
-    return $this.Namespace
-} 
-
-$matched = $this.NamespaceSeparator.Match($this.FullName)
+                        $matched = $this.NamespaceSeparator.Match($this.FullName)
 if ($matched.Success -and $matched.Index -gt 0) {
     $this.FullName.Substring(0,$matched.Index)
 }
@@ -910,7 +906,11 @@ else {
     $this.Source
 } elseif ($this.Module) {
     '' + $this.Module + '\' + $this.Name
-} else {
+} 
+elseif ($this -is [Management.Automation.CmdletInfo]) {
+    $this.ImplementingType.Namespace + '.' + $this.Name
+}
+else {
     $this.Name
 }
                     </GetScriptBlock>
