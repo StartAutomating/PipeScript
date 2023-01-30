@@ -51,13 +51,12 @@ If set, include all functions in the input.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -68,13 +67,12 @@ If set, include all commands in the input.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -85,13 +83,12 @@ If set, include all cmdlets in the input
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -102,13 +99,12 @@ If set, include all aliases in the input
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -119,13 +115,12 @@ If set, include all applications in the input
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -136,13 +131,12 @@ If set, include all applications in the input
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -153,13 +147,12 @@ If set, include all variables in the inputObject.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -170,13 +163,12 @@ If set, will include all of the variables, aliases, functions, and scripts in th
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -187,13 +179,12 @@ The input to be searched.
 
 
 
-> **Type**: ```[Object]```
 
-> **Required**: false
 
-> **Position**: 1
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Object]`|false   |1       |true (ByPropertyName)|
 
 
 
@@ -204,13 +195,12 @@ An optional condition
 
 
 
-> **Type**: ```[Object]```
 
-> **Required**: false
 
-> **Position**: 2
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Object]`|false   |2       |true (ByPropertyName)|
 
 
 
@@ -221,13 +211,12 @@ The action that will be run
 
 
 
-> **Type**: ```[Object]```
 
-> **Required**: false
 
-> **Position**: 3
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Object]`|false   |3       |true (ByPropertyName)|
 
 
 
@@ -238,13 +227,12 @@ The way to sort data before it is outputted.
 
 
 
-> **Type**: ```[Object]```
 
-> **Required**: false
 
-> **Position**: 4
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Object]`|false   |4       |true (ByPropertyName)|
 
 
 
@@ -255,13 +243,12 @@ If output should be sorted in descending order.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Switch]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -272,13 +259,12 @@ The Command AST
 
 
 
-> **Type**: ```[CommandAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type          |Required|Position|PipelineInput |
+|--------------|--------|--------|--------------|
+|`[CommandAst]`|true    |named   |true (ByValue)|
 
 
 
