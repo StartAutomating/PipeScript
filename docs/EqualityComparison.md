@@ -39,13 +39,12 @@ The original assignment statement.
 
 
 
-> **Type**: ```[AssignmentStatementAst]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:true (ByValue)
+|Type                      |Required|Position|PipelineInput |
+|--------------------------|--------|--------|--------------|
+|`[AssignmentStatementAst]`|true    |1       |true (ByValue)|
 
 
 
