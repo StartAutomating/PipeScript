@@ -36,13 +36,12 @@ This can be a `[string]`, `[ScriptBlock]`, `[IO.FileInfo]`, or `[Ast]`.
 
 
 
-> **Type**: ```[Object]```
 
-> **Required**: false
 
-> **Position**: 1
 
-> **PipelineInput**:true (ByValue, ByPropertyName)
+|Type      |Required|Position|PipelineInput                 |
+|----------|--------|--------|------------------------------|
+|`[Object]`|false   |1       |true (ByValue, ByPropertyName)|
 
 
 
@@ -54,13 +53,12 @@ These conditions will apply when the input is a `[ScriptBlock]`, `[Ast]`, or Pow
 
 
 
-> **Type**: ```[ScriptBlock[]]```
 
-> **Required**: false
 
-> **Position**: 2
 
-> **PipelineInput**:true (ByPropertyName)
+|Type             |Required|Position|PipelineInput        |
+|-----------------|--------|--------|---------------------|
+|`[ScriptBlock[]]`|false   |2       |true (ByPropertyName)|
 
 
 
@@ -71,13 +69,12 @@ A shortname for the abstract syntax tree types.
 
 
 
-> **Type**: ```[Object]```
 
-> **Required**: false
 
-> **Position**: 3
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Object]`|false   |3       |true (ByPropertyName)|
 
 
 
@@ -88,13 +85,12 @@ One or more regular expressions to match.
 
 
 
-> **Type**: ```[Object]```
 
-> **Required**: false
 
-> **Position**: 4
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Object]`|false   |4       |true (ByPropertyName)|
 
 
 
@@ -105,13 +101,12 @@ If set, will search nested script blocks.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
