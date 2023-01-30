@@ -43,65 +43,60 @@ The Help Transpiler allows you to write inline help without directly writing com
 ### Parameters
 #### **Synopsis**
 
-> **Type**: ```[String]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|true    |1       |false        |
 
 
 
 ---
 #### **Description**
 
-> **Type**: ```[String]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |named   |false        |
 
 
 
 ---
 #### **Example**
 
-> **Type**: ```[String[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |named   |false        |
 
 
 
 ---
 #### **Link**
 
-> **Type**: ```[String[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |named   |false        |
 
 
 
 ---
 #### **ScriptBlock**
 
-> **Type**: ```[ScriptBlock]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type           |Required|Position|PipelineInput |
+|---------------|--------|--------|--------------|
+|`[ScriptBlock]`|false   |named   |true (ByValue)|
 
 
 
