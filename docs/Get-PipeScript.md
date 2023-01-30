@@ -28,13 +28,12 @@ If provided, will look beneath a specific path for extensions.
 
 
 
-> **Type**: ```[String]```
 
-> **Required**: false
 
-> **Position**: 1
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[String]`|false   |1       |true (ByPropertyName)|
 
 
 
@@ -45,13 +44,12 @@ If set, will clear caches of extensions, forcing a refresh.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -62,13 +60,12 @@ If provided, will get PipeScript that extend a given command
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: false
 
-> **Position**: 2
 
-> **PipelineInput**:true (ByPropertyName)
+|Type        |Required|Position|PipelineInput        |
+|------------|--------|--------|---------------------|
+|`[String[]]`|false   |2       |true (ByPropertyName)|
 
 
 
@@ -82,13 +79,12 @@ If the extension has an Alias with a regular expression literal (```'/Expression
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: false
 
-> **Position**: 3
 
-> **PipelineInput**:true (ByPropertyName)
+|Type        |Required|Position|PipelineInput        |
+|------------|--------|--------|---------------------|
+|`[String[]]`|false   |3       |true (ByPropertyName)|
 
 
 
@@ -102,13 +98,12 @@ If the extension has an Alias with a regular expression literal (```'/Expression
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Switch]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -122,13 +117,12 @@ If the extension has an Alias with a regular expression literal (```'/Expression
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Switch]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -139,13 +133,12 @@ If set, will return the dynamic parameters object of all the PipeScript for a gi
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Switch]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -156,13 +149,12 @@ If set, will return if the extension could run.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Switch]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -173,13 +165,12 @@ If set, will return if the extension could accept this input from the pipeline.
 
 
 
-> **Type**: ```[PSObject]```
 
-> **Required**: false
 
-> **Position**: 4
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[PSObject]`|false   |4       |false        |
 
 
 
@@ -191,13 +182,12 @@ By default, extension results are wrapped in a return object.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Switch]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -209,13 +199,12 @@ By default, extension results are wrapped in a return object.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Switch]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -227,13 +216,12 @@ Implies -DynamicParameter.
 
 
 
-> **Type**: ```[String]```
 
-> **Required**: false
 
-> **Position**: 5
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[String]`|false   |5       |true (ByPropertyName)|
 
 
 
@@ -245,13 +233,12 @@ Implies -DynamicParameter.
 
 
 
-> **Type**: ```[Int32]```
 
-> **Required**: false
 
-> **Position**: 6
 
-> **PipelineInput**:true (ByPropertyName)
+|Type     |Required|Position|PipelineInput        |
+|---------|--------|--------|---------------------|
+|`[Int32]`|false   |6       |true (ByPropertyName)|
 
 
 
@@ -263,13 +250,12 @@ Implies -DynamicParameter.  Does not actually prevent the parameter from being M
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Switch]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -280,13 +266,12 @@ If set, will require a [Runtime.CompilerServices.Extension()] attribute to be co
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Switch]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -297,13 +282,12 @@ If set, will validate this input against [ValidateScript], [ValidatePattern], [V
 
 
 
-> **Type**: ```[PSObject]```
 
-> **Required**: false
 
-> **Position**: 7
 
-> **PipelineInput**:true (ByPropertyName)
+|Type        |Required|Position|PipelineInput        |
+|------------|--------|--------|---------------------|
+|`[PSObject]`|false   |7       |true (ByPropertyName)|
 
 
 
@@ -315,13 +299,12 @@ By default, if any validation attribute returned true, the extension is consider
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -332,13 +315,12 @@ The name of the parameter set.  This is used by -CouldRun and -Run to enforce a 
 
 
 
-> **Type**: ```[String]```
 
-> **Required**: false
 
-> **Position**: 8
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[String]`|false   |8       |true (ByPropertyName)|
 
 
 
@@ -349,13 +331,12 @@ The parameters to the extension.  Only used when determining if the extension -C
 
 
 
-> **Type**: ```[IDictionary]```
 
-> **Required**: false
 
-> **Position**: 9
 
-> **PipelineInput**:true (ByPropertyName)
+|Type           |Required|Position|PipelineInput        |
+|---------------|--------|--------|---------------------|
+|`[IDictionary]`|false   |9       |true (ByPropertyName)|
 
 
 
@@ -368,13 +349,12 @@ This allows for the execution of more than one extension at a time.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -385,13 +365,12 @@ If set, will output the help for the extensions
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
