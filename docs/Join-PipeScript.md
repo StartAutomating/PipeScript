@@ -56,13 +56,12 @@ A ScriptBlock written in PowerShell or PipeScript.
 
 
 
-> **Type**: ```[ScriptBlock[]]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue, ByPropertyName)
+|Type             |Required|Position|PipelineInput                 |
+|-----------------|--------|--------|------------------------------|
+|`[ScriptBlock[]]`|true    |named   |true (ByValue, ByPropertyName)|
 
 
 
@@ -88,13 +87,12 @@ Valid Values:
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |named   |false        |
 
 
 
@@ -119,13 +117,12 @@ Valid Values:
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |named   |false        |
 
 
 
@@ -136,13 +133,12 @@ If set, will transpile the joined ScriptBlock.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -154,13 +150,12 @@ If -IncludeParameter is provided without -ExcludeParameter, all other parameters
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |named   |false        |
 
 
 
@@ -172,13 +167,12 @@ Excluded parameters with default values will declare the default value at the be
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |named   |false        |
 
 
 
