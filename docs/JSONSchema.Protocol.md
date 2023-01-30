@@ -31,13 +31,12 @@ The URI.
 
 
 
-> **Type**: ```[Uri]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type   |Required|Position|PipelineInput|
+|-------|--------|--------|-------------|
+|`[Uri]`|true    |named   |false        |
 
 
 
@@ -48,26 +47,24 @@ The Command's Abstract Syntax Tree
 
 
 
-> **Type**: ```[CommandAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type          |Required|Position|PipelineInput|
+|--------------|--------|--------|-------------|
+|`[CommandAst]`|true    |named   |false        |
 
 
 
 ---
 #### **ScriptBlock**
 
-> **Type**: ```[ScriptBlock]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type           |Required|Position|PipelineInput |
+|---------------|--------|--------|--------------|
+|`[ScriptBlock]`|true    |named   |true (ByValue)|
 
 
 
@@ -79,13 +76,12 @@ Properties that start with this prefix will become parameters without the prefix
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |named   |false        |
 
 
 
@@ -97,13 +93,12 @@ Properties whose name or description is like this keyword will be ignored.
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |named   |false        |
 
 
 
@@ -115,13 +110,12 @@ Properties whose name or description is like this keyword will be included.
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |named   |false        |
 
 
 
@@ -132,13 +126,12 @@ If set, will not mark a parameter as required, even if the schema indicates it s
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
