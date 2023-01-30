@@ -44,13 +44,12 @@ A Script Block, written in PowerShell or PipeScript.
 
 
 
-> **Type**: ```[ScriptBlock]```
 
-> **Required**: false
 
-> **Position**: 1
 
-> **PipelineInput**:true (ByValue, ByPropertyName)
+|Type           |Required|Position|PipelineInput                 |
+|---------------|--------|--------|------------------------------|
+|`[ScriptBlock]`|false   |1       |true (ByValue, ByPropertyName)|
 
 
 
@@ -61,13 +60,12 @@ A block of text.
 
 
 
-> **Type**: ```[String]```
 
-> **Required**: false
 
-> **Position**: 2
 
-> **PipelineInput**:true (ByPropertyName)
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[String]`|false   |2       |true (ByPropertyName)|
 
 
 
@@ -79,13 +77,12 @@ Keys in the dictionary must be a string describing a character range, in the for
 
 
 
-> **Type**: ```[IDictionary]```
 
-> **Required**: false
 
-> **Position**: 3
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |3       |false        |
 
 
 
@@ -96,13 +93,12 @@ If set, will replace items based off of the abstract syntax tree.
 
 
 
-> **Type**: ```[IDictionary]```
 
-> **Required**: false
 
-> **Position**: 4
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |4       |false        |
 
 
 
@@ -113,13 +109,12 @@ If provided, will replace regular expression matches.
 
 
 
-> **Type**: ```[IDictionary]```
 
-> **Required**: false
 
-> **Position**: 5
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |5       |false        |
 
 
 
@@ -130,13 +125,12 @@ If provided, will replace regions.
 
 
 
-> **Type**: ```[IDictionary]```
 
-> **Required**: false
 
-> **Position**: 6
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |6       |false        |
 
 
 
@@ -147,13 +141,12 @@ If provided, will remove one or more parameters from a ScriptBlock.
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: false
 
-> **Position**: 7
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |7       |false        |
 
 
 
@@ -164,13 +157,12 @@ If provided, will insert text before any regular epxression match.
 
 
 
-> **Type**: ```[IDictionary]```
 
-> **Required**: false
 
-> **Position**: 8
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |8       |false        |
 
 
 
@@ -181,13 +173,12 @@ If provided, will insert text after any regular expression match.
 
 
 
-> **Type**: ```[IDictionary]```
 
-> **Required**: false
 
-> **Position**: 9
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |9       |false        |
 
 
 
@@ -198,13 +189,12 @@ A collection of variables to rename.
 
 
 
-> **Type**: ```[IDictionary]```
 
-> **Required**: false
 
-> **Position**: 10
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |10      |false        |
 
 
 
@@ -215,13 +205,12 @@ If set, will transpile the updated script block.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
