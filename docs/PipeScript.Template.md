@@ -30,26 +30,24 @@ A string containing the text contents of the file
 
 
 
-> **Type**: ```[String]```
 
-> **Required**: false
 
-> **Position**: 1
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |1       |false        |
 
 
 
 ---
 #### **ReplacePattern**
 
-> **Type**: ```[Regex]```
 
-> **Required**: false
 
-> **Position**: 2
 
-> **PipelineInput**:false
+|Type     |Required|Position|PipelineInput|
+|---------|--------|--------|-------------|
+|`[Regex]`|false   |2       |false        |
 
 
 
@@ -60,13 +58,12 @@ The name of the template.  This can be implied by the pattern.
 
 
 
-> **Type**: ```[Object]```
 
-> **Required**: false
 
-> **Position**: 3
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Object]`|false   |3       |false        |
 
 
 
@@ -79,13 +76,12 @@ An expression will match everything until -EndPattern
 
 
 
-> **Type**: ```[Regex]```
 
-> **Required**: false
 
-> **Position**: 4
 
-> **PipelineInput**:false
+|Type     |Required|Position|PipelineInput|
+|---------|--------|--------|-------------|
+|`[Regex]`|false   |4       |false        |
 
 
 
@@ -97,13 +93,12 @@ This indicates the end of what should be considered PipeScript.
 
 
 
-> **Type**: ```[Regex]```
 
-> **Required**: false
 
-> **Position**: 5
 
-> **PipelineInput**:false
+|Type     |Required|Position|PipelineInput|
+|---------|--------|--------|-------------|
+|`[Regex]`|false   |5       |false        |
 
 
 
@@ -116,13 +111,12 @@ The output of these scripts will be the replacement text.
 
 
 
-> **Type**: ```[ScriptBlock]```
 
-> **Required**: false
 
-> **Position**: 6
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[ScriptBlock]`|false   |6       |false        |
 
 
 
@@ -133,13 +127,12 @@ If set, will not transpile script blocks.
 
 
 
-> **Type**: ```[Switch]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 
 
 
@@ -150,13 +143,12 @@ The path to the source file.
 
 
 
-> **Type**: ```[String]```
 
-> **Required**: false
 
-> **Position**: 7
 
-> **PipelineInput**:false
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |7       |false        |
 
 
 
@@ -167,13 +159,12 @@ A Script Block that will be injected before each inline is run.
 
 
 
-> **Type**: ```[ScriptBlock]```
 
-> **Required**: false
 
-> **Position**: 8
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[ScriptBlock]`|false   |8       |false        |
 
 
 
@@ -184,13 +175,12 @@ A Script Block that will be piped to after each output.
 
 
 
-> **Type**: ```[ScriptBlock]```
 
-> **Required**: false
 
-> **Position**: 9
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[ScriptBlock]`|false   |9       |false        |
 
 
 
@@ -201,13 +191,12 @@ A Script Block that will be injected after each inline script is run.
 
 
 
-> **Type**: ```[ScriptBlock]```
 
-> **Required**: false
 
-> **Position**: 10
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[ScriptBlock]`|false   |10      |false        |
 
 
 
@@ -218,13 +207,12 @@ A collection of parameters
 
 
 
-> **Type**: ```[IDictionary]```
 
-> **Required**: false
 
-> **Position**: 11
 
-> **PipelineInput**:false
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |11      |false        |
 
 
 
@@ -235,13 +223,12 @@ An argument list.
 
 
 
-> **Type**: ```[PSObject[]]```
 
-> **Required**: false
 
-> **Position**: 12
 
-> **PipelineInput**:false
+|Type          |Required|Position|PipelineInput|
+|--------------|--------|--------|-------------|
+|`[PSObject[]]`|false   |12      |false        |
 
 
 
@@ -254,13 +241,12 @@ Only lines beginning with this pattern within -StartPattern and -EndPattern will
 
 
 
-> **Type**: ```[Regex]```
 
-> **Required**: false
 
-> **Position**: 13
 
-> **PipelineInput**:false
+|Type     |Required|Position|PipelineInput|
+|---------|--------|--------|-------------|
+|`[Regex]`|false   |13      |false        |
 
 
 
@@ -271,13 +257,12 @@ The Command Abstract Syntax Tree.  If this is provided, we are transpiling a tem
 
 
 
-> **Type**: ```[CommandAst]```
 
-> **Required**: false
 
-> **Position**: 14
 
-> **PipelineInput**:true (ByValue)
+|Type          |Required|Position|PipelineInput |
+|--------------|--------|--------|--------------|
+|`[CommandAst]`|false   |14      |true (ByValue)|
 
 
 
