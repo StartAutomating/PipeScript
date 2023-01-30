@@ -82,13 +82,12 @@ The CommandAst
 
 
 
-> **Type**: ```[CommandAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type          |Required|Position|PipelineInput |
+|--------------|--------|--------|--------------|
+|`[CommandAst]`|true    |named   |true (ByValue)|
 
 
 
