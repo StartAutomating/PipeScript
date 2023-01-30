@@ -30,13 +30,12 @@ One or more input paths.  If no -InputPath is provided, will build all scripts b
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: false
 
-> **Position**: 1
 
-> **PipelineInput**:true (ByPropertyName)
+|Type        |Required|Position|PipelineInput        |
+|------------|--------|--------|---------------------|
+|`[String[]]`|false   |1       |true (ByPropertyName)|
 
 
 
