@@ -25,13 +25,12 @@ The attributed expression
 
 
 
-> **Type**: ```[TypeExpressionAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                 |Required|Position|PipelineInput |
+|---------------------|--------|--------|--------------|
+|`[TypeExpressionAst]`|true    |named   |true (ByValue)|
 
 
 
