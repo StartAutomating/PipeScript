@@ -1,4 +1,4 @@
-if ($this.Namespace) {
+if ($this -is [Management.Automation.CmdletInfo]) {    
     $this.Namespace
 } else {
     $matched = $this.NamespaceSeparator.Match($this.Name)
