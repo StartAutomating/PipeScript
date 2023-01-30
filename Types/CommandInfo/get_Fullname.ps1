@@ -1,6 +1,8 @@
-if ($this -is [Management.Automation.ExternalScriptInfo]) {
+if ($this -is [Management.Automation.ExternalScriptInfo] -or 
+    $this -is [Management.Automation.ApplicationInfo]) {    
     $this.Source
-} elseif ($this.Module) {
+}
+elseif ($this.Module) {
     '' + $this.Module + '\' + $this.Name
 } 
 elseif ($this -is [Management.Automation.CmdletInfo]) {
