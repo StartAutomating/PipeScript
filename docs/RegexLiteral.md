@@ -90,13 +90,12 @@ A RegexLiteral can be any string constant expression (as long as it's not in an 
 
 
 
-> **Type**: ```[StringConstantExpressionAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                           |Required|Position|PipelineInput |
+|-------------------------------|--------|--------|--------------|
+|`[StringConstantExpressionAst]`|true    |named   |true (ByValue)|
 
 
 
@@ -107,13 +106,12 @@ It can also by any expandable string, which allows you to construct Regexes usin
 
 
 
-> **Type**: ```[ExpandableStringExpressionAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                             |Required|Position|PipelineInput |
+|---------------------------------|--------|--------|--------------|
+|`[ExpandableStringExpressionAst]`|true    |named   |true (ByValue)|
 
 
 
