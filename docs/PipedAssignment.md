@@ -36,13 +36,12 @@ $Collection = $Collection |
 ### Parameters
 #### **PipelineAst**
 
-> **Type**: ```[PipelineAst]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:true (ByValue)
+|Type           |Required|Position|PipelineInput |
+|---------------|--------|--------|--------------|
+|`[PipelineAst]`|true    |1       |true (ByValue)|
 
 
 
