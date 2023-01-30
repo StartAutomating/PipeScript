@@ -32,13 +32,12 @@ The name of one or more parameters to remove
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|true    |1       |false        |
 
 
 
@@ -49,13 +48,12 @@ The ScriptBlock that declares the parameters.
 
 
 
-> **Type**: ```[ScriptBlock]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type           |Required|Position|PipelineInput |
+|---------------|--------|--------|--------------|
+|`[ScriptBlock]`|true    |named   |true (ByValue)|
 
 
 
