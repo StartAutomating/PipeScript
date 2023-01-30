@@ -34,26 +34,24 @@ The name of one or more platforms.  These will be interpreted as wildcards.
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|true    |1       |false        |
 
 
 
 ---
 #### **VariableAST**
 
-> **Type**: ```[VariableExpressionAst]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                     |Required|Position|PipelineInput |
+|-------------------------|--------|--------|--------------|
+|`[VariableExpressionAst]`|false   |named   |true (ByValue)|
 
 
 
