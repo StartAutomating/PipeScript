@@ -41,13 +41,12 @@ Valid Values:
 
 
 
-> **Type**: ```[CommandTypes[]]```
 
-> **Required**: false
 
-> **Position**: 1
 
-> **PipelineInput**:false
+|Type              |Required|Position|PipelineInput|
+|------------------|--------|--------|-------------|
+|`[CommandTypes[]]`|false   |1       |false        |
 
 
 
@@ -58,13 +57,12 @@ A VariableExpression.  This variable must contain a module.
 
 
 
-> **Type**: ```[VariableExpressionAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                     |Required|Position|PipelineInput |
+|-------------------------|--------|--------|--------------|
+|`[VariableExpressionAst]`|true    |named   |true (ByValue)|
 
 
 
