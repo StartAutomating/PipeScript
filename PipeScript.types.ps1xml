@@ -886,7 +886,7 @@ if ($foundTranspiler) {
       <ScriptProperty>
         <Name>CommandNamespace</Name>
         <GetScriptBlock>
-                        $matched = $this.NamespaceSeparator.Match($this.FullName)
+                        $matched = $this.NameSeparator.Match($this.FullName)
 if ($matched.Success -and $matched.Index -gt 0) {
     $this.FullName.Substring(0,$matched.Index)
 }
@@ -924,37 +924,50 @@ else {
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
-        <Name>NamespaceSeparator</Name>
+        <Name>NameSegments</Name>
+        <GetScriptBlock>
+                        $allMatches = @($this.NameSeparator.Matches($this.FullName))
+@(
+    # All namespaces are a series of matches
+    foreach ($matched in $allMatches) {
+        $this.FullName.Substring($matched.Index)
+    }
+    $this.FullName
+) -as [string[]]
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>NameSeparator</Name>
         <GetScriptBlock>
                         # Allowing this to be set (caching what what set in .`.NamespaceSeparator`)
-if ($this.'.NamespaceSeparator') {    
-    if ($this.'.NamespaceSeparator' -is [regex]) {
-        $this.'.NamespaceSeparator'
+if ($this.'.NameSeparator') {    
+    if ($this.'.NameSeparator' -is [regex]) {
+        $this.'.NameSeparator'
     } else {
         [Regex]::new("[" +
-            [Regex]::Escape($this.'.NamespaceSeparator') +
+            [Regex]::Escape($this.'.NameSeparator') +
         "]", 'RightToLeft')
     }
 }
-# Laying future groundwork for some special/automatic variables
-elseif ($psCommandNamespaceSeparator) 
+# Laying groundwork for some special/automatic variables
+elseif ($psCommandNameSeparator) 
 {
-    if ($psCommandNamespaceSeparator -is [string])  {
+    if ($psCommandNameSeparator -is [string])  {
         [Regex]::new("[" +
-            [Regex]::Escape($psCommandNamespaceSeparator) +
-        "]", 'RightToLeft')
-    } elseif ($psCommandNamespaceSeparator -is [regex]) {
-        $psCommandNamespaceSeparator
+            [Regex]::Escape($psCommandNameSeparator) +
+        "]{1,}", 'RightToLeft')
+    } elseif ($psCommandNameSeparator -is [regex]) {
+        $psCommandNameSeparator
     }
 }
 else
 {
-    [Regex]::new('[\.\\/]','RightToLeft')
+    [Regex]::new('[\p{P}]{1,}','RightToLeft')
 }
 
                     </GetScriptBlock>
         <SetScriptBlock>
-                        $this | Add-Member NoteProperty ".NamespaceSeparator" $args -Force
+                        $this | Add-Member NoteProperty ".NameSeparator" $args -Force
 
                     </SetScriptBlock>
       </ScriptProperty>
