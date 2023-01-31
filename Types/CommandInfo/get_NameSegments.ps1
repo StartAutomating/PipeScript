@@ -4,5 +4,7 @@ $allMatches = @($this.NameSeparator.Matches($this.FullName))
     foreach ($matched in $allMatches) {
         $this.FullName.Substring($matched.Index)
     }
-    $this.FullName
+    if ($matched.Index -gt 0) {
+        $this.FullName
+    }
 ) -as [string[]]
