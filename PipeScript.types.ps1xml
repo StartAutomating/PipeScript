@@ -920,6 +920,23 @@ if ($foundTranspiler) {
     <Name>System.Management.Automation.CommandInfo</Name>
     <Members>
       <ScriptProperty>
+        <Name>BlockComments</Name>
+        <GetScriptBlock>
+                        if (-not $this.ScriptBlock) {
+    return @()
+}
+
+@([Regex]::New("
+\&lt;\# # The opening tag
+(?&lt;Block&gt;
+    (?:.|\s)+?(?=\z|\#&gt;) # anything until the closing tag
+)
+\#\&gt; # the closing tag
+", 'IgnoreCase,IgnorePatternWhitespace', '00:00:01').Matches($this.ScriptBlock)) -as [Text.RegularExpressions.Match[]]
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>CommandNamespace</Name>
         <GetScriptBlock>
                         $matched = $this.NameSeparator.Match($this.FullName)
