@@ -1106,6 +1106,12 @@ else
 return 0
                     </GetScriptBlock>
       </ScriptProperty>
+      <ScriptProperty>
+        <Name>Synopsis</Name>
+        <GetScriptBlock>
+                        @($this.GetHelpField("Synopsis"))[0] -replace '^\s+'
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>
