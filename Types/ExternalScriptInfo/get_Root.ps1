@@ -1,5 +1,5 @@
 if ($this.'.Root') {
-    $this.'.Root'
+    return $this.'.Root'
 }
 
 $nextRoot = $this.Source | Split-Path
