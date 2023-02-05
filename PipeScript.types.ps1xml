@@ -928,6 +928,10 @@ if ($foundTranspiler) {
         <ReferencedMemberName>Examples</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>Link</Name>
+        <ReferencedMemberName>Links</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>Order</Name>
         <ReferencedMemberName>Rank</ReferencedMemberName>
       </AliasProperty>
@@ -1036,6 +1040,13 @@ elseif ($this -is [Management.Automation.CmdletInfo]) {
 else {
     $this.Name
 }
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Links</Name>
+        <GetScriptBlock>
+                        $this.GetHelpField("Link")
+
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
