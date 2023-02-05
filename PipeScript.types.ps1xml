@@ -999,6 +999,12 @@ else {
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Description</Name>
+        <GetScriptBlock>
+                        @($this.GetHelpField("Description"))[0] -replace '^\s+'
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Fullname</Name>
         <GetScriptBlock>
                         if ($this -is [Management.Automation.ExternalScriptInfo] -or 
