@@ -1,3 +1,4 @@
 @{
     Categories = 'Category'
+    Order = 'Rank'
 }
