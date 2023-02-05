@@ -924,6 +924,10 @@ if ($foundTranspiler) {
         <ReferencedMemberName>Category</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>Example</Name>
+        <ReferencedMemberName>Examples</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>Order</Name>
         <ReferencedMemberName>Rank</ReferencedMemberName>
       </AliasProperty>
@@ -1002,6 +1006,12 @@ else {
         <Name>Description</Name>
         <GetScriptBlock>
                         @($this.GetHelpField("Description"))[0] -replace '^\s+'
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Examples</Name>
+        <GetScriptBlock>
+                        $this.GetHelpField("Example")
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
