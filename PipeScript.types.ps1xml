@@ -923,6 +923,10 @@ if ($foundTranspiler) {
         <Name>Categories</Name>
         <ReferencedMemberName>Category</ReferencedMemberName>
       </AliasProperty>
+      <AliasProperty>
+        <Name>Order</Name>
+        <ReferencedMemberName>Rank</ReferencedMemberName>
+      </AliasProperty>
       <ScriptMethod>
         <Name>GetHelpField</Name>
         <Script>
@@ -1083,6 +1087,18 @@ else
                         $this | Add-Member NoteProperty ".NameSeparator" $args -Force
 
                     </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Rank</Name>
+        <GetScriptBlock>
+                        foreach ($attr in $this.ScriptBlock.Attributes) {
+    if ($attr -is [Reflection.AssemblyMetaDataAttribute] -and
+        $attr.Key -in 'Order', 'Rank') {
+        return $attr.Value -as [int]
+    }
+}
+return 0
+                    </GetScriptBlock>
       </ScriptProperty>
     </Members>
   </Type>
