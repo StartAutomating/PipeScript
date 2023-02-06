@@ -1,10 +1,10 @@
 # Allowing this to be set (caching what what set in .`.NamespaceSeparator`)
-if ($this.'.NameSeparator') {    
-    if ($this.'.NameSeparator' -is [regex]) {
-        $this.'.NameSeparator'
+if ($this.'.Separator') {    
+    if ($this.'.Separator' -is [regex]) {
+        $this.'.Separator'
     } else {
         [Regex]::new("[" +
-            [Regex]::Escape($this.'.NameSeparator') +
+            [Regex]::Escape($this.'.Separator') +
         "]", 'RightToLeft')
     }
 }
