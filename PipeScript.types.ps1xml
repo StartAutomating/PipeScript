@@ -993,7 +993,7 @@ foreach ($block in $this.BlockComments) {
       <ScriptProperty>
         <Name>CommandNamespace</Name>
         <GetScriptBlock>
-                        $matched = $this.NameSeparator.Match($this.FullName)
+                        $matched = $this.Separator.Match($this.FullName)
 if ($matched.Success -and $matched.Index -gt 0) {
     $this.FullName.Substring(0,$matched.Index)
 }
@@ -1066,9 +1066,21 @@ return $Metadata
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
-        <Name>NameSegments</Name>
+        <Name>Rank</Name>
         <GetScriptBlock>
-                        $allMatches = @($this.NameSeparator.Matches($this.FullName))
+                        foreach ($attr in $this.ScriptBlock.Attributes) {
+    if ($attr -is [Reflection.AssemblyMetaDataAttribute] -and
+        $attr.Key -in 'Order', 'Rank') {
+        return $attr.Value -as [int]
+    }
+}
+return 0
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Segments</Name>
+        <GetScriptBlock>
+                        $allMatches = @($this.Separator.Matches($this.FullName))
 @(
     # All namespaces are a series of matches
     foreach ($matched in $allMatches) {
@@ -1081,15 +1093,15 @@ return $Metadata
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
-        <Name>NameSeparator</Name>
+        <Name>Separator</Name>
         <GetScriptBlock>
                         # Allowing this to be set (caching what what set in .`.NamespaceSeparator`)
-if ($this.'.NameSeparator') {    
-    if ($this.'.NameSeparator' -is [regex]) {
-        $this.'.NameSeparator'
+if ($this.'.Separator') {    
+    if ($this.'.Separator' -is [regex]) {
+        $this.'.Separator'
     } else {
         [Regex]::new("[" +
-            [Regex]::Escape($this.'.NameSeparator') +
+            [Regex]::Escape($this.'.Separator') +
         "]", 'RightToLeft')
     }
 }
@@ -1111,21 +1123,9 @@ else
 
                     </GetScriptBlock>
         <SetScriptBlock>
-                        $this | Add-Member NoteProperty ".NameSeparator" $args -Force
+                        $this | Add-Member NoteProperty ".Separator" $args -Force
 
                     </SetScriptBlock>
-      </ScriptProperty>
-      <ScriptProperty>
-        <Name>Rank</Name>
-        <GetScriptBlock>
-                        foreach ($attr in $this.ScriptBlock.Attributes) {
-    if ($attr -is [Reflection.AssemblyMetaDataAttribute] -and
-        $attr.Key -in 'Order', 'Rank') {
-        return $attr.Value -as [int]
-    }
-}
-return 0
-                    </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>Synopsis</Name>
