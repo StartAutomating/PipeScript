@@ -1,8 +1,8 @@
 if (-not $this.'.CommandMetadata') {
     $this.psobject.properties.add(
-        [psnoteproperty]::new('.CommandMetadata', {
+        [psnoteproperty]::new('.CommandMetadata', 
             [PSObject]::new([Management.Automation.CommandMetadata]::new($this))
-        }), $true
+        ), $true
     )    
 }
 
