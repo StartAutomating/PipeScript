@@ -1,14 +1,26 @@
 Include
 -------
+
+
+
+
 ### Synopsis
 Includes Files
 
+
+
 ---
+
+
 ### Description
 
 Includes Files or Functions into a Script.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -32,7 +44,11 @@ Includes Files or Functions into a Script.
 } | .>PipeScript
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **FilePath**
 
@@ -49,7 +65,6 @@ The File Path to Include
 
 
 
----
 #### **AsByte**
 
 If set, will include the content as a byte array
@@ -65,7 +80,6 @@ If set, will include the content as a byte array
 
 
 
----
 #### **VariableAst**
 
 
@@ -77,10 +91,13 @@ If set, will include the content as a byte array
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Include [-FilePath] <String> [-AsByte] -VariableAst <VariableExpressionAst> [<CommonParameters>]
 ```
----
 
