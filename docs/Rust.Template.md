@@ -1,16 +1,28 @@
 Rust.Template
 -------------
+
+
+
+
 ### Synopsis
 Rust Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate Rust.
 
 Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -74,7 +86,11 @@ Invoke-PipeScript .\HelloWorld_Rust.ps1.rs -Parameter @{message='hi'} |
             Write-Error "Go install Rust"
         }
     }
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -91,7 +107,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -107,7 +122,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -123,7 +137,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -139,7 +152,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Rust.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -147,5 +164,4 @@ Rust.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLi
 ```PowerShell
 Rust.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
