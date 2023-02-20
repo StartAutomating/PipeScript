@@ -1,14 +1,26 @@
 OutputFile
 ----------
+
+
+
+
 ### Synopsis
 Outputs to a File
 
+
+
 ---
+
+
 ### Description
 
 Outputs the result of a script into a file.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -26,7 +38,11 @@ Invoke-PipeScript {
 $Message = 'hello world'
     [Save(".\Hello.txt")]$Message
 }
+
+
 ---
+
+
 ### Parameters
 #### **OutputPath**
 
@@ -43,7 +59,6 @@ The Output Path
 
 
 
----
 #### **ScriptBlock**
 
 The Script Block that will be run.
@@ -59,7 +74,6 @@ The Script Block that will be run.
 
 
 
----
 #### **VariableAst**
 
 
@@ -71,7 +85,6 @@ The Script Block that will be run.
 
 
 
----
 #### **Encoding**
 
 The encoding parameter.
@@ -87,7 +100,6 @@ The encoding parameter.
 
 
 
----
 #### **Force**
 
 If set, will force output, overwriting existing files.
@@ -103,7 +115,6 @@ If set, will force output, overwriting existing files.
 
 
 
----
 #### **ExportScript**
 
 The export script
@@ -119,7 +130,6 @@ The export script
 
 
 
----
 #### **Depth**
 
 The serialization depth.  Currently only used when saving to JSON files.
@@ -135,10 +145,13 @@ The serialization depth.  Currently only used when saving to JSON files.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 OutputFile [-OutputPath] <String> [[-ScriptBlock] <ScriptBlock>] [[-VariableAst] <VariableExpressionAst>] [[-Encoding] <String>] [-Force] [[-ExportScript] <ScriptBlock>] [[-Depth] <Int32>] [<CommonParameters>]
 ```
----
 
