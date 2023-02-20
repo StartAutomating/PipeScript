@@ -1,15 +1,27 @@
 Decorate
 --------
+
+
+
+
 ### Synopsis
 decorate transpiler
 
+
+
 ---
+
+
 ### Description
 
 Applies one or more typenames to an object.
 By 'decorating' the object with a typename, this enables use of the extended type system.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -19,7 +31,11 @@ By 'decorating' the object with a typename, this enables use of the extended typ
 }.Transpile()
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **VariableAst**
 
@@ -36,7 +52,6 @@ The variable decoration will be applied to.
 
 
 
----
 #### **TypeName**
 
 The TypeName(s) used to decorate the object.
@@ -46,13 +61,12 @@ The TypeName(s) used to decorate the object.
 
 
 
-|Type        |Required|Position|PipelineInput|
-|------------|--------|--------|-------------|
-|`[String[]]`|true    |1       |false        |
+|Type        |Required|Position|PipelineInput|Aliases   |
+|------------|--------|--------|-------------|----------|
+|`[String[]]`|true    |1       |false        |PSTypeName|
 
 
 
----
 #### **PassThru**
 
 If set, will output the object after it has been decorated
@@ -68,7 +82,6 @@ If set, will output the object after it has been decorated
 
 
 
----
 #### **Clear**
 
 If set, will clear any underlying typenames.
@@ -84,10 +97,13 @@ If set, will clear any underlying typenames.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Decorate -VariableAst <VariableExpressionAst> [-TypeName] <String[]> [-PassThru] [-Clear] [<CommonParameters>]
 ```
----
 
