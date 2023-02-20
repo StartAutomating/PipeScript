@@ -1,9 +1,17 @@
 Batch.Template
 --------------
+
+
+
+
 ### Synopsis
 Batch Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate Windows Batch Scripts.
@@ -23,7 +31,11 @@ Uncommented lines between these two points will be ignored
 :: }
 ```
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -44,7 +56,11 @@ Uncommented lines between these two points will be ignored
 }
 
 Invoke-PipeScript .\HelloWorld.ps1.cmd
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -61,7 +77,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -77,7 +92,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -93,7 +107,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -109,7 +122,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Batch.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -117,5 +134,4 @@ Batch.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentL
 ```PowerShell
 Batch.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
