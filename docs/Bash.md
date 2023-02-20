@@ -1,14 +1,26 @@
 Bash
 ----
+
+
+
+
 ### Synopsis
 Wraps PowerShell in a Bash Script
 
+
+
 ---
+
+
 ### Description
 
 Wraps PowerShell in a Bash Script
 
+
+
 ---
+
+
 ### Parameters
 #### **ScriptInfo**
 
@@ -21,7 +33,6 @@ Wraps PowerShell in a Bash Script
 
 
 
----
 #### **ScriptBlock**
 
 
@@ -33,7 +44,11 @@ Wraps PowerShell in a Bash Script
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Bash -ScriptInfo <ExternalScriptInfo> [<CommonParameters>]
@@ -41,5 +56,4 @@ Bash -ScriptInfo <ExternalScriptInfo> [<CommonParameters>]
 ```PowerShell
 Bash -ScriptBlock <ScriptBlock> [<CommonParameters>]
 ```
----
 
