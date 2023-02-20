@@ -5,6 +5,7 @@ These are all of the transpilers currently included in PipeScript:
 |Language                                                                  |Synopsis                        |Pattern                         |
 |--------------------------------------------------------------------------|--------------------------------|--------------------------------|
 |[ADA.Template](Transpilers/Templates/ADA.Template.psx.ps1)                |ADA Template Transpiler.        |```\.ad[bs]$```                 |
+|[Arduino.Template](Transpilers/Templates/Arduino.Template.psx.ps1)        |Arduino Template Transpiler.    |```\.(?>ino)$```                |
 |[ATOM.Template](Transpilers/Templates/ATOM.Template.psx.ps1)              |ATOM Template Transpiler.       |```\.atom$```                   |
 |[Bash.Template](Transpilers/Templates/Bash.Template.psx.ps1)              |Bash Template Transpiler.       |```\.sh$```                     |
 |[Basic.Template](Transpilers/Templates/Basic.Template.psx.ps1)            |Basic Template Transpiler.      |```\.(?>bas\\|vbs{0,1})$```     |
