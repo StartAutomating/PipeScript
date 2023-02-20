@@ -1,9 +1,17 @@
 Invoke-PipeScript
 -----------------
+
+
+
+
 ### Synopsis
 Invokes PipeScript or PowerShell ScriptBlocks, commands, and syntax.
 
+
+
 ---
+
+
 ### Description
 
 Runs PipeScript.
@@ -22,13 +30,21 @@ Invoke-PipeScript can also use a number of Abstract Syntax Tree elements as comm
 |TypeConstraintAST        |Runs Type Constraints                  |
 |InvokeMemberExpressionAst|Runs Member Invocation Expressions     |
 
+
+
 ---
+
+
 ### Related Links
 * [Update-PipeScript](Update-PipeScript.md)
 
 
 
+
+
 ---
+
+
 ### Parameters
 #### **InputObject**
 
@@ -46,7 +62,6 @@ If no -Command is provided and -InputObject is a [ScriptBlock]
 
 
 
----
 #### **Command**
 
 The Command that will be run.
@@ -56,13 +71,12 @@ The Command that will be run.
 
 
 
-|Type        |Required|Position|PipelineInput|
-|------------|--------|--------|-------------|
-|`[PSObject]`|false   |1       |false        |
+|Type        |Required|Position|PipelineInput|Aliases                                                                               |
+|------------|--------|--------|-------------|--------------------------------------------------------------------------------------|
+|`[PSObject]`|false   |1       |false        |ScriptBlock<br/>CommandName<br/>CommandInfo<br/>AttributeSyntaxTree<br/>TypeConstraint|
 
 
 
----
 #### **Parameter**
 
 A collection of named parameters.  These will be directly passed to the underlying script.
@@ -72,13 +86,12 @@ A collection of named parameters.  These will be directly passed to the underlyi
 
 
 
-|Type           |Required|Position|PipelineInput|
-|---------------|--------|--------|-------------|
-|`[IDictionary]`|false   |named   |false        |
+|Type           |Required|Position|PipelineInput|Aliases   |
+|---------------|--------|--------|-------------|----------|
+|`[IDictionary]`|false   |named   |false        |Parameters|
 
 
 
----
 #### **ArgumentList**
 
 A list of positional arguments.  These will be directly passed to the underlying script or command.
@@ -88,13 +101,12 @@ A list of positional arguments.  These will be directly passed to the underlying
 
 
 
-|Type          |Required|Position|PipelineInput|
-|--------------|--------|--------|-------------|
-|`[PSObject[]]`|false   |named   |false        |
+|Type          |Required|Position|PipelineInput|Aliases  |
+|--------------|--------|--------|-------------|---------|
+|`[PSObject[]]`|false   |named   |false        |Arguments|
 
 
 
----
 #### **SafeScriptBlockAttributeEvaluation**
 
 If this is not set, when a transpiler's parameters do not take a [ScriptBlock], ScriptBlock values will be evaluated.
@@ -112,9 +124,12 @@ If this is set, will make ScriptBlockAst values will be run within data language
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Invoke-PipeScript [-InputObject <PSObject>] [[-Command] <PSObject>] [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [-SafeScriptBlockAttributeEvaluation] [<CommonParameters>]
 ```
----
