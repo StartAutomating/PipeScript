@@ -1,14 +1,26 @@
 Help
 ----
+
+
+
+
 ### Synopsis
 Help Transpiler
 
+
+
 ---
+
+
 ### Description
 
 The Help Transpiler allows you to write inline help without directly writing comments.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -39,7 +51,11 @@ The Help Transpiler allows you to write inline help without directly writing com
 } | .>PipeScript
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **Synopsis**
 
@@ -52,7 +68,6 @@ The Help Transpiler allows you to write inline help without directly writing com
 
 
 
----
 #### **Description**
 
 
@@ -64,7 +79,6 @@ The Help Transpiler allows you to write inline help without directly writing com
 
 
 
----
 #### **Example**
 
 
@@ -76,7 +90,6 @@ The Help Transpiler allows you to write inline help without directly writing com
 
 
 
----
 #### **Link**
 
 
@@ -88,7 +101,6 @@ The Help Transpiler allows you to write inline help without directly writing com
 
 
 
----
 #### **ScriptBlock**
 
 
@@ -100,7 +112,11 @@ The Help Transpiler allows you to write inline help without directly writing com
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Help [-Synopsis] <String> [-Description <String>] [-Example <String[]>] [-Link <String[]>] [<CommonParameters>]
@@ -108,5 +124,4 @@ Help [-Synopsis] <String> [-Description <String>] [-Example <String[]>] [-Link <
 ```PowerShell
 Help [-Synopsis] <String> [-Description <String>] [-Example <String[]>] [-Link <String[]>] [-ScriptBlock <ScriptBlock>] [<CommonParameters>]
 ```
----
 
