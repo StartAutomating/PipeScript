@@ -1,9 +1,17 @@
 Bicep.Template
 --------------
+
+
+
+
 ### Synopsis
 Bicep Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate Bicep templates.
@@ -15,7 +23,11 @@ Multiline comments can be preceeded or followed by 'empty' syntax, which will be
 * ```''```
 * ```{}```
 
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -32,7 +44,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -48,7 +59,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -64,7 +74,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -80,7 +89,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Bicep.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -88,5 +101,4 @@ Bicep.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentL
 ```PowerShell
 Bicep.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
