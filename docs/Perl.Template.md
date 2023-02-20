@@ -1,9 +1,17 @@
 Perl.Template
 -------------
+
+
+
+
 ### Synopsis
 Perl Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate Perl.
@@ -12,7 +20,11 @@ Also Transpiles Plain Old Document
 
 PipeScript can be embedded in a Plain Old Document block that starts with ```=begin PipeScript``` and ends with ```=end PipeScript```.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -28,7 +40,11 @@ $msg = "hello", "hi", "hey", "howdy" | Get-Random
 }
 
 .> .\HelloWorld.ps1.pl
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -45,7 +61,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -61,7 +76,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -77,7 +91,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -93,7 +106,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Perl.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -101,5 +118,4 @@ Perl.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLi
 ```PowerShell
 Perl.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
