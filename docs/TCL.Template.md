@@ -1,9 +1,17 @@
 TCL.Template
 ------------
+
+
+
+
 ### Synopsis
 TCL/TK Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate TCL or TK.
@@ -26,7 +34,11 @@ Uncommented lines between these two points will be ignored
 # }
 ~~~
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -47,7 +59,11 @@ Uncommented lines between these two points will be ignored
 }
 
 Invoke-PipeScript .\HelloWorld.ps1.tcl
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -64,7 +80,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -80,7 +95,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -96,7 +110,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -112,7 +125,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 TCL.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -120,5 +137,4 @@ TCL.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLis
 ```PowerShell
 TCL.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
