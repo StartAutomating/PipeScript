@@ -1,14 +1,26 @@
 BatchPowerShell
 ---------------
+
+
+
+
 ### Synopsis
 Wraps PowerShell in a Windows Batch Script
 
+
+
 ---
+
+
 ### Description
 
 Wraps PowerShell in a Windows Batch Script
 
+
+
 ---
+
+
 ### Parameters
 #### **ScriptInfo**
 
@@ -21,7 +33,6 @@ Wraps PowerShell in a Windows Batch Script
 
 
 
----
 #### **ScriptBlock**
 
 
@@ -33,7 +44,6 @@ Wraps PowerShell in a Windows Batch Script
 
 
 
----
 #### **Pwsh**
 
 If set, will use PowerShell core (pwsh.exe).  If not, will use Windows PowerShell (powershell.exe)
@@ -49,7 +59,11 @@ If set, will use PowerShell core (pwsh.exe).  If not, will use Windows PowerShel
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 BatchPowerShell -ScriptInfo <ExternalScriptInfo> [-Pwsh] [<CommonParameters>]
@@ -57,5 +71,4 @@ BatchPowerShell -ScriptInfo <ExternalScriptInfo> [-Pwsh] [<CommonParameters>]
 ```PowerShell
 BatchPowerShell -ScriptBlock <ScriptBlock> [-Pwsh] [<CommonParameters>]
 ```
----
 
