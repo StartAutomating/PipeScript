@@ -1,16 +1,28 @@
 ValidateExtension
 -----------------
+
+
+
+
 ### Synopsis
 Validates Extensions
 
+
+
 ---
+
+
 ### Description
 
 Validates that a parameter or object has one or more extensions.
 
 This creates a [ValidatePattern] that will ensure the extension matches.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -42,7 +54,11 @@ $FilePath
 ```
 $FilePath
 } -Parameter @{FilePath="foo.txt"}
+
+
 ---
+
+
 ### Parameters
 #### **Extension**
 
@@ -59,7 +75,6 @@ The extensions being validated.
 
 
 
----
 #### **VariableAST**
 
 A variable expression.
@@ -76,7 +91,11 @@ If this is provided, will apply a ```[ValidatePattern({})]``` attribute to the v
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 ValidateExtension [-Extension] <String[]> [<CommonParameters>]
@@ -84,5 +103,4 @@ ValidateExtension [-Extension] <String[]> [<CommonParameters>]
 ```PowerShell
 ValidateExtension [-Extension] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
----
 
