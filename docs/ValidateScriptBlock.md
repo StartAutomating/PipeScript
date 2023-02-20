@@ -1,14 +1,26 @@
 ValidateScriptBlock
 -------------------
+
+
+
+
 ### Synopsis
 Validates Script Blocks
 
+
+
 ---
+
+
 ### Description
 
 Validates Script Blocks for a number of common scenarios.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -43,7 +55,11 @@ $ScriptBlock
 ```
 $ScriptBlock
 } | .>PipeScript
+
+
 ---
+
+
 ### Parameters
 #### **DataLanguage**
 
@@ -55,13 +71,12 @@ This will attempt to recreate the Script Block as a datalanguage block and execu
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput|Aliases|
+|----------|--------|--------|-------------|-------|
+|`[Switch]`|false   |named   |false        |Safe   |
 
 
 
----
 #### **ParameterOnly**
 
 If set, will ensure that the [ScriptBlock] only has parameters
@@ -71,13 +86,12 @@ If set, will ensure that the [ScriptBlock] only has parameters
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput|Aliases       |
+|----------|--------|--------|-------------|--------------|
+|`[Switch]`|false   |named   |false        |OnlyParameters|
 
 
 
----
 #### **NoBlock**
 
 If set, will ensure that the [ScriptBlock] has no named blocks.
@@ -87,13 +101,12 @@ If set, will ensure that the [ScriptBlock] has no named blocks.
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput|Aliases |
+|----------|--------|--------|-------------|--------|
+|`[Switch]`|false   |named   |false        |NoBlocks|
 
 
 
----
 #### **NoParameter**
 
 If set, will ensure that the [ScriptBlock] has no parameters.
@@ -103,13 +116,12 @@ If set, will ensure that the [ScriptBlock] has no parameters.
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput|Aliases                 |
+|----------|--------|--------|-------------|------------------------|
+|`[Switch]`|false   |named   |false        |NoParameters<br/>NoParam|
 
 
 
----
 #### **IncludeCommand**
 
 
@@ -121,7 +133,6 @@ If set, will ensure that the [ScriptBlock] has no parameters.
 
 
 
----
 #### **ExcludeCommand**
 
 
@@ -133,7 +144,6 @@ If set, will ensure that the [ScriptBlock] has no parameters.
 
 
 
----
 #### **IncludeType**
 
 If set, will ensure that the script block contains types in this list.
@@ -150,7 +160,6 @@ Passing -IncludeType without -ExcludeType will make -ExcludeType default to *.
 
 
 
----
 #### **ExcludeType**
 
 If set, will ensure that the script block does not use the types in this list.
@@ -167,7 +176,6 @@ Passing -IncludeType without -ExcludeType will make -ExcludeType default to *.
 
 
 
----
 #### **NoLoop**
 
 If set, will ensure that the ScriptBlock does not contain any loops.
@@ -177,13 +185,12 @@ If set, will ensure that the ScriptBlock does not contain any loops.
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput|Aliases|
+|----------|--------|--------|-------------|-------|
+|`[Switch]`|false   |named   |false        |NoLoops|
 
 
 
----
 #### **NoWhileLoop**
 
 If set, will ensure that the ScriptBlock does not contain any do or while loops.
@@ -193,13 +200,12 @@ If set, will ensure that the ScriptBlock does not contain any do or while loops.
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput|Aliases                                |
+|----------|--------|--------|-------------|---------------------------------------|
+|`[Switch]`|false   |named   |false        |NoWhileLoops<br/>NoDoLoops<br/>NoDoLoop|
 
 
 
----
 #### **AstCondition**
 
 One or more AST conditions to validate.
@@ -210,13 +216,12 @@ If no results are found or the condition throws, the script block will be consid
 
 
 
-|Type             |Required|Position|PipelineInput|
-|-----------------|--------|--------|-------------|
-|`[ScriptBlock[]]`|false   |named   |false        |
+|Type             |Required|Position|PipelineInput|Aliases                |
+|-----------------|--------|--------|-------------|-----------------------|
+|`[ScriptBlock[]]`|false   |named   |false        |AstConditions<br/>IfAst|
 
 
 
----
 #### **VariableAST**
 
 A VariableExpression.  If provided, the Validation attributes will apply to this variable.
@@ -232,7 +237,11 @@ A VariableExpression.  If provided, the Validation attributes will apply to this
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [-IncludeCommand <Object>] [-ExcludeCommand <Object>] [-IncludeType <Object>] [-ExcludeType <Object>] [-NoLoop] [-NoWhileLoop] [-AstCondition <ScriptBlock[]>] [<CommonParameters>]
@@ -240,5 +249,4 @@ ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [
 ```PowerShell
 ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [-IncludeCommand <Object>] [-ExcludeCommand <Object>] [-IncludeType <Object>] [-ExcludeType <Object>] [-NoLoop] [-NoWhileLoop] [-AstCondition <ScriptBlock[]>] -VariableAST <VariableExpressionAst> [<CommonParameters>]
 ```
----
 
