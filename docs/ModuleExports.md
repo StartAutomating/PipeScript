@@ -1,14 +1,26 @@
 ModuleExports
 -------------
+
+
+
+
 ### Synopsis
 Gets Module Exports
 
+
+
 ---
+
+
 ### Description
 
 Gets Exported Commands from a module.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -19,7 +31,11 @@ Gets Exported Commands from a module.
 }
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **CommandType**
 
@@ -50,7 +66,6 @@ Valid Values:
 
 
 
----
 #### **VariableAST**
 
 A VariableExpression.  This variable must contain a module.
@@ -66,7 +81,11 @@ A VariableExpression.  This variable must contain a module.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScript | Application | Script | Configuration | All}] [<CommonParameters>]
@@ -74,5 +93,4 @@ ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScri
 ```PowerShell
 ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScript | Application | Script | Configuration | All}] -VariableAST <VariableExpressionAst> [<CommonParameters>]
 ```
----
 
