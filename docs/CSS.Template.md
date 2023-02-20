@@ -1,9 +1,17 @@
 CSS.Template
 ------------
+
+
+
+
 ### Synopsis
 CSS Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate CSS.
@@ -21,7 +29,11 @@ The CSS Inline Transpiler will consider the following syntax to be empty:
 * ```[\d\.](?>pt|px|em)```
 * ```auto```
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -37,7 +49,11 @@ text-color: "#000000" /*{
 }
 ```
 .> .\StyleSheet.ps1.css
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -54,7 +70,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -70,7 +85,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -86,7 +100,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -102,7 +115,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 CSS.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -110,5 +127,4 @@ CSS.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLis
 ```PowerShell
 CSS.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
