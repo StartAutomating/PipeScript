@@ -1,9 +1,17 @@
 HAXE.Template
 -------------
+
+
+
+
 ### Synopsis
 Haxe Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate Haxe.
@@ -20,7 +28,11 @@ The Haxe Inline Transpiler will consider the following syntax to be empty:
 * ```""```
 * ```''```
 
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -37,7 +49,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -53,7 +64,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -69,7 +79,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -85,7 +94,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 HAXE.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -93,5 +106,4 @@ HAXE.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLi
 ```PowerShell
 HAXE.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
