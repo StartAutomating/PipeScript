@@ -1,14 +1,26 @@
 Rest
 ----
+
+
+
+
 ### Synopsis
 Generates PowerShell to talk to a REST api.
 
+
+
 ---
+
+
 ### Description
 
 Generates PowerShell that communicates with a REST api.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -79,7 +91,11 @@ Invoke-PipeScript {
 } | .>PipeScript
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **ScriptBlock**
 
@@ -97,7 +113,6 @@ If not empty, the contents of this ScriptBlock will preceed the REST api call.
 
 
 
----
 #### **RESTEndpoint**
 
 One or more REST endpoints.  This endpoint will be parsed for REST variables.
@@ -113,7 +128,6 @@ One or more REST endpoints.  This endpoint will be parsed for REST variables.
 
 
 
----
 #### **ContentType**
 
 The content type.  If provided, this parameter will be passed to the -InvokeCommand.
@@ -129,7 +143,6 @@ The content type.  If provided, this parameter will be passed to the -InvokeComm
 
 
 
----
 #### **Method**
 
 The method.  If provided, this parameter will be passed to the -InvokeCommand.
@@ -145,7 +158,6 @@ The method.  If provided, this parameter will be passed to the -InvokeCommand.
 
 
 
----
 #### **InvokeCommand**
 
 The invoke command.  This command _must_ have a parameter -URI.
@@ -155,13 +167,12 @@ The invoke command.  This command _must_ have a parameter -URI.
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[String]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput|Aliases|
+|----------|--------|--------|-------------|-------|
+|`[String]`|false   |named   |false        |Invoker|
 
 
 
----
 #### **InvokeParameterVariable**
 
 The name of a variable containing additional invoke parameters.
@@ -172,13 +183,12 @@ By default, this is 'InvokeParams'
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[String]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput|Aliases                               |
+|----------|--------|--------|-------------|--------------------------------------|
+|`[String]`|false   |named   |false        |InvokerParameters<br/>InvokerParameter|
 
 
 
----
 #### **UriParameterHelp**
 
 A dictionary of help for uri parameters.
@@ -188,13 +198,12 @@ A dictionary of help for uri parameters.
 
 
 
-|Type           |Required|Position|PipelineInput|
-|---------------|--------|--------|-------------|
-|`[IDictionary]`|false   |named   |false        |
+|Type           |Required|Position|PipelineInput|Aliases         |
+|---------------|--------|--------|-------------|----------------|
+|`[IDictionary]`|false   |named   |false        |UrlParameterHelp|
 
 
 
----
 #### **UriParameterType**
 
 A dictionary of URI parameter types.
@@ -204,13 +213,12 @@ A dictionary of URI parameter types.
 
 
 
-|Type           |Required|Position|PipelineInput|
-|---------------|--------|--------|-------------|
-|`[IDictionary]`|false   |named   |false        |
+|Type           |Required|Position|PipelineInput|Aliases         |
+|---------------|--------|--------|-------------|----------------|
+|`[IDictionary]`|false   |named   |false        |UrlParameterType|
 
 
 
----
 #### **BodyParameter**
 
 A dictionary or list of parameters for the body.
@@ -239,7 +247,6 @@ If a parameter is a [switch], it will be turned into a [bool].
 
 
 
----
 #### **QueryParameter**
 
 A dictionary or list of query parameters.
@@ -268,7 +275,6 @@ If a parameter is a [switch], it will be turned into a [bool].
 
 
 
----
 #### **JoinQueryValue**
 
 If provided, will join multiple values of a query by this string.
@@ -285,7 +291,6 @@ If the string is '&', each value will be provided as a key-value pair.
 
 
 
----
 #### **ForEachOutput**
 
 A script block to be run on each output.
@@ -301,10 +306,13 @@ A script block to be run on each output.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Rest [-ScriptBlock <ScriptBlock>] [-RESTEndpoint] <String[]> [-ContentType <String>] [-Method <String>] [-InvokeCommand <String>] [-InvokeParameterVariable <String>] [-UriParameterHelp <IDictionary>] [-UriParameterType <IDictionary>] [-BodyParameter <PSObject>] [-QueryParameter <PSObject>] [-JoinQueryValue <String>] [-ForEachOutput <ScriptBlock>] [<CommonParameters>]
 ```
----
 
