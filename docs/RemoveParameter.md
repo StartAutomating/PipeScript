@@ -1,20 +1,36 @@
 RemoveParameter
 ---------------
+
+
+
+
 ### Synopsis
 Removes Parameters from a ScriptBlock
 
+
+
 ---
+
+
 ### Description
 
 Removes Parameters from a ScriptBlock
 
+
+
 ---
+
+
 ### Related Links
 * [Update-PipeScript](Update-PipeScript.md)
 
 
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -24,7 +40,11 @@ Removes Parameters from a ScriptBlock
 } | .>PipeScript
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **ParameterName**
 
@@ -41,7 +61,6 @@ The name of one or more parameters to remove
 
 
 
----
 #### **ScriptBlock**
 
 The ScriptBlock that declares the parameters.
@@ -57,10 +76,13 @@ The ScriptBlock that declares the parameters.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 RemoveParameter [-ParameterName] <String[]> -ScriptBlock <ScriptBlock> [<CommonParameters>]
 ```
----
 
