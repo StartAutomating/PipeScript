@@ -1,14 +1,26 @@
 ValidatePropertyName
 --------------------
+
+
+
+
 ### Synopsis
 Validates Property Names
 
+
+
 ---
+
+
 ### Description
 
 Validates that an object has one or more property names.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -44,7 +56,11 @@ $InputObject
 ```
 $InputObject
     }
+
+
 ---
+
+
 ### Parameters
 #### **PropertyName**
 
@@ -61,7 +77,6 @@ The property names being validated.
 
 
 
----
 #### **VariableAST**
 
 A variable expression.
@@ -78,7 +93,11 @@ If this is provided, will apply a ```[ValidateScript({})]``` attribute to the va
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 ValidatePropertyName [-PropertyName] <String[]> [<CommonParameters>]
@@ -86,5 +105,4 @@ ValidatePropertyName [-PropertyName] <String[]> [<CommonParameters>]
 ```PowerShell
 ValidatePropertyName [-PropertyName] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
----
 
