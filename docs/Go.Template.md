@@ -1,9 +1,17 @@
 Go.Template
 -----------
+
+
+
+
 ### Synopsis
 Go Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to Generate Go.
@@ -20,7 +28,11 @@ The Go Transpiler will consider the following syntax to be empty:
 * ```""```
 * ```''```
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -54,7 +66,11 @@ $helloGo.Save() |
             Write-Error "Go install Go"
         }
     }
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -71,7 +87,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -87,7 +102,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -103,7 +117,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -119,7 +132,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Go.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -127,5 +144,4 @@ Go.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList
 ```PowerShell
 Go.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
