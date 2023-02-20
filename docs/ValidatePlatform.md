@@ -1,9 +1,17 @@
 ValidatePlatform
 ----------------
+
+
+
+
 ### Synopsis
 Validates the Platform
 
+
+
 ---
+
+
 ### Description
 
 Validates the Platform.
@@ -13,7 +21,11 @@ When used within Parameters, this adds a ```[ValidateScript({})]``` to ensure th
 When used on a ```[Management.Automation.Language.VariableExpressionAst]``` will apply a 
 ```[ValidateScript({})]``` to that variable, which will prevent assignemnt to the variable if not on the platform.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -26,7 +38,11 @@ When used on a ```[Management.Automation.Language.VariableExpressionAst]``` will
 } | .>PipeScript
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **Platform**
 
@@ -43,7 +59,6 @@ The name of one or more platforms.  These will be interpreted as wildcards.
 
 
 
----
 #### **VariableAST**
 
 
@@ -55,7 +70,11 @@ The name of one or more platforms.  These will be interpreted as wildcards.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 ValidatePlatform [-Platform] <String[]> [<CommonParameters>]
@@ -63,5 +82,4 @@ ValidatePlatform [-Platform] <String[]> [<CommonParameters>]
 ```PowerShell
 ValidatePlatform [-Platform] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
----
 
