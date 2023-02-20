@@ -1,14 +1,26 @@
 Define
 ------
+
+
+
+
 ### Synopsis
 Defines a variable
 
+
+
 ---
+
+
 ### Description
 
 Defines a variable using a value provided at build time.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -24,7 +36,11 @@ Defines a variable using a value provided at build time.
 }.Transpile()
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **Value**
 
@@ -42,7 +58,6 @@ When this value is provided within an attribute as a ScriptBlock, the ScriptBloc
 
 
 
----
 #### **VariableAst**
 
 The variable the definition will be applied to.
@@ -58,7 +73,6 @@ The variable the definition will be applied to.
 
 
 
----
 #### **VariableName**
 
 The name of the variable.  If define is applied as an attribute of a variable, this does not need to be provided.
@@ -68,16 +82,19 @@ The name of the variable.  If define is applied as an attribute of a variable, t
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[String]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput|Aliases|
+|----------|--------|--------|-------------|-------|
+|`[String]`|false   |named   |false        |Name   |
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 Define -Value <PSObject> -VariableAst <VariableExpressionAst> [-VariableName <String>] [<CommonParameters>]
 ```
----
 
