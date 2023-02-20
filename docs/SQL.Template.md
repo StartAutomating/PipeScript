@@ -1,9 +1,17 @@
 SQL.Template
 ------------
+
+
+
+
 ### Synopsis
 SQL Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate SQL.
@@ -25,7 +33,11 @@ Uncommented lines between these two points will be ignored
 -- }
 ```
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -45,7 +57,11 @@ Uncommented lines between these two points will be ignored
 }
 
 Invoke-PipeScript .\HelloWorld.ps1.sql
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -62,7 +78,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -78,7 +93,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -94,7 +108,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -110,7 +123,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 SQL.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -118,5 +135,4 @@ SQL.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLis
 ```PowerShell
 SQL.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
