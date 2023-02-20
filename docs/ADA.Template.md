@@ -1,9 +1,17 @@
 ADA.Template
 ------------
+
+
+
+
 ### Synopsis
 ADA Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to be used to generate ADA.
@@ -14,7 +22,11 @@ Because ADA Scripts only allow single-line comments, this is done using a pair o
 
 -- } or -- }PipeScript  ends a PipeScript block
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -39,7 +51,11 @@ end Hello_World;
 }
 
 Invoke-PipeScript .\HelloWorld.ps1.adb
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -56,7 +72,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -72,7 +87,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -88,7 +102,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -104,7 +117,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 ADA.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -112,5 +129,4 @@ ADA.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLis
 ```PowerShell
 ADA.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
