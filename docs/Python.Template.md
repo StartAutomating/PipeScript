@@ -1,9 +1,17 @@
 Python.Template
 ---------------
+
+
+
+
 ### Synopsis
 Python Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate Python.
@@ -12,7 +20,11 @@ Because Python does not support multiline comment blocks, PipeScript can be writ
 
 PipeScript can be included in a Python string that starts and ends with ```{}```, for example ```"""{}"""```
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -29,7 +41,11 @@ print("$msg")
 }
 ```
 .> .\HelloWorld.ps1.py
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -46,7 +62,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -62,7 +77,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -78,7 +92,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -94,7 +107,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Python.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -102,5 +119,4 @@ Python.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argument
 ```PowerShell
 Python.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
