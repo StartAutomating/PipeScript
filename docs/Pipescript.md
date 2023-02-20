@@ -1,9 +1,17 @@
 Pipescript
 ----------
+
+
+
+
 ### Synopsis
 The Core PipeScript Transpiler
 
+
+
 ---
+
+
 ### Description
 
 The Core PipeScript Transpiler.
@@ -12,7 +20,11 @@ This will convert various portions in the PowerShell Abstract Syntax Tree from t
 
 It will run other converters as directed by the source code.
 
+
+
 ---
+
+
 ### Related Links
 * [.>Pipescript.Function](.>Pipescript.Function.md)
 
@@ -22,7 +34,11 @@ It will run other converters as directed by the source code.
 
 
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -67,7 +83,11 @@ It will run other converters as directed by the source code.
 } | .>PipeScript
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **ScriptBlock**
 
@@ -84,7 +104,6 @@ A ScriptBlock that will be transpiled.
 
 
 
----
 #### **Transpiler**
 
 One or more transpilation expressions that apply to the script block.
@@ -100,10 +119,13 @@ One or more transpilation expressions that apply to the script block.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Pipescript [-ScriptBlock] <ScriptBlock> [-Transpiler <String[]>] [<CommonParameters>]
 ```
----
 
