@@ -1,9 +1,17 @@
 YAML.Template
 -------------
+
+
+
+
 ### Synopsis
 Yaml Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate Yaml.
@@ -12,7 +20,11 @@ Because Yaml does not support comment blocks, PipeScript can be written inline i
 
 PipeScript can be included in a multiline Yaml string with the Key PipeScript and a Value surrounded by {}
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -41,7 +53,11 @@ List:
 }
 
 .> .\HelloWorld.ps1.yaml
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -58,7 +74,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -74,7 +89,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -90,7 +104,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -106,7 +119,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 YAML.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -114,5 +131,4 @@ YAML.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLi
 ```PowerShell
 YAML.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
