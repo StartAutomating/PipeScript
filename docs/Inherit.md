@@ -1,9 +1,17 @@
 Inherit
 -------
+
+
+
+
 ### Synopsis
 Inherits a Command
 
+
+
 ---
+
+
 ### Description
 
 Inherits a given command.  
@@ -26,7 +34,11 @@ This will add an [Alias()] attribute containing the original command name.
 
 One interesting example is overriding an application
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -63,7 +75,11 @@ Invoke-PipeScript {
 } | .>PipeScript
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **Command**
 
@@ -76,7 +92,6 @@ Invoke-PipeScript {
 
 
 
----
 #### **Abstract**
 
 If provided, will abstractly inherit a function.
@@ -94,7 +109,6 @@ It will also define a variable within a dynamicParam {} block that contains the 
 
 
 
----
 #### **Override**
 
 If provided, will set an alias on the function to replace the original command.
@@ -104,13 +118,12 @@ If provided, will set an alias on the function to replace the original command.
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput|Aliases |
+|----------|--------|--------|-------------|--------|
+|`[Switch]`|false   |named   |false        |Overload|
 
 
 
----
 #### **Dynamic**
 
 If set, will dynamic overload commands.
@@ -127,7 +140,6 @@ This will use dynamic parameters instead of static parameters, and will use a pr
 
 
 
----
 #### **Proxy**
 
 If set, will always inherit commands as proxy commands.
@@ -144,7 +156,6 @@ This is implied by -Dynamic.
 
 
 
----
 #### **CommandType**
 
 The Command Type.  This can allow you to specify the type of command you are overloading.
@@ -156,13 +167,12 @@ If the -CommandType includes aliases, and another command is also found, that co
 
 
 
-|Type        |Required|Position|PipelineInput|
-|------------|--------|--------|-------------|
-|`[String[]]`|false   |named   |false        |
+|Type        |Required|Position|PipelineInput|Aliases     |
+|------------|--------|--------|-------------|------------|
+|`[String[]]`|false   |named   |false        |CommandTypes|
 
 
 
----
 #### **ExcludeBlockType**
 
 A list of block types to be excluded during a merge of script blocks.
@@ -187,13 +197,12 @@ Valid Values:
 
 
 
-|Type        |Required|Position|PipelineInput|
-|------------|--------|--------|-------------|
-|`[String[]]`|false   |named   |false        |
+|Type        |Required|Position|PipelineInput|Aliases                                               |
+|------------|--------|--------|-------------|------------------------------------------------------|
+|`[String[]]`|false   |named   |false        |SkipBlockType<br/>SkipBlockTypes<br/>ExcludeBlockTypes|
 
 
 
----
 #### **IncludeBlockType**
 
 A list of block types to include during a merge of script blocks.
@@ -217,13 +226,12 @@ Valid Values:
 
 
 
-|Type        |Required|Position|PipelineInput|
-|------------|--------|--------|-------------|
-|`[String[]]`|false   |named   |false        |
+|Type        |Required|Position|PipelineInput|Aliases                                       |
+|------------|--------|--------|-------------|----------------------------------------------|
+|`[String[]]`|false   |named   |false        |BlockType<br/>BlockTypes<br/>IncludeBlockTypes|
 
 
 
----
 #### **IncludeParameter**
 
 A list of parameters to include.  Can contain wildcards.
@@ -240,7 +248,6 @@ If -IncludeParameter is provided without -ExcludeParameter, all other parameters
 
 
 
----
 #### **ExcludeParameter**
 
 A list of parameters to exclude.  Can contain wildcards.
@@ -257,7 +264,6 @@ Excluded parameters with default values will declare the default value at the be
 
 
 
----
 #### **ScriptBlock**
 
 
@@ -269,10 +275,13 @@ Excluded parameters with default values will declare the default value at the be
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Inherit [-Command] <String> [-Abstract] [-Override] [-Dynamic] [-Proxy] [-CommandType <String[]>] [-ExcludeBlockType <String[]>] [-IncludeBlockType <String[]>] [-IncludeParameter <String[]>] [-ExcludeParameter <String[]>] [-ScriptBlock <ScriptBlock>] [<CommonParameters>]
 ```
----
 
