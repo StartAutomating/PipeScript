@@ -33,7 +33,7 @@
 
     .> .\HelloWorld.ps1.md
 #>
-[ValidatePattern('\.(?>md|markdown)$')]
+[ValidatePattern('\.(?>md|markdown|txt)$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline,ParameterSetName='TemplateFile')]
