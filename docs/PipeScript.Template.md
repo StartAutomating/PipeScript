@@ -1,9 +1,17 @@
 PipeScript.Template
 -------------------
+
+
+
+
 ### Synopsis
 Template Transpiler
 
+
+
 ---
+
+
 ### Description
 
 The PipeScript Core Template Transpiler.
@@ -22,7 +30,11 @@ the template transpiler for that file type will call the core template transpile
 When templates are used as a keyword,
 the template transpiler will produce an object that can evaluate the template on demand.
 
+
+
 ---
+
+
 ### Parameters
 #### **SourceText**
 
@@ -33,25 +45,23 @@ A string containing the text contents of the file
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[String]`|false   |1       |false        |
+|Type      |Required|Position|PipelineInput|Aliases     |
+|----------|--------|--------|-------------|------------|
+|`[String]`|false   |1       |false        |TemplateText|
 
 
 
----
 #### **ReplacePattern**
 
 
 
 
-|Type     |Required|Position|PipelineInput|
-|---------|--------|--------|-------------|
-|`[Regex]`|false   |2       |false        |
+|Type     |Required|Position|PipelineInput|Aliases|
+|---------|--------|--------|-------------|-------|
+|`[Regex]`|false   |2       |false        |Replace|
 
 
 
----
 #### **TemplateName**
 
 The name of the template.  This can be implied by the pattern.
@@ -61,13 +71,12 @@ The name of the template.  This can be implied by the pattern.
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Object]`|false   |3       |false        |
+|Type      |Required|Position|PipelineInput|Aliases|
+|----------|--------|--------|-------------|-------|
+|`[Object]`|false   |3       |false        |Name   |
 
 
 
----
 #### **StartPattern**
 
 The Start Pattern.
@@ -79,13 +88,12 @@ An expression will match everything until -EndPattern
 
 
 
-|Type     |Required|Position|PipelineInput|
-|---------|--------|--------|-------------|
-|`[Regex]`|false   |4       |false        |
+|Type     |Required|Position|PipelineInput|Aliases   |
+|---------|--------|--------|-------------|----------|
+|`[Regex]`|false   |4       |false        |StartRegex|
 
 
 
----
 #### **EndPattern**
 
 The End Pattern
@@ -96,13 +104,12 @@ This indicates the end of what should be considered PipeScript.
 
 
 
-|Type     |Required|Position|PipelineInput|
-|---------|--------|--------|-------------|
-|`[Regex]`|false   |5       |false        |
+|Type     |Required|Position|PipelineInput|Aliases |
+|---------|--------|--------|-------------|--------|
+|`[Regex]`|false   |5       |false        |EndRegex|
 
 
 
----
 #### **ReplacementEvaluator**
 
 A custom replacement evaluator.
@@ -114,13 +121,12 @@ The output of these scripts will be the replacement text.
 
 
 
-|Type           |Required|Position|PipelineInput|
-|---------------|--------|--------|-------------|
-|`[ScriptBlock]`|false   |6       |false        |
+|Type           |Required|Position|PipelineInput|Aliases |
+|---------------|--------|--------|-------------|--------|
+|`[ScriptBlock]`|false   |6       |false        |Replacer|
 
 
 
----
 #### **NoTranspile**
 
 If set, will not transpile script blocks.
@@ -136,7 +142,6 @@ If set, will not transpile script blocks.
 
 
 
----
 #### **SourceFile**
 
 The path to the source file.
@@ -152,7 +157,6 @@ The path to the source file.
 
 
 
----
 #### **Begin**
 
 A Script Block that will be injected before each inline is run.
@@ -168,7 +172,6 @@ A Script Block that will be injected before each inline is run.
 
 
 
----
 #### **ForeachObject**
 
 A Script Block that will be piped to after each output.
@@ -178,13 +181,12 @@ A Script Block that will be piped to after each output.
 
 
 
-|Type           |Required|Position|PipelineInput|
-|---------------|--------|--------|-------------|
-|`[ScriptBlock]`|false   |9       |false        |
+|Type           |Required|Position|PipelineInput|Aliases|
+|---------------|--------|--------|-------------|-------|
+|`[ScriptBlock]`|false   |9       |false        |Process|
 
 
 
----
 #### **End**
 
 A Script Block that will be injected after each inline script is run.
@@ -200,7 +202,6 @@ A Script Block that will be injected after each inline script is run.
 
 
 
----
 #### **Parameter**
 
 A collection of parameters
@@ -216,7 +217,6 @@ A collection of parameters
 
 
 
----
 #### **ArgumentList**
 
 An argument list.
@@ -226,13 +226,12 @@ An argument list.
 
 
 
-|Type          |Required|Position|PipelineInput|
-|--------------|--------|--------|-------------|
-|`[PSObject[]]`|false   |12      |false        |
+|Type          |Required|Position|PipelineInput|Aliases|
+|--------------|--------|--------|-------------|-------|
+|`[PSObject[]]`|false   |12      |false        |Args   |
 
 
 
----
 #### **LinePattern**
 
 Some languages only allow single-line comments.
@@ -250,7 +249,6 @@ Only lines beginning with this pattern within -StartPattern and -EndPattern will
 
 
 
----
 #### **CommandAst**
 
 The Command Abstract Syntax Tree.  If this is provided, we are transpiling a template keyword.
@@ -266,10 +264,13 @@ The Command Abstract Syntax Tree.  If this is provided, we are transpiling a tem
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 PipeScript.Template [[-SourceText] <String>] [[-ReplacePattern] <Regex>] [[-TemplateName] <Object>] [[-StartPattern] <Regex>] [[-EndPattern] <Regex>] [[-ReplacementEvaluator] <ScriptBlock>] [-NoTranspile] [[-SourceFile] <String>] [[-Begin] <ScriptBlock>] [[-ForeachObject] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [[-LinePattern] <Regex>] [[-CommandAst] <CommandAst>] [<CommonParameters>]
 ```
----
 
