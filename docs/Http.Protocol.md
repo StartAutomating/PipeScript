@@ -1,14 +1,26 @@
 Http.Protocol
 -------------
+
+
+
+
 ### Synopsis
 http protocol
 
+
+
 ---
+
+
 ### Description
 
 Converts an http[s] protocol command to PowerShell.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -64,7 +76,11 @@ Invoke-PipeScript {
 }
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **CommandUri**
 
@@ -81,7 +97,6 @@ The URI.
 
 
 
----
 #### **CommandAst**
 
 The Command's Abstract Syntax Tree
@@ -97,7 +112,6 @@ The Command's Abstract Syntax Tree
 
 
 
----
 #### **Method**
 
 
@@ -109,10 +123,13 @@ The Command's Abstract Syntax Tree
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Http.Protocol [-CommandUri] <Uri> [-CommandAst] <CommandAst> [[-Method] <String>] [<CommonParameters>]
 ```
----
 
