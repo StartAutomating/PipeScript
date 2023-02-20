@@ -24,7 +24,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Kotlin.Template](Transpilers/Templates/Kotlin.Template.psx.ps1)          |Kotlin Template Transpiler.     |```\.kt$```                     |
 |[Latex.Template](Transpilers/Templates/Latex.Template.psx.ps1)            |Latex Template Transpiler.      |```\.(?>latex\\|tex)$```        |
 |[LUA.Template](Transpilers/Templates/LUA.Template.psx.ps1)                |LUA Template Transpiler.        |```\.lua$```                    |
-|[Markdown.Template](Transpilers/Templates/Markdown.Template.psx.ps1)      |Markdown Template Transpiler.   |```\.(?>md\\|markdown)$```      |
+|[Markdown.Template](Transpilers/Templates/Markdown.Template.psx.ps1)      |Markdown Template Transpiler.   |```\.(?>md\\|markdown\\|txt)$```|
 |[ObjectiveC.Template](Transpilers/Templates/ObjectiveC.Template.psx.ps1)  |Objective Template Transpiler.  |```\.(?>m\\|mm)$```             |
 |[OpenSCAD.Template](Transpilers/Templates/OpenSCAD.Template.psx.ps1)      |OpenSCAD Template Transpiler.   |```\.scad$```                   |
 |[Perl.Template](Transpilers/Templates/Perl.Template.psx.ps1)              |Perl Template Transpiler.       |```\.(?>pl\\|pod)$```           |
