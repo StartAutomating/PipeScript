@@ -1,14 +1,26 @@
 PipeScript.TypeExpression
 -------------------------
+
+
+
+
 ### Synopsis
 The PipeScript TypeExpression Transpiler
 
+
+
 ---
+
+
 ### Description
 
 Type Expressions may be transpiled.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -17,7 +29,11 @@ Type Expressions may be transpiled.
 } | .>PipeScript
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **TypeExpressionAst**
 
@@ -34,10 +50,13 @@ The attributed expression
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 PipeScript.TypeExpression -TypeExpressionAst <TypeExpressionAst> [<CommonParameters>]
 ```
----
 
