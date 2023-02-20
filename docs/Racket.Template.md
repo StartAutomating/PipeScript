@@ -1,9 +1,17 @@
 Racket.Template
 ---------------
+
+
+
+
 ### Synopsis
 Racket Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate Racket.
@@ -15,7 +23,11 @@ Multiline comments can be preceeded or followed by single-quoted strings, which 
 * ```''```
 * ```{}```
 
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -32,7 +44,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -48,7 +59,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -64,7 +74,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -80,7 +89,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Racket.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -88,5 +101,4 @@ Racket.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argument
 ```PowerShell
 Racket.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
