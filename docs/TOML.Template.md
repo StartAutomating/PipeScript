@@ -1,9 +1,17 @@
 TOML.Template
 -------------
+
+
+
+
 ### Synopsis
 TOML Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate TOML.
@@ -12,7 +20,11 @@ Because TOML does not support comment blocks, PipeScript can be written inline i
 
 PipeScript can be included in a TOML string that starts and ends with ```{}```, for example ```"""{}"""```
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -25,7 +37,11 @@ RandomNumber = """{Get-Random}"""
 }
 ```
 .> .\RandomExample.ps1.toml
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -42,7 +58,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -58,7 +73,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -74,7 +88,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -90,7 +103,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 TOML.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -98,5 +115,4 @@ TOML.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLi
 ```PowerShell
 TOML.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
