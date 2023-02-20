@@ -991,6 +991,21 @@ foreach ($block in $this.BlockComments) {
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>CommandMetaData</Name>
+        <GetScriptBlock>
+                        if (-not $this.'.CommandMetadata') {
+    $this.psobject.properties.add(
+        [psnoteproperty]::new('.CommandMetadata', {
+            [PSObject]::new([Management.Automation.CommandMetadata]::new($this))
+        }), $true
+    )    
+}
+
+return $this.'.CommandMetadata'
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>CommandNamespace</Name>
         <GetScriptBlock>
                         $matched = $this.Separator.Match($this.FullName)
