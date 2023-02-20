@@ -1,16 +1,28 @@
 XML.Template
 ------------
+
+
+
+
 ### Synopsis
 XML Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate XML.
 
 Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
 
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -27,7 +39,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -43,7 +54,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -59,7 +69,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -75,7 +84,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 XML.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -83,5 +96,4 @@ XML.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLis
 ```PowerShell
 XML.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
