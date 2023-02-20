@@ -7,6 +7,7 @@ These are all of the transpilers currently included in PipeScript:
 |[ADA.Template](Transpilers/Templates/ADA.Template.psx.ps1)                                       |ADA Template Transpiler.                          |
 |[Aliases](Transpilers/Parameters/Aliases.psx.ps1)                                                |Dynamically Defines Aliases                       |
 |[All](Transpilers/Keywords/All.psx.ps1)                                                          |all keyword                                       |
+|[Arduino.Template](Transpilers/Templates/Arduino.Template.psx.ps1)                               |Arduino Template Transpiler.                      |
 |[Assert](Transpilers/Keywords/Assert.psx.ps1)                                                    |Assert keyword                                    |
 |[ATOM.Template](Transpilers/Templates/ATOM.Template.psx.ps1)                                     |ATOM Template Transpiler.                         |
 |[Await](Transpilers/Keywords/Await.psx.ps1)                                                      |awaits asynchronous operations                    |
