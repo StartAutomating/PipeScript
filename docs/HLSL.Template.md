@@ -1,16 +1,28 @@
 HLSL.Template
 -------------
+
+
+
+
 ### Synopsis
 HLSL Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate HLSL.
 
 Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -27,7 +39,6 @@ The command information.  This will include the path to the file.
 
 
 
----
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
@@ -43,7 +54,6 @@ If set, will return the information required to dynamically apply this template 
 
 
 
----
 #### **Parameter**
 
 A dictionary of parameters.
@@ -59,7 +69,6 @@ A dictionary of parameters.
 
 
 
----
 #### **ArgumentList**
 
 A list of arguments.
@@ -75,7 +84,11 @@ A list of arguments.
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 HLSL.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -83,5 +96,4 @@ HLSL.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLi
 ```PowerShell
 HLSL.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
