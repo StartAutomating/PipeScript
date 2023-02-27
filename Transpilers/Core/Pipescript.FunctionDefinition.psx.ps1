@@ -36,11 +36,18 @@ process {
         }
     }
 
+    $inlineParameters =
+        if ($FunctionDefinition.Parameters) {
+            "($($FunctionDefinition.Parameters.Transpile() -join ','))"
+        } else {
+            ''
+        }
+
     $newFunction = @(
         if ($FunctionDefinition.IsFilter) {
-            "filter $realFunctionName {"
+            "filter", $realFunctionName, $inlineParameters, '{' -ne '' -join ' '
         } else {
-            "function $realFunctionName {"
+            "function", $realFunctionName, $inlineParameters, '{' -ne '' -join ' '
         }
         # containing the transpiled funciton body.
         [ScriptBlock]::Create(($functionDefinition.Body.Extent -replace '^{' -replace '}$')) |
