@@ -936,6 +936,98 @@ if ($foundTranspiler) {
         <ReferencedMemberName>Rank</ReferencedMemberName>
       </AliasProperty>
       <ScriptMethod>
+        <Name>CouldPipe</Name>
+        <Script>
+                        param([PSObject]$InputObject)
+
+:nextParameterSet foreach ($paramSet in $this.ParameterSets) {
+    if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
+    $params = @{}
+    $mappedParams = [Ordered]@{} # Create a collection of mapped parameters
+    # Walk thru each parameter of this command
+    :nextParameter foreach ($myParam in $paramSet.Parameters) {
+        # If the parameter is ValueFromPipeline
+        if ($myParam.ValueFromPipeline) {
+            $potentialPSTypeNames = @($myParam.Attributes.PSTypeName) -ne ''
+            if ($potentialPSTypeNames)  {                                
+                foreach ($potentialTypeName in $potentialPSTypeNames) {
+                    if ($potentialTypeName -and $InputObject.pstypenames -contains $potentialTypeName) {
+                        $mappedParams[$myParam.Name] = $params[$myParam.Name] = $InputObject
+                        continue nextParameter
+                    }
+                }                                    
+            }
+            # and we have an input object
+            elseif ($null -ne $inputObject -and
+                (
+                    # of the exact type
+                    $myParam.ParameterType -eq $inputObject.GetType() -or
+                    # (or a subclass of that type)
+                    $inputObject.GetType().IsSubClassOf($myParam.ParameterType) -or
+                    # (or an inteface of that type)
+                    ($myParam.ParameterType.IsInterface -and $InputObject.GetType().GetInterface($myParam.ParameterType))
+                )
+            ) {
+                # then map the parameter.
+                $mappedParams[$myParam.Name] = $params[$myParam.Name] = $InputObject
+            }
+        }
+    }
+    # Check for parameter validity.
+    foreach ($mappedParamName in @($mappedParams.Keys)) {
+        if (-not $this.IsParameterValid($mappedParamName, $mappedParams[$mappedParamName])) {
+            $mappedParams.Remove($mappedParamName)
+        }
+    }
+    if ($mappedParams.Count -gt 0) {
+        return $mappedParams
+    }
+}
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>CouldRun</Name>
+        <Script>
+                        param([Collections.IDictionary]$params, [string]$ParameterSetName)
+
+:nextParameterSet foreach ($paramSet in $this.ParameterSets) {
+    if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
+    $mappedParams = [Ordered]@{} # Create a collection of mapped parameters
+    $mandatories  =  # Walk thru each parameter of this command
+        @(foreach ($myParam in $paramSet.Parameters) {
+            if ($params.Contains($myParam.Name)) { # If this was in Params,
+                $mappedParams[$myParam.Name] = $params[$myParam.Name] # then map it.
+            } else {
+                foreach ($paramAlias in $myParam.Aliases) { # Otherwise, check the aliases
+                    if ($params.Contains($paramAlias)) { # and map it if the parameters had the alias.
+                        $mappedParams[$myParam.Name] = $params[$paramAlias]
+                        break
+                    }
+                }
+            }
+            if ($myParam.IsMandatory) { # If the parameter was mandatory,
+                $myParam.Name # keep track of it.
+            }
+        })
+
+    # Check for parameter validity.
+    foreach ($mappedParamName in @($mappedParams.Keys)) {
+        if (-not $this.IsParameterValid($mappedParamName, $mappedParams[$mappedParamName])) {
+            $mappedParams.Remove($mappedParamName)
+        }
+    }
+    
+    foreach ($mandatoryParam in $mandatories) { # Walk thru each mandatory parameter.
+        if (-not $mappedParams.Contains($mandatoryParam)) { # If it wasn't in the parameters.
+            continue nextParameterSet
+        }
+    }
+    return $mappedParams
+}
+return $false
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>GetHelpField</Name>
         <Script>
                         param([Parameter(Mandatory)]$Field)
@@ -962,7 +1054,95 @@ foreach ($block in $this.BlockComments) {
       <ScriptMethod>
         <Name>Validate</Name>
         <Script>
-        </Script>
+                        param(
+    # input being validated
+    [PSObject]$ValidateInput,
+    # If set, will require all [Validate] attributes to be valid.
+    # If not set, any input will be valid.
+    [switch]$AllValid
+)
+
+foreach ($attr in $this.ScriptBlock.Attributes) {
+    if ($attr -is [Management.Automation.ValidateScriptAttribute]) {
+        try {
+            $_ = $this = $psItem = $ValidateInput
+            $isValidInput = . $attr.ScriptBlock
+            if ($isValidInput -and -not $AllValid) { return $true}
+            if (-not $isValidInput -and $AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } elseif ($AllValid) {
+                    throw "'$ValidateInput' is not a valid value."
+                }
+            }
+        } catch {
+            if ($AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw
+                }
+            }
+        }
+    }
+    elseif ($attr -is [Management.Automation.ValidateSetAttribute]) {
+        if ($ValidateInput -notin $attr.ValidValues) {
+            if ($AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw "'$ValidateInput' is not a valid value.  Valid values are '$(@($attr.ValidValues) -join "','")'"
+                }
+            }
+        } elseif (-not $AllValid) {
+            return $true
+        }
+    }
+    elseif ($attr -is [Management.Automation.ValidatePatternAttribute]) {
+        $matched = [Regex]::new($attr.RegexPattern, $attr.Options, [Timespan]::FromSeconds(1)).Match("$ValidateInput")
+        if (-not $matched.Success) {
+            if ($allValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw "'$ValidateInput' is not a valid value.  Valid values must match the pattern '$($attr.RegexPattern)'"
+                }
+            }
+        } elseif (-not $AllValid) {
+            return $true
+        }
+    }
+    elseif ($attr -is [Management.Automation.ValidateRangeAttribute]) {
+        if ($null -ne $attr.MinRange -and $validateInput -lt $attr.MinRange) {
+            if ($AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw "'$ValidateInput' is below the minimum range [ $($attr.MinRange)-$($attr.MaxRange) ]"
+                }
+            }
+        }
+        elseif ($null -ne $attr.MaxRange -and $validateInput -gt $attr.MaxRange) {
+            if ($AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw "'$ValidateInput' is above the maximum range [ $($attr.MinRange)-$($attr.MaxRange) ]"
+                }
+            }
+        }
+        elseif (-not $AllValid) {
+            return $true
+        }
+    }
+}
+
+if ($AllValid) {
+    return $true
+} else {
+    return $false
+}
+                    </Script>
       </ScriptMethod>
       <ScriptProperty>
         <Name>BlockComments</Name>
@@ -1087,14 +1267,30 @@ return $false
       <ScriptProperty>
         <Name>Metadata</Name>
         <GetScriptBlock>
-                        $Metadata = [Ordered]@{}
-foreach ($attr in $this.ScriptBlock.Attributes) {
-    if ($attr -is [Reflection.AssemblyMetaDataAttribute]) {
-        if ($Metadata[$attr.Key]) {
-            $Metadata[$attr.Key] = @($Metadata[$attr.Key]) + $attr.Value
+                        $Metadata = [Ordered]@{
+    PSTypeName = 'CommandInfo'
+}
+
+if ($this -is [Management.Automation.ApplicationInfo]) {
+    if ($this.'.Metadata') {
+        return $this.'.Metadata'
+    }
+    foreach ($dataExtension in '.csv','.json', '.tsv','.xml','.json', '.clixml') {
+        if ($this.Source.EndsWith($extension, [StringComparison]'OrdinalIgnoreCase')) {
+            
         } else {
-            $Metadata[$attr.Key] = $attr.Value
-        }                            
+            $replacedName
+        }
+    }
+} elseif ($this.ScriptBlock) {
+    foreach ($attr in $this.ScriptBlock.Attributes) {
+        if ($attr -is [Reflection.AssemblyMetaDataAttribute]) {
+            if ($Metadata[$attr.Key]) {
+                $Metadata[$attr.Key] = @($Metadata[$attr.Key]) + $attr.Value
+            } else {
+                $Metadata[$attr.Key] = $attr.Value
+            }                            
+        }
     }
 }
 return $Metadata
