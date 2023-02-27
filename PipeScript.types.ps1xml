@@ -959,6 +959,11 @@ foreach ($block in $this.BlockComments) {
 }
                     </Script>
       </ScriptMethod>
+      <ScriptMethod>
+        <Name>Validate</Name>
+        <Script>
+        </Script>
+      </ScriptMethod>
       <ScriptProperty>
         <Name>BlockComments</Name>
         <GetScriptBlock>
@@ -1055,6 +1060,21 @@ elseif ($this -is [Management.Automation.CmdletInfo]) {
 else {
     $this.Name
 }
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>HasValidation</Name>
+        <GetScriptBlock>
+                        foreach ($attr in $this.ScriptBlock.Attributes) {
+    if ($attr -is [Management.Automation.ValidateScriptAttribute] -or
+        $attr -is [Management.Automation.ValidateSetAttribute] -or 
+        $attr -is [Management.Automation.ValidatePatternAttribute] -or 
+        $attr -is [Management.Automation.ValidateRangeAttribute]) {
+        return $true                        
+    }
+}
+
+return $false
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
