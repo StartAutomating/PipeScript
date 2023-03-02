@@ -1,6 +1,7 @@
 ﻿[Include('*-*')]$psScriptRoot
 
-$transpilerNames = Get-Transpiler | Select-Object -ExpandProperty DisplayName
+$transpilerNames = @(@(Get-Transpiler).DisplayName) -ne ''
+
 $aliasList +=
     [SmartAlias(Command='Use-PipeScript',Prefix='.>',PassThru)]$transpilerNames
 
