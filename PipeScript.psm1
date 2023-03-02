@@ -4,7 +4,8 @@ foreach ($file in (Get-ChildItem -Path "$psScriptRoot" -Filter "*-*" -Recurse)) 
     . $file.FullName
 }
 
-$transpilerNames = Get-Transpiler | Select-Object -ExpandProperty DisplayName
+$transpilerNames = @(@(Get-Transpiler).DisplayName) -ne ''
+
 $aliasList +=
     
     @(foreach ($alias in @($transpilerNames)) {
