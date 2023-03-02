@@ -19,10 +19,13 @@ $aliasList +=
     })
     
 
-$pipeScriptKeywords =
-    Get-Transpiler |
-    Where-Object { $_.Metadata.'PipeScript.Keyword' }  |
-    Select-Object -ExpandProperty DisplayName
+$pipeScriptKeywords = @(
+    foreach ($transpiler in Get-Transpiler) {
+        if ($transpiler.Metadata.'PipeScript.Keyword' -and $transpiler.DisplayName) {
+            $transpiler.DisplayName
+        }
+    }
+)    
 
 $aliasList +=
     
