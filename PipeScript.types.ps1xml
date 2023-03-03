@@ -1288,7 +1288,7 @@ else {
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
-        <Name>Fullname</Name>
+        <Name>FullyQualifiedName</Name>
         <GetScriptBlock>
                         if ($this -is [Management.Automation.ExternalScriptInfo] -or 
     $this -is [Management.Automation.ApplicationInfo]) {
