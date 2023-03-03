@@ -226,20 +226,22 @@ process {
                 # so we need to get all of the potential types
                 $transpilerTypes = @($TranspilersByType.Keys) -as [type[]]
                 # and then return a range of items
-                $PotentialTranspilersForItem = $TranspilersByType[@(foreach ($transpilerType in $transpilerTypes) {
-                    if ($item -as $transpilerType) { # (where we could cast the input to the desired type)
-                        $transpilerType
-                    }
-                })]
+                $PotentialTranspilersForItem = @(foreach ($transpilerCommand in 
+                    $TranspilersByType[@(foreach ($transpilerType in $transpilerTypes) {
+                        if ($item -as $transpilerType) { # (where we could cast the input to the desired type).
+                            $transpilerType
+                        }
+                    })]) {
+                    $transpilerCommand
+                })
                 $itemTypeName = $item.GetType().Fullname
                                 
-                # But we still need to determine if an extension is valid for a given type's context
+                # Of course we still need to determine if an extension is valid for a given type's context
                 $pipescripts =  foreach ($potentialPipeScript in $PotentialTranspilersForItem) {                    
                     $couldPipe   = $potentialPipeScript.CouldPipe($item)
-
-                    if (
-                        $couldPipe -and 
-                        $potentialPipeScript.CouldRun(@{} + $couldPipe) -and
+                    if (-not $couldPipe -or 
+                        $couldPipe -isnot [Collections.IDictionary]) { continue }
+                    if ($potentialPipeScript.CouldRun(@{} + $couldPipe) -and
                         $(
                             $eap = $ErrorActionPreference
                             $ErrorActionPreference = 'ignore'
