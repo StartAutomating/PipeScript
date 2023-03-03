@@ -282,10 +282,7 @@ process {
                             }
                             # If we have ouput from any of the scripts (and we have not yet replaced anything)
                             elseif ($pso -and -not $AstReplacements[$item]) 
-                            { 
-                                # determine the end of this AST element
-                                $start = $scriptText.IndexOf($item.Extent.Text, $myOffset) 
-                                $end   = $start + $item.Extent.Text.Length
+                            {                                                                 
                                 $skipUntil = $item.Extent.EndOffset # set SkipUntil
                                 $AstReplacements[$item] = $pso # and store the replacement.
                             }
