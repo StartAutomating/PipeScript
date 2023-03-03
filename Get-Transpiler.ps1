@@ -1,7 +1,7 @@
-#region Piecemeal [ 0.3.8 ] : Easy Extensible Plugins for PowerShell
+#region Piecemeal [ 0.3.9 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
-# Install-Piecemeal -ExtensionNoun 'Transpiler' -ExtensionPattern '\.psx\.ps1$' -ExtensionTypeName 'PipeScript.Transpiler' -OutputPath '.\Get-Transpiler.ps1'
+# Install-Piecemeal -ExtensionNoun 'Transpiler' -ExtensionPattern '\.psx\.ps1$','^PipeScript.Transpiler' -ExtensionTypeName 'PipeScript.Transpiler' -OutputPath '.\Get-Transpiler.ps1'
 function Get-Transpiler
 {
     <#
@@ -14,6 +14,7 @@ function Get-Transpiler
 
         * Any module that includes -TranspilerModuleName in it's tags.
         * The directory specified in -TranspilerPath
+        * Commands that meet the naming criteria
     .Example
         Get-Transpiler
     #>
@@ -157,7 +158,7 @@ function Get-Transpiler
     )
 
     begin {
-        $TranspilerPattern = '\.psx\.ps1$'
+        $TranspilerPattern = '\.psx\.ps1$','^PipeScript.Transpiler'
         $TranspilerTypeName = 'PipeScript.Transpiler'
         #region Define Inner Functions
         function WhereExtends {
@@ -226,7 +227,7 @@ function Get-Transpiler
                     $ExecutionContext.SessionState.InvokeCommand.GetCommand($in.fullname, 'ExternalScript,Application')
                 }
                 else {
-                    $ExecutionContext.SessionState.InvokeCommand.GetCommand($in, 'Function,ExternalScript,Application')
+                    $ExecutionContext.SessionState.InvokeCommand.GetCommand($in, 'Alias,Function,ExternalScript,Application')
                 }
 
             #region .GetExtendedCommands
@@ -319,8 +320,28 @@ function Get-Transpiler
 
             #region .DisplayName
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
-                'DisplayName', [ScriptBlock]::Create("`$this.Name -replace '$extensionFullRegex'")
+                'DisplayName', {
+                    if ($this.'.DisplayName') {
+                        return $this.'.DisplayName'
+                    }
+                    if ($this.ScriptBlock.Attributes) {
+                        foreach ($attr in $this.ScriptBlock.Attributes) {
+                            if ($attr -is [ComponentModel.DisplayNameAttribute]) {
+                                $this | Add-Member NoteProperty '.DisplayName' $attr.DisplayName -Force
+                                return $attr.DisplayName
+                            }
+                        }
+                    }
+                    $this | Add-Member NoteProperty '.DisplayName' $this.Name
+                    return $this.Name
+                }, {
+                    $this | Add-Member NoteProperty '.DisplayName' $args -Force
+                }
             ), $true)
+
+            $extCmd.PSObject.Properties.Add([PSNoteProperty]::new(
+                '.DisplayName', "$($extCmd.Name -replace $extensionFullRegex)"
+            ), $true)            
             #endregion .DisplayName
             
             #region .Attributes
@@ -527,7 +548,7 @@ function Get-Transpiler
                 $ExtensionDynamicParameters = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
                 $Extension = $this
 
-                :nextDynamicParameter foreach ($in in @(([Management.Automation.CommandMetaData]$Extension).Parameters.Keys)) {
+                :nextDynamicParameter foreach ($in in @(($Extension -as [Management.Automation.CommandMetaData]).Parameters.Keys)) {
                     $attrList = [Collections.Generic.List[Attribute]]::new()
                     $validCommandNames = @()
                     foreach ($attr in $extension.Parameters[$in].attributes) {
@@ -642,7 +663,7 @@ function Get-Transpiler
                 return $true
             }), $true)
             #endregion .IsParameterValid
-
+            
             #region .CouldPipe
             $extCmd.PSObject.Methods.Add([PSScriptMethod]::new('CouldPipe', {
                 param([PSObject]$InputObject)
@@ -693,6 +714,31 @@ function Get-Transpiler
             }), $true)
             #endregion .CouldPipe
 
+            #region .CouldPipeType
+            $extCmd.PSObject.Methods.Add([PSScriptMethod]::new('CouldPipeType', {
+                param([Type]$Type)
+
+                foreach ($paramSet in $this.ParameterSets) {
+                    if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
+                    # Walk thru each parameter of this command
+                    foreach ($myParam in $paramSet.Parameters) {
+                        # If the parameter is ValueFromPipeline
+                        if ($myParam.ValueFromPipeline -and (
+                                $myParam.ParameterType -eq $Type -or
+                                # (or a subclass of that type)
+                                $Type.IsSubClassOf($myParam.ParameterType) -or
+                                # (or an inteface of that type)
+                                ($myParam.ParameterType.IsInterface -and $Type.GetInterface($myParam.ParameterType))
+                            )
+                        ) {
+                            return $true
+                        }                        
+                    }
+                    return $false
+                }
+            }), $true)
+            #endregion .CouldPipeType
+
             #region .CouldRun
             $extCmd.PSObject.Methods.Add([PSScriptMethod]::new('CouldRun', {
                 param([Collections.IDictionary]$params, [string]$ParameterSetName)
@@ -735,11 +781,13 @@ function Get-Transpiler
             }), $true)
             #endregion .CouldRun
 
-            $extCmd.pstypenames.clear()
-            if ($TranspilerTypeName) {
-                $extCmd.pstypenames.add($TranspilerTypeName)
-            } else {
-                $extCmd.pstypenames.add('Extension')
+            
+            # Decorate our return (so that it can be uniquely extended)
+            if (-not $TranspilerTypeName) {
+                $TranspilerTypeName = 'Extension'
+            }
+            if ($extCmd.pstypenames -notcontains $TranspilerTypeName) {            
+                $extCmd.pstypenames.insert(0,$TranspilerTypeName)
             }
 
             $extCmd
@@ -777,7 +825,7 @@ function Get-Transpiler
                     # Then, walk over each extension parameter.
                     foreach ($kv in $extensionParams.GetEnumerator()) {
                         # If the $CommandExtended had a built-in parameter, we cannot override it, so skip it.
-                        if ($commandExtended -and ([Management.Automation.CommandMetaData]$commandExtended).Parameters.$($kv.Key)) {
+                        if ($commandExtended -and ($commandExtended -as [Management.Automation.CommandMetaData]).Parameters.$($kv.Key)) {
                             continue
                         }
 
@@ -922,7 +970,7 @@ function Get-Transpiler
         if (-not $script:Transpilers)
         {
             $script:Transpilers =
-                @(
+                @(@(
                 #region Find Transpiler in Loaded Modules
                 foreach ($loadedModule in $loadedModules) { # Walk over all modules.
                     if ( # If the module has PrivateData keyed to this module
@@ -953,13 +1001,24 @@ function Get-Transpiler
                     elseif ($loadedModule.PrivateData.PSData.Tags -contains $myModuleName -or $loadedModule.Name -eq $myModuleName) {
                         $loadedModule |
                             Split-Path |
-                            Get-ChildItem -Recurse |
+                            Get-ChildItem -Recurse -File |
                             Where-Object { $_.Name -Match $extensionFullRegex } |
-                            ConvertToExtension
+                            ConvertToExtension                        
                     }
                 }
                 #endregion Find Transpiler in Loaded Modules
-                )
+
+                #region Find Transpiler in Loaded Commands
+                $loadedCommands = @($ExecutionContext.SessionState.InvokeCommand.GetCommands('*', 'Function,Alias,Cmdlet', $true))
+                foreach ($command in $loadedCommands) {
+                    if ($command.Name -match $extensionFullRegex) {
+                        $command                        
+                    } elseif ($command.Source -and $command.Source -match $extensionFullRegex) {
+                        $command.Source
+                    }
+                }
+                #endregion Find Transpiler in Loaded Commands
+                ) | Select-Object -Unique)
         }
         #endregion Find Extensions
     }
@@ -967,7 +1026,7 @@ function Get-Transpiler
     process {
 
         if ($TranspilerPath) {
-            Get-ChildItem -Recurse -Path $TranspilerPath |
+            Get-ChildItem -Recurse -Path $TranspilerPath -File |
                 Where-Object { $_.Name -Match $extensionFullRegex } |
                 ConvertToExtension |
                 . WhereExtends $CommandName |
@@ -987,5 +1046,5 @@ function Get-Transpiler
         }
     }
 }
-#endregion Piecemeal [ 0.3.8 ] : Easy Extensible Plugins for PowerShell
+#endregion Piecemeal [ 0.3.9 ] : Easy Extensible Plugins for PowerShell
 
