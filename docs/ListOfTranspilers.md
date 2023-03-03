@@ -56,11 +56,11 @@ These are all of the transpilers currently included in PipeScript:
 |[PipeScript.AttributedExpression](Transpilers/Core/PipeScript.AttributedExpression.psx.ps1)       |The PipeScript AttributedExpression Transpiler    |
 |[Pipescript.FunctionDefinition](Transpilers/Core/Pipescript.FunctionDefinition.psx.ps1)           |PipeScript Function Transpiler                    |
 |[PipeScript.ParameterAttribute](Transpilers/Core/PipeScript.ParameterAttribute.psx.ps1)           |
-|[PipeScript.ParameterTypeConstraint](Transpilers/Core/PipeScript.ParameterTypeConstraint.psx.ps1) |Transpiles Parameter Type Constraints             |
 |[PipeScript.Protocol](Transpilers/Core/PipeScript.Protocol.psx.ps1)                               |Core Protocol Transpiler                          |
 |[Pipescript](Transpilers/Core/Pipescript.psx.ps1)                                                 |The Core PipeScript Transpiler                    |
 |[PipeScript.Template](Transpilers/Core/PipeScript.Template.psx.ps1)                               |Template Transpiler                               |
 |[.format.ps1](/home/runner/work/PipeScript/PipeScript/Formatting/PipeScript.Transpiler.format.ps1)|
+|[PipeScript.TypeConstraint](Transpilers/Core/PipeScript.TypeConstraint.psx.ps1)                   |Transpiles Type Constraints                       |
 |[PipeScript.TypeExpression](Transpilers/Core/PipeScript.TypeExpression.psx.ps1)                   |The PipeScript TypeExpression Transpiler          |
 |[ProxyCommand](Transpilers/ProxyCommand.psx.ps1)                                                  |Creates Proxy Commands                            |
 |[PSD1.Template](Transpilers/Templates/PSD1.Template.psx.ps1)                                      |PSD1 Template Transpiler.                         |
