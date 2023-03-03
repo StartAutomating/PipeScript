@@ -20,6 +20,7 @@ PipeScript can be found in:
 
 * Any module that includes -PipeScriptModuleName in it's tags.
 * The directory specified in -PipeScriptPath
+* Commands that meet the naming criteria
 
 
 
