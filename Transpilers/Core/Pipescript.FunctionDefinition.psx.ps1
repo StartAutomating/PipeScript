@@ -55,5 +55,38 @@ process {
         "}"
     )
     # Create a new script block
-    [ScriptBlock]::Create($newFunction -join [Environment]::NewLine)
+    $transpiledFunction = [ScriptBlock]::Create($newFunction -join [Environment]::NewLine)
+
+    # Now, determine the dynamic name of a module.
+    $dynamicModuleName = 
+        if ($FunctionDefinition.Extent.File) {
+            $FunctionDefinition.Extent.File | Split-Path -Leaf
+        } else {
+            "PipeScriptDefinedFunctions"
+        }
+
+    # If one already exists, we'll need to merge it
+    $moduleExists = Get-Module -Name $dynamicModuleName
+    $moduleDefinition = 
+        if ($moduleExists) {
+            [ScriptBlock]::Create(($moduleExists.Definition, $transpiledFunction -join [Environment]::newLine))
+            # and remove it
+            $moduleExists | Remove-Module        
+        } else {
+            $transpiledFunction
+        }
+    
+    # Create a dynamic module and import it globally.
+    New-Module -Name $dynamicModuleName -ScriptBlock $moduleDefinition |
+        Import-Module -Global -Force
+
+    # Create an event indicating that a function has been transpiled.
+    $null = New-Event -SourceIdentifier PipeScript.Function.Transpiled -MessageData ([PSCustomObject][Ordered]@{
+        PSTypeName = 'PipeScript.Function.Transpiled'
+        FunctionDefinition = $FunctionDefinition
+        ScriptBlock = $transpiledFunction
+    })
+
+    # Output the transpiled function.
+    $transpiledFunction
 }
