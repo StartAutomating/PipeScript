@@ -20,6 +20,7 @@ Transpiler can be found in:
 
 * Any module that includes -TranspilerModuleName in it's tags.
 * The directory specified in -TranspilerPath
+* Commands that meet the naming criteria
 
 
 
