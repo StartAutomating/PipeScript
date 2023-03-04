@@ -1262,9 +1262,9 @@ return $this.'.CommandMetadata'
       <ScriptProperty>
         <Name>CommandNamespace</Name>
         <GetScriptBlock>
-                        $matched = $this.Separator.Match($this.FullName)
+                        $matched = $this.Separator.Match($this.FullyQualifiedName)
 if ($matched.Success -and $matched.Index -gt 0) {
-    $this.FullName.Substring(0,$matched.Index)
+    $this.FullyQualifiedName.Substring(0,$matched.Index)
 }
 else {
     ''
@@ -1364,14 +1364,14 @@ return 0
       <ScriptProperty>
         <Name>Segments</Name>
         <GetScriptBlock>
-                        $allMatches = @($this.Separator.Matches($this.FullName))
+                        $allMatches = @($this.Separator.Matches($this.FullyQualifiedName))
 @(
     # All namespaces are a series of matches
     foreach ($matched in $allMatches) {
-        $this.FullName.Substring($matched.Index)
+        $this.FullyQualifiedName.Substring($matched.Index)
     }
     if ($matched.Index -gt 0) {
-        $this.FullName
+        $this.FullyQualifiedName
     }
 ) -as [string[]]
                     </GetScriptBlock>
