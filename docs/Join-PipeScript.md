@@ -1,20 +1,36 @@
 Join-PipeScript
 ---------------
+
+
+
+
 ### Synopsis
 Joins PowerShell and PipeScript ScriptBlocks
 
+
+
 ---
+
+
 ### Description
 
 Joins ScriptBlocks written in PowerShell or PipeScript.
 
+
+
 ---
+
+
 ### Related Links
 * [Update-PipeScript](Update-PipeScript.md)
 
 
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -48,7 +64,11 @@ Get-Command Join-PipeScript | Join-PipeScript
 } | Join-PipeScript -ExcludeParameter x
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **ScriptBlock**
 
@@ -56,17 +76,15 @@ A ScriptBlock written in PowerShell or PipeScript.
 
 
 
-> **Type**: ```[ScriptBlock[]]```
-
-> **Required**: true
-
-> **Position**: named
-
-> **PipelineInput**:true (ByValue, ByPropertyName)
 
 
 
----
+|Type             |Required|Position|PipelineInput                 |Aliases   |
+|-----------------|--------|--------|------------------------------|----------|
+|`[ScriptBlock[]]`|true    |named   |true (ByValue, ByPropertyName)|Definition|
+
+
+
 #### **ExcludeBlockType**
 
 A list of block types to be excluded during a merge of script blocks.
@@ -88,17 +106,15 @@ Valid Values:
 
 
 
-> **Type**: ```[String[]]```
-
-> **Required**: false
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type        |Required|Position|PipelineInput|Aliases                                               |
+|------------|--------|--------|-------------|------------------------------------------------------|
+|`[String[]]`|false   |named   |false        |SkipBlockType<br/>SkipBlockTypes<br/>ExcludeBlockTypes|
+
+
+
 #### **IncludeBlockType**
 
 A list of block types to include during a merge of script blocks.
@@ -119,34 +135,30 @@ Valid Values:
 
 
 
-> **Type**: ```[String[]]```
-
-> **Required**: false
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type        |Required|Position|PipelineInput|Aliases                                       |
+|------------|--------|--------|-------------|----------------------------------------------|
+|`[String[]]`|false   |named   |false        |BlockType<br/>BlockTypes<br/>IncludeBlockTypes|
+
+
+
 #### **Transpile**
 
 If set, will transpile the joined ScriptBlock.
 
 
 
-> **Type**: ```[Switch]```
-
-> **Required**: false
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
+
+
 #### **IncludeParameter**
 
 A list of parameters to include.  Can contain wildcards.
@@ -154,17 +166,15 @@ If -IncludeParameter is provided without -ExcludeParameter, all other parameters
 
 
 
-> **Type**: ```[String[]]```
-
-> **Required**: false
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |named   |false        |
+
+
+
 #### **ExcludeParameter**
 
 A list of parameters to exclude.  Can contain wildcards.
@@ -172,19 +182,21 @@ Excluded parameters with default values will declare the default value at the be
 
 
 
-> **Type**: ```[String[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |named   |false        |
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 Join-PipeScript -ScriptBlock <ScriptBlock[]> [-ExcludeBlockType <String[]>] [-IncludeBlockType <String[]>] [-Transpile] [-IncludeParameter <String[]>] [-ExcludeParameter <String[]>] [<CommonParameters>]
 ```
----
