@@ -233,7 +233,7 @@ function Join-PipeScript
             # param is probably the trickiest section, but since we're building this script from top to bottom
             # it's next on the list.
 
-            # We _might_ need to add some statements to the script (because of -Include/ExcludeParameter)            
+            # We _might_ need to add some statements to the script (because of -Include/ExcludeParameter)
             $StatementsToAdd = @()
 
             if ($IncludeBlockType -contains 'param') {
@@ -384,14 +384,15 @@ function Join-PipeScript
             }
 
             if ($IncludeBlockType -contains 'end') {
-                # If there were end blocks declared                
+                # If there were end blocks declared
                 $blocks = @($AllScriptBlocks.Ast.EndBlock)
                 if ($blocks -ne $null) {
                     $blockOpen = $false # see if there was anything in them.
                     
                     foreach ($block in $blocks) {
                         if (-not $block) { continue }
-                        if ($block -match '^\s{0,}param\(\s{0,}\)\s{0,}$') { continue }
+                        # Empty(ish) scripts may have an end bock that is an empty param block
+                        if ($block -match '^\s{0,}param\(\s{0,}\)\s{0,}$') { continue } # (skip those).
                         if (-not $blockOpen -and -not $block.Unnamed) {
                             # If the end block was named, it will need to be closed.
                             if ($StatementsToAdd) {
@@ -414,17 +415,24 @@ function Join-PipeScript
                             if ($StatementsToAdd) {
                                 $StatementsToAdd -join [Environment]::NewLine
                                 $StatementsToAdd = $null
-                            }
-                            $blockBody = $block.Extent.ToString()
+                            }                            
                             
-                            if ($block.Unnamed) {                     
+                            # If the block was unnamed
+                            if ($block.Unnamed) {
+                                # check to see if there were any paramters declared
                                 if ($block.Parent.ParamBlock.Parameters) {
-                                    $block.Extent.ToString().Substring($block.Parent.ParamBlock.Extent.ToString().Length)
+                                    # because for some silly reason, the AST _loves_ to include that in the end block as well                                    
+                                    $block.Extent.ToString().Substring($block.Parent.ParamBlock.Extent.ToString().Length) -replace 
+                                        '[\s\r\n]{0,}$' # (don't forget to trim trailing whitespace).
                                 } else {
+                                    # If no parameters were declared, remove the empty param() block.
                                     $block.Extent.ToString() -replace '^param\(\)[\s\r\n]{0,}'
                                 }                                    
                             } else {
-                                $block.Extent.ToString() -replace '^end\s{0,}\{' -replace '\}$' -replace '^param\(\)[\s\r\n]{0,}'
+                                # If the block was named
+                                $block.Extent.ToString() -replace # Strip the 'end' and braces
+                                    '^end\s{0,}\{' -replace '\}$' -replace 
+                                    '^param\(\)[\s\r\n]{0,}' # and any empty param blocks.
                             }                            
                         }
                     }
