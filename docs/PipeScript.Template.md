@@ -1,9 +1,17 @@
 PipeScript.Template
 -------------------
+
+
+
+
 ### Synopsis
 Template Transpiler
 
+
+
 ---
+
+
 ### Description
 
 The PipeScript Core Template Transpiler.
@@ -22,7 +30,11 @@ the template transpiler for that file type will call the core template transpile
 When templates are used as a keyword,
 the template transpiler will produce an object that can evaluate the template on demand.
 
+
+
 ---
+
+
 ### Parameters
 #### **SourceText**
 
@@ -30,47 +42,41 @@ A string containing the text contents of the file
 
 
 
-> **Type**: ```[String]```
-
-> **Required**: false
-
-> **Position**: 1
-
-> **PipelineInput**:false
 
 
 
----
+|Type      |Required|Position|PipelineInput|Aliases     |
+|----------|--------|--------|-------------|------------|
+|`[String]`|false   |1       |false        |TemplateText|
+
+
+
 #### **ReplacePattern**
 
-> **Type**: ```[Regex]```
-
-> **Required**: false
-
-> **Position**: 2
-
-> **PipelineInput**:false
 
 
 
----
+|Type     |Required|Position|PipelineInput|Aliases|
+|---------|--------|--------|-------------|-------|
+|`[Regex]`|false   |2       |false        |Replace|
+
+
+
 #### **TemplateName**
 
 The name of the template.  This can be implied by the pattern.
 
 
 
-> **Type**: ```[Object]```
-
-> **Required**: false
-
-> **Position**: 3
-
-> **PipelineInput**:false
 
 
 
----
+|Type      |Required|Position|PipelineInput|Aliases|
+|----------|--------|--------|-------------|-------|
+|`[Object]`|false   |3       |false        |Name   |
+
+
+
 #### **StartPattern**
 
 The Start Pattern.
@@ -79,17 +85,15 @@ An expression will match everything until -EndPattern
 
 
 
-> **Type**: ```[Regex]```
-
-> **Required**: false
-
-> **Position**: 4
-
-> **PipelineInput**:false
 
 
 
----
+|Type     |Required|Position|PipelineInput|Aliases   |
+|---------|--------|--------|-------------|----------|
+|`[Regex]`|false   |4       |false        |StartRegex|
+
+
+
 #### **EndPattern**
 
 The End Pattern
@@ -97,17 +101,15 @@ This indicates the end of what should be considered PipeScript.
 
 
 
-> **Type**: ```[Regex]```
-
-> **Required**: false
-
-> **Position**: 5
-
-> **PipelineInput**:false
 
 
 
----
+|Type     |Required|Position|PipelineInput|Aliases |
+|---------|--------|--------|-------------|--------|
+|`[Regex]`|false   |5       |false        |EndRegex|
+
+
+
 #### **ReplacementEvaluator**
 
 A custom replacement evaluator.
@@ -116,136 +118,120 @@ The output of these scripts will be the replacement text.
 
 
 
-> **Type**: ```[ScriptBlock]```
-
-> **Required**: false
-
-> **Position**: 6
-
-> **PipelineInput**:false
 
 
 
----
+|Type           |Required|Position|PipelineInput|Aliases |
+|---------------|--------|--------|-------------|--------|
+|`[ScriptBlock]`|false   |6       |false        |Replacer|
+
+
+
 #### **NoTranspile**
 
 If set, will not transpile script blocks.
 
 
 
-> **Type**: ```[Switch]```
-
-> **Required**: false
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
+
+
 #### **SourceFile**
 
 The path to the source file.
 
 
 
-> **Type**: ```[String]```
-
-> **Required**: false
-
-> **Position**: 7
-
-> **PipelineInput**:false
 
 
 
----
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |7       |false        |
+
+
+
 #### **Begin**
 
 A Script Block that will be injected before each inline is run.
 
 
 
-> **Type**: ```[ScriptBlock]```
-
-> **Required**: false
-
-> **Position**: 8
-
-> **PipelineInput**:false
 
 
 
----
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[ScriptBlock]`|false   |8       |false        |
+
+
+
 #### **ForeachObject**
 
 A Script Block that will be piped to after each output.
 
 
 
-> **Type**: ```[ScriptBlock]```
-
-> **Required**: false
-
-> **Position**: 9
-
-> **PipelineInput**:false
 
 
 
----
+|Type           |Required|Position|PipelineInput|Aliases|
+|---------------|--------|--------|-------------|-------|
+|`[ScriptBlock]`|false   |9       |false        |Process|
+
+
+
 #### **End**
 
 A Script Block that will be injected after each inline script is run.
 
 
 
-> **Type**: ```[ScriptBlock]```
-
-> **Required**: false
-
-> **Position**: 10
-
-> **PipelineInput**:false
 
 
 
----
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[ScriptBlock]`|false   |10      |false        |
+
+
+
 #### **Parameter**
 
 A collection of parameters
 
 
 
-> **Type**: ```[IDictionary]```
-
-> **Required**: false
-
-> **Position**: 11
-
-> **PipelineInput**:false
 
 
 
----
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |11      |false        |
+
+
+
 #### **ArgumentList**
 
 An argument list.
 
 
 
-> **Type**: ```[PSObject[]]```
-
-> **Required**: false
-
-> **Position**: 12
-
-> **PipelineInput**:false
 
 
 
----
+|Type          |Required|Position|PipelineInput|Aliases|
+|--------------|--------|--------|-------------|-------|
+|`[PSObject[]]`|false   |12      |false        |Args   |
+
+
+
 #### **LinePattern**
 
 Some languages only allow single-line comments.
@@ -254,37 +240,37 @@ Only lines beginning with this pattern within -StartPattern and -EndPattern will
 
 
 
-> **Type**: ```[Regex]```
-
-> **Required**: false
-
-> **Position**: 13
-
-> **PipelineInput**:false
 
 
 
----
+|Type     |Required|Position|PipelineInput|
+|---------|--------|--------|-------------|
+|`[Regex]`|false   |13      |false        |
+
+
+
 #### **CommandAst**
 
 The Command Abstract Syntax Tree.  If this is provided, we are transpiling a template keyword.
 
 
 
-> **Type**: ```[CommandAst]```
 
-> **Required**: false
 
-> **Position**: 14
 
-> **PipelineInput**:true (ByValue)
+|Type          |Required|Position|PipelineInput |
+|--------------|--------|--------|--------------|
+|`[CommandAst]`|false   |14      |true (ByValue)|
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 PipeScript.Template [[-SourceText] <String>] [[-ReplacePattern] <Regex>] [[-TemplateName] <Object>] [[-StartPattern] <Regex>] [[-EndPattern] <Regex>] [[-ReplacementEvaluator] <ScriptBlock>] [-NoTranspile] [[-SourceFile] <String>] [[-Begin] <ScriptBlock>] [[-ForeachObject] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [[-LinePattern] <Regex>] [[-CommandAst] <CommandAst>] [<CommonParameters>]
 ```
----
 
