@@ -1,16 +1,28 @@
 PipedAssignment
 ---------------
+
+
+
+
 ### Synopsis
 Piped Assignment Transpiler
 
+
+
 ---
+
+
 ### Description
 
 Enables Piped Assignment (```|=|```).
 
 Piped Assignment allows for an expression to be reassigned based off of the pipeline input.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -32,24 +44,30 @@ $Collection = $Collection | Where-Object Name -match $pattern
 $Collection = $Collection |
         Where-Object Name -match $pattern |
         Select-Object -ExpandProperty Name
+
+
 ---
+
+
 ### Parameters
 #### **PipelineAst**
 
-> **Type**: ```[PipelineAst]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:true (ByValue)
+|Type           |Required|Position|PipelineInput |
+|---------------|--------|--------|--------------|
+|`[PipelineAst]`|true    |1       |true (ByValue)|
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 PipedAssignment [-PipelineAst] <PipelineAst> [<CommonParameters>]
 ```
----
 
