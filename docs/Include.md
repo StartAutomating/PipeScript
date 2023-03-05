@@ -1,14 +1,26 @@
 Include
 -------
+
+
+
+
 ### Synopsis
 Includes Files
 
+
+
 ---
+
+
 ### Description
 
 Includes Files or Functions into a Script.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -32,7 +44,11 @@ Includes Files or Functions into a Script.
 } | .>PipeScript
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **FilePath**
 
@@ -40,50 +56,48 @@ The File Path to Include
 
 
 
-> **Type**: ```[String]```
-
-> **Required**: true
-
-> **Position**: 1
-
-> **PipelineInput**:false
 
 
 
----
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|true    |1       |false        |
+
+
+
 #### **AsByte**
 
 If set, will include the content as a byte array
 
 
 
-> **Type**: ```[Switch]```
-
-> **Required**: false
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
+
+
 #### **VariableAst**
 
-> **Type**: ```[VariableExpressionAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                     |Required|Position|PipelineInput |
+|-------------------------|--------|--------|--------------|
+|`[VariableExpressionAst]`|true    |named   |true (ByValue)|
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 Include [-FilePath] <String> [-AsByte] -VariableAst <VariableExpressionAst> [<CommonParameters>]
 ```
----
 
