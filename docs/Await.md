@@ -1,14 +1,26 @@
 Await
 -----
+
+
+
+
 ### Synopsis
 awaits asynchronous operations
 
+
+
 ---
+
+
 ### Description
 
 awaits the result of a task.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -24,24 +36,30 @@ PipeScript -ScriptBlock {
 }
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **CommandAst**
 
-> **Type**: ```[CommandAst]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:true (ByValue)
+|Type          |Required|Position|PipelineInput |
+|--------------|--------|--------|--------------|
+|`[CommandAst]`|true    |1       |true (ByValue)|
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 Await [-CommandAst] <CommandAst> [<CommonParameters>]
 ```
----
 
