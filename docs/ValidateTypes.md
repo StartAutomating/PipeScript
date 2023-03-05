@@ -1,16 +1,28 @@
 ValidateTypes
 -------------
+
+
+
+
 ### Synopsis
 Validates if an object is one or more types.
 
+
+
 ---
+
+
 ### Description
 
 Validates if an object is one or more types.  
 
 This allows for a single parameter to handle multiple potential types.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -46,7 +58,11 @@ $In
 ```
 $In
     }
+
+
 ---
+
+
 ### Parameters
 #### **TypeName**
 
@@ -56,34 +72,35 @@ TypeNames will be treated first as real types, then as exact matches, then as wi
 
 
 
-> **Type**: ```[String[]]```
-
-> **Required**: true
-
-> **Position**: 1
-
-> **PipelineInput**:false
 
 
 
----
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|true    |1       |false        |
+
+
+
 #### **VariableAST**
 
 The variable that will be validated.
 
 
 
-> **Type**: ```[VariableExpressionAst]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                     |Required|Position|PipelineInput |
+|-------------------------|--------|--------|--------------|
+|`[VariableExpressionAst]`|false   |named   |true (ByValue)|
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 ValidateTypes [-TypeName] <String[]> [<CommonParameters>]
@@ -91,5 +108,4 @@ ValidateTypes [-TypeName] <String[]> [<CommonParameters>]
 ```PowerShell
 ValidateTypes [-TypeName] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
----
 
