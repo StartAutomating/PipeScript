@@ -1,9 +1,17 @@
 CSharp.Template
 ---------------
+
+
+
+
 ### Synopsis
 C# Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to Generate C#.
@@ -21,7 +29,11 @@ The C# Inline Transpiler will consider the following syntax to be empty:
 * ```""```
 * ```''```
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -60,7 +72,11 @@ namespace TestProgram {
 }
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -68,68 +84,65 @@ The command information.  This will include the path to the file.
 
 
 
-> **Type**: ```[CommandInfo]```
-
-> **Required**: true
-
-> **Position**: named
-
-> **PipelineInput**:true (ByValue)
 
 
 
----
+|Type           |Required|Position|PipelineInput |
+|---------------|--------|--------|--------------|
+|`[CommandInfo]`|true    |named   |true (ByValue)|
+
+
+
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
 
 
 
-> **Type**: ```[Switch]```
-
-> **Required**: true
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|true    |named   |false        |
+
+
+
 #### **Parameter**
 
 A dictionary of parameters.
 
 
 
-> **Type**: ```[IDictionary]```
-
-> **Required**: false
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |named   |false        |
+
+
+
 #### **ArgumentList**
 
 A list of arguments.
 
 
 
-> **Type**: ```[PSObject[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type          |Required|Position|PipelineInput|
+|--------------|--------|--------|-------------|
+|`[PSObject[]]`|false   |named   |false        |
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 CSharp.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -137,5 +150,4 @@ CSharp.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argument
 ```PowerShell
 CSharp.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
