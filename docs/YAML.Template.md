@@ -1,9 +1,17 @@
 YAML.Template
 -------------
+
+
+
+
 ### Synopsis
 Yaml Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate Yaml.
@@ -12,7 +20,11 @@ Because Yaml does not support comment blocks, PipeScript can be written inline i
 
 PipeScript can be included in a multiline Yaml string with the Key PipeScript and a Value surrounded by {}
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -41,7 +53,11 @@ List:
 }
 
 .> .\HelloWorld.ps1.yaml
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -49,68 +65,65 @@ The command information.  This will include the path to the file.
 
 
 
-> **Type**: ```[CommandInfo]```
-
-> **Required**: true
-
-> **Position**: named
-
-> **PipelineInput**:true (ByValue)
 
 
 
----
+|Type           |Required|Position|PipelineInput |
+|---------------|--------|--------|--------------|
+|`[CommandInfo]`|true    |named   |true (ByValue)|
+
+
+
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
 
 
 
-> **Type**: ```[Switch]```
-
-> **Required**: true
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|true    |named   |false        |
+
+
+
 #### **Parameter**
 
 A dictionary of parameters.
 
 
 
-> **Type**: ```[IDictionary]```
-
-> **Required**: false
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |named   |false        |
+
+
+
 #### **ArgumentList**
 
 A list of arguments.
 
 
 
-> **Type**: ```[PSObject[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type          |Required|Position|PipelineInput|
+|--------------|--------|--------|-------------|
+|`[PSObject[]]`|false   |named   |false        |
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 YAML.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -118,5 +131,4 @@ YAML.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLi
 ```PowerShell
 YAML.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
