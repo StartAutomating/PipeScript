@@ -1,9 +1,17 @@
 Explicit
 --------
+
+
+
+
 ### Synopsis
 Makes Output from a PowerShell function Explicit.
 
+
+
 ---
+
+
 ### Description
 
 Makes a PowerShell function explicitly output.
@@ -12,7 +20,11 @@ All statements will be assigned to $null, unless they explicitly use Write-Outpu
 
 If Write-Output or echo is used, the command will be replaced for more effecient output.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -34,7 +46,11 @@ Invoke-PipeScript {
 } | .>PipeScript
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **ScriptBlock**
 
@@ -42,27 +58,33 @@ The ScriptBlock that will be transpiled.
 
 
 
-> **Type**: ```[ScriptBlock]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:true (ByValue)
+|Type           |Required|Position|PipelineInput |
+|---------------|--------|--------|--------------|
+|`[ScriptBlock]`|true    |1       |true (ByValue)|
+
+
 
 
 
 ---
+
+
 ### Outputs
 * [Management.Automation.ScriptBlock](https://learn.microsoft.com/en-us/dotnet/api/System.Management.Automation.ScriptBlock)
 
 
 
 
+
+
 ---
+
+
 ### Syntax
 ```PowerShell
 Explicit [-ScriptBlock] <ScriptBlock> [<CommonParameters>]
 ```
----
 
