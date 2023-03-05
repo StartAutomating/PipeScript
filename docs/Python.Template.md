@@ -1,9 +1,17 @@
 Python.Template
 ---------------
+
+
+
+
 ### Synopsis
 Python Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate Python.
@@ -12,7 +20,11 @@ Because Python does not support multiline comment blocks, PipeScript can be writ
 
 PipeScript can be included in a Python string that starts and ends with ```{}```, for example ```"""{}"""```
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -29,7 +41,11 @@ print("$msg")
 }
 ```
 .> .\HelloWorld.ps1.py
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -37,68 +53,65 @@ The command information.  This will include the path to the file.
 
 
 
-> **Type**: ```[CommandInfo]```
-
-> **Required**: true
-
-> **Position**: named
-
-> **PipelineInput**:true (ByValue)
 
 
 
----
+|Type           |Required|Position|PipelineInput |
+|---------------|--------|--------|--------------|
+|`[CommandInfo]`|true    |named   |true (ByValue)|
+
+
+
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
 
 
 
-> **Type**: ```[Switch]```
-
-> **Required**: true
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|true    |named   |false        |
+
+
+
 #### **Parameter**
 
 A dictionary of parameters.
 
 
 
-> **Type**: ```[IDictionary]```
-
-> **Required**: false
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |named   |false        |
+
+
+
 #### **ArgumentList**
 
 A list of arguments.
 
 
 
-> **Type**: ```[PSObject[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type          |Required|Position|PipelineInput|
+|--------------|--------|--------|-------------|
+|`[PSObject[]]`|false   |named   |false        |
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 Python.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -106,5 +119,4 @@ Python.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argument
 ```PowerShell
 Python.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
