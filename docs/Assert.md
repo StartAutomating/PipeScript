@@ -1,9 +1,17 @@
 Assert
 ------
+
+
+
+
 ### Synopsis
 Assert keyword
 
+
+
 ---
+
+
 ### Description
 
 Assert is a common keyword in many programming languages.
@@ -24,7 +32,11 @@ Assertions will not be transpiled or included if -Verbose or -Debug has not been
 
 Additionally, while running, Assertions will be ignored if -Verbose or -Debug has not been set.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -74,7 +86,11 @@ Invoke-PipeScript {
 } -Debug
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **CommandAst**
 
@@ -82,20 +98,22 @@ The CommandAst
 
 
 
-> **Type**: ```[CommandAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type          |Required|Position|PipelineInput |
+|--------------|--------|--------|--------------|
+|`[CommandAst]`|true    |named   |true (ByValue)|
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 Assert -CommandAst <CommandAst> [<CommonParameters>]
 ```
----
 
