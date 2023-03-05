@@ -86,9 +86,9 @@ Invoke-PipeScript {
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[String]`|true    |1       |false        |
+|Type      |Required|Position|PipelineInput|Aliases    |
+|----------|--------|--------|-------------|-----------|
+|`[String]`|true    |1       |false        |CommandName|
 
 
 
