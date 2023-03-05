@@ -1,9 +1,17 @@
 PipeScript.AttributedExpression
 -------------------------------
+
+
+
+
 ### Synopsis
 The PipeScript AttributedExpression Transpiler
 
+
+
 ---
+
+
 ### Description
 
 AttributedExpressions will be transpiled 
@@ -15,7 +23,11 @@ $hello = 'hello world'
 [OutputFile(".\Hello.txt")]$hello
 ```PowerShell
 
+
+
 ---
+
+
 ### Parameters
 #### **AttributedExpressionAst**
 
@@ -23,20 +35,22 @@ The attributed expression
 
 
 
-> **Type**: ```[AttributedExpressionAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                       |Required|Position|PipelineInput |
+|---------------------------|--------|--------|--------------|
+|`[AttributedExpressionAst]`|true    |named   |true (ByValue)|
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 PipeScript.AttributedExpression -AttributedExpressionAst <AttributedExpressionAst> [<CommonParameters>]
 ```
----
 
