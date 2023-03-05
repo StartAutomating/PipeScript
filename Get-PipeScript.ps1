@@ -1,4 +1,4 @@
-#region Piecemeal [ 0.3.7 ] : Easy Extensible Plugins for PowerShell
+#region Piecemeal [ 0.3.9 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
 # Install-Piecemeal -ExtensionNoun 'PipeScript' -ExtensionPattern '\.psx\.ps1{0,1}$','\.ps1{0,1}\.(?<ext>[^.]+$)','\.ps1{0,1}$' -ExtensionTypeName 'PipeScript' -OutputPath '.\Get-PipeScript.ps1'
@@ -14,6 +14,7 @@ function Get-PipeScript
 
         * Any module that includes -PipeScriptModuleName in it's tags.
         * The directory specified in -PipeScriptPath
+        * Commands that meet the naming criteria
     .Example
         Get-PipeScript
     #>
@@ -226,9 +227,10 @@ function Get-PipeScript
                     $ExecutionContext.SessionState.InvokeCommand.GetCommand($in.fullname, 'ExternalScript,Application')
                 }
                 else {
-                    $ExecutionContext.SessionState.InvokeCommand.GetCommand($in, 'Function,ExternalScript,Application')
+                    $ExecutionContext.SessionState.InvokeCommand.GetCommand($in, 'Alias,Function,ExternalScript,Application')
                 }
 
+            #region .GetExtendedCommands
             $extCmd.PSObject.Methods.Add([psscriptmethod]::new('GetExtendedCommands', {
                 param([Management.Automation.CommandInfo[]]$CommandList)
                 $extendedCommandNames = @(
@@ -264,7 +266,8 @@ function Get-PipeScript
 
                 $this | Add-Member NoteProperty Extends $extends.Keys -Force
                 $this | Add-Member NoteProperty ExtensionCommands $extends.Values -Force
-            }))
+            }), $true)
+            #endregion .GetExtendedCommands
 
             if (-not $script:AllCommands) {
                 $script:AllCommands = $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function,Alias,Cmdlet', $true)
@@ -275,6 +278,7 @@ function Get-PipeScript
 
             $inheritanceLevel = [ComponentModel.InheritanceLevel]::Inherited
 
+            #region .BlockComments
             $extCmd.PSObject.Properties.Add([psscriptproperty]::New('BlockComments', {
                 [Regex]::New("                   
                 \<\# # The opening tag
@@ -283,8 +287,10 @@ function Get-PipeScript
                 )
                 \#\> # the closing tag
                 ", 'IgnoreCase,IgnorePatternWhitespace', '00:00:01').Matches($this.ScriptBlock)
-            }))
+            }), $true)
+            #endregion .BlockComments
 
+            #region .GetHelpField
             $extCmd.PSObject.Methods.Add([psscriptmethod]::New('GetHelpField', {
                 param([Parameter(Mandatory)]$Field)
                 $fieldNames = 'synopsis','description','link','example','inputs', 'outputs', 'parameter', 'notes'
@@ -305,17 +311,46 @@ function Get-PipeScript
                         $match.Groups["Content"].Value -replace '[\s\r\n]+$'
                     }                    
                 }
-            }))
+            }), $true)
+            #endregion .GetHelpField
 
-            $extCmd.PSObject.Properties.Add([PSNoteProperty]::new('InheritanceLevel', $inheritanceLevel))
+            #region .InheritanceLevel
+            $extCmd.PSObject.Properties.Add([PSNoteProperty]::new('InheritanceLevel', $inheritanceLevel), $true)
+            #endregion .InheritanceLevel
+
+            #region .DisplayName
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
-                'DisplayName', [ScriptBlock]::Create("`$this.Name -replace '$extensionFullRegex'")
-            ))
+                'DisplayName', {
+                    if ($this.'.DisplayName') {
+                        return $this.'.DisplayName'
+                    }
+                    if ($this.ScriptBlock.Attributes) {
+                        foreach ($attr in $this.ScriptBlock.Attributes) {
+                            if ($attr -is [ComponentModel.DisplayNameAttribute]) {
+                                $this | Add-Member NoteProperty '.DisplayName' $attr.DisplayName -Force
+                                return $attr.DisplayName
+                            }
+                        }
+                    }
+                    $this | Add-Member NoteProperty '.DisplayName' $this.Name
+                    return $this.Name
+                }, {
+                    $this | Add-Member NoteProperty '.DisplayName' $args -Force
+                }
+            ), $true)
+
+            $extCmd.PSObject.Properties.Add([PSNoteProperty]::new(
+                '.DisplayName', "$($extCmd.Name -replace $extensionFullRegex)"
+            ), $true)            
+            #endregion .DisplayName
+            
+            #region .Attributes
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
                 'Attributes', {$this.ScriptBlock.Attributes}
-            ))
+            ), $true)
+            #endregion .Attributes
 
-
+            #region .Category
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
                 'Category', {
                     foreach ($attr in $this.ScriptBlock.Attributes) {
@@ -329,8 +364,10 @@ function Get-PipeScript
                     }
                     
                 }
-            ))
+            ), $true)
+            #endregion .Category
 
+            #region .Rank
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
                 'Rank', {
                     foreach ($attr in $this.ScriptBlock.Attributes) {
@@ -341,8 +378,10 @@ function Get-PipeScript
                     }
                     return 0
                 }
-            ))
+            ), $true)
+            #endregion .Rank
             
+            #region .Metadata
             $extCmd.PSObject.Properties.Add([psscriptproperty]::new(
                 'Metadata', {
                     $Metadata = [Ordered]@{}
@@ -357,21 +396,32 @@ function Get-PipeScript
                     }
                     return $Metadata
                 }
-            ))
+            ), $true)
+            #endregion .Metadata
 
+            #region .Description
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
                 'Description', { @($this.GetHelpField("Description"))[0] -replace '^\s+' }
-            ))
+            ), $true)
+            #endregion .Description
 
+            #region .Synopsis
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
-                'Synopsis', { @($this.GetHelpField("Synopsis"))[0] -replace '^\s+' }))
+                'Synopsis', { @($this.GetHelpField("Synopsis"))[0] -replace '^\s+' }), $true)
+            #endregion .Synopsis
 
+            #region .Examples
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
-                'Examples', { $this.GetHelpField("Example") }))
+                'Examples', { $this.GetHelpField("Example") }), $true)
+            #endregion .Examples
 
+            #region .Links
             $extCmd.PSObject.Properties.Add([PSScriptProperty]::new(
-                'Links', { $this.GetHelpField("Link") }))
+                'Links', { $this.GetHelpField("Link") }), $true
+            )
+            #endregion .Links
 
+            #region .Validate
             $extCmd.PSObject.Methods.Add([psscriptmethod]::new('Validate', {
                 param(
                     # input being validated
@@ -461,8 +511,25 @@ function Get-PipeScript
                 } else {
                     return $false
                 }
-            }))
+            }), $true)
+            #endregion .Validate
 
+            #region .HasValidation            
+            $extCmd.PSObject.Properties.Add([psscriptproperty]::new('HasValidation', {
+                foreach ($attr in $this.ScriptBlock.Attributes) {
+                    if ($attr -is [Management.Automation.ValidateScriptAttribute] -or
+                        $attr -is [Management.Automation.ValidateSetAttribute] -or 
+                        $attr -is [Management.Automation.ValidatePatternAttribute] -or 
+                        $attr -is [Management.Automation.ValidateRangeAttribute]) {
+                        return $true                        
+                    }
+                }
+
+                return $false
+            }), $true)            
+            #endregion .HasValidation
+
+            #region .GetDynamicParameters
             $extCmd.PSObject.Methods.Add([PSScriptMethod]::new('GetDynamicParameters', {
                 param(
                 [string]
@@ -481,7 +548,7 @@ function Get-PipeScript
                 $ExtensionDynamicParameters = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
                 $Extension = $this
 
-                :nextDynamicParameter foreach ($in in @(([Management.Automation.CommandMetaData]$Extension).Parameters.Keys)) {
+                :nextDynamicParameter foreach ($in in @(($Extension -as [Management.Automation.CommandMetaData]).Parameters.Keys)) {
                     $attrList = [Collections.Generic.List[Attribute]]::new()
                     $validCommandNames = @()
                     foreach ($attr in $extension.Parameters[$in].attributes) {
@@ -558,9 +625,11 @@ function Get-PipeScript
 
                 $ExtensionDynamicParameters
 
-            }))
+            }), $true)
+            #endregion .GetDynamicParameters
 
 
+            #region .IsParameterValid
             $extCmd.PSObject.Methods.Add([PSScriptMethod]::new('IsParameterValid', {
                 param([Parameter(Mandatory)]$ParameterName, [PSObject]$Value)
 
@@ -592,8 +661,10 @@ function Get-PipeScript
                     }
                 }
                 return $true
-            }))
-
+            }), $true)
+            #endregion .IsParameterValid
+            
+            #region .CouldPipe
             $extCmd.PSObject.Methods.Add([PSScriptMethod]::new('CouldPipe', {
                 param([PSObject]$InputObject)
 
@@ -640,8 +711,35 @@ function Get-PipeScript
                         return $mappedParams
                     }
                 }
-            }))            
+            }), $true)
+            #endregion .CouldPipe
 
+            #region .CouldPipeType
+            $extCmd.PSObject.Methods.Add([PSScriptMethod]::new('CouldPipeType', {
+                param([Type]$Type)
+
+                foreach ($paramSet in $this.ParameterSets) {
+                    if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
+                    # Walk thru each parameter of this command
+                    foreach ($myParam in $paramSet.Parameters) {
+                        # If the parameter is ValueFromPipeline
+                        if ($myParam.ValueFromPipeline -and (
+                                $myParam.ParameterType -eq $Type -or
+                                # (or a subclass of that type)
+                                $Type.IsSubClassOf($myParam.ParameterType) -or
+                                # (or an inteface of that type)
+                                ($myParam.ParameterType.IsInterface -and $Type.GetInterface($myParam.ParameterType))
+                            )
+                        ) {
+                            return $true
+                        }                        
+                    }
+                    return $false
+                }
+            }), $true)
+            #endregion .CouldPipeType
+
+            #region .CouldRun
             $extCmd.PSObject.Methods.Add([PSScriptMethod]::new('CouldRun', {
                 param([Collections.IDictionary]$params, [string]$ParameterSetName)
 
@@ -680,13 +778,16 @@ function Get-PipeScript
                     return $mappedParams
                 }
                 return $false
-            }))
+            }), $true)
+            #endregion .CouldRun
 
-            $extCmd.pstypenames.clear()
-            if ($PipeScriptTypeName) {
-                $extCmd.pstypenames.add($PipeScriptTypeName)
-            } else {
-                $extCmd.pstypenames.add('Extension')
+            
+            # Decorate our return (so that it can be uniquely extended)
+            if (-not $PipeScriptTypeName) {
+                $PipeScriptTypeName = 'Extension'
+            }
+            if ($extCmd.pstypenames -notcontains $PipeScriptTypeName) {            
+                $extCmd.pstypenames.insert(0,$PipeScriptTypeName)
             }
 
             $extCmd
@@ -724,7 +825,7 @@ function Get-PipeScript
                     # Then, walk over each extension parameter.
                     foreach ($kv in $extensionParams.GetEnumerator()) {
                         # If the $CommandExtended had a built-in parameter, we cannot override it, so skip it.
-                        if ($commandExtended -and ([Management.Automation.CommandMetaData]$commandExtended).Parameters.$($kv.Key)) {
+                        if ($commandExtended -and ($commandExtended -as [Management.Automation.CommandMetaData]).Parameters.$($kv.Key)) {
                             continue
                         }
 
@@ -869,7 +970,7 @@ function Get-PipeScript
         if (-not $script:PipeScripts)
         {
             $script:PipeScripts =
-                @(
+                @(@(
                 #region Find PipeScript in Loaded Modules
                 foreach ($loadedModule in $loadedModules) { # Walk over all modules.
                     if ( # If the module has PrivateData keyed to this module
@@ -900,13 +1001,24 @@ function Get-PipeScript
                     elseif ($loadedModule.PrivateData.PSData.Tags -contains $myModuleName -or $loadedModule.Name -eq $myModuleName) {
                         $loadedModule |
                             Split-Path |
-                            Get-ChildItem -Recurse |
+                            Get-ChildItem -Recurse -File |
                             Where-Object { $_.Name -Match $extensionFullRegex } |
-                            ConvertToExtension
+                            ConvertToExtension                        
                     }
                 }
                 #endregion Find PipeScript in Loaded Modules
-                )
+
+                #region Find PipeScript in Loaded Commands
+                $loadedCommands = @($ExecutionContext.SessionState.InvokeCommand.GetCommands('*', 'Function,Alias,Cmdlet', $true))
+                foreach ($command in $loadedCommands) {
+                    if ($command.Name -match $extensionFullRegex) {
+                        $command                        
+                    } elseif ($command.Source -and $command.Source -match $extensionFullRegex) {
+                        $command.Source
+                    }
+                }
+                #endregion Find PipeScript in Loaded Commands
+                ) | Select-Object -Unique)
         }
         #endregion Find Extensions
     }
@@ -914,7 +1026,7 @@ function Get-PipeScript
     process {
 
         if ($PipeScriptPath) {
-            Get-ChildItem -Recurse -Path $PipeScriptPath |
+            Get-ChildItem -Recurse -Path $PipeScriptPath -File |
                 Where-Object { $_.Name -Match $extensionFullRegex } |
                 ConvertToExtension |
                 . WhereExtends $CommandName |
@@ -934,5 +1046,5 @@ function Get-PipeScript
         }
     }
 }
-#endregion Piecemeal [ 0.3.7 ] : Easy Extensible Plugins for PowerShell
+#endregion Piecemeal [ 0.3.9 ] : Easy Extensible Plugins for PowerShell
 
