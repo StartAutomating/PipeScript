@@ -1,9 +1,17 @@
 RegexLiteral
 ------------
+
+
+
+
 ### Synopsis
 Regex Literal Transpiler
 
+
+
 ---
+
+
 ### Description
 
 Allows for Regex Literals within PipeScript.
@@ -12,7 +20,11 @@ Regex Literals are strings enclosed within slashes.
 
 The ending slash may be followed by ```[Text.RegularExpressions.RegexOptions]```.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -82,7 +94,11 @@ $($Keywords -join '|') # followed by keywords
 $($Keywords -join '|') # followed by keywords
 [\s\p{P}]{0,1}         # followed by whitespace or punctuation
 "@, 'IgnorePatternWhitespace,IgnoreCase')
+
+
 ---
+
+
 ### Parameters
 #### **StringConstantExpression**
 
@@ -90,34 +106,35 @@ A RegexLiteral can be any string constant expression (as long as it's not in an 
 
 
 
-> **Type**: ```[StringConstantExpressionAst]```
-
-> **Required**: true
-
-> **Position**: named
-
-> **PipelineInput**:true (ByValue)
 
 
 
----
+|Type                           |Required|Position|PipelineInput |
+|-------------------------------|--------|--------|--------------|
+|`[StringConstantExpressionAst]`|true    |named   |true (ByValue)|
+
+
+
 #### **ExpandableStringExpression**
 
 It can also by any expandable string, which allows you to construct Regexes using PowerShell variables and subexpressions.
 
 
 
-> **Type**: ```[ExpandableStringExpressionAst]```
 
-> **Required**: true
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                             |Required|Position|PipelineInput |
+|---------------------------------|--------|--------|--------------|
+|`[ExpandableStringExpressionAst]`|true    |named   |true (ByValue)|
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 RegexLiteral -StringConstantExpression <StringConstantExpressionAst> [<CommonParameters>]
@@ -125,5 +142,4 @@ RegexLiteral -StringConstantExpression <StringConstantExpressionAst> [<CommonPar
 ```PowerShell
 RegexLiteral -ExpandableStringExpression <ExpandableStringExpressionAst> [<CommonParameters>]
 ```
----
 
