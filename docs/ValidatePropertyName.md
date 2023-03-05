@@ -1,14 +1,26 @@
 ValidatePropertyName
 --------------------
+
+
+
+
 ### Synopsis
 Validates Property Names
 
+
+
 ---
+
+
 ### Description
 
 Validates that an object has one or more property names.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -44,7 +56,11 @@ $InputObject
 ```
 $InputObject
     }
+
+
 ---
+
+
 ### Parameters
 #### **PropertyName**
 
@@ -52,17 +68,15 @@ The property names being validated.
 
 
 
-> **Type**: ```[String[]]```
-
-> **Required**: true
-
-> **Position**: 1
-
-> **PipelineInput**:false
 
 
 
----
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|true    |1       |false        |
+
+
+
 #### **VariableAST**
 
 A variable expression.
@@ -70,17 +84,20 @@ If this is provided, will apply a ```[ValidateScript({})]``` attribute to the va
 
 
 
-> **Type**: ```[VariableExpressionAst]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:true (ByValue)
+|Type                     |Required|Position|PipelineInput |
+|-------------------------|--------|--------|--------------|
+|`[VariableExpressionAst]`|false   |named   |true (ByValue)|
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 ValidatePropertyName [-PropertyName] <String[]> [<CommonParameters>]
@@ -88,5 +105,4 @@ ValidatePropertyName [-PropertyName] <String[]> [<CommonParameters>]
 ```PowerShell
 ValidatePropertyName [-PropertyName] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
----
 
