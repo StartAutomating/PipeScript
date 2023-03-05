@@ -1,16 +1,28 @@
 Rust.Template
 -------------
+
+
+
+
 ### Synopsis
 Rust Template Transpiler.
 
+
+
 ---
+
+
 ### Description
 
 Allows PipeScript to generate Rust.
 
 Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -74,7 +86,11 @@ Invoke-PipeScript .\HelloWorld_Rust.ps1.rs -Parameter @{message='hi'} |
             Write-Error "Go install Rust"
         }
     }
+
+
 ---
+
+
 ### Parameters
 #### **CommandInfo**
 
@@ -82,68 +98,65 @@ The command information.  This will include the path to the file.
 
 
 
-> **Type**: ```[CommandInfo]```
-
-> **Required**: true
-
-> **Position**: named
-
-> **PipelineInput**:true (ByValue)
 
 
 
----
+|Type           |Required|Position|PipelineInput |
+|---------------|--------|--------|--------------|
+|`[CommandInfo]`|true    |named   |true (ByValue)|
+
+
+
 #### **AsTemplateObject**
 
 If set, will return the information required to dynamically apply this template to any text.
 
 
 
-> **Type**: ```[Switch]```
-
-> **Required**: true
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|true    |named   |false        |
+
+
+
 #### **Parameter**
 
 A dictionary of parameters.
 
 
 
-> **Type**: ```[IDictionary]```
-
-> **Required**: false
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |named   |false        |
+
+
+
 #### **ArgumentList**
 
 A list of arguments.
 
 
 
-> **Type**: ```[PSObject[]]```
 
-> **Required**: false
 
-> **Position**: named
 
-> **PipelineInput**:false
+|Type          |Required|Position|PipelineInput|
+|--------------|--------|--------|-------------|
+|`[PSObject[]]`|false   |named   |false        |
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 Rust.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
@@ -151,5 +164,4 @@ Rust.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLi
 ```PowerShell
 Rust.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
----
 
