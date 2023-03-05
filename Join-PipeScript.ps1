@@ -110,8 +110,9 @@ function Join-PipeScript
         }
 
         # Now we collect all of the script blocks to merge
-        $AllScriptBlocks  = @(
+        $AllScriptBlocks  = @(            
         foreach ($toMerge in $AllScriptBlocks) {
+            if ($toMerge -match '^\s{0,}$') { continue }
             # If the script block had a body (aka a function definition), join the body.
             if ($toMerge.Ast.body) {
                 [ScriptBlock]::Create($toMerge.Ast.Body.Extent.ToString() -replace '^\{' -replace '\}$')
@@ -119,6 +120,8 @@ function Join-PipeScript
                 $toMerge
             }
         })
+
+        $NamedBlocks = @()
 
         # If we have any other named blocks than end, we need to close the end block.
         # So set up a boolean to track this.
@@ -195,22 +198,31 @@ function Join-PipeScript
         # To join the scripts, we want to go thru block type by block type.
         $joinScriptLines = @(
             # First _have_ to be using statements.
-            if ($IncludeBlockType -contains 'using') {
-                foreach ($usingStatement in $AllScriptBlocks.Ast.UsingStatements) {
-                    # They are easy:  just .ToString() their extent.
-                    $usingStatement.Extent.ToString()
-                }                
-            }
-
-            # Next we have requirements
-            if ($IncludeBlockType -contains 'requires') {
-                # unfortunately, these do not have an easy .ToString()
-                # (this is why the type has been extended to have a .Script property (#234))                
-                foreach ($requirement in $AllScriptBlocks.Ast.ScriptRequirements) {
-                    if (-not $requirement) { continue }
-                    $requirement.Script.ToString()
+            $allUsingLines = @(
+                if ($IncludeBlockType -contains 'using') {
+                    foreach ($usingStatement in $AllScriptBlocks.Ast.UsingStatements) {
+                        # They are easy:  just .ToString() their extent.
+                        $usingStatement.Extent.ToString()
+                    }                
                 }
-            }
+            )
+
+            $allUsingLines
+
+            $allRequireStatements = @(
+                # Next we have requirements
+                if ($IncludeBlockType -contains 'requires') {
+                    # unfortunately, these do not have an easy .ToString()
+                    # (this is why the type has been extended to have a .Script property (#234))
+                    foreach ($requirement in $AllScriptBlocks.Ast.ScriptRequirements) {
+                        if (-not $requirement) { continue }
+                        $requirement.Script.ToString()
+                    }
+                }
+            )
+
+            $allRequireStatements
+
 
             # If we're including header or help, we'll want to include whatever blocks we have.
             # (if you recall, we've already filtered this list).
@@ -227,6 +239,7 @@ function Join-PipeScript
             if ($IncludeBlockType -contains 'param') {
                 # To start off with, this is the first block we need to name and indent
                 # (at least, if we have any parameter blocks)
+                $allParamBlocks = @(
                 if (@($AllScriptBlocks.Ast.ParamBlock) -ne $null) {
                     # if we do, use the first non-null parameter block to determine the indentation level.
                     ' ' * (@(@($AllScriptBlocks.Ast.ParamBlock) -ne $null)[0] | MeasureIndent) + "param("
@@ -321,11 +334,17 @@ function Join-PipeScript
                 
                 # Join all parameters by a comma and two newlines.
                 $paramOut -notmatch '^[\s\r\n]$' -join (',' + ([Environment]::NewLine * 2))
-
+                
                 # and close out the parameter block.
                 if (@($AllScriptBlocks.Ast.ParamBlock) -ne $null) {
                     ' ' * (@(@($AllScriptBlocks.Ast.ParamBlock) -ne $null)[0] | MeasureIndent) + ")"
-                }            
+                }
+
+                )
+
+                $allParamBlocks
+
+                $NamedBlocks += 'param'
             }
             elseif ($IncludeBlockType -contains 'Header' -or $IncludeBlockType -contains 'Help') {
                 'param()'
@@ -340,6 +359,7 @@ function Join-PipeScript
                 $blocks = @($AllScriptBlocks.Ast."${BlockName}Block")
                 if ($blocks -ne $null) {                    
                     # If any of these block names exist, we will need to close the end block (if it exists).
+                    $NamedBlocks += $BlockName
                     $closeEndBlock = $true                    
                     $blockOpen = $false
                     foreach ($block in $blocks) {
@@ -371,6 +391,7 @@ function Join-PipeScript
                     
                     foreach ($block in $blocks) {
                         if (-not $block) { continue }
+                        if ($block -match '^\s{0,}param\(\s{0,}\)\s{0,}$') { continue }
                         if (-not $blockOpen -and -not $block.Unnamed) {
                             # If the end block was named, it will need to be closed.
                             if ($StatementsToAdd) {
@@ -394,8 +415,14 @@ function Join-PipeScript
                                 $StatementsToAdd -join [Environment]::NewLine
                                 $StatementsToAdd = $null
                             }
-                            if ($block.Unnamed) {
-                                $block.Extent.ToString() -replace '^param\(\)[\s\r\n]{0,}'
+                            $blockBody = $block.Extent.ToString()
+                            
+                            if ($block.Unnamed) {                     
+                                if ($block.Parent.ParamBlock.Parameters) {
+                                    $block.Extent.ToString().Substring($block.Parent.ParamBlock.Extent.ToString().Length)
+                                } else {
+                                    $block.Extent.ToString() -replace '^param\(\)[\s\r\n]{0,}'
+                                }                                    
                             } else {
                                 $block.Extent.ToString() -replace '^end\s{0,}\{' -replace '\}$' -replace '^param\(\)[\s\r\n]{0,}'
                             }                            
@@ -427,13 +454,7 @@ function Join-PipeScript
         #endregion Joining the Scripts
 
         $combinedScriptBlock = [scriptblock]::Create($joinedScript)
-        if ((-not $combinedScriptBlock.Ast.EndBlock.Unnamed) -and -not (
-            $combinedScriptBlock.Ast.ProcessBlock -or 
-            $combinedScriptBlock.Ast.BeginBlock -or 
-            $combinedScriptBlock.Ast.DynamicParameterBlock
-        )) {
-            $combinedScriptBlock = [ScriptBlock]::Create($combinedScriptBlock.Ast.EndBlock.ToString() -replace '^end\s{0,}\{' -replace '\}$')
-        }
+        
         if ($combinedScriptBlock -and $Transpile) {
             $combinedScriptBlock | .>Pipescript
         } elseif ($combinedScriptBlock) {
