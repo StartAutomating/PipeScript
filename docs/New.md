@@ -1,9 +1,17 @@
 New
 ---
+
+
+
+
 ### Synopsis
 'new' keyword
 
+
+
 ---
+
+
 ### Description
 
 This transpiler enables the use of the keyword 'new'.
@@ -18,7 +26,11 @@ If 'new' is followed by a single string, and the type has a ::Parse method, new 
 
 If 'new'
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -70,24 +82,30 @@ If 'new'
 { new 'https://schema.org/Thing' }
 ```
 
+
+
 ---
+
+
 ### Parameters
 #### **CommandAst**
 
-> **Type**: ```[CommandAst]```
 
-> **Required**: true
 
-> **Position**: 1
 
-> **PipelineInput**:true (ByValue)
+|Type          |Required|Position|PipelineInput |
+|--------------|--------|--------|--------------|
+|`[CommandAst]`|true    |1       |true (ByValue)|
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 New [-CommandAst] <CommandAst> [<CommonParameters>]
 ```
----
 
