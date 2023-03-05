@@ -1,14 +1,26 @@
 OutputFile
 ----------
+
+
+
+
 ### Synopsis
 Outputs to a File
 
+
+
 ---
+
+
 ### Description
 
 Outputs the result of a script into a file.
 
+
+
 ---
+
+
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
@@ -26,7 +38,11 @@ Invoke-PipeScript {
 $Message = 'hello world'
     [Save(".\Hello.txt")]$Message
 }
+
+
 ---
+
+
 ### Parameters
 #### **OutputPath**
 
@@ -34,118 +50,108 @@ The Output Path
 
 
 
-> **Type**: ```[String]```
-
-> **Required**: true
-
-> **Position**: 1
-
-> **PipelineInput**:false
 
 
 
----
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|true    |1       |false        |
+
+
+
 #### **ScriptBlock**
 
 The Script Block that will be run.
 
 
 
-> **Type**: ```[ScriptBlock]```
-
-> **Required**: false
-
-> **Position**: 2
-
-> **PipelineInput**:true (ByValue)
 
 
 
----
+|Type           |Required|Position|PipelineInput |
+|---------------|--------|--------|--------------|
+|`[ScriptBlock]`|false   |2       |true (ByValue)|
+
+
+
 #### **VariableAst**
 
-> **Type**: ```[VariableExpressionAst]```
-
-> **Required**: false
-
-> **Position**: 3
-
-> **PipelineInput**:true (ByValue)
 
 
 
----
+|Type                     |Required|Position|PipelineInput |
+|-------------------------|--------|--------|--------------|
+|`[VariableExpressionAst]`|false   |3       |true (ByValue)|
+
+
+
 #### **Encoding**
 
 The encoding parameter.
 
 
 
-> **Type**: ```[String]```
-
-> **Required**: false
-
-> **Position**: 4
-
-> **PipelineInput**:false
 
 
 
----
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |4       |false        |
+
+
+
 #### **Force**
 
 If set, will force output, overwriting existing files.
 
 
 
-> **Type**: ```[Switch]```
-
-> **Required**: false
-
-> **Position**: named
-
-> **PipelineInput**:false
 
 
 
----
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
+
+
 #### **ExportScript**
 
 The export script
 
 
 
-> **Type**: ```[ScriptBlock]```
-
-> **Required**: false
-
-> **Position**: 5
-
-> **PipelineInput**:false
 
 
 
----
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[ScriptBlock]`|false   |5       |false        |
+
+
+
 #### **Depth**
 
 The serialization depth.  Currently only used when saving to JSON files.
 
 
 
-> **Type**: ```[Int32]```
 
-> **Required**: false
 
-> **Position**: 6
 
-> **PipelineInput**:false
+|Type     |Required|Position|PipelineInput|
+|---------|--------|--------|-------------|
+|`[Int32]`|false   |6       |false        |
+
+
 
 
 
 ---
+
+
 ### Syntax
 ```PowerShell
 OutputFile [-OutputPath] <String> [[-ScriptBlock] <ScriptBlock>] [[-VariableAst] <VariableExpressionAst>] [[-Encoding] <String>] [-Force] [[-ExportScript] <ScriptBlock>] [[-Depth] <Int32>] [<CommonParameters>]
 ```
----
 
