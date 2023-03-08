@@ -60,16 +60,22 @@ $ArgumentList
 )
 
 begin {
+    
     # We start off by declaring a number of regular expressions:
-    $startComment = '(?>--\s{0,}(?:PipeScript)?\s{0,}\{)'
-    $endComment   = '(?>--\s{0,}\}\s{0,}(?:PipeScript)?\s{0,})'        
-    $startRegex = "(?<PSStart>${startComment})"
-    $endRegex   = "(?<PSEnd>${endComment})"
+    $startComment = '(?>(?>--|/\*)\s{0,}(?:PipeScript)?\s{0,}\{)'    
+    $endComment   = '(?>
+        --\s{0,}\}\s{0,}(?:PipeScript)?
+        |
+        \}\*/(?:PipeScript)?\s{0,}
+    )    
+    '
+    $startRegex   = "(?<PSStart>${startComment})"
+    $endRegex     = "(?<PSEnd>${endComment})"
 
     # Create a splat containing arguments to the core inline transpiler
     $Splat      = [Ordered]@{
         StartPattern  = $startRegex
-        EndPattern    = $endRegex
+        EndPattern    = [Regex]::new($endRegex,'IgnoreCase,IgnorePatternWhitespace')
          # Using -LinePattern will skip any inline code not starting with --
         LinePattern   = "^\s{0,}--\s{0,}"
     }
