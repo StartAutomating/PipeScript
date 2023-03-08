@@ -3,6 +3,7 @@ This directory and it's subdirectories contain syntax changes that enable common
 
 |DisplayName                                             |Synopsis                                                          |
 |--------------------------------------------------------|------------------------------------------------------------------|
+|[NamespacedAlias](NamespacedAlias.psx.ps1)              |[Declares a namespaced alias](NamespacedAlias.psx.ps1)            |
 |[NamespacedFunction](NamespacedFunction.psx.ps1)        |[Namespaced functions](NamespacedFunction.psx.ps1)                |
 |[Dot](Dot.psx.ps1)                                      |[Dot Notation](Dot.psx.ps1)                                       |
 |[EqualityComparison](EqualityComparison.psx.ps1)        |[Allows equality comparison.](EqualityComparison.psx.ps1)         |
@@ -12,6 +13,15 @@ This directory and it's subdirectories contain syntax changes that enable common
 
 
 
+
+## NamespacedAlias Example 1
+
+
+~~~PowerShell
+    . {
+        PipeScript.Template alias .\Transpilers\Templates\*.psx.ps1
+    }.Transpile()
+~~~
 
 ## NamespacedFunction Example 1
 
