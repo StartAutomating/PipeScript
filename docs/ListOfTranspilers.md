@@ -46,6 +46,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Markdown.Template](Transpilers/Templates/Markdown.Template.psx.ps1)                       |Markdown Template Transpiler.                     |
 |[ModuleExports](Transpilers/Modules/ModuleExports.psx.ps1)                                 |Gets Module Exports                               |
 |[ModuleRelationship](Transpilers/Modules/ModuleRelationship.psx.ps1)                       |Gets Module Relationships                         |
+|[NamespacedAlias](Transpilers/Syntax/NamespacedAlias.psx.ps1)                              |Declares a namespaced alias                       |
 |[NamespacedFunction](Transpilers/Syntax/NamespacedFunction.psx.ps1)                        |Namespaced functions                              |
 |[New](Transpilers/Keywords/New.psx.ps1)                                                    |'new' keyword                                     |
 |[ObjectiveC.Template](Transpilers/Templates/ObjectiveC.Template.psx.ps1)                   |Objective Template Transpiler.                    |
