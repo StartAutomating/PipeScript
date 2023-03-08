@@ -7,6 +7,13 @@ function Import-PipeScript
         Imports PipeScript in a dynamic module.
     .EXAMPLE
         Import-PipeScript -ScriptBlock {
+            function gh {
+                [Inherit('gh',CommandType='Application')]
+                param()
+            }
+        }
+    .EXAMPLE
+        Import-PipeScript -ScriptBlock {
             partial function f() {
                 "This will be added to any function named f."
             }
