@@ -1,7 +1,7 @@
 #region Piecemeal [ 0.3.10 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
-# Install-Piecemeal -ExtensionNoun 'Transpiler' -ExtensionPattern '\.psx\.ps1$','^PipeScript\p{P}Transpiler\p{P}','^psx\p{P}' -ExtensionTypeName 'PipeScript.Transpiler' -OutputPath '.\Get-Transpiler.ps1'
+# Install-Piecemeal -ExtensionNoun 'Transpiler' -ExtensionPattern '\.psx\.ps1$','^PipeScript\p{P}Transpiler\p{P}(?!(?>format|types|tests)\p{P})','^psx\p{P}' -ExtensionTypeName 'PipeScript.Transpiler' -OutputPath '.\Get-Transpiler.ps1'
 function Get-Transpiler
 {
     <#
@@ -158,7 +158,7 @@ function Get-Transpiler
     )
 
     begin {
-        $TranspilerPattern = '\.psx\.ps1$','^PipeScript\p{P}Transpiler\p{P}','^psx\p{P}'
+        $TranspilerPattern = '\.psx\.ps1$','^PipeScript\p{P}Transpiler\p{P}(?!(?>format|types|tests)\p{P})','^psx\p{P}'
         $TranspilerTypeName = 'PipeScript.Transpiler'
         #region Define Inner Functions
         function WhereExtends {
