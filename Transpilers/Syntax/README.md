@@ -3,6 +3,7 @@ This directory and it's subdirectories contain syntax changes that enable common
 
 |DisplayName                                             |Synopsis                                                          |
 |--------------------------------------------------------|------------------------------------------------------------------|
+|[NamespacedFunction](NamespacedFunction.psx.ps1)        |[Namespaced functions](NamespacedFunction.psx.ps1)                |
 |[Dot](Dot.psx.ps1)                                      |[Dot Notation](Dot.psx.ps1)                                       |
 |[EqualityComparison](EqualityComparison.psx.ps1)        |[Allows equality comparison.](EqualityComparison.psx.ps1)         |
 |[EqualityTypeComparison](EqualityTypeComparison.psx.ps1)|[Allows equality type comparison.](EqualityTypeComparison.psx.ps1)|
@@ -11,6 +12,70 @@ This directory and it's subdirectories contain syntax changes that enable common
 
 
 
+
+## NamespacedFunction Example 1
+
+
+~~~PowerShell
+    {
+        abstract function Point {
+            param(
+            [Alias('Left')]
+            [vbn()]
+            $X,
+
+            [Alias('Top')]
+            [vbn()]
+            $Y
+            )
+        }
+    }.Transpile()
+~~~
+
+## NamespacedFunction Example 2
+
+
+~~~PowerShell
+    {
+        interface function AccessToken {
+            param(
+            [Parameter(ValueFromPipelineByPropertyName)]
+            [Alias('Bearer','PersonalAccessToken', 'PAT')]
+            [string]
+            $AccessToken
+            )
+        }
+    }.Transpile()
+~~~
+
+## NamespacedFunction Example 3
+
+
+~~~PowerShell
+    {
+        partial function PartialExample {
+            process {
+                1
+            }
+        }
+
+        partial function PartialExample* {
+            process {
+                2
+            }
+        }
+
+        partial function PartialExample// {
+            process {
+                3
+            }
+        }        
+
+        function PartialExample {
+            
+        }
+    }.Transpile()
+~~~
 
 ## Dot Example 1
 
