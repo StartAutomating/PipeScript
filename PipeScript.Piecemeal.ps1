@@ -4,7 +4,7 @@
 Push-Location $PSScriptRoot
 
 # Get-Transpiler is generated with Piecemeal
-Install-Piecemeal -ExtensionNoun 'Transpiler' -ExtensionPattern '\.psx\.ps1$','^PipeScript\p{P}Transpiler\p{P}','^psx\p{P}' -ExtensionTypeName 'PipeScript.Transpiler' -OutputPath '.\Get-Transpiler.ps1' |
+Install-Piecemeal -ExtensionNoun 'Transpiler' -ExtensionPattern '\.psx\.ps1$','^PipeScript\p{P}Transpiler\p{P}(?!(?>format|types|tests)\p{P})','^psx\p{P}' -ExtensionTypeName 'PipeScript.Transpiler' -OutputPath '.\Get-Transpiler.ps1' |
     Add-Member Noteproperty CommitMessage "Get-Transpiler: Updating Piecemeal@[$((Get-Module Piecemeal).Version)]" -Force -PassThru
 
 # So is Get-PipeScript
