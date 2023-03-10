@@ -220,16 +220,17 @@ The name of the function to create.
 
 #### **FunctionType**
 
-The type of the function to create.  This will be ignored if -FunctionName is not passed.
+The type or namespace the function to create.  This will be ignored if -FunctionName is not passed.
+If the function type is not function or filter, it will be treated as a function namespace.
 
 
 
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[String]`|false   |10      |false        |
+|Type      |Required|Position|PipelineInput|Aliases                               |
+|----------|--------|--------|-------------|--------------------------------------|
+|`[String]`|false   |10      |false        |FunctionNamespace<br/>CommandNamespace|
 
 
 
