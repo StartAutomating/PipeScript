@@ -103,7 +103,9 @@ HTTP Accept indicates what content types the web request will accept as a respon
     [string]
     $FunctionName,
 
-    # The type of the function to create.  This will be ignored if -FunctionName is not passed.
+    # The type or namespace the function to create.  This will be ignored if -FunctionName is not passed.
+    # If the function type is not function or filter, it will be treated as a function namespace.
+    [Alias('FunctionNamespace','CommandNamespace')]
     [string]
     $FunctionType = 'function',
 
@@ -194,7 +196,12 @@ HTTP Accept indicates what content types the web request will accept as a respon
 
 
 
+        # If -Parameter was passed, we will need to define parameters.
         if ($parameter) {
+            # this will end up populating an [Ordered] dictionary, $parametersToCreate.
+
+            # However, for ease of use, -Parameter can be very flexible.
+
             # The -Parameter can be a dictionary of parameters.
             if ($Parameter -is [Collections.IDictionary]) {
                 $parameterType = ''
@@ -398,9 +405,22 @@ HTTP Accept indicates what content types the web request will accept as a respon
             # join them with the new parameter block.
             $newParamBlock = $parameterScriptBlocks | Join-PipeScript
         }
-                
+        
+        # If we provided a -FunctionName, we'll be declaring a function.
+        $functionDeclaration =
+            # If the -FunctionType is function or filter
+            if ($functionName -and $functionType -in 'function', 'filter') {
+                # we declare it naturally.
+                "$functionType $FunctionName {"
+            } elseif ($FunctionName) {
+                # Otherwise, we declare it as a command namespace
+                "$functionName function {"
+                # (which means we have to transpile).
+                $NoTranspile = $false
+            }
+
         # Create the script block by combining together the provided parts.
-        $createdScriptBlock = [scriptblock]::Create("$(if ($functionName) { "$functionType $FunctionName {"})
+        $createdScriptBlock = [scriptblock]::Create("$(if ($functionDeclaration) { "$functionDeclaration"})
 $($allHeaders -join [Environment]::Newline)
 $newParamBlock
 $(if ($allDynamicParameters) {
@@ -417,13 +437,14 @@ $(if ($allEndBlocks -and -not $allBeginBlocks -and -not $allProcessBlocks) {
 } elseif ($allEndBlocks) {
     @(@("end {") + $allEndBlocks + '}') -join [Environment]::Newline
 })
-$(if ($FunctionName) { '}'}) 
+$(if ($functionDeclaration) { '}'}) 
 ")
 
+        # If -NoTranspile was passed, 
         if ($createdScriptBlock -and $NoTranspile) {
-            $createdScriptBlock
-        } elseif ($createdScriptBlock) {
-            $createdScriptBlock | .>PipeScript
+            $createdScriptBlock # output the script as-is
+        } elseif ($createdScriptBlock) { # otherwise            
+            $createdScriptBlock | .>PipeScript # output the transpiled script.
         }
     }
 }
