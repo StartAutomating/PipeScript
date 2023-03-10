@@ -127,7 +127,11 @@ HTTP Accept indicates what content types the web request will accept as a respon
 
     # A list of attributes to declare on the scriptblock.
     [string[]]
-    $Attribute
+    $Attribute,
+
+    # If set, will not transpile the created code.
+    [switch]
+    $NoTranspile
     )
 
     begin {
@@ -394,7 +398,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
             # join them with the new parameter block.
             $newParamBlock = $parameterScriptBlocks | Join-PipeScript
         }
-
+                
         # Create the script block by combining together the provided parts.
         $createdScriptBlock = [scriptblock]::Create("$(if ($functionName) { "$functionType $FunctionName {"})
 $($allHeaders -join [Environment]::Newline)
@@ -416,14 +420,10 @@ $(if ($allEndBlocks -and -not $allBeginBlocks -and -not $allProcessBlocks) {
 $(if ($FunctionName) { '}'}) 
 ")
 
-        # If we have a -FunctionName and the -FunctionType is not a built-in function type
-        if ($CreatedScriptBlock -and 
-            $functionName -and $FunctionType -notin 'function', 'filter') {
-            # return the transpiled script.
-            return $createdScriptBlock.Transpile()
-        } else {
-            # otherwise, return the created script.
-            return $createdScriptBlock
+        if ($createdScriptBlock -and $NoTranspile) {
+            $createdScriptBlock
+        } elseif ($createdScriptBlock) {
+            $createdScriptBlock | .>PipeScript
         }
     }
 }
