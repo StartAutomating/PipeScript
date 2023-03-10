@@ -100,6 +100,13 @@ function Import-PipeScript
                 Import-Module -Global -Force -PassThru -AsCustomObject:$AsCustomObject |
                 Add-Member ImportedAt ([datetime]::Now) -Force -PassThru
 
+        # Create an event indicating that PipeScript has been imported.
+        $null = New-Event -SourceIdentifier PipeScript.Imported -MessageData ([PSCustomObject][Ordered]@{
+            PSTypeName = 'PipeScript.Imported'
+            ModuleName = $NewModuleSplat.Name
+            ScriptBlock = $NewModuleSplat.ScriptBlock
+        })
+        
         if ($passThru) {
             $importedModule
         }
