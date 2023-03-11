@@ -93,26 +93,31 @@ process {
     $namespace, $functionType, $functionName, $functionDefinition = $CommandAst.CommandElements    
 
     # Then, we determine the last punctuation.
-    $namespaceSeparatorPattern = [Regex]::new('[\p{P}]{1,}','RightToLeft')    
+    $namespaceSeparatorPattern = [Regex]::new('[\p{P}<>]{1,}','RightToLeft')    
     $namespaceSeparator = $namespaceSeparatorPattern.Match($namespace).Value
     # If there was no punctuation, the namespace separator will be a '.'
-    if (-not $namespaceSeparator) {
-        $namespaceSeparator = '.'
-    }
+    if (-not $namespaceSeparator) {$namespaceSeparator = '.'}
+    # If the pattern was empty brackets `[]`, make the separator `[`.
+    elseif ($namespaceSeparator -eq '[]') { $namespaceSeparator = '[' }
+    # If the pattern was `<>`, make the separator `<`.
+    elseif ($namespaceSeparator -eq '<>') { $namespaceSeparator = '<' }
 
     # Replace any trailing separators from the namespace.
     $namespace = $namespace -replace "$namespaceSeparatorPattern$"
     
-    # Join the parts back together to get the new function name
-    $NewFunctionName = $namespace,$namespaceSeparator,$functionName -join ''
-
-    # and create a variation of this we can use inside of a string.
-    $saferNewName    = $NewFunctionName -replace "'","''"
+    # Join the parts back together to get the new function name.
+    $NewFunctionName = $namespace,$namespaceSeparator,$functionName,$(
+        # If the namespace separator ends with `[` or `<`, try to close it
+        if ($namespaceSeparator -match '[\[\<]$') {
+            if ($matches.0 -eq '[') { ']' }
+            elseif ($matches.0 -eq '<') { '>' }
+        }
+    ) -ne '' -join ''
 
     # Redefine the function
     $redefined = [ScriptBlock]::Create("
 $functionType $NewFunctionName$functionDefinition
 ")
     # Return the transpiled redefinition.
-    $redefined | .>Pipescript    
+    $redefined | .>Pipescript
 }

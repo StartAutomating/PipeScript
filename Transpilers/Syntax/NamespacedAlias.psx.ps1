@@ -38,42 +38,49 @@ process {
     $namespaceSeparatorPattern = [Regex]::new('[\p{P}]{1,}','RightToLeft')
 
     $namespaceSeparator = $namespaceSeparatorPattern.Match($namespace).Value
-    if (-not $namespaceSeparator) {
-        $namespaceSeparator = '.'
-    }
+    # If there was no punctuation, the namespace separator will be a '.'
+    if (-not $namespaceSeparator) {$namespaceSeparator = '.'}
+    # If the pattern was empty brackets `[]`, make the separator `[`.
+    elseif ($namespaceSeparator -eq '[]') { $namespaceSeparator = '[' }
+    # If the pattern was `<>`, make the separator `<`.
+    elseif ($namespaceSeparator -eq '<>') { $namespaceSeparator = '<' }
 
     $namespace = $namespace -replace "$namespaceSeparatorPattern$"
 
-    $locationsEmbed = "'" + $($locations -replace "'","''" -join "','") + "'"
+    $locationsEmbed = '"' + $($locations -replace '"','`"' -join '","') + '"'
 
     [ScriptBlock]::Create("
 `$aliasNamespace = '$($namespace -replace "'","''")'
 `$aliasNamespaceSeparator = '$namespaceSeparator'
+`$aliasesToCreate = [Ordered]@{}
 foreach (`$aliasNamespacePattern in $locationsEmbed) {
 " + {
     $commandsToAlias = $ExecutionContext.SessionState.InvokeCommand.GetCommands($aliasNamespacePattern, 'All', $true)
     if ($commandsToAlias) {
         foreach ($commandToAlias in $commandsToAlias) {
             $aliasName = $aliasNamespace, $commandToAlias.Name -join $aliasNamespaceSeparator
-            Set-Alias $aliasName $commandToAlias
-            $ExecutionContext.SessionState.PSVariable.Set($aliasName, 
-                $ExecutionContext.SessionState.InvokeCommand.GetCommand($aliasName, 'Alias')
-            )
+            $aliasesToCreate[$aliasName] = $commandsToAlias            
         }
     }
 
     if (Test-Path $aliasNamespacePattern) {
         foreach ($fileToAlias in (Get-ChildItem -Path $aliasNamespacePattern)) {
             $aliasName = $aliasNamespace, $fileToAlias.Name -join $aliasNamespaceSeparator
-            Set-Alias $aliasName $fileToAlias.FullName
-            $ExecutionContext.SessionState.PSVariable.Set($aliasName, 
-                $ExecutionContext.SessionState.InvokeCommand.GetCommand($aliasName, 'Alias')
-            )
+            $aliasesToCreate[$aliasName] = $fileToAlias.FullName            
         }
-    }    
+    }
 } + "
 }
-")
+" + {
+foreach ($toCreateAlias in $aliasesToCreate.GetEnumerator()) {
+    $aliasName, $aliasedTo = $toCreateAlias.Key, $toCreateAlias.Value 
+    if ($aliasNamespaceSeparator -match '(?>\[|\<)$') {
+        if ($matches.0 -eq '[') { $aliasName += ']' }
+        elseif ($matches.0 -eq '<') { $aliasName += '>' }
+    }
+    Set-Alias $aliasName $commandToAlias
+}
+})
     
 
     

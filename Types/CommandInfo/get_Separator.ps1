@@ -21,5 +21,5 @@ elseif ($psCommandNameSeparator)
 }
 else
 {
-    [Regex]::new('[\p{P}]{1,}','RightToLeft')
+    [Regex]::new('[\p{P}<>]{1,}','RightToLeft')
 }
