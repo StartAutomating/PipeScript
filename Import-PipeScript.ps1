@@ -87,7 +87,7 @@ function Import-PipeScript
         $NewModuleSplat.Name = if ($name) {
             $name
         } else {
-            "PipeScript@$([datetime]::Now.ToString('o'))"
+            "PipeScript@$([datetime]::Now.ToString('s'))"
         }
 
         $NewModuleSplat.ScriptBlock = [ScriptBlock]::create((
@@ -106,7 +106,7 @@ function Import-PipeScript
             ModuleName = $NewModuleSplat.Name
             ScriptBlock = $NewModuleSplat.ScriptBlock
         })
-        
+
         if ($passThru) {
             $importedModule
         }
