@@ -5,6 +5,7 @@ This directory and it's subdirectories contain syntax changes that enable common
 |--------------------------------------------------------|------------------------------------------------------------------|
 |[NamespacedAlias](NamespacedAlias.psx.ps1)              |[Declares a namespaced alias](NamespacedAlias.psx.ps1)            |
 |[NamespacedFunction](NamespacedFunction.psx.ps1)        |[Namespaced functions](NamespacedFunction.psx.ps1)                |
+|[ConditionalKeyword](ConditionalKeyword.psx.ps1)        |[Conditional Keyword Expansion](ConditionalKeyword.psx.ps1)       |
 |[Dot](Dot.psx.ps1)                                      |[Dot Notation](Dot.psx.ps1)                                       |
 |[EqualityComparison](EqualityComparison.psx.ps1)        |[Allows equality comparison.](EqualityComparison.psx.ps1)         |
 |[EqualityTypeComparison](EqualityTypeComparison.psx.ps1)|[Allows equality type comparison.](EqualityTypeComparison.psx.ps1)|
@@ -85,6 +86,54 @@ This directory and it's subdirectories contain syntax changes that enable common
             
         }
     }.Transpile()
+~~~
+
+## ConditionalKeyword Example 1
+
+
+~~~PowerShell
+    Invoke-PipeScript {
+        $n = 1
+        do {
+            $n = $n * 2
+            $n
+            break if (-not ($n % 16))
+        } while ($true)
+    }
+~~~
+
+## ConditionalKeyword Example 2
+
+
+~~~PowerShell
+    Import-PipeScript {
+        
+        function Get-Primes([ValidateRange(2,64kb)][int]$UpTo) {
+            $KnownPrimes = new Collections.ArrayList @(2)
+            $SieveOfEratosthenes = new Collections.Generic.Dictionary[uint32,bool]            
+            $n = 2
+            :nextNumber for (; $n++;) {             
+                # Break if past our point of interest
+                break if ($n -ge $upTo)
+                # Skip if an even number
+                continue if (-not ($n -band 1))
+                # Check our sieve
+                continue if $SieveOfEratosthenes.ContainsKey($n)
+                # Determine half of the number
+                $halfN = $n /2
+                # If this is divisible by the known primes
+                foreach ($k in $knownPrimes) {
+                    continue nextNumber if (($n % $k) -eq 0) {}
+                    break if ($k -ge $halfN)
+                }                
+                foreach ($k in $knownPrimes) {
+                    $SieveOfEratosthenes[$n * $k] = $true                
+                }
+                $null = $knownPrimes.Add($n)
+            }
+            $knownPrimes -le $UpTo
+        }
+    }
 ~~~
 
 ## Dot Example 1
