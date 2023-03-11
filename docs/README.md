@@ -38,7 +38,7 @@ Interpreted languages often lack a key component required for reliability:  a co
 
 PipeScript allows you to build PowerShell scripts, and provides you with an engine to change any part of your code dynamically.
 
-This allows us to fine-tune the way we build PowerShell and lets us extend the language to make complex scenarios simple.
+This allows us to fine-tune the way we build PowerShell and lets us [extend the language](PipeScriptSyntax.md) to make complex scenarios simple.
 
 See the [List of Transpilers](ListOfTranspilers.md) you can use to transform your scripts.
 
@@ -55,5 +55,4 @@ PipeScript can be be embedded within 41 languages.
 Embedding PipeScript within any of these languages allows you to generate any of these languages with parameterized scripts, thus removing some of the tedium of programming.
 
 See the [Supported Languages](SupportedLanguages.md) you can use to transform your scripts.
-
 
