@@ -18,6 +18,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Batch.Template](Transpilers/Templates/Batch.Template.psx.ps1)                             |Batch Template Transpiler.                        |
 |[BatchPowerShell](Transpilers/Wrappers/BatchPowerShell.psx.ps1)                            |Wraps PowerShell in a Windows Batch Script        |
 |[Bicep.Template](Transpilers/Templates/Bicep.Template.psx.ps1)                             |Bicep Template Transpiler.                        |
+|[ConditionalKeyword](Transpilers/Syntax/ConditionalKeyword.psx.ps1)                        |Conditional Keyword Expansion                     |
 |[CPlusPlus.Template](Transpilers/Templates/CPlusPlus.Template.psx.ps1)                     |C/C++ Template Transpiler.                        |
 |[CSharp.Template](Transpilers/Templates/CSharp.Template.psx.ps1)                           |C# Template Transpiler.                           |
 |[CSS.Template](Transpilers/Templates/CSS.Template.psx.ps1)                                 |CSS Template Transpiler.                          |
