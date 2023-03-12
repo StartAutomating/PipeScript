@@ -27,7 +27,7 @@ svg -ViewBox 1920,1080 @(
         SVG.tspan -Content "peScr" -FontSize 1em -Dx -.25em
         SVG.tspan -Content "|" -FontSize .66em -Dx -.33em
         SVG.tspan -Content "pt" -FontSize 1em -Dx -.25em
-    ) -Style "font-family: 'Roboto'" -Fill '#4488ff' -Class 'foreground-fill'
+    ) -Style "font-family: 'Roboto', sans-serif" -Fill '#4488ff' -Class 'foreground-fill'
 
     
     
