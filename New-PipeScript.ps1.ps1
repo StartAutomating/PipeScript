@@ -411,10 +411,10 @@ HTTP Accept indicates what content types the web request will accept as a respon
             # If the -FunctionType is function or filter
             if ($functionName -and $functionType -in 'function', 'filter') {
                 # we declare it naturally.
-                "$functionType $FunctionName {"
+                "$functionType $FunctionName  {"
             } elseif ($FunctionName) {
                 # Otherwise, we declare it as a command namespace
-                "$functionName function {"
+                "$functionName function $functionName {"
                 # (which means we have to transpile).
                 $NoTranspile = $false
             }
