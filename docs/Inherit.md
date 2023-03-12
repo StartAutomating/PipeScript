@@ -4,20 +4,12 @@ Inherit
 
 
 
-
-
-
-
 ### Synopsis
 Inherits a Command
 
 
 
-
-
 ---
-
-
 
 
 ### Description
@@ -44,11 +36,7 @@ One interesting example is overriding an application
 
 
 
-
-
 ---
-
-
 
 
 ### Examples
@@ -89,11 +77,7 @@ Invoke-PipeScript {
 
 
 
-
-
 ---
-
-
 
 
 ### Parameters
@@ -122,9 +106,6 @@ It will also define a variable within a dynamicParam {} block that contains the 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[Switch]`|false   |named   |false        |
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
 
 
 
@@ -137,9 +118,6 @@ If provided, will set an alias on the function to replace the original command.
 
 
 
-|Type      |Required|Position|PipelineInput|Aliases |
-|----------|--------|--------|-------------|--------|
-|`[Switch]`|false   |named   |false        |Overload|
 |Type      |Required|Position|PipelineInput|Aliases |
 |----------|--------|--------|-------------|--------|
 |`[Switch]`|false   |named   |false        |Overload|
@@ -159,9 +137,6 @@ This will use dynamic parameters instead of static parameters, and will use a pr
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[Switch]`|false   |named   |false        |
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
 
 
 
@@ -175,9 +150,6 @@ This is implied by -Dynamic.
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[Switch]`|false   |named   |false        |
@@ -195,9 +167,6 @@ If the -CommandType includes aliases, and another command is also found, that co
 
 
 
-|Type        |Required|Position|PipelineInput|Aliases     |
-|------------|--------|--------|-------------|------------|
-|`[String[]]`|false   |named   |false        |CommandTypes|
 |Type        |Required|Position|PipelineInput|Aliases     |
 |------------|--------|--------|-------------|------------|
 |`[String[]]`|false   |named   |false        |CommandTypes|
@@ -231,9 +200,6 @@ Valid Values:
 |Type        |Required|Position|PipelineInput|Aliases                                               |
 |------------|--------|--------|-------------|------------------------------------------------------|
 |`[String[]]`|false   |named   |false        |SkipBlockType<br/>SkipBlockTypes<br/>ExcludeBlockTypes|
-|Type        |Required|Position|PipelineInput|Aliases                                               |
-|------------|--------|--------|-------------|------------------------------------------------------|
-|`[String[]]`|false   |named   |false        |SkipBlockType<br/>SkipBlockTypes<br/>ExcludeBlockTypes|
 
 
 
@@ -263,9 +229,6 @@ Valid Values:
 |Type        |Required|Position|PipelineInput|Aliases                                       |
 |------------|--------|--------|-------------|----------------------------------------------|
 |`[String[]]`|false   |named   |false        |BlockType<br/>BlockTypes<br/>IncludeBlockTypes|
-|Type        |Required|Position|PipelineInput|Aliases                                       |
-|------------|--------|--------|-------------|----------------------------------------------|
-|`[String[]]`|false   |named   |false        |BlockType<br/>BlockTypes<br/>IncludeBlockTypes|
 
 
 
@@ -279,9 +242,6 @@ If -IncludeParameter is provided without -ExcludeParameter, all other parameters
 
 
 
-|Type        |Required|Position|PipelineInput|
-|------------|--------|--------|-------------|
-|`[String[]]`|false   |named   |false        |
 |Type        |Required|Position|PipelineInput|
 |------------|--------|--------|-------------|
 |`[String[]]`|false   |named   |false        |
@@ -301,9 +261,6 @@ Excluded parameters with default values will declare the default value at the be
 |Type        |Required|Position|PipelineInput|
 |------------|--------|--------|-------------|
 |`[String[]]`|false   |named   |false        |
-|Type        |Required|Position|PipelineInput|
-|------------|--------|--------|-------------|
-|`[String[]]`|false   |named   |false        |
 
 
 
@@ -312,11 +269,6 @@ Excluded parameters with default values will declare the default value at the be
 
 
 
-
-
-|Type           |Required|Position|PipelineInput |
-|---------------|--------|--------|--------------|
-|`[ScriptBlock]`|false   |named   |true (ByValue)|
 |Type           |Required|Position|PipelineInput |
 |---------------|--------|--------|--------------|
 |`[ScriptBlock]`|false   |named   |true (ByValue)|
@@ -326,8 +278,6 @@ Excluded parameters with default values will declare the default value at the be
 
 
 ---
-
-
 
 
 ### Syntax
