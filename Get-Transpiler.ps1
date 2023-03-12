@@ -15,6 +15,7 @@ function Get-Transpiler
         * Any module that includes -TranspilerModuleName in it's tags.
         * The directory specified in -TranspilerPath
         * Commands that meet the naming criteria
+        * Commands that meet the naming criteria
     .Example
         Get-Transpiler
     #>
@@ -240,6 +241,7 @@ function Get-Transpiler
                     }                    
                 }
                 else {
+                    $ExecutionContext.SessionState.InvokeCommand.GetCommand($in, 'Alias,Function,ExternalScript,Application')
                     $ExecutionContext.SessionState.InvokeCommand.GetCommand($in, 'Alias,Function,ExternalScript,Application')
                 }
 
@@ -862,6 +864,13 @@ function Get-Transpiler
             }
             if ($extCmd.pstypenames -notcontains $TranspilerTypeName) {            
                 $extCmd.pstypenames.insert(0,$TranspilerTypeName)
+            
+            # Decorate our return (so that it can be uniquely extended)
+            if (-not $TranspilerTypeName) {
+                $TranspilerTypeName = 'Extension'
+            }
+            if ($extCmd.pstypenames -notcontains $TranspilerTypeName) {            
+                $extCmd.pstypenames.insert(0,$TranspilerTypeName)
             }
 
             $extCmd
@@ -900,6 +909,7 @@ function Get-Transpiler
                     # Then, walk over each extension parameter.
                     foreach ($kv in $extensionParams.GetEnumerator()) {
                         # If the $CommandExtended had a built-in parameter, we cannot override it, so skip it.
+                        if ($commandExtended -and ($commandExtended -as [Management.Automation.CommandMetaData]).Parameters.$($kv.Key)) {
                         if ($commandExtended -and ($commandExtended -as [Management.Automation.CommandMetaData]).Parameters.$($kv.Key)) {
                             continue
                         }
@@ -1047,6 +1057,7 @@ function Get-Transpiler
             $script:TranspilersFromFiles = [Ordered]@{}
             $script:TranspilersFileTimes = [Ordered]@{}
             $script:Transpilers =
+                @(@(
                 @(@(
                 #region Find Transpiler in Loaded Modules
                 foreach ($loadedModule in $loadedModules) { # Walk over all modules.

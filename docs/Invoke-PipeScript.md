@@ -4,12 +4,20 @@ Invoke-PipeScript
 
 
 
+
+
+
+
 ### Synopsis
 Invokes PipeScript or PowerShell ScriptBlocks, commands, and syntax.
 
 
 
+
+
 ---
+
+
 
 
 ### Description
@@ -32,7 +40,11 @@ Invoke-PipeScript can also use a number of Abstract Syntax Tree elements as comm
 
 
 
+
+
 ---
+
+
 
 
 ### Related Links
@@ -42,7 +54,11 @@ Invoke-PipeScript can also use a number of Abstract Syntax Tree elements as comm
 
 
 
+
+
 ---
+
+
 
 
 ### Parameters
@@ -56,6 +72,9 @@ If no -Command is provided and -InputObject is a [ScriptBlock]
 
 
 
+|Type        |Required|Position|PipelineInput |
+|------------|--------|--------|--------------|
+|`[PSObject]`|false   |named   |true (ByValue)|
 |Type        |Required|Position|PipelineInput |
 |------------|--------|--------|--------------|
 |`[PSObject]`|false   |named   |true (ByValue)|
@@ -74,6 +93,9 @@ The Command that will be run.
 |Type        |Required|Position|PipelineInput|Aliases                                                                               |
 |------------|--------|--------|-------------|--------------------------------------------------------------------------------------|
 |`[PSObject]`|false   |1       |false        |ScriptBlock<br/>CommandName<br/>CommandInfo<br/>AttributeSyntaxTree<br/>TypeConstraint|
+|Type        |Required|Position|PipelineInput|Aliases                                                                               |
+|------------|--------|--------|-------------|--------------------------------------------------------------------------------------|
+|`[PSObject]`|false   |1       |false        |ScriptBlock<br/>CommandName<br/>CommandInfo<br/>AttributeSyntaxTree<br/>TypeConstraint|
 
 
 
@@ -86,6 +108,9 @@ A collection of named parameters.  These will be directly passed to the underlyi
 
 
 
+|Type           |Required|Position|PipelineInput|Aliases   |
+|---------------|--------|--------|-------------|----------|
+|`[IDictionary]`|false   |named   |false        |Parameters|
 |Type           |Required|Position|PipelineInput|Aliases   |
 |---------------|--------|--------|-------------|----------|
 |`[IDictionary]`|false   |named   |false        |Parameters|
@@ -135,6 +160,11 @@ If this is set, will make ScriptBlockAst values will be run within data language
 
 
 
+
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[Switch]`|false   |named   |false        |
@@ -144,6 +174,8 @@ If this is set, will make ScriptBlockAst values will be run within data language
 
 
 ---
+
+
 
 
 ### Syntax

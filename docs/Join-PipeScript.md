@@ -4,12 +4,20 @@ Join-PipeScript
 
 
 
+
+
+
+
 ### Synopsis
 Joins PowerShell and PipeScript ScriptBlocks
 
 
 
+
+
 ---
+
+
 
 
 ### Description
@@ -18,7 +26,11 @@ Joins ScriptBlocks written in PowerShell or PipeScript.
 
 
 
+
+
 ---
+
+
 
 
 ### Related Links
@@ -28,7 +40,11 @@ Joins ScriptBlocks written in PowerShell or PipeScript.
 
 
 
+
+
 ---
+
+
 
 
 ### Examples
@@ -66,7 +82,11 @@ Get-Command Join-PipeScript | Join-PipeScript
 
 
 
+
+
 ---
+
+
 
 
 ### Parameters
@@ -79,6 +99,9 @@ A ScriptBlock written in PowerShell or PipeScript.
 
 
 
+|Type             |Required|Position|PipelineInput                 |Aliases   |
+|-----------------|--------|--------|------------------------------|----------|
+|`[ScriptBlock[]]`|true    |named   |true (ByValue, ByPropertyName)|Definition|
 |Type             |Required|Position|PipelineInput                 |Aliases   |
 |-----------------|--------|--------|------------------------------|----------|
 |`[ScriptBlock[]]`|true    |named   |true (ByValue, ByPropertyName)|Definition|
@@ -112,6 +135,9 @@ Valid Values:
 |Type        |Required|Position|PipelineInput|Aliases                                               |
 |------------|--------|--------|-------------|------------------------------------------------------|
 |`[String[]]`|false   |named   |false        |SkipBlockType<br/>SkipBlockTypes<br/>ExcludeBlockTypes|
+|Type        |Required|Position|PipelineInput|Aliases                                               |
+|------------|--------|--------|-------------|------------------------------------------------------|
+|`[String[]]`|false   |named   |false        |SkipBlockType<br/>SkipBlockTypes<br/>ExcludeBlockTypes|
 
 
 
@@ -141,6 +167,9 @@ Valid Values:
 |Type        |Required|Position|PipelineInput|Aliases                                       |
 |------------|--------|--------|-------------|----------------------------------------------|
 |`[String[]]`|false   |named   |false        |BlockType<br/>BlockTypes<br/>IncludeBlockTypes|
+|Type        |Required|Position|PipelineInput|Aliases                                       |
+|------------|--------|--------|-------------|----------------------------------------------|
+|`[String[]]`|false   |named   |false        |BlockType<br/>BlockTypes<br/>IncludeBlockTypes|
 
 
 
@@ -153,6 +182,9 @@ If set, will transpile the joined ScriptBlock.
 
 
 
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[Switch]`|false   |named   |false        |
@@ -169,6 +201,9 @@ If -IncludeParameter is provided without -ExcludeParameter, all other parameters
 
 
 
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |named   |false        |
 |Type        |Required|Position|PipelineInput|
 |------------|--------|--------|-------------|
 |`[String[]]`|false   |named   |false        |
@@ -209,6 +244,8 @@ The amount of indentation to use for parameters and named blocks.  By default, f
 
 
 ---
+
+
 
 
 ### Syntax

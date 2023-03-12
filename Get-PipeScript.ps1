@@ -15,6 +15,7 @@ function Get-PipeScript
         * Any module that includes -PipeScriptModuleName in it's tags.
         * The directory specified in -PipeScriptPath
         * Commands that meet the naming criteria
+        * Commands that meet the naming criteria
     .Example
         Get-PipeScript
     #>
@@ -240,6 +241,7 @@ function Get-PipeScript
                     }                    
                 }
                 else {
+                    $ExecutionContext.SessionState.InvokeCommand.GetCommand($in, 'Alias,Function,ExternalScript,Application')
                     $ExecutionContext.SessionState.InvokeCommand.GetCommand($in, 'Alias,Function,ExternalScript,Application')
                 }
 
@@ -862,6 +864,13 @@ function Get-PipeScript
             }
             if ($extCmd.pstypenames -notcontains $PipeScriptTypeName) {            
                 $extCmd.pstypenames.insert(0,$PipeScriptTypeName)
+            
+            # Decorate our return (so that it can be uniquely extended)
+            if (-not $PipeScriptTypeName) {
+                $PipeScriptTypeName = 'Extension'
+            }
+            if ($extCmd.pstypenames -notcontains $PipeScriptTypeName) {            
+                $extCmd.pstypenames.insert(0,$PipeScriptTypeName)
             }
 
             $extCmd
@@ -900,6 +909,7 @@ function Get-PipeScript
                     # Then, walk over each extension parameter.
                     foreach ($kv in $extensionParams.GetEnumerator()) {
                         # If the $CommandExtended had a built-in parameter, we cannot override it, so skip it.
+                        if ($commandExtended -and ($commandExtended -as [Management.Automation.CommandMetaData]).Parameters.$($kv.Key)) {
                         if ($commandExtended -and ($commandExtended -as [Management.Automation.CommandMetaData]).Parameters.$($kv.Key)) {
                             continue
                         }
@@ -1047,6 +1057,7 @@ function Get-PipeScript
             $script:PipeScriptsFromFiles = [Ordered]@{}
             $script:PipeScriptsFileTimes = [Ordered]@{}
             $script:PipeScripts =
+                @(@(
                 @(@(
                 #region Find PipeScript in Loaded Modules
                 foreach ($loadedModule in $loadedModules) { # Walk over all modules.
