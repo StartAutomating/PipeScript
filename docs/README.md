@@ -1,5 +1,5 @@
 <div align='center'>
-<img src='Assets/PipeScript.svg' />
+<img src='Assets/PipeScript.svg' style='width:80%' />
 </div>
 
 # What Is PipeScript?
@@ -55,5 +55,4 @@ PipeScript can be be embedded within 41 languages.
 Embedding PipeScript within any of these languages allows you to generate any of these languages with parameterized scripts, thus removing some of the tedium of programming.
 
 See the [Supported Languages](SupportedLanguages.md) you can use to transform your scripts.
-
 
