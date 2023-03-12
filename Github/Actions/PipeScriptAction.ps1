@@ -29,6 +29,10 @@ $SkipBuild,
 [string]
 $CommitMessage,
 
+# A list of modules to be installed from the PowerShell gallery before scripts run.
+[string[]]
+$InstallModule,
+
 # The user email associated with a git commit.
 [string]
 $UserEmail,
@@ -51,6 +55,24 @@ $gitHubEvent = if ($env:GITHUB_EVENT_PATH) {
 $($gitHubEvent | ConvertTo-Json -Depth 100)
 ::endgroup::
 "@ | Out-Host
+
+#region -InstallModule
+if ($InstallModule) {
+    "::group::Installing Modules" | Out-Host
+    foreach ($moduleToInstall in $InstallModule) {
+        $moduleInWorkspace = Get-ChildItem -Path $env:GITHUB_WORKSPACE -Recurse -File |
+            Where-Object Name -eq "$($moduleToInstall).psd1" |
+            Where-Object { 
+                $(Get-Content $_.FullName -Raw) -match 'ModuleVersion'
+            }
+        if (-not $moduleInWorkspace) {
+            Install-Module $moduleToInstall -Scope CurrentUser -Force
+            Import-Module $moduleToInstall -Force -PassThru | Out-Host
+        }
+    }
+    "::endgroup::" | Out-Host
+}
+#endregion -InstallModule
 
 $PSD1Found = Get-ChildItem -Recurse -Filter "*.psd1" | Where-Object Name -eq 'PipeScript.psd1' | Select-Object -First 1
 
@@ -133,7 +155,7 @@ if ($PipeScript) {
 }
 
 $PipeScriptTook = [Datetime]::Now - $PipeScriptStart
-"::set-output name=PipeScriptRuntime::$($PipeScriptScriptTook.TotalMilliseconds)" | Out-Host
+"::notice title=PipeScriptRuntime::$($PipeScriptScriptTook.TotalMilliseconds)" | Out-Host
 
 $BuildPipeScriptStart = [DateTime]::Now
 if (-not $SkipBuild) {
@@ -145,12 +167,12 @@ if (-not $SkipBuild) {
 
 $BuildPipeScriptEnd = [DateTime]::Now
 $BuildPipeScriptTook = $BuildPipeScriptEnd - $BuildPipeScriptStart
-"::set-output name=PipeScriptFilesBuiltCount::$($buildOutputFiles.Length)"   | Out-Host
-"::set-output name=PipeScriptFilesBuilt::$($buildOutputFiles -join ';')"     | Out-Host
-"::set-output name=PipeScriptBuildRuntime::$($BuildPipeScriptTook.TotalMilliseconds)"   | Out-Host
+"::notice title=PipeScriptFilesBuiltCount::$($buildOutputFiles.Length)"              | Out-Host
+"::notice title=PipeScriptFilesBuilt::$($buildOutputFiles -join ';')"                | Out-Host
+"::notice title=PipeScriptBuildRuntime::$($BuildPipeScriptTook.TotalMilliseconds)"   | Out-Host
 if ($CommitMessage -or $anyFilesChanged) {
     if ($CommitMessage) {
-        dir $env:GITHUB_WORKSPACE -Recurse |
+        Get-ChildItem $env:GITHUB_WORKSPACE -Recurse |
             ForEach-Object {
                 $gitStatusOutput = git status $_.Fullname -s
                 if ($gitStatusOutput) {
