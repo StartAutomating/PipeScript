@@ -22,11 +22,11 @@ svg -ViewBox 1920,1080 @(
     
     
     svg.text -FontSize 192 -TextAnchor 'middle' -DominantBaseline 'middle' -X 50% -Y 50% -Content @(
-        SVG.tspan -Content "P" -FontSize 1em
-        SVG.tspan -Content "|" -FontSize .66em -Dx -.33em
+        SVG.tspan -Content "P" -FontSize .9em
+        SVG.tspan -Content "|" -FontSize .6em -Dx -.4em
         SVG.tspan -Content "peScr" -FontSize 1em -Dx -.25em
-        SVG.tspan -Content "|" -FontSize .66em -Dx -.33em
-        SVG.tspan -Content "pt" -FontSize 1em -Dx -.25em
+        SVG.tspan -Content "|" -FontSize .6em -Dx -.4em
+        SVG.tspan -Content "pt" -FontSize .9em -Dx -.25em
     ) -Style 'font-family: "Roboto", sans-serif' -Fill '#4488ff' -Class 'foreground-fill'
 
     
