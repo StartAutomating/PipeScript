@@ -13,6 +13,14 @@ HTTP Accept.
 HTTP Accept indicates what content types the web request will accept as a response.
 '
         }
+    .EXAMPLE
+        New-PipeScript -Parameter @{"bar"=@{
+            Name = "foo"
+            Help = 'Foobar'
+            Attributes = "Mandatory","ValueFromPipelineByPropertyName"
+            Aliases = "fubar"
+            Type = "string"
+        }}
     #>
     [Alias('New-ScriptBlock')]
     param(
@@ -265,7 +273,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                     elseif ($EachParameter.Value -is [string]) {
                         # embed it directly.
                         $ParametersToCreate[$EachParameter.Key] = $EachParameter.Value
-                    }
+                    }                    
                     # If the value is a ScriptBlock
                     elseif ($EachParameter.Value -is [ScriptBlock]) {
                         # Embed it
@@ -288,6 +296,64 @@ HTTP Accept indicates what content types the web request will accept as a respon
                     elseif ($EachParameter.Value -is [Object[]]) {
                         $ParametersToCreate[$EachParameter.Key] = # join it's elements by newlines
                             $EachParameter.Value -join [Environment]::Newline
+                    }
+                    elseif ($EachParameter.Value -is [Collections.IDictionary] -or 
+                        $EachParameter.Value -is [PSObject]) {
+                        $parameterMetadata = $EachParameter.Value
+                        $parameterName = $EachParameter.Key
+                        if ($parameterMetadata.Name) {
+                            $parameterName = $parameterMetadata.Name
+                        }
+                        
+                        $parameterAttributeParts = @()
+                        $ParameterOtherAttributes = @()
+                        $attrs = 
+                            if ($parameterMetadata.Attributes) { $parameterMetadata.Attributes }
+                            elseif ($parameterMetadata.Attribute) { $parameterMetadata.Attribute }
+                        $aliases =
+                            if ($parameterMetadata.Alias) { $parameterMetadata.Alias }
+                            elseif ($parameterMetadata.Aliases) { $parameterMetadata.Aliases }
+                        $parameterHelp =
+                            if ($parameterMetadata.Help) { $parameterMetadata.Help}                            
+                        $aliasAttribute = @(foreach ($alias in $aliases) {
+                            $alias -replace "'","''"                            
+                        }) -join "','"
+                        if ($aliasAttribute) {
+                            $aliasAttribute = "[Alias('$aliasAttribute')]"
+                        }
+                        
+                        foreach ($attr in $attrs) {
+                            if ($attr -notmatch '^\[') {
+                                $parameterAttributeParts += $attr
+                            } else {
+                                $ParameterOtherAttributes += $attr
+                            }
+                        }
+                        $parameterType = 
+                            if ($parameterMetadata.Type) {$parameterMetadata.Type }
+                            elseif ($parameterMetadata.ParameterType) {$parameterMetadata.ParameterType }
+                        $ParametersToCreate[$parameterName] = @(
+                            if ($ParameterHelp) {
+                                $ParameterHelp | embedParameterHelp
+                            }
+                            if ($parameterAttributeParts) {
+                                "[Parameter($($parameterAttributeParts -join ','))]"
+                            }
+                            if ($aliasAttribute) {
+                                $aliasAttribute
+                            }
+                            if ($parameterType -as [type]) {
+                                "[$(($parameterType -as [type]).FullName -replace '^System\.')]"
+                            }
+                            elseif ($parameterType) {
+                                "[PSTypeName('$($parameterType -replace '^System\.')')]"
+                            }
+                            
+                            if ($ParameterOtherAttributes) {
+                                $ParameterOtherAttributes
+                            }
+                            '$' + ($parameterName -replace '^$')
+                        ) -join [Environment]::newLine
                     }
                 }
             }
