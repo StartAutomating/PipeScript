@@ -37,6 +37,17 @@ HTTP Accept indicates what content types the web request will accept as a respon
 }
 ```
 
+#### EXAMPLE 3
+```PowerShell
+New-PipeScript -Parameter @{"bar"=@{
+    Name = "foo"
+    Help = 'Foobar'
+    Attributes = "Mandatory","ValueFromPipelineByPropertyName"
+    Aliases = "fubar"
+    Type = "string"
+}}
+```
+
 
 
 ---
