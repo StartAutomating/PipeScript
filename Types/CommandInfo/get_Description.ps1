@@ -1,0 +1,1 @@
+@($this.GetHelpField("Description"))[0] -replace '^\s+'

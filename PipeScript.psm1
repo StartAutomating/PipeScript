@@ -4,7 +4,8 @@ foreach ($file in (Get-ChildItem -Path "$psScriptRoot" -Filter "*-*" -Recurse)) 
     . $file.FullName
 }
 
-$transpilerNames = Get-Transpiler | Select-Object -ExpandProperty DisplayName
+$transpilerNames = @(@(Get-Transpiler).DisplayName) -ne ''
+
 $aliasList +=
     
     @(foreach ($alias in @($transpilerNames)) {
@@ -19,10 +20,13 @@ $aliasList +=
     })
     
 
-$pipeScriptKeywords =
-    Get-Transpiler |
-    Where-Object { $_.Metadata.'PipeScript.Keyword' }  |
-    Select-Object -ExpandProperty DisplayName
+$pipeScriptKeywords = @(
+    foreach ($transpiler in Get-Transpiler) {
+        if ($transpiler.Metadata.'PipeScript.Keyword' -and $transpiler.DisplayName) {
+            $transpiler.DisplayName
+        }
+    }
+)    
 
 $aliasList +=
     

@@ -36,17 +36,105 @@ process {
         }
     }
 
+    $inlineParameters =
+        if ($FunctionDefinition.Parameters) {
+            "($($FunctionDefinition.Parameters.Transpile() -join ','))"
+        } else {
+            ''
+        }
+    $partialCommands = 
+        @(
+        if ($realFunctionName -notmatch 'partial\p{P}') {
+            if (-not $script:PartialCommands) {
+                $script:PartialCommands =
+                $ExecutionContext.SessionState.InvokeCommand.GetCommands('Partial*',
+                    'Function,Alias',$true)
+            }
+    
+            $partialCommands = @(foreach ($partialFunction in $script:PartialCommands) {
+                # Only real partials should be considered.
+
+                if ($partialFunction -notmatch  'partial\p{P}') { continue }
+                # Partials should not combine with other partials.
+                
+                $partialName = $partialFunction.Name -replace '^Partial\p{P}'
+                if (
+                    (
+                        # If there's a slash in the name, treat it as a regex
+                        $partialName -match '/' -and
+                        $realFunctionName -match ($partialName -replace '/')
+                    ) -or (
+                        # If there's a slash * or ?, treat it as a wildcard
+                        $partialName -match '[\*\?]' -and
+                        $realFunctionName -like $partialName
+                    ) -or (
+                        # otherwise, treat it as an exact match.
+                        $realFunctionName -eq $partialName
+                    )
+                ) {
+                    $partialFunction
+                }
+            })
+
+            # If there were any partial commands
+            if ($partialCommands) {
+                # sort them by rank and name.
+                $partialCommands | Sort-Object Rank, Name
+            }
+        })    
+    
     $newFunction = @(
         if ($FunctionDefinition.IsFilter) {
-            "filter $realFunctionName {"
+            "filter", $realFunctionName, $inlineParameters, '{' -ne '' -join ' '
         } else {
-            "function $realFunctionName {"
+            "function", $realFunctionName, $inlineParameters, '{' -ne '' -join ' '
         }
         # containing the transpiled funciton body.
-        [ScriptBlock]::Create(($functionDefinition.Body.Extent -replace '^{' -replace '}$')) |
+        $transpiledFunctionBody = [ScriptBlock]::Create(($functionDefinition.Body.Extent -replace '^{' -replace '}$')) |
             .>Pipescript -Transpiler $transpilerSteps
+        
+        # If there were not partial commands, life is easy, we just return the transpiled ScriptBlock
+        if (-not $partialCommands) {
+            $transpiledFunctionBody
+        } else {
+            # If there were any partial commands,
+            @(                
+                $transpiledFunctionBody # we join them with the transpiled code.
+                $alreadyIncluded = [Ordered]@{} # Keep track of what we've included.
+                foreach ($partialCommand in $partialCommands) { # and go over each partial command                                        
+                    if ($alreadyIncluded["$partialCommand"]) { continue }
+                    # and get it's ScriptBlock
+                    if ($partialCommand.ScriptBlock) {
+                        $partialCommand.ScriptBLock
+                    } elseif ($partialCommand.ResolvedCommand) {
+                        # (if it's an Alias, keep resolving until we can't resolve anymore).
+                        $resolvedAlias = $partialCommand.ResolvedCommand
+                        while ($resolvedAlias -is [Management.Automation.AliasInfo]) {
+                            $resolvedAlias = $resolvedAlias.ResolvedCommand
+                        }
+                        if ($resolvedAlias.ScriptBlock) {
+                            $resolvedAlias.ScriptBlock
+                        }                        
+                    }
+                    # Then mark the command as included, just in case.
+                    $alreadyIncluded["$partialCommand"] = $true
+                }
+            ) | # Take all of the combined input and pipe in into Join-PipeScript
+                Join-PipeScript -Transpile
+        }
         "}"
     )
     # Create a new script block
-    [ScriptBlock]::Create($newFunction -join [Environment]::NewLine)
+    $transpiledFunction = [ScriptBlock]::Create($newFunction -join [Environment]::NewLine)
+
+    Import-PipeScript -ScriptBlock $transpiledFunction -NoTranspile
+    # Create an event indicating that a function has been transpiled.
+    $null = New-Event -SourceIdentifier PipeScript.Function.Transpiled -MessageData ([PSCustomObject][Ordered]@{
+        PSTypeName = 'PipeScript.Function.Transpiled'
+        FunctionDefinition = $FunctionDefinition
+        ScriptBlock = $transpiledFunction
+    })
+
+    # Output the transpiled function.
+    $transpiledFunction
 }

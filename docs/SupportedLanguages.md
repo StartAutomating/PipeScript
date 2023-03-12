@@ -5,6 +5,7 @@ These are all of the transpilers currently included in PipeScript:
 |Language                                                                  |Synopsis                        |Pattern                         |
 |--------------------------------------------------------------------------|--------------------------------|--------------------------------|
 |[ADA.Template](Transpilers/Templates/ADA.Template.psx.ps1)                |ADA Template Transpiler.        |```\.ad[bs]$```                 |
+|[Arduino.Template](Transpilers/Templates/Arduino.Template.psx.ps1)        |Arduino Template Transpiler.    |```\.(?>ino)$```                |
 |[ATOM.Template](Transpilers/Templates/ATOM.Template.psx.ps1)              |ATOM Template Transpiler.       |```\.atom$```                   |
 |[Bash.Template](Transpilers/Templates/Bash.Template.psx.ps1)              |Bash Template Transpiler.       |```\.sh$```                     |
 |[Basic.Template](Transpilers/Templates/Basic.Template.psx.ps1)            |Basic Template Transpiler.      |```\.(?>bas\\|vbs{0,1})$```     |
@@ -24,7 +25,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Kotlin.Template](Transpilers/Templates/Kotlin.Template.psx.ps1)          |Kotlin Template Transpiler.     |```\.kt$```                     |
 |[Latex.Template](Transpilers/Templates/Latex.Template.psx.ps1)            |Latex Template Transpiler.      |```\.(?>latex\\|tex)$```        |
 |[LUA.Template](Transpilers/Templates/LUA.Template.psx.ps1)                |LUA Template Transpiler.        |```\.lua$```                    |
-|[Markdown.Template](Transpilers/Templates/Markdown.Template.psx.ps1)      |Markdown Template Transpiler.   |```\.(?>md\\|markdown)$```      |
+|[Markdown.Template](Transpilers/Templates/Markdown.Template.psx.ps1)      |Markdown Template Transpiler.   |```\.(?>md\\|markdown\\|txt)$```|
 |[ObjectiveC.Template](Transpilers/Templates/ObjectiveC.Template.psx.ps1)  |Objective Template Transpiler.  |```\.(?>m\\|mm)$```             |
 |[OpenSCAD.Template](Transpilers/Templates/OpenSCAD.Template.psx.ps1)      |OpenSCAD Template Transpiler.   |```\.scad$```                   |
 |[Perl.Template](Transpilers/Templates/Perl.Template.psx.ps1)              |Perl Template Transpiler.       |```\.(?>pl\\|pod)$```           |

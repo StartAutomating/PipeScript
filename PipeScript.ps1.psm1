@@ -1,16 +1,20 @@
 ﻿[Include('*-*')]$psScriptRoot
 
-$transpilerNames = Get-Transpiler | Select-Object -ExpandProperty DisplayName
+$transpilerNames = @(@(Get-Transpiler).DisplayName) -ne ''
+
 $aliasList +=
     [SmartAlias(Command='Use-PipeScript',Prefix='.>',PassThru)]$transpilerNames
 
 $aliasList +=
     [SmartAlias(Command='Use-PipeScript',Prefix='.<',Suffix='>',PassThru)]$transpilerNames
 
-$pipeScriptKeywords =
-    Get-Transpiler |
-    Where-Object { $_.Metadata.'PipeScript.Keyword' }  |
-    Select-Object -ExpandProperty DisplayName
+$pipeScriptKeywords = @(
+    foreach ($transpiler in Get-Transpiler) {
+        if ($transpiler.Metadata.'PipeScript.Keyword' -and $transpiler.DisplayName) {
+            $transpiler.DisplayName
+        }
+    }
+)    
 
 $aliasList +=
     [SmartAlias(Command='Use-PipeScript',PassThru)]$pipeScriptKeywords

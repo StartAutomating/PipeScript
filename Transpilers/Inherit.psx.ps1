@@ -49,6 +49,7 @@
 #>
 param(
 [Parameter(Mandatory,Position=0)]
+[Alias('CommandName')]
 [string]
 $Command,
 
@@ -146,34 +147,58 @@ process {
         $Proxy = $true # it implies -Proxy.
     }
 
-    # Now we get the script block that we're going to inherit.
-$resolvedScriptBlock =
-    # If we're inheriting an application
-    if ($resolvedCommand -is [Management.Automation.ApplicationInfo]) {
-        # make a light wrapper for it.
-        [scriptblock]::Create(@"
-param(
-[Parameter(ValueFromRemainingArguments)]
-[string[]]
-`$ArgumentList
-)
-
-process {
-    & `$baseCommand @ArgumentList
-}
-"@)    
-    } elseif ($resolvedCommand -is [Management.Automation.CmdletInfo] -or $Proxy) {
-        # If we're inheriting a Cmdlet or -Proxy was passed, inherit from a proxy command.
-        .>ProxyCommand -CommandName $Command
-    } 
-    elseif (
-        $resolvedCommand -is [Management.Automation.FunctionInfo] -or
-        $resolvedCommand -is [management.Automation.ExternalScriptInfo]
-    ) {
-        # Otherwise, inherit the command's contents.
-        $resolvedCommand.ScriptBlock
+    # In a couple of cases, we're inheriting an application.
+    # In this scenario, we want to use the same wrapper [ScriptBlock]
+    $applicationWrapper = {
+        param(
+        [Parameter(ValueFromRemainingArguments)]
+        [string[]]
+        $ArgumentList
+        )
+        
+        process {
+            & $baseCommand @ArgumentList
+        }        
     }
 
+    # Now we get the script block that we're going to inherit.
+    $resolvedScriptBlock =
+        # If we're inheriting an application
+        if ($resolvedCommand -is [Management.Automation.ApplicationInfo]) {
+            # use our light wrapper.
+            $applicationWrapper
+        } elseif ($resolvedCommand -is [Management.Automation.CmdletInfo] -or $Proxy) {
+            # If we're inheriting a Cmdlet or -Proxy was passed, inherit from a proxy command.
+            .>ProxyCommand -CommandName $Command
+        } 
+        elseif (
+            # If it's a function or script
+            $resolvedCommand -is [Management.Automation.FunctionInfo] -or
+            $resolvedCommand -is [management.Automation.ExternalScriptInfo]
+        ) {
+            # inherit from the ScriptBlock definition.
+            $resolvedCommand.ScriptBlock
+        }
+        elseif (
+            # If we're inheriting an alias to something with a scriptblock
+            $resolvedCommand -is [Management.Automation.AliasInfo] -and 
+            $resolvedCommand.ResolvedCommand.ScriptBlock) {
+            
+            # inherit from that ScriptBlock.
+            $resolvedCommand.ResolvedCommand.ScriptBlock
+        }
+        elseif (
+            # And if we're inheriting from an alias that points to an application
+            $resolvedCommand -is [Management.Automation.AliasInfo] -and
+            $resolvedCommand.ResolvedCommand -is [Management.Automation.ApplicationInfo]) {
+            # use our lite wrapper once more.
+            $applicationWrapper
+        }
+
+    if (-not $resolvedCommand) {
+        Write-Error "Could not resolve [ScriptBlock] to inheirt from Command: '$Command'"
+        return
+    }
     # Now we're passing a series of script blocks to Join-PipeScript
 
 $(

@@ -1,6 +1,7 @@
 #requires -Module PSDevOps
-New-GitHubWorkflow -Name "Analyze, Test, Tag, and Publish" -On Push, PullRequest, Demand -Job PowerShellStaticAnalysis, TestPowerShellOnLinux, TagReleaseAndPublish, UsePiecemeal, BuildPipeScript, RunEZOut, HelpOut -Environment @{
+Import-BuildStep -ModuleName PipeScript
+Push-Location $PSScriptRoot 
+New-GitHubWorkflow -Name "Analyze, Test, Tag, and Publish" -On Push, PullRequest, Demand -Job PowerShellStaticAnalysis, TestPowerShellOnLinux, TagReleaseAndPublish, BuildPipeScript -Environment @{
     NoCoverage = $true
-}|
-    Set-Content .\.github\workflows\TestAndPublish.yml -Encoding UTF8 -PassThru
-
+} -OutputPath .\.github\workflows\TestAndPublish.yml
+Pop-Location

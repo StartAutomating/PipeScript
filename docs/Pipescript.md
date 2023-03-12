@@ -16,7 +16,9 @@ The Core PipeScript Transpiler
 
 The Core PipeScript Transpiler.
 
-This will convert various portions in the PowerShell Abstract Syntax Tree from their PipeScript syntax into regular PowerShell.
+This can rewrite anything in the PowerShell Abstract Syntax Tree.
+
+The Core Transpiler visits each item in the Abstract Syntax Tree and sees if it can be converted.
 
 It will run other converters as directed by the source code.
 

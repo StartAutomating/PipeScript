@@ -37,6 +37,17 @@ HTTP Accept indicates what content types the web request will accept as a respon
 }
 ```
 
+#### EXAMPLE 3
+```PowerShell
+New-PipeScript -Parameter @{"bar"=@{
+    Name = "foo"
+    Help = 'Foobar'
+    Attributes = "Mandatory","ValueFromPipelineByPropertyName"
+    Aliases = "fubar"
+    Type = "string"
+}}
+```
+
 
 
 ---
@@ -220,16 +231,17 @@ The name of the function to create.
 
 #### **FunctionType**
 
-The type of the function to create.  This will be ignored if -FunctionName is not passed.
+The type or namespace the function to create.  This will be ignored if -FunctionName is not passed.
+If the function type is not function or filter, it will be treated as a function namespace.
 
 
 
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[String]`|false   |10      |false        |
+|Type      |Required|Position|PipelineInput|Aliases                               |
+|----------|--------|--------|-------------|--------------------------------------|
+|`[String]`|false   |10      |false        |FunctionNamespace<br/>CommandNamespace|
 
 
 
@@ -308,6 +320,21 @@ A list of attributes to declare on the scriptblock.
 
 
 
+#### **NoTranspile**
+
+If set, will not transpile the created code.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
+
+
 
 
 ---
@@ -315,5 +342,5 @@ A list of attributes to declare on the scriptblock.
 
 ### Syntax
 ```PowerShell
-New-PipeScript [[-Parameter] <Object>] [[-DynamicParameter] <ScriptBlock>] [[-Begin] <ScriptBlock>] [[-Process] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Header] <String>] [-AutoParameter] [[-AutoParameterType] <Type>] [[-ParameterHelp] <IDictionary>] [-WeaklyTyped] [[-FunctionName] <String>] [[-FunctionType] <String>] [[-Description] <String>] [[-Synopsis] <String>] [[-Example] <String[]>] [[-Link] <String[]>] [[-Attribute] <String[]>] [<CommonParameters>]
+New-PipeScript [[-Parameter] <Object>] [[-DynamicParameter] <ScriptBlock>] [[-Begin] <ScriptBlock>] [[-Process] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Header] <String>] [-AutoParameter] [[-AutoParameterType] <Type>] [[-ParameterHelp] <IDictionary>] [-WeaklyTyped] [[-FunctionName] <String>] [[-FunctionType] <String>] [[-Description] <String>] [[-Synopsis] <String>] [[-Example] <String[]>] [[-Link] <String[]>] [[-Attribute] <String[]>] [-NoTranspile] [<CommonParameters>]
 ```

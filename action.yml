@@ -17,6 +17,9 @@ inputs:
       If provided, will commit any remaining changes made to the workspace with this commit message.
       If no commit message is provided, if a GitHub Event contains a commit message, that message will be used.
       If no commit message is provided, and a commit message cannot be automatically detected, changes will not be committed.
+  InstallModule: 
+    required: false
+    description: A list of modules to be installed from the PowerShell gallery before scripts run.
   UserEmail: 
     required: false
     description: The user email associated with a git commit.
@@ -26,20 +29,6 @@ inputs:
 branding: 
   icon: code
   color: blue
-outputs: 
-  
-    PipeScriptRuntime: 
-      description: The time it took the .PipeScript parameter to run
-      value: ${{steps.PipeScriptAction.outputs.PipeScriptRuntime}}
-    PipeScriptBuildRuntime: 
-      description: The time it took Build-PipeScript to run
-      value: ${{steps.PipeScriptAction.outputs.PipeScriptBuildRuntime}}
-    PipeScriptFilesBuilt: 
-      description: The files built using PipeScript (separated by semicolons)
-      value: ${{steps.PipeScriptAction.outputs.PipeScriptFilesBuilt}}
-    PipeScriptFilesBuiltCount: 
-      description: The number of .PipeScript.ps1 files that were run
-      value: ${{steps.PipeScriptAction.outputs.PipeScriptFilesBuiltCount}}
 runs: 
   using: composite
   steps: 
@@ -47,17 +36,20 @@ runs:
       id: PipeScriptAction
       shell: pwsh
       env: 
-        PipeScript: ${{inputs.PipeScript}}
-        UserName: ${{inputs.UserName}}
-        UserEmail: ${{inputs.UserEmail}}
+        InstallModule: ${{inputs.InstallModule}}
         CommitMessage: ${{inputs.CommitMessage}}
+        UserName: ${{inputs.UserName}}
+        PipeScript: ${{inputs.PipeScript}}
         SkipBuild: ${{inputs.SkipBuild}}
+        UserEmail: ${{inputs.UserEmail}}
       run: |
         $Parameters = @{}
         $Parameters.PipeScript = ${env:PipeScript}
         $Parameters.SkipBuild = ${env:SkipBuild}
         $Parameters.SkipBuild = $parameters.SkipBuild -match 'true';
         $Parameters.CommitMessage = ${env:CommitMessage}
+        $Parameters.InstallModule = ${env:InstallModule}
+        $Parameters.InstallModule = $parameters.InstallModule -split ';' -replace '^[''"]' -replace  '[''"]$'
         $Parameters.UserEmail = ${env:UserEmail}
         $Parameters.UserName = ${env:UserName}
         foreach ($k in @($parameters.Keys)) {
@@ -97,6 +89,10 @@ runs:
         [string]
         $CommitMessage,
         
+        # A list of modules to be installed from the PowerShell gallery before scripts run.
+        [string[]]
+        $InstallModule,
+        
         # The user email associated with a git commit.
         [string]
         $UserEmail,
@@ -119,6 +115,24 @@ runs:
         $($gitHubEvent | ConvertTo-Json -Depth 100)
         ::endgroup::
         "@ | Out-Host
+        
+        #region -InstallModule
+        if ($InstallModule) {
+            "::group::Installing Modules" | Out-Host
+            foreach ($moduleToInstall in $InstallModule) {
+                $moduleInWorkspace = Get-ChildItem -Path $env:GITHUB_WORKSPACE -Recurse -File |
+                    Where-Object Name -eq "$($moduleToInstall).psd1" |
+                    Where-Object { 
+                        $(Get-Content $_.FullName -Raw) -match 'ModuleVersion'
+                    }
+                if (-not $moduleInWorkspace) {
+                    Install-Module $moduleToInstall -Scope CurrentUser -Force
+                    Import-Module $moduleToInstall -Force -PassThru | Out-Host
+                }
+            }
+            "::endgroup::" | Out-Host
+        }
+        #endregion -InstallModule
         
         $PSD1Found = Get-ChildItem -Recurse -Filter "*.psd1" | Where-Object Name -eq 'PipeScript.psd1' | Select-Object -First 1
         
@@ -201,7 +215,7 @@ runs:
         }
         
         $PipeScriptTook = [Datetime]::Now - $PipeScriptStart
-        "::set-output name=PipeScriptRuntime::$($PipeScriptScriptTook.TotalMilliseconds)" | Out-Host
+        "::notice title=PipeScriptRuntime::$($PipeScriptScriptTook.TotalMilliseconds)" | Out-Host
         
         $BuildPipeScriptStart = [DateTime]::Now
         if (-not $SkipBuild) {
@@ -213,12 +227,12 @@ runs:
         
         $BuildPipeScriptEnd = [DateTime]::Now
         $BuildPipeScriptTook = $BuildPipeScriptEnd - $BuildPipeScriptStart
-        "::set-output name=PipeScriptFilesBuiltCount::$($buildOutputFiles.Length)"   | Out-Host
-        "::set-output name=PipeScriptFilesBuilt::$($buildOutputFiles -join ';')"     | Out-Host
-        "::set-output name=PipeScriptBuildRuntime::$($BuildPipeScriptTook.TotalMilliseconds)"   | Out-Host
+        "::notice title=PipeScriptFilesBuiltCount::$($buildOutputFiles.Length)"              | Out-Host
+        "::notice title=PipeScriptFilesBuilt::$($buildOutputFiles -join ';')"                | Out-Host
+        "::notice title=PipeScriptBuildRuntime::$($BuildPipeScriptTook.TotalMilliseconds)"   | Out-Host
         if ($CommitMessage -or $anyFilesChanged) {
             if ($CommitMessage) {
-                dir $env:GITHUB_WORKSPACE -Recurse |
+                Get-ChildItem $env:GITHUB_WORKSPACE -Recurse |
                     ForEach-Object {
                         $gitStatusOutput = git status $_.Fullname -s
                         if ($gitStatusOutput) {

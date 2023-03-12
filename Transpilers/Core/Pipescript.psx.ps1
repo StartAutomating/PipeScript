@@ -4,7 +4,9 @@
 .Description
     The Core PipeScript Transpiler.
 
-    This will convert various portions in the PowerShell Abstract Syntax Tree from their PipeScript syntax into regular PowerShell.
+    This can rewrite anything in the PowerShell Abstract Syntax Tree.
+
+    The Core Transpiler visits each item in the Abstract Syntax Tree and sees if it can be converted.
     
     It will run other converters as directed by the source code.
 .Link
@@ -55,8 +57,30 @@ $Transpiler
 )
 
 begin {
-    # First off, we declare a few inner functions that we will use within only this script.
     $myCmd = $MyInvocation.MyCommand
+
+    function RefreshTranspilers {
+        $PotentialTranspilers = Get-Transpiler -Force
+
+        $TranspilersByType = [Ordered]@{}
+        foreach ($PotentialTranspiler in $PotentialTranspilers) {
+            :nextParameterSet foreach ($paramSet in $PotentialTranspiler.ParameterSets) {
+                foreach ($parameter in $paramSet.Parameters) {
+                    if ($parameter.ValueFromPipeline) {
+                        if (-not $TranspilersByType[$parameter.ParameterType]) {
+                            $TranspilersByType[$parameter.ParameterType] = @()
+                        }
+                        $TranspilersByType[$parameter.ParameterType] += $PotentialTranspiler
+                        continue nextParameterSet
+                    }                
+                }
+            }
+        }
+
+        $TranspilersCachedAt = [datetime]::Now
+    }    
+
+    . RefreshTranspilers        
 }
 
 process {
@@ -127,7 +151,7 @@ process {
             $scriptText = "$scriptBlock"
 
             # If there was no ScriptBlock, return
-            if (-not $ScriptBlock) { return }
+            if (-not $ScriptBlock) { return }            
 
             $PreTranspile =
                 if ($transpilerAttributes) {
@@ -183,50 +207,45 @@ process {
             $skipUntil  = 0
             # Keep track of the offset from a starting position as well, for the same reason.
             $myOffset   = 0
-
+        
             # Walk over each item in the abstract syntax tree.
-            :NextAstItem foreach ($item in $astList) {
+            :NextAstItem foreach ($item in $astList) {                
+                $astForeach = $foreach
                 # If skipUntil was set,
                 if ($skipUntil) {
                     # find the space between now and the last known offset.
-                    try {
-                        $newOffset = $scriptText.IndexOf($item.Extent.Text, $myOffset)
-                        if ($newOffset -eq -1) { continue }
-                        $myOffset  = $newOffset
-                    } catch {
-                        $ex =$_
-                        $null = $null
-                    }
+                    $myOffset = $item.Extent.StartOffset
                     if ($myOffset -lt $skipUntil) { # If this is before our skipUntil point
                         continue # ignore this AST element.
                     }
                     $skipUntil = $null # If we have reached our skipUntil point, let's stop skipping.
                 }
-                # otherwise, find if any pipescripts match this AST
+                # otherwise, find if any pipescripts match this AST                
 
-                # We can cache transpilers by type
-                if (-not $script:TranspilerAstTypes) {
-                    $script:TranspilerAstTypes = @{}
-                }
-
-                $itemTypeName = $item.GetType().Fullname
-                if (-not $script:TranspilerAstTypes[$itemTypeName]) {
-                    $script:TranspilerAstTypes[$itemTypeName] = 
-                        foreach ($couldPipe in Get-Transpiler -CouldPipe $item) {
-                            if ($couldPipe.ExtensionCommand.CouldRun(@{} + $couldPipe.ExtensionParameter)) {
-                                $couldPipe
-                            }
+                # We've cached transpilers by type, but subclassing is a thing.
+                # so we need to get all of the potential types
+                $transpilerTypes = @($TranspilersByType.Keys) -as [type[]]
+                # and then return a range of items
+                $PotentialTranspilersForItem = @(foreach ($transpilerCommand in 
+                    $TranspilersByType[@(foreach ($transpilerType in $transpilerTypes) {
+                        if ($item -as $transpilerType) { # (where we could cast the input to the desired type).
+                            $transpilerType
                         }
-                }
-
-                # But we still need to determine if an extension is valid for a given type's context
-                $pipescripts =  foreach ($potentialPipeScript in $script:TranspilerAstTypes[$itemTypeName]) {                    
-                        if (
-                        $potentialPipeScript.ExtensionCommand.CouldRun(@{} + $potentialPipeScript.ExtensionParameter) -and
+                    })]) {
+                    $transpilerCommand
+                })
+                $itemTypeName = $item.GetType().Fullname
+                                
+                # Of course we still need to determine if an extension is valid for a given type's context
+                $pipescripts =  foreach ($potentialPipeScript in $PotentialTranspilersForItem) {                    
+                    $couldPipe   = $potentialPipeScript.CouldPipe($item)
+                    if (-not $couldPipe -or 
+                        $couldPipe -isnot [Collections.IDictionary]) { continue }
+                    if ($potentialPipeScript.CouldRun(@{} + $couldPipe) -and
                         $(
                             $eap = $ErrorActionPreference
                             $ErrorActionPreference = 'ignore'
-                            $potentialPipeScript.ExtensionCommand.Validate($item, $true)
+                            $potentialPipeScript.Validate($item, $true)
                             $ErrorActionPreference = $eap
                         )
                         ) {
@@ -239,7 +258,7 @@ process {
                     # try to run each one.
                     :NextPipeScript foreach ($ps in $pipescripts) {
                         # If it had output
-                        $pipeScriptOutput = Invoke-PipeScript -InputObject $item -CommandInfo $ps.ExtensionCommand
+                        $pipeScriptOutput = Invoke-PipeScript -InputObject $item -CommandInfo $ps
                         # Walk over each potential output
                         foreach ($pso in $pipeScriptOutput) {
                             # If the output was a dictionary, treat it as a series of replacements.
@@ -263,13 +282,17 @@ process {
                             }
                             # If we have ouput from any of the scripts (and we have not yet replaced anything)
                             elseif ($pso -and -not $AstReplacements[$item]) 
-                            { 
-                                # determine the end of this AST element
-                                $start = $scriptText.IndexOf($item.Extent.Text, $myOffset) 
-                                $end   = $start + $item.Extent.Text.Length
-                                $skipUntil = $end # set SkipUntil
-                                $AstReplacements[$item] = $pso # and store the replacement.                                
+                            {                                                                 
+                                $skipUntil = $item.Extent.EndOffset # set SkipUntil
+                                $AstReplacements[$item] = $pso # and store the replacement.
                             }
+
+                            $LastFunctionDefinedAt =
+                                try {
+                                    @(Get-Event -SourceIdentifier PipeScript.Function.Transpiled -ErrorAction Ignore)[-1].TimeGenerated
+                                } catch {
+                                    $TranspilersCachedAt
+                                }
 
                             #region Special Properties
 
@@ -285,7 +308,7 @@ process {
                                     } elseif ($toSkipUntil -is [Management.Automation.Language.Ast]) {
                                         $newSkipStart = $scriptText.IndexOf($toSkipUntil.Extent.Text, $myOffset)
                                         if ($newSkipStart -ne -1) {
-                                            $end   = $newSkipStart + $toSkipUntil.Extent.Text.Length
+                                            $end   = $toSkipUntil.Extent.EndOffset
                                             if ($end -gt $skipUntil) {
                                                 $skipUntil = $end
                                             }
@@ -295,7 +318,7 @@ process {
                                         }
                                     }
                                 }
-                            }
+                            }                            
 
                             #.ToRemove,.RemoveAST, or .RemoveElement will remove AST elements or ranges
                             foreach ($toRemoveAlias in 'ToRemove','RemoveAST','RemoveElement') {
@@ -325,6 +348,11 @@ process {
                             }
                             #endregion Special Properties
 
+                            if ($TranspilersCachedAt -le $LastFunctionDefinedAt) {
+                                . RefreshTranspilers
+                                $astForeach.Reset()
+                                continue NextAstItem
+                            }
                         }
                         # If the transpiler had output, do not process any more transpilers.
                         if ($pipeScriptOutput) { break }

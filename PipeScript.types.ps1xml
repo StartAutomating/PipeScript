@@ -2,6 +2,60 @@
 <!-- Generated with EZOut 1.9.9: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
 <Types>
   <Type>
+    <Name>System.Management.Automation.AliasInfo</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Namespace</Name>
+        <ReferencedMemberName>CommandNamespace</ReferencedMemberName>
+      </AliasProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.ApplicationInfo</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Namespace</Name>
+        <ReferencedMemberName>CommandNamespace</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptProperty>
+        <Name>Root</Name>
+        <GetScriptBlock>
+                        if ($this.'.Root') {
+    return $this.'.Root'    
+}
+
+$nextRoot = $this.Source | Split-Path
+:findingRoot do {
+    
+    $lastRoot = $nextRoot
+    $lastRootName = $lastRoot | Split-Path -Leaf
+
+    if ($lastRootName -as [Version]) {
+        $lastRootName = $lastRoot | Split-Path | Split-Path -Leaf
+    }
+
+    foreach ($fileNameThatIndicatesRoot in 'LICENSE', 'LICENSE.txt', 
+        "$LastRootName.psd1", "$LastRootName.psm1", ".git") {
+        $lookingForPath = Join-Path $lastRoot $fileNameThatIndicatesRoot
+        if (Test-Path $lookingForPath) {
+            break findingRoot
+        }
+    }
+
+    $nextRoot = $nextRoot | Split-Path
+} while ($nextRoot)
+
+$this | Add-Member NoteProperty '.Root' "$lastRoot" -Force
+$this.'.Root'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        $this | Add-Member NoteProperty ".Root" $args -Force
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
     <Name>System.Management.Automation.Language.Ast</Name>
     <Members>
       <ScriptMethod>
@@ -863,6 +917,509 @@ if ($foundTranspiler) {
     </Members>
   </Type>
   <Type>
+    <Name>System.Management.Automation.CommandInfo</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Categories</Name>
+        <ReferencedMemberName>Category</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Example</Name>
+        <ReferencedMemberName>Examples</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Link</Name>
+        <ReferencedMemberName>Links</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Order</Name>
+        <ReferencedMemberName>Rank</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptMethod>
+        <Name>CouldPipe</Name>
+        <Script>
+                        param([PSObject]$InputObject)
+
+:nextParameterSet foreach ($paramSet in $this.ParameterSets) {
+    if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
+    $params = @{}
+    $mappedParams = [Ordered]@{} # Create a collection of mapped parameters
+    # Walk thru each parameter of this command
+    :nextParameter foreach ($myParam in $paramSet.Parameters) {
+        # If the parameter is ValueFromPipeline
+        if ($myParam.ValueFromPipeline) {
+            $potentialPSTypeNames = @($myParam.Attributes.PSTypeName) -ne ''
+            if ($potentialPSTypeNames)  {                                
+                foreach ($potentialTypeName in $potentialPSTypeNames) {
+                    if ($potentialTypeName -and $InputObject.pstypenames -contains $potentialTypeName) {
+                        $mappedParams[$myParam.Name] = $params[$myParam.Name] = $InputObject
+                        continue nextParameter
+                    }
+                }                                    
+            }
+            # and we have an input object
+            elseif ($null -ne $inputObject -and
+                (
+                    # of the exact type
+                    $myParam.ParameterType -eq $inputObject.GetType() -or
+                    # (or a subclass of that type)
+                    $inputObject.GetType().IsSubClassOf($myParam.ParameterType) -or
+                    # (or an inteface of that type)
+                    ($myParam.ParameterType.IsInterface -and $InputObject.GetType().GetInterface($myParam.ParameterType))
+                )
+            ) {
+                # then map the parameter.
+                $mappedParams[$myParam.Name] = $params[$myParam.Name] = $InputObject
+            }
+        }
+    }
+    # Check for parameter validity.
+    foreach ($mappedParamName in @($mappedParams.Keys)) {
+        if (-not $this.IsParameterValid($mappedParamName, $mappedParams[$mappedParamName])) {
+            $mappedParams.Remove($mappedParamName)
+        }
+    }
+    if ($mappedParams.Count -gt 0) {
+        return $mappedParams
+    }
+}
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>CouldPipeType</Name>
+        <Script>
+                        param(
+[Type]
+$Type
+)
+
+:nextParameterSet foreach ($paramSet in $this.ParameterSets) {
+    if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
+    $params = @{}
+    $mappedParams = [Ordered]@{} # Create a collection of mapped parameters
+    # Walk thru each parameter of this command
+    :nextParameter foreach ($myParam in $paramSet.Parameters) {
+        # If the parameter is ValueFromPipeline
+        if ($myParam.ValueFromPipeline -and
+            (
+        
+                # of the exact type
+                $myParam.ParameterType -eq $type -or
+                # (or a subclass of that type)
+                $type.IsSubClassOf($myParam.ParameterType) -or
+                # (or an inteface of that type)
+                ($myParam.ParameterType.IsInterface -and $type.GetInterface($myParam.ParameterType))
+            )
+        ) {
+            return $true
+        }        
+    }
+}
+
+return $false
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>CouldRun</Name>
+        <Script>
+                        param([Collections.IDictionary]$params, [string]$ParameterSetName)
+
+:nextParameterSet foreach ($paramSet in $this.ParameterSets) {
+    if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
+    $mappedParams = [Ordered]@{} # Create a collection of mapped parameters
+    $mandatories  =  # Walk thru each parameter of this command
+        @(foreach ($myParam in $paramSet.Parameters) {
+            if ($params.Contains($myParam.Name)) { # If this was in Params,
+                $mappedParams[$myParam.Name] = $params[$myParam.Name] # then map it.
+            } else {
+                foreach ($paramAlias in $myParam.Aliases) { # Otherwise, check the aliases
+                    if ($params.Contains($paramAlias)) { # and map it if the parameters had the alias.
+                        $mappedParams[$myParam.Name] = $params[$paramAlias]
+                        break
+                    }
+                }
+            }
+            if ($myParam.IsMandatory) { # If the parameter was mandatory,
+                $myParam.Name # keep track of it.
+            }
+        })
+
+    # Check for parameter validity.
+    foreach ($mappedParamName in @($mappedParams.Keys)) {
+        if (-not $this.IsParameterValid($mappedParamName, $mappedParams[$mappedParamName])) {
+            $mappedParams.Remove($mappedParamName)
+        }
+    }
+    
+    foreach ($mandatoryParam in $mandatories) { # Walk thru each mandatory parameter.
+        if (-not $mappedParams.Contains($mandatoryParam)) { # If it wasn't in the parameters.
+            continue nextParameterSet
+        }
+    }
+    return $mappedParams
+}
+return $false
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>GetHelpField</Name>
+        <Script>
+                        param([Parameter(Mandatory)]$Field)
+$fieldNames = 'synopsis','description','link','example','inputs', 'outputs', 'parameter', 'notes'
+foreach ($block in $this.BlockComments) {                
+    foreach ($match in [Regex]::new("
+        \.(?&lt;Field&gt;$Field)                   # Field Start
+        [\s-[\r\n]]{0,}                      # Optional Whitespace
+        [\r\n]+                              # newline
+        (?&lt;Content&gt;(?:.|\s)+?(?=
+        (
+            [\r\n]{0,}\s{0,}\.(?&gt;$($fieldNames -join '|'))|
+            \#\&gt;|
+            \z
+        ))) # Anything until the next .field or end of the comment block
+        ", 'IgnoreCase,IgnorePatternWhitespace', [Timespan]::FromSeconds(1)).Matches(
+            $block.Value
+        )) {                        
+        $match.Groups["Content"].Value -replace '[\s\r\n]+$'
+    }
+}
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>IsParameterValid</Name>
+        <Script>
+                        param([Parameter(Mandatory)]$ParameterName, [PSObject]$Value)
+
+if ($this.Parameters.Count -ge 0 -and 
+    $this.Parameters[$parameterName].Attributes
+) {
+    foreach ($attr in $this.Parameters[$parameterName].Attributes) {
+        $_ = $value
+        if ($attr -is [Management.Automation.ValidateScriptAttribute]) {
+            $result = try { . $attr.ScriptBlock } catch { $null }
+            if ($result -ne $true) {
+                return $false
+            }
+        }
+        elseif ($attr -is [Management.Automation.ValidatePatternAttribute] -and 
+                (-not [Regex]::new($attr.RegexPattern, $attr.Options, '00:00:05').IsMatch($value))
+            ) {
+                return $false
+            }
+        elseif ($attr -is [Management.Automation.ValidateSetAttribute] -and 
+                $attr.ValidValues -notcontains $value) {
+                    return $false
+                }
+        elseif ($attr -is [Management.Automation.ValidateRangeAttribute] -and (
+            ($value -gt $attr.MaxRange) -or ($value -lt $attr.MinRange)
+        )) {
+            return $false
+        }
+    }
+}
+return $true
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>Validate</Name>
+        <Script>
+                        param(
+    # input being validated
+    [PSObject]$ValidateInput,
+    # If set, will require all [Validate] attributes to be valid.
+    # If not set, any input will be valid.
+    [switch]$AllValid
+)
+
+foreach ($attr in $this.ScriptBlock.Attributes) {
+    if ($attr -is [Management.Automation.ValidateScriptAttribute]) {
+        try {
+            $_ = $this = $psItem = $ValidateInput
+            $isValidInput = . $attr.ScriptBlock
+            if ($isValidInput -and -not $AllValid) { return $true}
+            if (-not $isValidInput -and $AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } elseif ($AllValid) {
+                    throw "'$ValidateInput' is not a valid value."
+                }
+            }
+        } catch {
+            if ($AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw
+                }
+            }
+        }
+    }
+    elseif ($attr -is [Management.Automation.ValidateSetAttribute]) {
+        if ($ValidateInput -notin $attr.ValidValues) {
+            if ($AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw "'$ValidateInput' is not a valid value.  Valid values are '$(@($attr.ValidValues) -join "','")'"
+                }
+            }
+        } elseif (-not $AllValid) {
+            return $true
+        }
+    }
+    elseif ($attr -is [Management.Automation.ValidatePatternAttribute]) {
+        $matched = [Regex]::new($attr.RegexPattern, $attr.Options, [Timespan]::FromSeconds(1)).Match("$ValidateInput")
+        if (-not $matched.Success) {
+            if ($allValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw "'$ValidateInput' is not a valid value.  Valid values must match the pattern '$($attr.RegexPattern)'"
+                }
+            }
+        } elseif (-not $AllValid) {
+            return $true
+        }
+    }
+    elseif ($attr -is [Management.Automation.ValidateRangeAttribute]) {
+        if ($null -ne $attr.MinRange -and $validateInput -lt $attr.MinRange) {
+            if ($AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw "'$ValidateInput' is below the minimum range [ $($attr.MinRange)-$($attr.MaxRange) ]"
+                }
+            }
+        }
+        elseif ($null -ne $attr.MaxRange -and $validateInput -gt $attr.MaxRange) {
+            if ($AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw "'$ValidateInput' is above the maximum range [ $($attr.MinRange)-$($attr.MaxRange) ]"
+                }
+            }
+        }
+        elseif (-not $AllValid) {
+            return $true
+        }
+    }
+}
+
+if ($AllValid) {
+    return $true
+} else {
+    return $false
+}
+                    </Script>
+      </ScriptMethod>
+      <ScriptProperty>
+        <Name>BlockComments</Name>
+        <GetScriptBlock>
+                        if (-not $this.ScriptBlock) {
+    return @()
+}
+
+@([Regex]::New("
+\&lt;\# # The opening tag
+(?&lt;Block&gt;
+    (?:.|\s)+?(?=\z|\#&gt;) # anything until the closing tag
+)
+\#\&gt; # the closing tag
+", 'IgnoreCase,IgnorePatternWhitespace', '00:00:01').Matches($this.ScriptBlock)) -as [Text.RegularExpressions.Match[]]
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Category</Name>
+        <GetScriptBlock>
+                        @(foreach ($attr in $this.ScriptBlock.Attributes) {
+    if ($attr -is [Reflection.AssemblyMetaDataAttribute] -and
+        $attr.Key -eq 'Category') {
+        $attr.Value
+    }
+    elseif ($attr -is [ComponentModel.CategoryAttribute]) {
+        $attr.Category
+    }
+}) -as [string[]]
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>CommandMetaData</Name>
+        <GetScriptBlock>
+                        if (-not $this.'.CommandMetadata') {
+    $this.psobject.properties.add(
+        [psnoteproperty]::new('.CommandMetadata', 
+            [PSObject]::new([Management.Automation.CommandMetadata]::new($this))
+        ), $true
+    )    
+}
+
+return $this.'.CommandMetadata'
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>CommandNamespace</Name>
+        <GetScriptBlock>
+                        $matched = $this.Separator.Match($this.FullyQualifiedName)
+if ($matched.Success -and $matched.Index -gt 0) {
+    $this.FullyQualifiedName.Substring(0,$matched.Index)
+}
+else {
+    ''
+}
+
+
+
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Description</Name>
+        <GetScriptBlock>
+                        @($this.GetHelpField("Description"))[0] -replace '^\s+'
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Examples</Name>
+        <GetScriptBlock>
+                        $this.GetHelpField("Example")
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>FullyQualifiedName</Name>
+        <GetScriptBlock>
+                        if ($this -is [Management.Automation.ExternalScriptInfo] -or 
+    $this -is [Management.Automation.ApplicationInfo]) {
+    if ($this.Root -and 
+        $this.Source.StartsWith -and
+        $this.Source.StartsWith($this.Root, "OrdinalIgnoreCase")) {
+        $this.Source.Substring($this.Root.Length)
+    } else {
+        $this.Source
+    }    
+}
+elseif ($this.Module) {
+    '' + $this.Module + '\' + $this.Name
+} 
+elseif ($this -is [Management.Automation.CmdletInfo]) {
+    $this.ImplementingType.Namespace + '.' + $this.Name
+}
+else {
+    $this.Name
+}
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>HasValidation</Name>
+        <GetScriptBlock>
+                        foreach ($attr in $this.ScriptBlock.Attributes) {
+    if ($attr -is [Management.Automation.ValidateScriptAttribute] -or
+        $attr -is [Management.Automation.ValidateSetAttribute] -or 
+        $attr -is [Management.Automation.ValidatePatternAttribute] -or 
+        $attr -is [Management.Automation.ValidateRangeAttribute]) {
+        return $true                        
+    }
+}
+
+return $false
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Links</Name>
+        <GetScriptBlock>
+                        $this.GetHelpField("Link")
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Metadata</Name>
+        <GetScriptBlock>
+                        $Metadata = [Ordered]@{}
+foreach ($attr in $this.ScriptBlock.Attributes) {
+    if ($attr -is [Reflection.AssemblyMetaDataAttribute]) {
+        if ($Metadata[$attr.Key]) {
+            $Metadata[$attr.Key] = @($Metadata[$attr.Key]) + $attr.Value
+        } else {
+            $Metadata[$attr.Key] = $attr.Value
+        }                            
+    }
+}
+return $Metadata
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Rank</Name>
+        <GetScriptBlock>
+                        foreach ($attr in $this.ScriptBlock.Attributes) {
+    if ($attr -is [Reflection.AssemblyMetaDataAttribute] -and
+        $attr.Key -in 'Order', 'Rank') {
+        return $attr.Value -as [int]
+    }
+}
+return 0
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Segments</Name>
+        <GetScriptBlock>
+                        $allMatches = @($this.Separator.Matches($this.FullyQualifiedName))
+@(
+    # All namespaces are a series of matches
+    foreach ($matched in $allMatches) {
+        $this.FullyQualifiedName.Substring($matched.Index)
+    }
+    if ($matched.Index -gt 0) {
+        $this.FullyQualifiedName
+    }
+) -as [string[]]
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Separator</Name>
+        <GetScriptBlock>
+                        # Allowing this to be set (caching what what set in .`.NamespaceSeparator`)
+if ($this.'.Separator') {    
+    if ($this.'.Separator' -is [regex]) {
+        $this.'.Separator'
+    } else {
+        [Regex]::new("[" +
+            [Regex]::Escape($this.'.Separator') +
+        "]", 'RightToLeft')
+    }
+}
+# Laying groundwork for some special/automatic variables
+elseif ($psCommandNameSeparator) 
+{
+    if ($psCommandNameSeparator -is [string])  {
+        [Regex]::new("[" +
+            [Regex]::Escape($psCommandNameSeparator) +
+        "]{1,}", 'RightToLeft')
+    } elseif ($psCommandNameSeparator -is [regex]) {
+        $psCommandNameSeparator
+    }
+}
+else
+{
+    [Regex]::new('[\p{P}&lt;&gt;]{1,}','RightToLeft')
+}
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        $this | Add-Member NoteProperty ".Separator" $args -Force
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Synopsis</Name>
+        <GetScriptBlock>
+                        @($this.GetHelpField("Synopsis"))[0] -replace '^\s+'
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
     <Name>System.Management.Automation.Language.ConstantExpressionAst</Name>
     <Members>
       <ScriptMethod>
@@ -872,6 +1429,60 @@ if ($foundTranspiler) {
 
                     </Script>
       </ScriptMethod>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.ExternalScriptInfo</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Namespace</Name>
+        <ReferencedMemberName>CommandNamespace</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptProperty>
+        <Name>Root</Name>
+        <GetScriptBlock>
+                        if ($this.'.Root') {
+    return $this.'.Root'
+}
+
+$nextRoot = $this.Source | Split-Path
+:findingRoot do {
+    
+    $lastRoot = $nextRoot
+    $lastRootName = $lastRoot | Split-Path -Leaf
+
+    if ($lastRootName -as [Version]) {
+        $lastRootName = $lastRoot | Split-Path | Split-Path -Leaf
+    }
+
+    foreach ($fileNameThatIndicatesRoot in 'LICENSE', 'LICENSE.txt', 
+        "$LastRootName.psd1", "$LastRootName.psm1", ".git") {
+        $lookingForPath = Join-Path $lastRoot $fileNameThatIndicatesRoot
+        if (Test-Path $lookingForPath) {
+            break findingRoot
+        }
+    }
+
+    $nextRoot = $nextRoot | Split-Path
+} while ($nextRoot)
+
+$this | Add-Member NoteProperty '.Root' "$lastRoot" -Force
+$this.'.Root'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        $this | Add-Member NoteProperty ".Root" $args -Force
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.FunctionInfo</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Namespace</Name>
+        <ReferencedMemberName>CommandNamespace</ReferencedMemberName>
+      </AliasProperty>
     </Members>
   </Type>
   <Type>

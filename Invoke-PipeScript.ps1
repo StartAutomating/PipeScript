@@ -60,6 +60,12 @@
     [PSObject[]]
     $ArgumentList = @(),
 
+    # The OutputPath.
+    # If no -OutputPath is provided and a template file is invoked, an -OutputPath will be automatically determined.
+    # This currently has no effect if not invoking a template file.
+    [string]
+    $OutputPath,
+
     # If this is not set, when a transpiler's parameters do not take a [ScriptBlock], ScriptBlock values will be evaluated.
     # This can be a very useful capability, because it can enable dynamic transpilation.
     # If this is set, will make ScriptBlockAst values will be run within data language, which significantly limits their capabilities.
@@ -103,6 +109,7 @@
     }
 
     process {
+        $MyParameters = [Ordered]@{} + $psBoundParameters
         if ($InputObject -is [scriptblock] -and -not $psBoundParameters.ContainsKey('Command')) {
             $Command = $InputObject
             $InputObject = $null
@@ -231,8 +238,11 @@
 
             # If the command was a source generator
             else {
-                # predetermine the output path
-                $outputPath = $($Command.Source -replace $IsSourceGenerator, '.${ext}')
+                if (-not $MyParameters.OutputPath) {
+                    # predetermine the output path if none was provided.
+                    $outputPath = $($Command.Source -replace $IsSourceGenerator, '.${ext}')
+                }
+                
                 # and attempt to find a transpiler.
                 $foundTranspiler = Get-Transpiler -CouldPipe $Command -ValidateInput $Command -ErrorAction Ignore
 
@@ -540,7 +550,11 @@
             $foundTranspiler  =
                 if ($InputObject) {
                     # If we had an -InputObject, be sure we can pipe it in.
-                    Get-Transpiler -TranspilerName "$transpilerStepName" | Where-Object { $_ | Get-Transpiler -CouldPipe $InputObject }
+                    foreach ($potentialTranspiler in Get-Transpiler -TranspilerName "$transpilerStepName") {
+                        if ($potentialTranspiler.CouldPipe($inputObject)) {
+                            $potentialTranspiler
+                        }
+                    }
                 } else {
                     # Otherwise, just get the step by name.
                     Get-Transpiler -TranspilerName "$transpilerStepName"

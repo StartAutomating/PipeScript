@@ -13,6 +13,14 @@ HTTP Accept.
 HTTP Accept indicates what content types the web request will accept as a response.
 '
         }
+    .EXAMPLE
+        New-PipeScript -Parameter @{"bar"=@{
+            Name = "foo"
+            Help = 'Foobar'
+            Attributes = "Mandatory","ValueFromPipelineByPropertyName"
+            Aliases = "fubar"
+            Type = "string"
+        }}
     #>
     [Alias('New-ScriptBlock')]
     param(
@@ -156,7 +164,9 @@ HTTP Accept indicates what content types the web request will accept as a respon
     # The name of the function to create.
     [string]
     $FunctionName,
-    # The type of the function to create.  This will be ignored if -FunctionName is not passed.
+    # The type or namespace the function to create.  This will be ignored if -FunctionName is not passed.
+    # If the function type is not function or filter, it will be treated as a function namespace.
+    [Alias('FunctionNamespace','CommandNamespace')]
     [string]
     $FunctionType = 'function',
     # A description of the script's functionality.  If provided with -Synopsis, will generate help.
@@ -175,7 +185,10 @@ HTTP Accept indicates what content types the web request will accept as a respon
     $Link,
     # A list of attributes to declare on the scriptblock.
     [string[]]
-    $Attribute
+    $Attribute,
+    # If set, will not transpile the created code.
+    [switch]
+    $NoTranspile
     )
     begin {
         $ParametersToCreate    = [Ordered]@{}
@@ -230,7 +243,10 @@ HTTP Accept indicates what content types the web request will accept as a respon
         if ($Attribute) {
             $allHeaders += $Attribute
         }
+        # If -Parameter was passed, we will need to define parameters.
         if ($parameter) {
+            # this will end up populating an [Ordered] dictionary, $parametersToCreate.
+            # However, for ease of use, -Parameter can be very flexible.
             # The -Parameter can be a dictionary of parameters.
             if ($Parameter -is [Collections.IDictionary]) {
                 $parameterType = ''
@@ -257,7 +273,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                     elseif ($EachParameter.Value -is [string]) {
                         # embed it directly.
                         $ParametersToCreate[$EachParameter.Key] = $EachParameter.Value
-                    }
+                    }                    
                     # If the value is a ScriptBlock
                     elseif ($EachParameter.Value -is [ScriptBlock]) {
                         # Embed it
@@ -280,6 +296,64 @@ HTTP Accept indicates what content types the web request will accept as a respon
                     elseif ($EachParameter.Value -is [Object[]]) {
                         $ParametersToCreate[$EachParameter.Key] = # join it's elements by newlines
                             $EachParameter.Value -join [Environment]::Newline
+                    }
+                    elseif ($EachParameter.Value -is [Collections.IDictionary] -or 
+                        $EachParameter.Value -is [PSObject]) {
+                        $parameterMetadata = $EachParameter.Value
+                        $parameterName = $EachParameter.Key
+                        if ($parameterMetadata.Name) {
+                            $parameterName = $parameterMetadata.Name
+                        }
+                        
+                        $parameterAttributeParts = @()
+                        $ParameterOtherAttributes = @()
+                        $attrs = 
+                            if ($parameterMetadata.Attributes) { $parameterMetadata.Attributes }
+                            elseif ($parameterMetadata.Attribute) { $parameterMetadata.Attribute }
+                        $aliases =
+                            if ($parameterMetadata.Alias) { $parameterMetadata.Alias }
+                            elseif ($parameterMetadata.Aliases) { $parameterMetadata.Aliases }
+                        $parameterHelp =
+                            if ($parameterMetadata.Help) { $parameterMetadata.Help}                            
+                        $aliasAttribute = @(foreach ($alias in $aliases) {
+                            $alias -replace "'","''"                            
+                        }) -join "','"
+                        if ($aliasAttribute) {
+                            $aliasAttribute = "[Alias('$aliasAttribute')]"
+                        }
+                        
+                        foreach ($attr in $attrs) {
+                            if ($attr -notmatch '^\[') {
+                                $parameterAttributeParts += $attr
+                            } else {
+                                $ParameterOtherAttributes += $attr
+                            }
+                        }
+                        $parameterType = 
+                            if ($parameterMetadata.Type) {$parameterMetadata.Type }
+                            elseif ($parameterMetadata.ParameterType) {$parameterMetadata.ParameterType }
+                        $ParametersToCreate[$parameterName] = @(
+                            if ($ParameterHelp) {
+                                $ParameterHelp | embedParameterHelp
+                            }
+                            if ($parameterAttributeParts) {
+                                "[Parameter($($parameterAttributeParts -join ','))]"
+                            }
+                            if ($aliasAttribute) {
+                                $aliasAttribute
+                            }
+                            if ($parameterType -as [type]) {
+                                "[$(($parameterType -as [type]).FullName -replace '^System\.')]"
+                            }
+                            elseif ($parameterType) {
+                                "[PSTypeName('$($parameterType -replace '^System\.')')]"
+                            }
+                            
+                            if ($ParameterOtherAttributes) {
+                                $ParameterOtherAttributes
+                            }
+                            '$' + ($parameterName -replace '^$')
+                        ) -join [Environment]::newLine
                     }
                 }
             }
@@ -422,8 +496,21 @@ HTTP Accept indicates what content types the web request will accept as a respon
             # join them with the new parameter block.
             $newParamBlock = $parameterScriptBlocks | Join-PipeScript
         }
+        
+        # If we provided a -FunctionName, we'll be declaring a function.
+        $functionDeclaration =
+            # If the -FunctionType is function or filter
+            if ($functionName -and $functionType -in 'function', 'filter') {
+                # we declare it naturally.
+                "$functionType $FunctionName  {"
+            } elseif ($FunctionName) {
+                # Otherwise, we declare it as a command namespace
+                "$functionName function $functionName {"
+                # (which means we have to transpile).
+                $NoTranspile = $false
+            }
         # Create the script block by combining together the provided parts.
-        $createdScriptBlock = [scriptblock]::Create("$(if ($functionName) { "$functionType $FunctionName {"})
+        $createdScriptBlock = [scriptblock]::Create("$(if ($functionDeclaration) { "$functionDeclaration"})
 $($allHeaders -join [Environment]::Newline)
 $newParamBlock
 $(if ($allDynamicParameters) {
@@ -440,16 +527,13 @@ $(if ($allEndBlocks -and -not $allBeginBlocks -and -not $allProcessBlocks) {
 } elseif ($allEndBlocks) {
     @(@("end {") + $allEndBlocks + '}') -join [Environment]::Newline
 })
-$(if ($FunctionName) { '}'}) 
+$(if ($functionDeclaration) { '}'}) 
 ")
-        # If we have a -FunctionName and the -FunctionType is not a built-in function type
-        if ($CreatedScriptBlock -and 
-            $functionName -and $FunctionType -notin 'function', 'filter') {
-            # return the transpiled script.
-            return $createdScriptBlock.Transpile()
-        } else {
-            # otherwise, return the created script.
-            return $createdScriptBlock
+        # If -NoTranspile was passed, 
+        if ($createdScriptBlock -and $NoTranspile) {
+            $createdScriptBlock # output the script as-is
+        } elseif ($createdScriptBlock) { # otherwise            
+            $createdScriptBlock | .>PipeScript # output the transpiled script.
         }
     }
 }

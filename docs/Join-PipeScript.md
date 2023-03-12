@@ -191,6 +191,21 @@ Excluded parameters with default values will declare the default value at the be
 
 
 
+#### **Indent**
+
+The amount of indentation to use for parameters and named blocks.  By default, four spaces.
+
+
+
+
+
+
+|Type     |Required|Position|PipelineInput|Aliases    |
+|---------|--------|--------|-------------|-----------|
+|`[Int32]`|false   |named   |false        |Indentation|
+
+
+
 
 
 ---
@@ -198,5 +213,5 @@ Excluded parameters with default values will declare the default value at the be
 
 ### Syntax
 ```PowerShell
-Join-PipeScript -ScriptBlock <ScriptBlock[]> [-ExcludeBlockType <String[]>] [-IncludeBlockType <String[]>] [-Transpile] [-IncludeParameter <String[]>] [-ExcludeParameter <String[]>] [<CommonParameters>]
+Join-PipeScript -ScriptBlock <ScriptBlock[]> [-ExcludeBlockType <String[]>] [-IncludeBlockType <String[]>] [-Transpile] [-IncludeParameter <String[]>] [-ExcludeParameter <String[]>] [-Indent <Int32>] [<CommonParameters>]
 ```
