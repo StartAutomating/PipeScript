@@ -107,6 +107,23 @@ A list of positional arguments.  These will be directly passed to the underlying
 
 
 
+#### **OutputPath**
+
+The OutputPath.
+If no -OutputPath is provided and a template file is invoked, an -OutputPath will be automatically determined.
+This currently has no effect if not invoking a template file.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |named   |false        |
+
+
+
 #### **SafeScriptBlockAttributeEvaluation**
 
 If this is not set, when a transpiler's parameters do not take a [ScriptBlock], ScriptBlock values will be evaluated.
@@ -131,5 +148,5 @@ If this is set, will make ScriptBlockAst values will be run within data language
 
 ### Syntax
 ```PowerShell
-Invoke-PipeScript [-InputObject <PSObject>] [[-Command] <PSObject>] [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [-SafeScriptBlockAttributeEvaluation] [<CommonParameters>]
+Invoke-PipeScript [-InputObject <PSObject>] [[-Command] <PSObject>] [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [-OutputPath <String>] [-SafeScriptBlockAttributeEvaluation] [<CommonParameters>]
 ```
