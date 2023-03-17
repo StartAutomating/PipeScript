@@ -14,6 +14,7 @@
 [ValidateScript({
     $commandAst = $_
 
+    if ($commandAst -isnot [Management.Automation.Language.CommandAst]) { return $false }
     if ($commandAst.CommandElements.Count -eq 1) { return $false }
     # If neither command element contained a URI
     if (-not ($commandAst.CommandElements[1].Value -match '^https{0,1}://')) {

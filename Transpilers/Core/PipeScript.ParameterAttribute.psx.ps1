@@ -5,7 +5,7 @@
     if (-not $_.Parent -is [Management.Automation.Language.ParameterAst]) {
         return $false
     }
-
+    if (-not $_.TypeName.GetReflectionType) { return $false }
     $isRealType = $_.TypeName.GetReflectionType()
     if ($isRealType) { return $false }
     return $true

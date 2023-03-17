@@ -20,6 +20,7 @@ using namespace System.Management.Automation.Language
 
 [ValidateScript({
     $commandAst = $_    
+    if ($commandAst -isnot [CommandAst]) { return $false }
     if ($commandAst.CommandElements[0..1] -match '^udp://' -ne $null) {
         if ($commandAst.CommandElements[0] -notmatch '^udp://') {
             if ($commandAst.CommandElements[0].value -notin 'send', 'receive') {

@@ -54,7 +54,10 @@
     }
 #>
 [ValidateScript({
-    $commandAst = $_    
+    $commandAst = $_
+    if ($commandAst -isnot [Management.Automation.Language.CommandAst]) {
+        return $false
+    }    
     return ($commandAst -and 
         $CommandAst.CommandElements[0].Value -eq 'until' -or
         (
