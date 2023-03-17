@@ -83,9 +83,59 @@ process {
         $Splat.SourceText = [IO.File]::ReadAllText($commandInfo.Source)
     }
     
-    if ($Parameter) { $splat.Parameter = $Parameter }
+    if ($Parameter)    { $splat.Parameter = $Parameter }
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
-
+ 
+    $Splat.Begin = {
+        filter OutputCSS($depth) {
+            $in = $_ # Capture the input object into a variable.
+            if ($in -is [string]) { # If the input was a string
+                return $in # directly embed it.
+            } 
+            elseif ($in -is [object[]]) { # If the input was an array
+                # pipe back to ourself (increasing the depth)
+                @($in | & $MyInvocation.MyCommand.ScriptBlock -Depth ($depth + 1)) -join [Environment]::NewLine
+            }
+            else { # Otherwise
+                
+                # we want to treat everything as a dictionary
+                $inDictionary = [Ordered]@{}
+                # so take any object that isn't a dictionary
+                if ($in -isnot [Collections.IDictionary]) {
+                    # and make it one.
+                    foreach ($prop in $in.PSObject.properties) {
+                        $inDictionary[$prop.Name] = $prop.Value
+                    }                
+                } else {
+                    $inDictionary += $in
+                }
+        
+                # Then walk over each key/valye in the dictionary
+                $innerCss = $(@(foreach ($kv in $inDictionary.GetEnumerator()) {                            
+                    if ($kv.Value -isnot [string]) {
+                        $kv.Key + ' ' + "$($kv.Value | ToCSS -Depth ($depth + 1))" 
+                    }
+                    else {
+                        $kv.Key + ':' + $kv.Value
+                    }                                                        
+                }) -join (
+                    ';' + [Environment]::NewLine + (' ' * 2 * ($depth))
+                ))
+        
+                $(if ($depth){'{'} else {''}) + 
+                    [Environment]::NewLine + 
+                    (' ' * 2 * ($depth)) + 
+                    $innerCss + 
+                    [Environment]::NewLine + 
+                    (' ' * 2 * ([Math]::max($depth - 1,0))) +
+                    $(if ($depth){'}'} else {''})
+            }
+        }
+    }
+    $Splat.ForeachObject = {
+        $_ | OutputCSS        
+    }
+ 
     # If we are being used within a keyword,
     if ($AsTemplateObject) {
         $splat # output the parameters we would use to evaluate this file.
