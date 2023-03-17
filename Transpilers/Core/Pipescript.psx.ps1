@@ -59,20 +59,21 @@ $Transpiler
 begin {
     $myCmd = $MyInvocation.MyCommand
 
-    function RefreshTranspilers {
-        $PotentialTranspilers = Get-Transpiler -Force
+    function RefreshTranspilers([switch]$Force) {
+        $PotentialTranspilers = Get-Transpiler -Force:$Force
 
         $TranspilersByType = [Ordered]@{}
         foreach ($PotentialTranspiler in $PotentialTranspilers) {
-            :nextParameterSet foreach ($paramSet in $PotentialTranspiler.ParameterSets) {
-                foreach ($parameter in $paramSet.Parameters) {
-                    if ($parameter.ValueFromPipeline) {
-                        if (-not $TranspilersByType[$parameter.ParameterType]) {
-                            $TranspilersByType[$parameter.ParameterType] = @()
+            $potentialTranspilerCommandMetadata = $PotentialTranspiler -as [Management.Automation.CommandMetadata]
+            :nextParameter foreach ($parameterMetaData in $potentialTranspilerCommandMetadata.Parameters.Values) {
+                foreach ($paramSet in $parameterMetaData.ParameterSets.Values) {
+                    if ($paramSet.ValueFromPipeline) {
+                        if (-not $TranspilersByType[$parameterMetaData.ParameterType]) {
+                            $TranspilersByType[$parameterMetaData.ParameterType] = @()
                         }
-                        $TranspilersByType[$parameter.ParameterType] += $PotentialTranspiler
-                        continue nextParameterSet
-                    }                
+                        $TranspilersByType[$parameterMetaData.ParameterType] += $PotentialTranspiler
+                        continue nextParameter
+                    }                    
                 }
             }
         }
@@ -349,7 +350,7 @@ process {
                             #endregion Special Properties
 
                             if ($TranspilersCachedAt -le $LastFunctionDefinedAt) {
-                                . RefreshTranspilers
+                                . RefreshTranspilers -Force
                                 $astForeach.Reset()
                                 continue NextAstItem
                             }
