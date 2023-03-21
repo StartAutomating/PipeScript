@@ -27,6 +27,10 @@ $FilePath,
 [switch]
 $AsByte,
 
+# If set, will pass thru the included item
+[switch]
+$Passthru,
+
 [Parameter(Mandatory,ParameterSetName='VariableAST', ValueFromPipeline)]
 [Management.Automation.Language.VariableExpressionast]
 $VariableAst
@@ -85,7 +89,11 @@ $includedScript =
         [ScriptBlock]::Create(@"
 function $($includingCommand.Name) {
     $($includingCommand.ScriptBlock)
-}
+}$(
+if ($Passthru) {
+    [Environment]::NewLine +
+        "`$executionContext.SessionState.InvokeCommand.GetCommand(`"$($includingCommand.Name)`",'Function')"
+})
 "@)
         }        
     } elseif ($includingCommand.ScriptBlock) {
@@ -93,7 +101,9 @@ function $($includingCommand.Name) {
         [ScriptBlock]::Create(@"
 `${$($includingCommand.Name)} =  {
     $($includingCommand.ScriptBlock)
-}
+}$(
+if ($Passthru) { [Environment]::NewLine + "`${$($includingCommand.Name)}"}
+)
 "@)
         
     } 
@@ -108,8 +118,10 @@ function $($includingCommand.Name) {
     elseif ($includingCommand.Source -match '\.ps$') {
         [ScriptBlock]::Create(@"
 `${$($includingCommand.Name)} =  {
-    $([ScriptBlock]::Create([IO.File]::ReadAllText($includingCommand.Source)) | .<PipeScript>)
-}
+    $([ScriptBlock]::Create([IO.File]::ReadAllText($includingCommand.Source)) | .>PipeScript)
+}$(
+if ($Passthru) { [Environment]::NewLine + "`${$($includingCommand.Name)}"}
+)
 "@)
         
     } elseif ($includingCommand) {
@@ -131,7 +143,9 @@ if ($psCmdlet.ParameterSetName -eq 'ScriptBlock' -or
 foreach (`$file in (Get-ChildItem -Path "$($VariableAst)" -Filter "$FilePath" -Recurse)) {
     if (`$file.Extension -ne '.ps1')      { continue }  # Skip if the extension is not .ps1
     if (`$file.Name -match '\.[^\.]+\.ps1$') { continue }  # Skip if the file is an unrelated file.
-    . `$file.FullName
+    . `$file.FullName$(
+    if ($Passthru) { [Environment]::NewLine + (' ' * 4) + '$file'}
+    )
 }
 "@)
 }
