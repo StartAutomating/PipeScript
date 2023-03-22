@@ -587,7 +587,7 @@ jobs:
         id: PipeScriptMain
       - name: Run PipeScript (on branch)
         if: ${{github.ref_name != 'main'}}
-        uses: ../action.yml
+        uses: action.yml
         id: PipeScriptBranch
       - name: UseEZOut
         uses: StartAutomating/EZOut@master
