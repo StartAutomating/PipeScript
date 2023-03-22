@@ -2,11 +2,6 @@
 <img src='Assets/PipeScript.svg' style='width:80%' />
 </div>
 
-~~~PipeScript {
-    throw "Checking for build failures"
-}
-~~~
-
 # What Is PipeScript?
 
 PipeScript is a new programming language built atop PowerShell.
