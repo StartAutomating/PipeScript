@@ -162,10 +162,16 @@ $PipeScriptTook = [Datetime]::Now - $PipeScriptStart
 
 $BuildPipeScriptStart = [DateTime]::Now
 if (-not $SkipBuild) {
-    $buildOutputFiles = @(Build-Pipescript -InputPath $env:GITHUB_WORKSPACE)
-    $buildOutputFiles |
-        . $processScriptOutput  | 
-        Out-Host
+    $pipeScriptBuildErrors = $null
+    $buildOutputFiles = @(Build-Pipescript -InputPath $env:GITHUB_WORKSPACE -ErrorVariable pipeScriptBuildErrors)
+    if ($pipeScriptBuildErrors) {
+        $pipeScriptBuildErrors
+        exit 1
+    } else {
+        $buildOutputFiles |
+            . $processScriptOutput  | 
+            Out-Host
+    }    
 }
 
 
