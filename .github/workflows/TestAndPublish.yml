@@ -581,11 +581,13 @@ jobs:
         id: PSSVG
       - name: UsePiecemeal
         uses: StartAutomating/Piecemeal@main
-      - name: Run PipeScript
-        env: 
-          BranchName: ${{github.ref_name}}
-          BranchRef: ${{github.ref}}
-        uses: StartAutomating/PipeScript@${{env.BranchName}}
+      - name: Run PipeScript (from main)
+        if: ${{github.ref_name == 'main'}}
+        uses: StartAutomating/PipeScript@main
+        id: PipeScript
+      - name: Run PipeScript (from main)
+        if: ${{github.ref_name != 'main'}}
+        uses: ./action.yml
         id: PipeScript
       - name: UseEZOut
         uses: StartAutomating/EZOut@master
