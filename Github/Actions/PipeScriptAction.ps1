@@ -56,6 +56,9 @@ $($gitHubEvent | ConvertTo-Json -Depth 100)
 ::endgroup::
 "@ | Out-Host
 
+# Set -ErrorActionPreference to continue.
+$global:ErrorActionPreference = 'continue'
+
 #region -InstallModule
 if ($InstallModule) {
     "::group::Installing Modules" | Out-Host
@@ -155,7 +158,7 @@ if ($PipeScript) {
 }
 
 $PipeScriptTook = [Datetime]::Now - $PipeScriptStart
-"::notice title=PipeScriptRuntime::$($PipeScriptScriptTook.TotalMilliseconds)" | Out-Host
+"::notice:: .PipeScript ran in $($PipeScriptScriptTook.TotalMilliseconds) ms" | Out-Host
 
 $BuildPipeScriptStart = [DateTime]::Now
 if (-not $SkipBuild) {
@@ -165,11 +168,18 @@ if (-not $SkipBuild) {
         Out-Host
 }
 
+"::notice:: Build-PipeScript ran in $($PipeScriptScriptTook.TotalSeconds) seconds" | Out-Host
+
 $BuildPipeScriptEnd = [DateTime]::Now
 $BuildPipeScriptTook = $BuildPipeScriptEnd - $BuildPipeScriptStart
-"::notice title=PipeScriptFilesBuiltCount::$($buildOutputFiles.Length)"              | Out-Host
-"::notice title=PipeScriptFilesBuilt::$($buildOutputFiles -join ';')"                | Out-Host
-"::notice title=PipeScriptBuildRuntime::$($BuildPipeScriptTook.TotalMilliseconds)"   | Out-Host
+"::group::$($buildOutputFiles.Length) files built in $($BuildPipeScriptTook.TotalSeconds) seconds" |
+    Out-Host
+
+@(
+    $buildOutputFiles | Select-Object -ExpandProperty Fullname
+) -join [Environment]::newLine | Out-Host
+
+"::endgroup::" | Out-Host
 if ($CommitMessage -or $anyFilesChanged) {
     if ($CommitMessage) {
         Get-ChildItem $env:GITHUB_WORKSPACE -Recurse |
