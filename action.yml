@@ -19,6 +19,7 @@ inputs:
       If no commit message is provided, and a commit message cannot be automatically detected, changes will not be committed.
   InstallModule: 
     required: false
+    default: 'ugit'
     description: A list of modules to be installed from the PowerShell gallery before scripts run.
   UserEmail: 
     required: false
@@ -91,7 +92,7 @@ runs:
         
         # A list of modules to be installed from the PowerShell gallery before scripts run.
         [string[]]
-        $InstallModule,
+        $InstallModule = 'ugit',
         
         # The user email associated with a git commit.
         [string]
@@ -129,7 +130,7 @@ runs:
                         $(Get-Content $_.FullName -Raw) -match 'ModuleVersion'
                     }
                 if (-not $moduleInWorkspace) {
-                    Install-Module $moduleToInstall -Scope CurrentUser -Force
+                    Install-Module $moduleToInstall -Scope CurrentUser -Force -AllowClobber
                     Import-Module $moduleToInstall -Force -PassThru | Out-Host
                 }
             }
@@ -218,7 +219,7 @@ runs:
         }
         
         $PipeScriptTook = [Datetime]::Now - $PipeScriptStart
-        "::notice:: .PipeScript ran in $($PipeScriptScriptTook.TotalMilliseconds) ms" | Out-Host
+        "::notice:: .PipeScript ran in $($PipeScriptTook.TotalMilliseconds) ms" | Out-Host
         
         $BuildPipeScriptStart = [DateTime]::Now
         if (-not $SkipBuild) {
@@ -228,7 +229,7 @@ runs:
                 Out-Host
         }
         
-        "::notice:: Build-PipeScript ran in $($PipeScriptScriptTook.TotalSeconds) seconds" | Out-Host
+        "::notice:: Build-PipeScript ran in $($PipeScriptTook.TotalSeconds) seconds" | Out-Host
         
         $BuildPipeScriptEnd = [DateTime]::Now
         $BuildPipeScriptTook = $BuildPipeScriptEnd - $BuildPipeScriptStart

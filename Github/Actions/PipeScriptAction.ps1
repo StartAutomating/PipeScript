@@ -31,7 +31,7 @@ $CommitMessage,
 
 # A list of modules to be installed from the PowerShell gallery before scripts run.
 [string[]]
-$InstallModule,
+$InstallModule = 'ugit',
 
 # The user email associated with a git commit.
 [string]
@@ -69,7 +69,7 @@ if ($InstallModule) {
                 $(Get-Content $_.FullName -Raw) -match 'ModuleVersion'
             }
         if (-not $moduleInWorkspace) {
-            Install-Module $moduleToInstall -Scope CurrentUser -Force
+            Install-Module $moduleToInstall -Scope CurrentUser -Force -AllowClobber
             Import-Module $moduleToInstall -Force -PassThru | Out-Host
         }
     }
@@ -158,7 +158,7 @@ if ($PipeScript) {
 }
 
 $PipeScriptTook = [Datetime]::Now - $PipeScriptStart
-"::notice:: .PipeScript ran in $($PipeScriptScriptTook.TotalMilliseconds) ms" | Out-Host
+"::notice:: .PipeScript ran in $($PipeScriptTook.TotalMilliseconds) ms" | Out-Host
 
 $BuildPipeScriptStart = [DateTime]::Now
 if (-not $SkipBuild) {
@@ -168,7 +168,7 @@ if (-not $SkipBuild) {
         Out-Host
 }
 
-"::notice:: Build-PipeScript ran in $($PipeScriptScriptTook.TotalSeconds) seconds" | Out-Host
+"::notice:: Build-PipeScript ran in $($PipeScriptTook.TotalSeconds) seconds" | Out-Host
 
 $BuildPipeScriptEnd = [DateTime]::Now
 $BuildPipeScriptTook = $BuildPipeScriptEnd - $BuildPipeScriptStart
