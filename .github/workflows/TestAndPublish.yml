@@ -582,7 +582,10 @@ jobs:
       - name: UsePiecemeal
         uses: StartAutomating/Piecemeal@main
       - name: Run PipeScript
-        uses: StartAutomating/PipeScript@${{github.ref_name}}
+        env: 
+          BranchName: ${{github.ref_name}}
+          BranchRef: ${{github.ref}}
+        uses: StartAutomating/PipeScript@main
         id: PipeScript
       - name: UseEZOut
         uses: StartAutomating/EZOut@master
