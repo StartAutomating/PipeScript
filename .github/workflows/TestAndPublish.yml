@@ -581,8 +581,9 @@ jobs:
         id: PSSVG
       - name: UsePiecemeal
         uses: StartAutomating/Piecemeal@main
-      - name: BuildPipeScript
-        uses: StartAutomating/PipeScript@main
+      - name: Run PipeScript
+        uses: StartAutomating/PipeScript@${{github.ref_name}}
+        id: PipeScript
       - name: UseEZOut
         uses: StartAutomating/EZOut@master
       - name: UseHelpOut
