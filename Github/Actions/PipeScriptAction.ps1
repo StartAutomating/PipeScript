@@ -168,10 +168,11 @@ if (-not $SkipBuild) {
         Out-Host
 }
 
-"::notice:: Build-PipeScript ran in $($PipeScriptTook.TotalSeconds) seconds" | Out-Host
+
 
 $BuildPipeScriptEnd = [DateTime]::Now
 $BuildPipeScriptTook = $BuildPipeScriptEnd - $BuildPipeScriptStart
+"::notice:: Build-PipeScript ran in $($BuildPipeScriptTook.TotalSeconds) seconds" | Out-Host
 "::group::$($buildOutputFiles.Length) files built in $($BuildPipeScriptTook.TotalSeconds) seconds" |
     Out-Host
 
