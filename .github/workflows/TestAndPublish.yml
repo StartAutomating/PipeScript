@@ -584,11 +584,11 @@ jobs:
       - name: Run PipeScript (from main)
         if: ${{github.ref_name == 'main'}}
         uses: StartAutomating/PipeScript@main
-        id: PipeScript
-      - name: Run PipeScript (from main)
+        id: PipeScriptMain
+      - name: Run PipeScript (on branch)
         if: ${{github.ref_name != 'main'}}
         uses: ./action.yml
-        id: PipeScript
+        id: PipeScriptBranch
       - name: UseEZOut
         uses: StartAutomating/EZOut@master
       - name: UseHelpOut
