@@ -585,7 +585,7 @@ jobs:
         env: 
           BranchName: ${{github.ref_name}}
           BranchRef: ${{github.ref}}
-        uses: StartAutomating/PipeScript@main
+        uses: StartAutomating/PipeScript@${{env.BranchName}}
         id: PipeScript
       - name: UseEZOut
         uses: StartAutomating/EZOut@master
