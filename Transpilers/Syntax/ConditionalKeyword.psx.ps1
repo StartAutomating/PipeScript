@@ -91,9 +91,9 @@ process {
             $(
                 $ReplacedClause = $nextStatement.Clauses[0].Item2 -replace '^\s{0,}\{\s{0,}' -replace '\s{0,}\}\s{0,}$'
                 if ($ReplacedClause) {
-                    $ReplacedClause + ';' + "continue $($statement.Label)"
+                    $ReplacedClause + ';' + "$statementType $($statement.Label)"
                 } else {
-                    "continue $($statement.Label)"
+                    "$statementType $($statement.Label)"
                 }
             )                        
         }")
