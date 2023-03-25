@@ -50,7 +50,8 @@ using namespace System.Management.Automation.Language
     $ast = $_
     if ($ast -isnot [ContinueStatementAst] -and 
         $ast -isnot [BreakStatementAst] -and
-        $ast -isnot [ReturnStatementAst]
+        $ast -isnot [ReturnStatementAst] -and
+        $ast -isnot [ThrowStatementAst]
     ) {
         return $false
     }
@@ -88,7 +89,12 @@ $BreakStatement,
 # A Return Statement.
 [Parameter(Mandatory,ValueFromPipeline,ParameterSetName='ReturnStatement')]
 [ReturnStatementAst]
-$ReturnStatement
+$ReturnStatement,
+
+# A Throw Statement.
+[Parameter(Mandatory,ValueFromPipeline,ParameterSetName='ThrowStatement')]
+[ThrowStatementAst]
+$ThrowStatement
 )
 
 process {
