@@ -18,6 +18,8 @@ Allows PipeScript to generate JavaScript.
 
 Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
+String output from these blocks will be embedded directly.  All other output will be converted to JSON.
+
 Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
 
 This is so that Inline PipeScript can be used with operators, and still be valid JavaScript syntax.
