@@ -6,12 +6,18 @@
 
     Multiline comments blocks like ```/*{}*/``` will be treated as blocks of PipeScript.
 
+    String output from these blocks will be embedded directly.  All other output will be converted to JSON.
+
     Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
 
     * ```null```
     * ```""```
     * ```{}```
     * ```[]```
+.EXAMPLE
+    a.js template "
+    procs = null/*{Get-Process | Select Name, ID}*/
+    "
 #>
 [ValidatePattern('\.json$')]
 param(
@@ -63,6 +69,16 @@ process {
     
     if ($Parameter) { $splat.Parameter = $Parameter }
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
+
+    $splat.ForeachObject = {
+        $in = $_
+        if (($in -is [string]) -or 
+            ($in -ne $null -and $in.GetType().IsPrimitive)) {
+            $in
+        } else {
+            ConvertTo-Json -Depth 100 -InputObject $in
+        }
+    }
 
     # If we are being used within a keyword,
     if ($AsTemplateObject) {
