@@ -291,6 +291,7 @@ process {
                             if ($foreachStatement.Ast.ProcessBlock -or $foreachStatement.Ast.BeginBlock) {
                                 ". {$ForeachStatement}"
                             } elseif ($foreachStatement.Ast.EndBlock.Statements -and 
+                                $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements -and
                                 $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements[0].CommandElements -and
                                 $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements[0].CommandElements.Value -in 'Foreach-Object', '%') {
                                 "$ForeachStatement"
@@ -517,8 +518,8 @@ $end
         }
 
         # Now, we run the replacer.  
-        # This should run each inline script and replace the text.        
-        return $ReplacePattern.Replace($fileText, $ReplacementEvaluator)
+        # This should run each inline script and replace the text.
+        return $ReplacePattern.Replace($fileText, $ReplacementEvaluator)                
     }
 }
 
