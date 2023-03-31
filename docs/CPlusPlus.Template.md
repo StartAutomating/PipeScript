@@ -106,4 +106,3 @@ CPlusPlus.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argum
 ```PowerShell
 CPlusPlus.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
