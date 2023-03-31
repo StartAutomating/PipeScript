@@ -107,4 +107,3 @@ TypeScript.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argu
 ```PowerShell
 TypeScript.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
