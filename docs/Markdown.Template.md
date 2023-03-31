@@ -130,4 +130,3 @@ Markdown.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argume
 ```PowerShell
 Markdown.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-

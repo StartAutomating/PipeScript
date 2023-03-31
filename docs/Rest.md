@@ -315,4 +315,3 @@ A script block to be run on each output.
 ```PowerShell
 Rest [-ScriptBlock <ScriptBlock>] [-RESTEndpoint] <String[]> [-ContentType <String>] [-Method <String>] [-InvokeCommand <String>] [-InvokeParameterVariable <String>] [-UriParameterHelp <IDictionary>] [-UriParameterType <IDictionary>] [-BodyParameter <PSObject>] [-QueryParameter <PSObject>] [-JoinQueryValue <String>] [-ForEachOutput <ScriptBlock>] [<CommonParameters>]
 ```
-

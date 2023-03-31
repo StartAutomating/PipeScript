@@ -61,4 +61,3 @@ The CommandAST that will be transformed.
 ```PowerShell
 NamespacedAlias [-CommandAst] <CommandAst> [<CommonParameters>]
 ```
-

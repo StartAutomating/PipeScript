@@ -36,6 +36,7 @@
 #>
 [ValidateScript({
     $CommandAst = $_
+    if ($CommandAst -isnot [Management.Automation.Language.CommandAst]) { return $false }
     return ($commandAst -and $CommandAst.CommandElements[0].Value -eq 'new')
 })]
 [Reflection.AssemblyMetadata("PipeScript.Keyword",$true)]

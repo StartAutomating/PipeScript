@@ -108,4 +108,3 @@ ValidateTypes [-TypeName] <String[]> [<CommonParameters>]
 ```PowerShell
 ValidateTypes [-TypeName] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
-

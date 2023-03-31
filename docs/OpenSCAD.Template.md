@@ -20,8 +20,6 @@ Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
 Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
 
-This for Inline PipeScript to be used with operators, and still be valid OpenSCAD syntax. 
-
 The OpenSCAD Inline Transpiler will consider the following syntax to be empty:
 
 * ```"[^"]+"```
@@ -133,4 +131,3 @@ OpenSCAD.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argume
 ```PowerShell
 OpenSCAD.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-

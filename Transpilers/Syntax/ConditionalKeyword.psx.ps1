@@ -49,55 +49,92 @@ using namespace System.Management.Automation.Language
 [ValidateScript({
     $ast = $_
     if ($ast -isnot [ContinueStatementAst] -and 
-        $ast -isnot [BreakStatementAst]
+        $ast -isnot [BreakStatementAst] -and
+        $ast -isnot [ReturnStatementAst] -and
+        $ast -isnot [ThrowStatementAst]
     ) {
         return $false
     }
-    $nextStatement = $ast.Parent.Statements[$ast.Parent.Statements.IndexOf($ast) + 1]
-    if (-not $nextStatement) { 
-        return $false
-    }
-
-    if ('if' -ne $ast.Label) {
-        if ($nextStatement -is [IfStatementAst]) {
-            return $true
+    if (-not $ast.Pipeline) {
+        $nextStatement = $ast.Parent.Statements[$ast.Parent.Statements.IndexOf($ast) + 1]
+        if (-not $nextStatement) { 
+            return $false
         }
-        return $false
-    }
     
-    return $true
+
+        if ('if' -ne $ast.Label) {
+            if ($nextStatement -is [IfStatementAst]) {
+                return $true
+            }
+            return $false
+        }
+
+        return $true
+    }
+    else {
+        return $ast.Pipeline -match '^if'
+    }    
 })]
 param(
 # A Continue Statement.
-[Parameter(ValueFromPipeline,ParameterSetName='ContinueStatement')]
+[Parameter(Mandatory,ValueFromPipeline,ParameterSetName='ContinueStatement')]
 [ContinueStatementAst]
 $ContinueStatement,
 
 # A Break Statement.
-[Parameter(ValueFromPipeline,ParameterSetName='BreakStatement')]
+[Parameter(Mandatory,ValueFromPipeline,ParameterSetName='BreakStatement')]
 [BreakStatementAst]
-$BreakStatement
+$BreakStatement,
+
+# A Return Statement.
+[Parameter(Mandatory,ValueFromPipeline,ParameterSetName='ReturnStatement')]
+[ReturnStatementAst]
+$ReturnStatement,
+
+# A Throw Statement.
+[Parameter(Mandatory,ValueFromPipeline,ParameterSetName='ThrowStatement')]
+[ThrowStatementAst]
+$ThrowStatement
 )
 
 process {
     
-    $statement = if ($ContinueStatement) { $ContinueStatement} elseif ($BreakStatement ) { $BreakStatement }
+    $statement = $($PSBoundParameters[$PSBoundParameters.Keys -like '*Statement'])
     if (-not $statement) { return }
     $statementType = ($statement.GetType().Name -replace 'StatementAst').ToLower()
-    $nextStatement = $statement.Parent.Statements[$statement.Parent.Statements.IndexOf($statement) + 1]
+    $PipelineClauses = @()
+    $nextStatement = 
+        if ($statement.Pipeline) {
+            $firstElement = $statement.Pipeline.PipelineElements[0]
+            $commandElements = $firstElement.CommandElements[1..($firstElement.CommandElements.Count)]
+            foreach ($CommandElement in $commandElements) {
+                if ($commandElement -is [ScriptBlockExpressionAst]) {
+                    $PipelineClauses += $CommandElement.ScriptBlock.GetScriptBlock()
+                } else {
+                    $CommandElement
+                }
+            }
+        } else {
+            $statement.Parent.Statements[$statement.Parent.Statements.IndexOf($statement) + 1]
+        }
+        
     
     $(if ($nextStatement -is [IfStatementAst]) {
         [ScriptBlock]::Create("if ($($nextStatement.Clauses[0].Item1)) { 
             $(
                 $ReplacedClause = $nextStatement.Clauses[0].Item2 -replace '^\s{0,}\{\s{0,}' -replace '\s{0,}\}\s{0,}$'
                 if ($ReplacedClause) {
-                    $ReplacedClause + ';' + "continue $($statement.Label)"
+                    $ReplacedClause + ';' + "$statementType $($statement.Label)"
                 } else {
-                    "continue $($statement.Label)"
+                    "$statementType $($statement.Label)"
                 }
             )                        
         }")
-    } else {
+    } 
+    elseif ($PipelineClauses) {        
+        [ScriptBlock]::Create("if ($nextStatement) { $statementType $pipelineClauses}")
+    }
+    else {
         [ScriptBlock]::Create("if ($nextStatement) { $statementType }")
     })
         | Add-Member NoteProperty SkipUntil $nextStatement -PassThru    

@@ -134,4 +134,3 @@ Batch.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentL
 ```PowerShell
 Batch.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-

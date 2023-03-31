@@ -52,7 +52,8 @@
 #>
 [ValidateScript({
     # This transpiler should run if the command is literally 'assert'
-    $commandAst = $_    
+    $commandAst = $_
+    if ($commandAst -isnot [Management.Automation.Language.CommandAst]) { return $false }
     return ($commandAst -and $CommandAst.CommandElements[0].Value -eq 'assert')
 })]
 param(

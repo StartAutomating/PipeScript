@@ -87,4 +87,3 @@ The ScriptBlock that will be transpiled.
 ```PowerShell
 Explicit [-ScriptBlock] <ScriptBlock> [<CommonParameters>]
 ```
-

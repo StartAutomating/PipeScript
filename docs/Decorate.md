@@ -106,4 +106,3 @@ If set, will clear any underlying typenames.
 ```PowerShell
 Decorate -VariableAst <VariableExpressionAst> [-TypeName] <String[]> [-PassThru] [-Clear] [<CommonParameters>]
 ```
-

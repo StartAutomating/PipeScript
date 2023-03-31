@@ -284,4 +284,3 @@ Excluded parameters with default values will declare the default value at the be
 ```PowerShell
 Inherit [-Command] <String> [-Abstract] [-Override] [-Dynamic] [-Proxy] [-CommandType <String[]>] [-ExcludeBlockType <String[]>] [-IncludeBlockType <String[]>] [-IncludeParameter <String[]>] [-ExcludeParameter <String[]>] [-ScriptBlock <ScriptBlock>] [<CommonParameters>]
 ```
-

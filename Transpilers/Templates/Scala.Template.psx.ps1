@@ -1,21 +1,20 @@
 <#
 .SYNOPSIS
-    Objective Template Transpiler.
+    Scala Template Transpiler.
 .DESCRIPTION
-    Allows PipeScript to generate Objective C/C++.
+    Allows PipeScript to generate Scala.
 
     Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
     Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
 
-    The Objective C Inline Transpiler will consider the following syntax to be empty:
+    The Scala Template Transpiler will consider the following syntax to be empty:
 
     * ```null```
-    * ```nil```
     * ```""```
     * ```''```
 #>
-[ValidatePattern('\.(?>m|mm)$')]
+[ValidatePattern('\.(?>scala|sc)$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline,ParameterSetName='TemplateFile')]
@@ -42,7 +41,7 @@ begin {
     $endComment   = '\*/' # * End Comments   ```/*```
     $Whitespace   = '[\s\n\r]{0,}'
     # * IgnoredContext ```String.empty```, ```null```, blank strings and characters
-    $IgnoredContext = "(?<ignore>(?>$("null", "nil", '""', "''" -join '|'))\s{0,}){0,1}"
+    $IgnoredContext = "(?<ignore>(?>$("null", '""', "''" -join '|'))\s{0,}){0,1}"
     # * StartRegex     ```$IgnoredContext + $StartComment + '{' + $Whitespace```
     $startRegex = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```

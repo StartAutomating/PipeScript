@@ -145,4 +145,3 @@ Any default parameters for the ProxyCommand.
 ```PowerShell
 ProxyCommand [-ScriptBlock <ScriptBlock>] [-CommandName] <String> [-RemoveParameter <String[]>] [-DefaultParameter <IDictionary>] [<CommonParameters>]
 ```
-

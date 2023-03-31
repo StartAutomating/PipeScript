@@ -154,4 +154,3 @@ The serialization depth.  Currently only used when saving to JSON files.
 ```PowerShell
 OutputFile [-OutputPath] <String> [[-ScriptBlock] <ScriptBlock>] [[-VariableAst] <VariableExpressionAst>] [[-Encoding] <String>] [-Force] [[-ExportScript] <ScriptBlock>] [[-Depth] <Int32>] [<CommonParameters>]
 ```
-

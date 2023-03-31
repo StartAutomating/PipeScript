@@ -103,4 +103,3 @@ ValidateExtension [-Extension] <String[]> [<CommonParameters>]
 ```PowerShell
 ValidateExtension [-Extension] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
-

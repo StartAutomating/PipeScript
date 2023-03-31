@@ -97,4 +97,3 @@ The name of the variable.  If define is applied as an attribute of a variable, t
 ```PowerShell
 Define -Value <PSObject> -VariableAst <VariableExpressionAst> [-VariableName <String>] [<CommonParameters>]
 ```
-

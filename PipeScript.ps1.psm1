@@ -31,8 +31,22 @@ $global:ExecutionContext.SessionState.InvokeCommand.CommandNotFoundAction = {
     # Rather than be the only thing that can handle command not found, we start by broadcasting an event.
     New-Event -SourceIdentifier "PowerShell.CommandNotFound"  -MessageData $notFoundArgs -Sender $global:ExecutionContext -EventArguments $notFoundArgs
     
+    # Then we determine our own script block.
+    $myScriptBlock = $MyInvocation.MyCommand.ScriptBlock
     # Then, we do a bit of callstack peeking
     $callstack = @(Get-PSCallStack)
+    $myCallCount = 0
+    foreach ($call in $callstack) {
+        if ($call.InvocationInfo.MyCommand.ScriptBlock -eq $myScriptBlock) {
+            $myCallCount++
+        }
+    }
+
+    # If we're being called more than once
+    if ($myCallCount -gt 1) {        
+        return # we're done.
+    }
+
     $callstackPeek = $callstack[-1]
     # When peeking in on a dynamic script block, the offsets may lie.
     $column = [Math]::Max($callstackPeek.InvocationInfo.OffsetInLine, 1)

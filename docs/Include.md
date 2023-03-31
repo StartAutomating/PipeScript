@@ -80,6 +80,21 @@ If set, will include the content as a byte array
 
 
 
+#### **Passthru**
+
+If set, will pass thru the included item
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
+
+
 #### **VariableAst**
 
 
@@ -98,6 +113,5 @@ If set, will include the content as a byte array
 
 ### Syntax
 ```PowerShell
-Include [-FilePath] <String> [-AsByte] -VariableAst <VariableExpressionAst> [<CommonParameters>]
+Include [-FilePath] <String> [-AsByte] [-Passthru] -VariableAst <VariableExpressionAst> [<CommonParameters>]
 ```
-

@@ -6,9 +6,9 @@
 
     Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
-    Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
+    String output from these blocks will be embedded directly.  All other output will be converted to JSON.
 
-    This is so that Inline PipeScript can be used with operators, and still be valid JavaScript syntax.
+    Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
 
     The JavaScript Inline Transpiler will consider the following syntax to be empty:
 
@@ -82,6 +82,15 @@ process {
 
     if ($Parameter) { $splat.Parameter = $Parameter }
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
+    $splat.ForeachObject = {
+        $in = $_
+        if (($in -is [string]) -or 
+            ($in -ne $null -and $in.GetType().IsPrimitive)) {
+            "$in"
+        } else {
+            "$(ConvertTo-Json -Depth 100 -InputObject $in)"
+        }
+    }
 
     # If we are being used within a keyword,
     if ($AsTemplateObject) {

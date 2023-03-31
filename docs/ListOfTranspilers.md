@@ -22,6 +22,7 @@ These are all of the transpilers currently included in PipeScript:
 |[CPlusPlus.Template](Transpilers/Templates/CPlusPlus.Template.psx.ps1)                     |C/C++ Template Transpiler.                        |
 |[CSharp.Template](Transpilers/Templates/CSharp.Template.psx.ps1)                           |C# Template Transpiler.                           |
 |[CSS.Template](Transpilers/Templates/CSS.Template.psx.ps1)                                 |CSS Template Transpiler.                          |
+|[Dart.Template](Transpilers/Templates/Dart.Template.psx.ps1)                               |Dart Template Transpiler.                         |
 |[Decorate](Transpilers/Decorate.psx.ps1)                                                   |decorate transpiler                               |
 |[Define](Transpilers/Define.psx.ps1)                                                       |Defines a variable                                |
 |[Dot](Transpilers/Syntax/Dot.psx.ps1)                                                      |Dot Notation                                      |
@@ -78,6 +79,7 @@ These are all of the transpilers currently included in PipeScript:
 |[RSS.Template](Transpilers/Templates/RSS.Template.psx.ps1)                                 |RSS Template Transpiler.                          |
 |[Ruby.Template](Transpilers/Templates/Ruby.Template.psx.ps1)                               |Ruby Template Transpiler.                         |
 |[Rust.Template](Transpilers/Templates/Rust.Template.psx.ps1)                               |Rust Template Transpiler.                         |
+|[Scala.Template](Transpilers/Templates/Scala.Template.psx.ps1)                             |Scala Template Transpiler.                        |
 |[SQL.Template](Transpilers/Templates/SQL.Template.psx.ps1)                                 |SQL Template Transpiler.                          |
 |[TCL.Template](Transpilers/Templates/TCL.Template.psx.ps1)                                 |TCL/TK Template Transpiler.                       |
 |[TOML.Template](Transpilers/Templates/TOML.Template.psx.ps1)                               |TOML Template Transpiler.                         |
@@ -94,7 +96,3 @@ These are all of the transpilers currently included in PipeScript:
 |[WebAssembly.Template](Transpilers/Templates/WebAssembly.Template.psx.ps1)                 |WebAssembly Template Transpiler.                  |
 |[XML.Template](Transpilers/Templates/XML.Template.psx.ps1)                                 |XML Template Transpiler.                          |
 |[YAML.Template](Transpilers/Templates/YAML.Template.psx.ps1)                               |Yaml Template Transpiler.                         |
-
-
-
-

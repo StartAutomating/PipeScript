@@ -46,4 +46,3 @@ An abstract syntax tree function definition.
 ```PowerShell
 Pipescript.FunctionDefinition -FunctionDefinition <FunctionDefinitionAst> [<CommonParameters>]
 ```
-

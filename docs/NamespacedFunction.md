@@ -108,4 +108,3 @@ The CommandAST that will be transformed.
 ```PowerShell
 NamespacedFunction [-CommandAst] <CommandAst> [<CommonParameters>]
 ```
-

@@ -1,11 +1,11 @@
-TypeScript.Template
--------------------
+Dart.Template
+-------------
 
 
 
 
 ### Synopsis
-TypeScript Template Transpiler.
+Dart Template Transpiler.
 
 
 
@@ -14,17 +14,14 @@ TypeScript Template Transpiler.
 
 ### Description
 
-Allows PipeScript to generate TypeScript.
+Allows PipeScript to generate Dart.
 
 Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
 Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
 
-This is so that Inline PipeScript can be used with operators, and still be valid TypeScript syntax. 
+The Dart Template Transpiler will consider the following syntax to be empty:
 
-The TypeScript Inline Transpiler will consider the following syntax to be empty:
-
-* ```undefined```
 * ```null```
 * ```""```
 * ```''```
@@ -102,8 +99,8 @@ A list of arguments.
 
 ### Syntax
 ```PowerShell
-TypeScript.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
+Dart.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
 ```PowerShell
-TypeScript.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
+Dart.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```

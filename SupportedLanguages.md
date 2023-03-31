@@ -14,6 +14,7 @@ These are all of the transpilers currently included in PipeScript:
 |[CPlusPlus.Template](Transpilers/Templates/CPlusPlus.Template.psx.ps1)    |C/C++ Template Transpiler.      |```\.(?>c\\|cpp\\|h\\|swig)$``` |
 |[CSharp.Template](Transpilers/Templates/CSharp.Template.psx.ps1)          |C# Template Transpiler.         |```\.cs$```                     |
 |[CSS.Template](Transpilers/Templates/CSS.Template.psx.ps1)                |CSS Template Transpiler.        |```\.s{0,1}css$```              |
+|[Dart.Template](Transpilers/Templates/Dart.Template.psx.ps1)              |Dart Template Transpiler.       |```\.(?>dart)$```               |
 |[Go.Template](Transpilers/Templates/Go.Template.psx.ps1)                  |Go Template Transpiler.         |```\.go$```                     |
 |[HAXE.Template](Transpilers/Templates/HAXE.Template.psx.ps1)              |Haxe Template Transpiler.       |```\.hx$```                     |
 |[HCL.Template](Transpilers/Templates/HCL.Template.psx.ps1)                |HCL Template Transpiler.        |```\.hcl$```                    |
@@ -38,6 +39,7 @@ These are all of the transpilers currently included in PipeScript:
 |[RSS.Template](Transpilers/Templates/RSS.Template.psx.ps1)                |RSS Template Transpiler.        |```\.rss$```                    |
 |[Ruby.Template](Transpilers/Templates/Ruby.Template.psx.ps1)              |Ruby Template Transpiler.       |```\.rb$```                     |
 |[Rust.Template](Transpilers/Templates/Rust.Template.psx.ps1)              |Rust Template Transpiler.       |```\.rs$```                     |
+|[Scala.Template](Transpilers/Templates/Scala.Template.psx.ps1)            |Scala Template Transpiler.      |```\.(?>scala\\|sc)$```         |
 |[SQL.Template](Transpilers/Templates/SQL.Template.psx.ps1)                |SQL Template Transpiler.        |```\.sql$```                    |
 |[TCL.Template](Transpilers/Templates/TCL.Template.psx.ps1)                |TCL/TK Template Transpiler.     |```\.t(?>cl\\|k)$```            |
 |[TOML.Template](Transpilers/Templates/TOML.Template.psx.ps1)              |TOML Template Transpiler.       |```\.toml$```                   |

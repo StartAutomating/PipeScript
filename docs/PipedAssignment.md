@@ -70,4 +70,3 @@ $Collection = $Collection |
 ```PowerShell
 PipedAssignment [-PipelineAst] <PipelineAst> [<CommonParameters>]
 ```
-

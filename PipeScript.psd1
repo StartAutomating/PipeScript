@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.2.3'
+    ModuleVersion     = '0.2.4'
     Description       = 'An Extensible Transpiler for PowerShell (and anything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -38,72 +38,28 @@ PipeScript files.
             BuildModule     = @('EZOut','Piecemeal','PipeScript','HelpOut', 'PSDevOps')
             Tags            = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
-## PipeScript 0.2.3:
+## PipeScript 0.2.4:
 
-### New Features:
-
-* Added Import-PipeScript (Fixes #366)
-  * Generating 'PipeScript.Imported' event on Import (#371)
-* Functions and Aliases can now be created in namespaces (#329 and #334)
-  * Functions are imported as they are defined (#360)
-  * Transpilers can be defined in the PipeScript.Transpiler namespace
-  * _You can now declare a transpiler and use it in the next line!_
-* Partial Functions (#369)
-* Conditional Keywords (#374) ( You can now `break if ($false)` / `continue if ($false)`)
-
-### Extended Type Improvements
-
-* Vastly Extending [CommandInfo] (Making PowerShell commands much more capable)
-  * Properties
-    * .BlockComments (Fixes #343)    
-    * .Category (Fixes #344)
-    * .CommandNamespace (Fixes #335)
-    * .CommandMetadata (#351)
-    * .Description (#346)  
-    * .FullyQualifiedName (#339)    
-    * .Examples (#348)
-    * .Links (#349)
-    * .Metadata (#341)
-    * .Rank/Order (Fixes #345)
-    * .Synopsis (#347)    
-    * .Separator (get/set) (#337, #338)
-  * Methods
-    * .CouldPipe() (#356)      
-    * .CouldPipeType() (#359)
-    * .CouldRun (#357)
-    * .GetHelpField (Fixes #342)
-    * .IsParameterValid() (#358)  
-    * .Validate() (#355)
-* Application/ExternalScriptInfo: get/set.Root (#340)
-* .Namespace alias for non-Cmdlet CommandInfo (Fixes #335) 
-    
-### Templating Improvements
-
-* SQL Transpiler:  Allowing Multiline Comments (Fixes #367)
-* Adding Arduino Template (Fixes #308)
-* Allowing Markdown Transpiler to Template Text (Fixes #352)
-
-### Command Changes
-
-* New-PipeScript
-  * Aliasing -FunctionType to -Function/CommandNamespace (Fixes #372)
-  * Transpiling content unless -NoTranspile is passed (Fixes #370)
-  * Allowing -Parameter dictionaries to contain dictionaries (Fixes #311)
-* Join-PipeScript
-  * Adding -Indent (Fixes #365)
-  * Improving Unnamed end block behavior (Fixes #363)
-* Invoke-PipeScript:
-  * Adding -OutputPath (Fixes #375)
-
-### Action Improvements
-
-* GitHub Action Now supports -InstallModule (Fixes #353)
-* Using notices instead of set-output
-
-### Minor Changes
-
-* Allowing alias inheritance (Fixes #364)
-* PipeScript.FunctionDefinition: Supporting Inline Parameters (Fixes #354)
+* Conditional Keywords now support throw/return (#389/#388) (also, fixed #387)
+* Updating action: checking for _all_ build errors before outputting  (#378)
+* Command Updates
+  * New-PipeScript: Fixing Typed function creation (Fixes #372)
+  * Join-PipeScript: Fixing End Block Behavior (Fixes #383)
+* Templating Improvements:
+  * New Languages Supported:
+    * DART (#394)
+    * SCALA (#395)           
+  * Markdown Template Transpiler now has a more terse format (#393).
+  * Markdown Template Transpiler now supports embedding in HTML comments or CSS/JavaScript comments (#113).
+  * JSON/JavaScript Template: Converting Output to JSON if not [string] (#382)
+  * CSS Template Template : now Outputting Objects as CSS rules (Fixes #332)
+  * Core Template Transpiler is Faster (#392) and ForeachObject is improved (#390)  
+* Other Improvements
+  * Include transpiler: Adding -Passthru (Fixes #385) 
+  * Making validation for various transpilers more careful (Fixes #381)
+  * CommandNotFound behavior: Limiting recursion (Fixes #380)
+  * Core Transpiler: Improving Efficiency (Fixes #379)
+  * Requires allows clobbering and forces loads (Fixes #386)
 
 ---
             

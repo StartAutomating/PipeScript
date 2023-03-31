@@ -291,6 +291,7 @@ process {
                             if ($foreachStatement.Ast.ProcessBlock -or $foreachStatement.Ast.BeginBlock) {
                                 ". {$ForeachStatement}"
                             } elseif ($foreachStatement.Ast.EndBlock.Statements -and 
+                                $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements -and
                                 $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements[0].CommandElements -and
                                 $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements[0].CommandElements.Value -in 'Foreach-Object', '%') {
                                 "$ForeachStatement"
@@ -462,28 +463,64 @@ process {
         $languageString = $($foundTemplateTranspiler.ExtensionCommand.DisplayName -replace '(?>Template|Inline)\.' -replace '^\.')
         if (-not $TemplateName) { $TemplateName = $languageString }
         $createdSb = [scriptblock]::Create(@"
-.Name = '$($TemplateName -replace "'", "''")'.Trim() .Language = '$languageString' .SourceFile = '' .PSTypeName = 'PipeScript.Template' .FilePattern = '$($filePattern -replace "'", "''")' .Pattern = (
-    [regex]::new('$($replacePattern -replace "'", "''")','IgnoreCase,IgnorePatternWhitespace', '00:00:05')
-) .Evaluator = {
-$replacementEvaluator
-} .GetInlineScript = {
-$GetInlineScript
-} .Evaluate = {
-$EvaluateTemplate
-} .Save = {
-$SaveTemplate
-} .ToString = {
-$TemplateToString
-} .Context = (New-Module -ScriptBlock {}
-) .ForeachObject = $(if ($ForeachObject) { "{ 
-$foreachObject
-}"} else {'$null'}) .Begin = $(if ($Begin) { "{ 
-$begin
-}"} else {'$null'}) .End = $(if ($End) { "{ 
-$end
-}"} else {'$null'}) .Template = $templateElements
-"@)
-        $createdSb | .>Pipescript        
+`$(
+`$templateObject = [PSCustomObject][Ordered]@{
+    PSTypeName = 'PipeScript.Template'
+    Name = '$($TemplateName -replace "'", "''")'
+    Language = '$languageString'
+    SourceFile = ''
+    FilePattern = '$($filePattern -replace "'", "''")'
+    Pattern = 
+       [regex]::new(@'
+$replacePattern
+'@,'IgnoreCase,IgnorePatternWhitespace', '00:00:05')
+    Context = New-Module -ScriptBlock {}
+    ForeachObject = $(if ($ForeachObject) { "{ 
+        $foreachObject
+    }"} else {'{}'})
+    Begin = $(if ($Begin) { "{ 
+        $begin
+    }"} else {'{}'})
+    End = $(if ($End) { "{ 
+        $end
+    }"} else {'{}'})
+    Template = $templateElements
+}
+`$templateObject.psobject.members.Add([PSScriptMethod]::new(
+    'Evaluator', {
+        $replacementEvaluator
+    }
+), `$true)
+`$templateObject.psobject.members.Add([PSScriptMethod]::new(
+    'Evaluate', {
+        $evaluateTemplate
+    }
+), `$true)
+`$templateObject.psobject.members.Add([PSScriptMethod]::new(
+    'GetInlineScript', {
+        $GetInlineScript
+    }
+), `$true)
+`$templateObject.psobject.members.Add([PSScriptMethod]::new(
+    'EvaluateTemplate', {
+        $EvaluateTemplate
+    }
+), `$true)
+`$templateObject.psobject.members.Add([PSScriptMethod]::new(
+    'SaveTemplate', {
+        $SaveTemplate
+    }
+), `$true)
+`$templateObject.psobject.members.Add([PSScriptMethod]::new(
+    'ToString', {
+        $TemplateToString
+    }
+), `$true)
+`$templateObject
+)
+"@
+)
+        $createdSb
         
         return        
     }
@@ -517,8 +554,8 @@ $end
         }
 
         # Now, we run the replacer.  
-        # This should run each inline script and replace the text.        
-        return $ReplacePattern.Replace($fileText, $ReplacementEvaluator)
+        # This should run each inline script and replace the text.
+        return $ReplacePattern.Replace($fileText, $ReplacementEvaluator)                
     }
 }
 

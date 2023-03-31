@@ -79,7 +79,10 @@ Functions and Aliases can be defined in a namespace, which can allow all command
 You can define a namespaced function by putting the namespace directly before the word function, for example:
 
 ~~~PowerShell
-Import-
+Import-PipeScript {
+    partial function PartialExample { 1 }
+}
+~~~
 
 This will become:
 ~~~PowerShell
@@ -150,7 +153,11 @@ PipeScript tries to make the PowerShell syntax a bit more programmer friendly.
 PipeScript supports the use of ==, providing the left hand side is a variable.
 
 ~~~PowerShell
-Invoke-True
+Invoke-PipeScript {
+    $a = 1
+    $a == 1
+}
+~~~
 
 PipeScript also supports the use of ===
 
@@ -159,6 +166,12 @@ PipeScript also supports the use of ===
 PipeScript supports the use of conditional keywords, which can remove a few excess braces from your code.
 
 ~~~PowerShell
-Invoke-10
-
-
+Invoke-PipeScript {
+$n = 0 
+while ($true) {
+    $n++
+    break if ($n -ge 10)
+}
+$n
+}
+~~~

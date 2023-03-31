@@ -124,7 +124,7 @@ process {
         if (-not $foundModuleRequirement) {
             # If it wasn't,
             $foundModuleRequirement = try { # try loading it
-                Import-Module -Name $moduleRequirement -PassThru -Global -ErrorAction SilentlyContinue 
+                Import-Module -Name $moduleRequirement -PassThru -Global -ErrorAction 'Continue'
             } catch {                
                 $null
             }
@@ -164,7 +164,7 @@ process {
                 if ($?) {
                     # Provided the installation worked, try importing it
                     $foundModuleRequirement =
-                        Import-Module -Name $moduleRequirement -PassThru -Global -ErrorAction SilentlyContinue
+                        Import-Module -Name $moduleRequirement -PassThru -Global -ErrorAction 'Continue' -Force
                 }
             }
         } else {

@@ -96,4 +96,3 @@ Latex.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentL
 ```PowerShell
 Latex.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-

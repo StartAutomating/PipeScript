@@ -82,4 +82,3 @@ ValidatePlatform [-Platform] <String[]> [<CommonParameters>]
 ```PowerShell
 ValidatePlatform [-Platform] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
-

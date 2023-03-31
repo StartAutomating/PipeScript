@@ -157,4 +157,3 @@ JSONSchema.Protocol -SchemaUri <Uri> -ScriptBlock <ScriptBlock> [-RemoveProperty
 ```PowerShell
 JSONSchema.Protocol -SchemaUri <Uri> -CommandAst <CommandAst> [-RemovePropertyPrefix <String[]>] [-ExcludeProperty <String[]>] [-IncludeProperty <String[]>] [-NoMandatory] [<CommonParameters>]
 ```
-

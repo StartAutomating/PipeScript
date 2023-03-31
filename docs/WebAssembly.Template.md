@@ -98,4 +98,3 @@ WebAssembly.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Arg
 ```PowerShell
 WebAssembly.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-

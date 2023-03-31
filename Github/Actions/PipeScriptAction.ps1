@@ -31,7 +31,7 @@ $CommitMessage,
 
 # A list of modules to be installed from the PowerShell gallery before scripts run.
 [string[]]
-$InstallModule,
+$InstallModule = 'ugit',
 
 # The user email associated with a git commit.
 [string]
@@ -56,6 +56,9 @@ $($gitHubEvent | ConvertTo-Json -Depth 100)
 ::endgroup::
 "@ | Out-Host
 
+# Set -ErrorActionPreference to continue.
+$global:ErrorActionPreference = 'continue'
+
 #region -InstallModule
 if ($InstallModule) {
     "::group::Installing Modules" | Out-Host
@@ -66,7 +69,7 @@ if ($InstallModule) {
                 $(Get-Content $_.FullName -Raw) -match 'ModuleVersion'
             }
         if (-not $moduleInWorkspace) {
-            Install-Module $moduleToInstall -Scope CurrentUser -Force
+            Install-Module $moduleToInstall -Scope CurrentUser -Force -AllowClobber
             Import-Module $moduleToInstall -Force -PassThru | Out-Host
         }
     }
@@ -155,21 +158,35 @@ if ($PipeScript) {
 }
 
 $PipeScriptTook = [Datetime]::Now - $PipeScriptStart
-"::notice title=PipeScriptRuntime::$($PipeScriptScriptTook.TotalMilliseconds)" | Out-Host
+"::notice:: .PipeScript ran in $($PipeScriptTook.TotalMilliseconds) ms" | Out-Host
 
 $BuildPipeScriptStart = [DateTime]::Now
 if (-not $SkipBuild) {
-    $buildOutputFiles = @(Build-Pipescript -InputPath $env:GITHUB_WORKSPACE)
-    $buildOutputFiles |
-        . $processScriptOutput  | 
-        Out-Host
+    $pipeScriptBuildErrors = $null
+    $buildOutputFiles = @(Build-Pipescript -InputPath $env:GITHUB_WORKSPACE -ErrorVariable pipeScriptBuildErrors)
+    if ($pipeScriptBuildErrors) {
+        $pipeScriptBuildErrors
+        exit 1
+    } else {
+        $buildOutputFiles |
+            . $processScriptOutput  | 
+            Out-Host
+    }    
 }
+
+
 
 $BuildPipeScriptEnd = [DateTime]::Now
 $BuildPipeScriptTook = $BuildPipeScriptEnd - $BuildPipeScriptStart
-"::notice title=PipeScriptFilesBuiltCount::$($buildOutputFiles.Length)"              | Out-Host
-"::notice title=PipeScriptFilesBuilt::$($buildOutputFiles -join ';')"                | Out-Host
-"::notice title=PipeScriptBuildRuntime::$($BuildPipeScriptTook.TotalMilliseconds)"   | Out-Host
+"::notice:: Build-PipeScript ran in $($BuildPipeScriptTook.TotalSeconds) seconds" | Out-Host
+"::group::$($buildOutputFiles.Length) files built in $($BuildPipeScriptTook.TotalSeconds) seconds" |
+    Out-Host
+
+@(
+    $buildOutputFiles | Select-Object -ExpandProperty Fullname
+) -join [Environment]::newLine | Out-Host
+
+"::endgroup::" | Out-Host
 if ($CommitMessage -or $anyFilesChanged) {
     if ($CommitMessage) {
         Get-ChildItem $env:GITHUB_WORKSPACE -Recurse |

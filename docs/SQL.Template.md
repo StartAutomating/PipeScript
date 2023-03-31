@@ -16,8 +16,12 @@ SQL Template Transpiler.
 
 Allows PipeScript to generate SQL.
 
-Because SQL Scripts only allow single-line comments, this is done using a pair of comment markers.
-   
+PipeScript can be embedded in multiline or singleline format
+
+In multiline format, PipeScript will be embedded within: `/*{...}*/`
+
+In single line format
+
 -- { or -- PipeScript{  begins a PipeScript block
 
 -- } or -- }PipeScript  ends a PipeScript block
@@ -135,4 +139,3 @@ SQL.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLis
 ```PowerShell
 SQL.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-

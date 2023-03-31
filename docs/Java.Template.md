@@ -18,9 +18,7 @@ Allows PipeScript to generate Java.
 
 Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
-Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
-
-This for Inline PipeScript to be used with operators, and still be valid JavaScript/TypeScript syntax. 
+Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.    
 
 The Java Inline PipeScript Transpiler will consider the following syntax to be empty:
 
@@ -106,4 +104,3 @@ Java.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLi
 ```PowerShell
 Java.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-

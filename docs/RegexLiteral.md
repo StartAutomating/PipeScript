@@ -142,4 +142,3 @@ RegexLiteral -StringConstantExpression <StringConstantExpressionAst> [<CommonPar
 ```PowerShell
 RegexLiteral -ExpandableStringExpression <ExpandableStringExpressionAst> [<CommonParameters>]
 ```
-

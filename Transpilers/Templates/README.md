@@ -1,6 +1,6 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 41 languages or file types.
+PipeScript can be used to generate 43 languages or file types.
 
 ### Supported Languages
 
@@ -17,6 +17,7 @@ PipeScript can be used to generate 41 languages or file types.
 |[CPlusPlus](CPlusPlus.Template.psx.ps1)    |C/C++ Template Transpiler.      |```\.(?>c\\|cpp\\|h\\|swig)$``` |
 |[CSharp](CSharp.Template.psx.ps1)          |C# Template Transpiler.         |```\.cs$```                     |
 |[CSS](CSS.Template.psx.ps1)                |CSS Template Transpiler.        |```\.s{0,1}css$```              |
+|[Dart](Dart.Template.psx.ps1)              |Dart Template Transpiler.       |```\.(?>dart)$```               |
 |[Go](Go.Template.psx.ps1)                  |Go Template Transpiler.         |```\.go$```                     |
 |[HAXE](HAXE.Template.psx.ps1)              |Haxe Template Transpiler.       |```\.hx$```                     |
 |[HCL](HCL.Template.psx.ps1)                |HCL Template Transpiler.        |```\.hcl$```                    |
@@ -41,6 +42,7 @@ PipeScript can be used to generate 41 languages or file types.
 |[RSS](RSS.Template.psx.ps1)                |RSS Template Transpiler.        |```\.rss$```                    |
 |[Ruby](Ruby.Template.psx.ps1)              |Ruby Template Transpiler.       |```\.rb$```                     |
 |[Rust](Rust.Template.psx.ps1)              |Rust Template Transpiler.       |```\.rs$```                     |
+|[Scala](Scala.Template.psx.ps1)            |Scala Template Transpiler.      |```\.(?>scala\\|sc)$```         |
 |[SQL](SQL.Template.psx.ps1)                |SQL Template Transpiler.        |```\.sql$```                    |
 |[TCL](TCL.Template.psx.ps1)                |TCL/TK Template Transpiler.     |```\.t(?>cl\\|k)$```            |
 |[TOML](TOML.Template.psx.ps1)              |TOML Template Transpiler.       |```\.toml$```                   |

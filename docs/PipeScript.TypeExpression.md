@@ -59,4 +59,3 @@ The attributed expression
 ```PowerShell
 PipeScript.TypeExpression -TypeExpressionAst <TypeExpressionAst> [<CommonParameters>]
 ```
-

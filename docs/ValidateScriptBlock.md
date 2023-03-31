@@ -249,4 +249,3 @@ ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [
 ```PowerShell
 ValidateScriptBlock [-DataLanguage] [-ParameterOnly] [-NoBlock] [-NoParameter] [-IncludeCommand <Object>] [-ExcludeCommand <Object>] [-IncludeType <Object>] [-ExcludeType <Object>] [-NoLoop] [-NoWhileLoop] [-AstCondition <ScriptBlock[]>] -VariableAST <VariableExpressionAst> [<CommonParameters>]
 ```
-

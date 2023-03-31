@@ -65,4 +65,3 @@ A VariableExpression.  This variable must contain a module or name of module.
 ```PowerShell
 ModuleRelationship -VariableAST <VariableExpressionAst> [<CommonParameters>]
 ```
-

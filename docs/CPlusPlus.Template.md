@@ -20,8 +20,6 @@ Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
 Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
 
-This for Inline PipeScript to be used with operators, and still be valid C/C++ syntax. 
-
 The C++ Inline Transpiler will consider the following syntax to be empty:
 
 * ```null```
@@ -106,4 +104,3 @@ CPlusPlus.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argum
 ```PowerShell
 CPlusPlus.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
