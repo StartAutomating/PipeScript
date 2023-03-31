@@ -119,4 +119,3 @@ Python.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argument
 ```PowerShell
 Python.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
