@@ -22,6 +22,7 @@ These are all of the transpilers currently included in PipeScript:
 |[CPlusPlus.Template](Transpilers/Templates/CPlusPlus.Template.psx.ps1)                     |C/C++ Template Transpiler.                        |
 |[CSharp.Template](Transpilers/Templates/CSharp.Template.psx.ps1)                           |C# Template Transpiler.                           |
 |[CSS.Template](Transpilers/Templates/CSS.Template.psx.ps1)                                 |CSS Template Transpiler.                          |
+|[Dart.Template](Transpilers/Templates/Dart.Template.psx.ps1)                               |Dart Template Transpiler.                         |
 |[Decorate](Transpilers/Decorate.psx.ps1)                                                   |decorate transpiler                               |
 |[Define](Transpilers/Define.psx.ps1)                                                       |Defines a variable                                |
 |[Dot](Transpilers/Syntax/Dot.psx.ps1)                                                      |Dot Notation                                      |
