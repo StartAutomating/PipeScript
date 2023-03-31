@@ -31,7 +31,7 @@ Because ADA Scripts only allow single-line comments, this is done using a pair o
 #### EXAMPLE 1
 ```PowerShell
 Invoke-PipeScript {
-    $AdaScript = '    
+    HelloWorld.adb template '    
 with Ada.Text_IO;
 ```
 procedure Hello_World is
@@ -46,8 +46,6 @@ begin
     -- }
 end Hello_World;    
 '
-
-    [OutputFile('.\HelloWorld.ps1.adb')]$AdaScript
 }
 
 Invoke-PipeScript .\HelloWorld.ps1.adb
