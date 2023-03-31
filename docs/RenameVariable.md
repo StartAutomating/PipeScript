@@ -90,4 +90,3 @@ The ScriptBlock that declares the parameters.
 ```PowerShell
 RenameVariable [-VariableRename] <IDictionary> -ScriptBlock <ScriptBlock> [<CommonParameters>]
 ```
-
