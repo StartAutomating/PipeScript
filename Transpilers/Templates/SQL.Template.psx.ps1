@@ -4,8 +4,8 @@
 .DESCRIPTION
     Allows PipeScript to generate SQL.
 
-    Because SQL Scripts only allow single-line comments, this is done using a pair of comment markers.
-       
+    PipeScript can be embedded in multiline form: `/*{...}*/` or single line form:
+           
     -- { or -- PipeScript{  begins a PipeScript block
 
     -- } or -- }PipeScript  ends a PipeScript block

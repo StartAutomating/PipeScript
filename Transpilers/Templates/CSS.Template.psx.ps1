@@ -8,8 +8,6 @@
 
     Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
 
-    This for Inline PipeScript to be used with operators, and still be valid CSS syntax. 
-
     The CSS Inline Transpiler will consider the following syntax to be empty:
 
     * ```(?<q>["'])\#[a-f0-9]{3}(\k<q>)```

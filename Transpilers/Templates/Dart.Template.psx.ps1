@@ -8,8 +8,6 @@
 
     Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
 
-    This for Inline PipeScript to be used with operators, and still be valid Dart syntax. 
-
     The Dart Template Transpiler will consider the following syntax to be empty:
 
     * ```null```

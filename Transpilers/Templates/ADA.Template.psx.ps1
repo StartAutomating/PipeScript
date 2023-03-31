@@ -11,7 +11,7 @@
     -- } or -- }PipeScript  ends a PipeScript block                
 .EXAMPLE
     Invoke-PipeScript {
-        $AdaScript = '    
+        HelloWorld.adb template '    
     with Ada.Text_IO;
 
     procedure Hello_World is
@@ -26,8 +26,6 @@
         -- }
     end Hello_World;    
     '
-    
-        [OutputFile('.\HelloWorld.ps1.adb')]$AdaScript
     }
 
     Invoke-PipeScript .\HelloWorld.ps1.adb
