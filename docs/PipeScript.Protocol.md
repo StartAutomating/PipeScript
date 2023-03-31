@@ -91,4 +91,3 @@ This transpiler will match any command whose first or second element contains ``
 ```PowerShell
 PipeScript.Protocol [-CommandAst] <CommandAst> [<CommonParameters>]
 ```
-
