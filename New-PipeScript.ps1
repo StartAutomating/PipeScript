@@ -505,7 +505,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                 "$functionType $FunctionName  {"
             } elseif ($FunctionName) {
                 # Otherwise, we declare it as a command namespace
-                "$functionName function $functionName {"
+                "$functionType function $functionName {"
                 # (which means we have to transpile).
                 $NoTranspile = $false
             }
