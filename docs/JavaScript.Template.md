@@ -22,8 +22,6 @@ String output from these blocks will be embedded directly.  All other output wil
 
 Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
 
-This is so that Inline PipeScript can be used with operators, and still be valid JavaScript syntax.
-
 The JavaScript Inline Transpiler will consider the following syntax to be empty:
 
 * ```undefined```
