@@ -105,4 +105,3 @@ ValidatePropertyName [-PropertyName] <String[]> [<CommonParameters>]
 ```PowerShell
 ValidatePropertyName [-PropertyName] <String[]> [-VariableAST <VariableExpressionAst>] [<CommonParameters>]
 ```
-
