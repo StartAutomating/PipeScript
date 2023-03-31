@@ -136,4 +136,3 @@ JavaScript.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argu
 ```PowerShell
 JavaScript.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
