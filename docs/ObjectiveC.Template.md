@@ -107,4 +107,3 @@ ObjectiveC.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argu
 ```PowerShell
 ObjectiveC.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
