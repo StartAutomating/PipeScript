@@ -130,4 +130,3 @@ One or more transpilation expressions that apply to the script block.
 ```PowerShell
 Pipescript [-ScriptBlock] <ScriptBlock> [-Transpiler <String[]>] [<CommonParameters>]
 ```
-
