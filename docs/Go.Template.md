@@ -144,4 +144,3 @@ Go.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList
 ```PowerShell
 Go.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
