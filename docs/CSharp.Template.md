@@ -150,4 +150,3 @@ CSharp.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argument
 ```PowerShell
 CSharp.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
