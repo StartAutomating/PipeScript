@@ -94,7 +94,3 @@ These are all of the transpilers currently included in PipeScript:
 |[WebAssembly.Template](Transpilers/Templates/WebAssembly.Template.psx.ps1)                 |WebAssembly Template Transpiler.                  |
 |[XML.Template](Transpilers/Templates/XML.Template.psx.ps1)                                 |XML Template Transpiler.                          |
 |[YAML.Template](Transpilers/Templates/YAML.Template.psx.ps1)                               |Yaml Template Transpiler.                         |
-
-
-
-
