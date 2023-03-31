@@ -132,4 +132,3 @@ The Command's Abstract Syntax Tree
 ```PowerShell
 Http.Protocol [-CommandUri] <Uri> [-CommandAst] <CommandAst> [[-Method] <String>] [<CommonParameters>]
 ```
-
