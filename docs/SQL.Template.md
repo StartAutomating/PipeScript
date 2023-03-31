@@ -16,8 +16,12 @@ SQL Template Transpiler.
 
 Allows PipeScript to generate SQL.
 
-PipeScript can be embedded in multiline form: `/*{...}*/` or single line form:
-       
+PipeScript can be embedded in multiline or singleline format
+
+In multiline format, PipeScript will be embedded within: `/*{...}*/`
+
+In single line format
+
 -- { or -- PipeScript{  begins a PipeScript block
 
 -- } or -- }PipeScript  ends a PipeScript block
