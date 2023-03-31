@@ -96,4 +96,3 @@ ATOM.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLi
 ```PowerShell
 ATOM.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
