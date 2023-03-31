@@ -137,4 +137,3 @@ R.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList 
 ```PowerShell
 R.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
