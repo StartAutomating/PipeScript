@@ -113,7 +113,8 @@ process {
                 # Then walk over each key/valye in the dictionary
                 $innerCss = $(@(foreach ($kv in $inDictionary.GetEnumerator()) {                            
                     if ($kv.Value -isnot [string]) {
-                        $kv.Key + ' ' + "$($kv.Value | ToCSS -Depth ($depth + 1))" 
+                        $kv.Key + ' ' + "$($kv.Value | 
+                            & $MyInvocation.MyCommand.ScriptBlock -Depth ($depth + 1))" 
                     }
                     else {
                         $kv.Key + ':' + $kv.Value
