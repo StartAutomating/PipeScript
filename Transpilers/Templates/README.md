@@ -1,6 +1,6 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 42 languages or file types.
+PipeScript can be used to generate 43 languages or file types.
 
 ### Supported Languages
 
@@ -42,6 +42,7 @@ PipeScript can be used to generate 42 languages or file types.
 |[RSS](RSS.Template.psx.ps1)                |RSS Template Transpiler.        |```\.rss$```                    |
 |[Ruby](Ruby.Template.psx.ps1)              |Ruby Template Transpiler.       |```\.rb$```                     |
 |[Rust](Rust.Template.psx.ps1)              |Rust Template Transpiler.       |```\.rs$```                     |
+|[Scala](Scala.Template.psx.ps1)            |Scala Template Transpiler.      |```\.(?>scala\\|sc)$```         |
 |[SQL](SQL.Template.psx.ps1)                |SQL Template Transpiler.        |```\.sql$```                    |
 |[TCL](TCL.Template.psx.ps1)                |TCL/TK Template Transpiler.     |```\.t(?>cl\\|k)$```            |
 |[TOML](TOML.Template.psx.ps1)              |TOML Template Transpiler.       |```\.toml$```                   |
