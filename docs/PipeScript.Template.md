@@ -273,4 +273,3 @@ The Command Abstract Syntax Tree.  If this is provided, we are transpiling a tem
 ```PowerShell
 PipeScript.Template [[-SourceText] <String>] [[-ReplacePattern] <Regex>] [[-TemplateName] <Object>] [[-StartPattern] <Regex>] [[-EndPattern] <Regex>] [[-ReplacementEvaluator] <ScriptBlock>] [-NoTranspile] [[-SourceFile] <String>] [[-Begin] <ScriptBlock>] [[-ForeachObject] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [[-LinePattern] <Regex>] [[-CommandAst] <CommandAst>] [<CommonParameters>]
 ```
-
