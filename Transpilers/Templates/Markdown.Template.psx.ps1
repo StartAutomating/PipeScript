@@ -55,30 +55,59 @@ $ArgumentList
 )
 
 begin {
-    # We start off by declaring a number of regular expressions:
-    
-    $startComment = '(?>
-        # Match three ticks or tildas                
-        (?>```|~~~|) |        
-        # Or three ticks or tilda, as long as they were preceeded by a newline and followed by less than three spaces.        
-        (?<=(?>[\r\n]+){1})
-        [\s-[\r\n]]{0,3}
-        (?>```|~~~)        
-    ){1}(?>    
-        # Then, match two characters in the set .<>
-        [\.\<\>]{2}
-        | 
-        PipeScript # or match the literal word PipeScript
+    # Note: Markdown is one of the more complicated templates.
+
+    # This is because Markdown isn't _just_ Markdown.  Markdown allows inline HTML.  Inline HTML, in turn, allows inline JavaScript and CSS.
+    # Also, Markdown code blocks can be provided a few different ways, and thus PipeScript can be embedded a few different ways.
+
+    $StartConditions = 
+        '# three ticks can start an inline code block
+        (?>`{3})
+        [\.\<\>]{2} # followed by at least 2 of .<>',
+        '# Or three ticks or tilda, followed by PipeScript.        
+        (?>`{3}|~{3})
+        PipeScript',
+        '# Or a single tick, followed by a literal pipe
+        `\|',
+        '
+        # Or an HTML comment start
+        <\!--',
+        
+        '
+        # Or a JavaScript/CSS comment start
+        /\*
+        '
+
+    $endConditions = @(        
+        '# Or a literal pipe, followed by a single tick
+        \|`',
+        '[\.\<\>]{2} # At least 2 of .<>
+        `{3} # followed by 3 ticks ',
+        '# Or three ticks or tildas
+        (?>`{3}|~{3})',
+        '# or HTML comment end
+        -->',
+        '# or JavaScript/CSS comment end
+        \*/
+        '
+    )
+
+
+    $startComment = "(?>
+$($StartConditions -join ([Environment]::NewLine + '  |' + [Environment]::NewLine))        
     )\s{0,}
     # followed by a bracket and any opening whitespace.
     \{\s{0,}
-' 
-    $endComment   = '\}(?>[\.\<\>]{2}|PipeScript){0,1}(?>
-        \s{0,}(?>[\r\n]+){1}\s{0,3}(?>```|~~~)        
-        |
-        (?>```|~~~)
+"
+    
+    $endComment   = "
+    \}
+    \s{0,}
+    (?>
+$($endConditions -join ([Environment]::NewLine + '  |' + [Environment]::NewLine))
     )
-    '
+    "
+    
     
     $startRegex = "(?<PSStart>${startComment})"
     # * EndRegex       ```$whitespace + '}' + $EndComment```
