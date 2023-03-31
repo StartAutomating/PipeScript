@@ -106,4 +106,3 @@ Arduino.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argumen
 ```PowerShell
 Arduino.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
