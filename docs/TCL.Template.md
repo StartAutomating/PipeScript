@@ -137,4 +137,3 @@ TCL.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLis
 ```PowerShell
 TCL.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
