@@ -188,4 +188,3 @@ Requires [-Module <Object>] [-Latest] [-ModuleLoader <ScriptBlock>] [-Type <Obje
 ```PowerShell
 Requires [-Module <Object>] [-Latest] [-ModuleLoader <ScriptBlock>] [-Type <Object>] [-TypeLoader <ScriptBlock>] [-Variables <Object>] [-VariableLoader <ScriptBlock>] -ScriptBlock <ScriptBlock> [<CommonParameters>]
 ```
-
