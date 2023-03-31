@@ -101,4 +101,3 @@ Bicep.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentL
 ```PowerShell
 Bicep.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
