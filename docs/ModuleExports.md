@@ -93,4 +93,3 @@ ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScri
 ```PowerShell
 ModuleExports [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScript | Application | Script | Configuration | All}] -VariableAST <VariableExpressionAst> [<CommonParameters>]
 ```
-
