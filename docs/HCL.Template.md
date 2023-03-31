@@ -103,4 +103,3 @@ HCL.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLis
 ```PowerShell
 HCL.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
