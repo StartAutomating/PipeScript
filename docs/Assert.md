@@ -116,4 +116,3 @@ The CommandAst
 ```PowerShell
 Assert -CommandAst <CommandAst> [<CommonParameters>]
 ```
-
