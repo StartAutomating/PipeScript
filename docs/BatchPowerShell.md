@@ -71,4 +71,3 @@ BatchPowerShell -ScriptInfo <ExternalScriptInfo> [-Pwsh] [<CommonParameters>]
 ```PowerShell
 BatchPowerShell -ScriptBlock <ScriptBlock> [-Pwsh] [<CommonParameters>]
 ```
-
