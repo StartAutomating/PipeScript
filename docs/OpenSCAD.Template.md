@@ -133,4 +133,3 @@ OpenSCAD.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-Argume
 ```PowerShell
 OpenSCAD.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
