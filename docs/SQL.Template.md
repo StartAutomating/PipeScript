@@ -135,4 +135,3 @@ SQL.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentLis
 ```PowerShell
 SQL.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
-
