@@ -160,5 +160,3 @@ PipeScript supports the use of conditional keywords, which can remove a few exce
 
 ~~~PowerShell
 Invoke-10
-
-
