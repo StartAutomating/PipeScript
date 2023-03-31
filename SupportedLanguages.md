@@ -39,6 +39,7 @@ These are all of the transpilers currently included in PipeScript:
 |[RSS.Template](Transpilers/Templates/RSS.Template.psx.ps1)                |RSS Template Transpiler.        |```\.rss$```                    |
 |[Ruby.Template](Transpilers/Templates/Ruby.Template.psx.ps1)              |Ruby Template Transpiler.       |```\.rb$```                     |
 |[Rust.Template](Transpilers/Templates/Rust.Template.psx.ps1)              |Rust Template Transpiler.       |```\.rs$```                     |
+|[Scala.Template](Transpilers/Templates/Scala.Template.psx.ps1)            |Scala Template Transpiler.      |```\.(?>scala\\|sc)$```         |
 |[SQL.Template](Transpilers/Templates/SQL.Template.psx.ps1)                |SQL Template Transpiler.        |```\.sql$```                    |
 |[TCL.Template](Transpilers/Templates/TCL.Template.psx.ps1)                |TCL/TK Template Transpiler.     |```\.t(?>cl\\|k)$```            |
 |[TOML.Template](Transpilers/Templates/TOML.Template.psx.ps1)              |TOML Template Transpiler.       |```\.toml$```                   |
