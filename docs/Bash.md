@@ -56,4 +56,3 @@ Bash -ScriptInfo <ExternalScriptInfo> [<CommonParameters>]
 ```PowerShell
 Bash -ScriptBlock <ScriptBlock> [<CommonParameters>]
 ```
-
