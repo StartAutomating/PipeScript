@@ -46,7 +46,7 @@ begin {
     $endComment   = '\*/' # * End Comments   ```/*```
     $Whitespace   = '[\s\n\r]{0,}'
     # * IgnoredContext ```String.empty```, ```null```, blank strings and characters
-    $IgnoredContext = "(?<ignore>(?>$("null", '""', "\{\}", "\[\]" -join '|'))\s{0,}){0,1}"
+    $IgnoredContext = "(?<ignore>(?>$('null', '""', '\{\}', '\[\]' -join '|'))\s{0,}){0,1}"
     # * StartRegex     ```$IgnoredContext + $StartComment + '{' + $Whitespace```
     $startRegex = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
@@ -73,7 +73,7 @@ process {
     $splat.ForeachObject = {
         $in = $_
         if (($in -is [string]) -or 
-            ($in -ne $null -and $in.GetType().IsPrimitive)) {
+            ($in.GetType -and $in.GetType().IsPrimitive)) {
             $in
         } else {
             ConvertTo-Json -Depth 100 -InputObject $in
