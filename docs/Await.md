@@ -62,4 +62,3 @@ PipeScript -ScriptBlock {
 ```PowerShell
 Await [-CommandAst] <CommandAst> [<CommonParameters>]
 ```
-
