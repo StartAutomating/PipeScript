@@ -406,7 +406,7 @@ function Join-PipeScript
                 $blocks = @($AllScriptBlocks.Ast.EndBlock)
                 if ($blocks -ne $null) {
                     $blockOpen = $false # see if there was anything in them.
-                    
+                    $unnamedBlocks = @($blocks.Unnamed)
                     foreach ($block in $blocks) {
                         if (-not $block) { continue }
                         # Empty(ish) scripts may have an end bock that is an empty param block
@@ -424,11 +424,12 @@ function Join-PipeScript
                             $blockOpen = $true
                         } elseif ($block.Statements.Count) {
                             # where as if it is a series of statements, it doesn't necessarily need to be.
-                            # Unless it's the first block and it's unnamed.
-                            if ($block.Unnamed -and -not $blockOpen) {
+                            # Unless it's the first block and it's unnamed, and other blocks are named.
+                            if ($block.Unnamed -and -not $blockOpen -and 
+                                $unnamedBlocks.Length -ne $blocks.Length) {
                                 ' ' * ($block | MeasureIndent) + 'end {'
                                 $blockOpen = $true
-                                $closeEndBlock = $true
+                                $closeEndBlock = $false
                             }
                             if ($StatementsToAdd) {
                                 $StatementsToAdd -join [Environment]::NewLine
