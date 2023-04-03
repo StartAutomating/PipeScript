@@ -139,7 +139,7 @@ begin {
             return
         }
 
-        if ($LinePattern) {
+        if ($LinePattern -and $match.Groups["IsSingleLine"].Value) {
             $pipeScriptLines = @($pipeScriptText -split '(?>\r\n|\n)')
             $pipeScriptText  = $pipeScriptLines -match $LinePattern -replace $LinePattern -join [Environment]::Newline
         }
