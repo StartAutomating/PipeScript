@@ -26,6 +26,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Decorate](Transpilers/Decorate.psx.ps1)                                                   |decorate transpiler                               |
 |[Define](Transpilers/Define.psx.ps1)                                                       |Defines a variable                                |
 |[Dot](Transpilers/Syntax/Dot.psx.ps1)                                                      |Dot Notation                                      |
+|[Eiffel.Template](Transpilers/Templates/Eiffel.Template.psx.ps1)                           |Eiffel Template Transpiler.                       |
 |[EqualityComparison](Transpilers/Syntax/EqualityComparison.psx.ps1)                        |Allows equality comparison.                       |
 |[EqualityTypeComparison](Transpilers/Syntax/EqualityTypeComparison.psx.ps1)                |Allows equality type comparison.                  |
 |[Explicit](Transpilers/Explicit.psx.ps1)                                                   |Makes Output from a PowerShell function Explicit. |
@@ -57,6 +58,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Perl.Template](Transpilers/Templates/Perl.Template.psx.ps1)                               |Perl Template Transpiler.                         |
 |[PHP.Template](Transpilers/Templates/PHP.Template.psx.ps1)                                 |PHP Template Transpiler.                          |
 |[PipedAssignment](Transpilers/Syntax/PipedAssignment.psx.ps1)                              |Piped Assignment Transpiler                       |
+|[PipeScript.Aspect](Transpilers/Core/PipeScript.Aspect.psx.ps1)                            |Aspect Transpiler                                 |
 |[PipeScript.AttributedExpression](Transpilers/Core/PipeScript.AttributedExpression.psx.ps1)|The PipeScript AttributedExpression Transpiler    |
 |[Pipescript.FunctionDefinition](Transpilers/Core/Pipescript.FunctionDefinition.psx.ps1)    |PipeScript Function Transpiler                    |
 |[PipeScript.ParameterAttribute](Transpilers/Core/PipeScript.ParameterAttribute.psx.ps1)    |
