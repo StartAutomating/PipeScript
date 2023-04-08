@@ -48,5 +48,5 @@ svg -ViewBox 1920,1080 @(
             svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($RotateEvery.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
         )     
 ) -OutputPath (
-    Join-Path $PSScriptRoot Assets | Join-Path -ChildPath "PipeScript.svg"
+    Join-Path ($PSScriptRoot | Split-Path) Assets | Join-Path -ChildPath "PipeScript.svg"
 )
