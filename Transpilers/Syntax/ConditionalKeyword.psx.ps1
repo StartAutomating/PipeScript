@@ -72,7 +72,7 @@
         if (-not $nextStatement) {  return $false }
 
         # If the label was 'if', it's valid.
-        if ($ast.Label -eq 'if') { return $true }
+        if ('if' -eq $ast.Label) { return $true }
 
         # If the label is not if, it could be an actual label        
         # If the next statement is an if Statement, we're good
