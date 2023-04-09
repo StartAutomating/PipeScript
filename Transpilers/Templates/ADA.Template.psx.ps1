@@ -11,7 +11,7 @@
     -- } or -- }PipeScript  ends a PipeScript block                
 .EXAMPLE
     Invoke-PipeScript {
-        HelloWorld.adb template '    
+        $AdaScript = '    
     with Ada.Text_IO;
 
     procedure Hello_World is
@@ -26,6 +26,8 @@
         -- }
     end Hello_World;    
     '
+    
+        [OutputFile('.\HelloWorld.ps1.adb')]$AdaScript
     }
 
     Invoke-PipeScript .\HelloWorld.ps1.adb
@@ -53,7 +55,7 @@ $ArgumentList
 
 begin {
     # We start off by declaring a number of regular expressions:
-    $startComment = '(?>--\s{0,}(?:PipeScript)?\s{0,}\{)'
+    $startComment = '(?>(?<IsSingleLine>--)\s{0,}(?:PipeScript)?\s{0,}\{)'
     $endComment   = '(?>--\s{0,}\}\s{0,}(?:PipeScript)?\s{0,})'        
     $startRegex = "(?<PSStart>${startComment})"
     $endRegex   = "(?<PSEnd>${endComment})"
