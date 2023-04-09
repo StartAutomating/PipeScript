@@ -188,6 +188,8 @@
             $TextReplacement = [Ordered]@{} # initialize the collection
         }
 
+        $null = New-Event -SourceIdentifier Update-PipeScript -MessageData ([Ordered]@{} + $PSBoundParameters)
+
         # The next series of things can only happen if we're dealing with a ```[ScriptBlock]```
         if ($ScriptBlock) {
             $Text = "$scriptBlock"
