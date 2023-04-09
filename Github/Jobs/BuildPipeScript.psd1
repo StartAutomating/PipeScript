@@ -12,8 +12,19 @@
             id = 'PSSVG'
         }, 
         'RunPiecemeal',
-        'RunPipeScript',
-        'RunEZOut',       
+        @{
+            name = 'Run PipeScript (from main)'
+            if   = '${{github.ref_name == ''main''}}'
+            uses = 'StartAutomating/PipeScript@main'
+            id = 'PipeScriptMain'
+        },
+        @{
+            name = 'Run PipeScript (on branch)'
+            if   = '${{github.ref_name != ''main''}}'
+            uses = './'
+            id = 'PipeScriptBranch'
+        }
+        'RunEZOut',
         'RunHelpOut'
     )
 }
