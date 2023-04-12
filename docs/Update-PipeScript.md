@@ -190,6 +190,69 @@ If provided, will insert text after any regular expression match.
 
 
 
+#### **InsertAfterAST**
+
+A dictionary of items to insert after an AST element.
+
+
+
+
+
+
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |10      |false        |
+
+
+
+#### **InsertBeforeAst**
+
+A dictionary of items to insert before an AST element.
+
+
+
+
+
+
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |11      |false        |
+
+
+
+#### **TextInsertion**
+
+A dictionary of text insertions.
+The key is the insertion index.
+The value is the insertion.
+
+
+
+
+
+
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |12      |false        |
+
+
+
+#### **RegexInsertion**
+
+A dictionary of regex based insertions
+This works similarly to -RegexReplacement.
+
+
+
+
+
+
+|Type           |Required|Position|PipelineInput|Aliases        |
+|---------------|--------|--------|-------------|---------------|
+|`[IDictionary]`|false   |13      |false        |RegexInsertions|
+
+
+
 #### **RenameVariable**
 
 A collection of variables to rename.
@@ -201,7 +264,41 @@ A collection of variables to rename.
 
 |Type           |Required|Position|PipelineInput|Aliases        |
 |---------------|--------|--------|-------------|---------------|
-|`[IDictionary]`|false   |10      |false        |RenameParameter|
+|`[IDictionary]`|false   |14      |false        |RenameParameter|
+
+
+
+#### **Append**
+
+Content to append.
+Appended ScriptBlocks will be added to the last block of a ScriptBlock.
+Appended Text will be added to the end.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Object]`|false   |15      |false        |
+
+
+
+#### **Prepend**
+
+Content to prepend
+Prepended ScriptBlocks will be added to the first block of a ScriptBlock.
+Prepended text will be added at the start.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Object]`|false   |16      |false        |
 
 
 
@@ -227,5 +324,5 @@ If set, will transpile the updated script block.
 
 ### Syntax
 ```PowerShell
-Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-RegexReplacement] <IDictionary>] [[-RegionReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-InsertBefore] <IDictionary>] [[-InsertAfter] <IDictionary>] [[-RenameVariable] <IDictionary>] [-Transpile] [<CommonParameters>]
+Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-RegexReplacement] <IDictionary>] [[-RegionReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-InsertBefore] <IDictionary>] [[-InsertAfter] <IDictionary>] [[-InsertAfterAST] <IDictionary>] [[-InsertBeforeAst] <IDictionary>] [[-TextInsertion] <IDictionary>] [[-RegexInsertion] <IDictionary>] [[-RenameVariable] <IDictionary>] [[-Append] <Object>] [[-Prepend] <Object>] [-Transpile] [<CommonParameters>]
 ```
