@@ -10,7 +10,7 @@
     CompanyName       = 'Start-Automating'
     Copyright         = '2022 Start-Automating'
     Author            = 'James Brundage'
-    FunctionsToExport = 'Export-PipeScript','Get-PipeScript','Get-Transpiler','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript'
+    FunctionsToExport = 'Export-Pipescript','Get-PipeScript','Get-Transpiler','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript'
     PrivateData = @{
         FileTypes = @{
             Transpiler = @{
