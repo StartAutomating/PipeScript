@@ -5,6 +5,53 @@
     Allows PipeScript to generate XML.
 
     Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
+.EXAMPLE
+    $typesFile, $typeDefinition, $scriptMethod = Invoke-PipeScript {
+
+        types.ps1xml template '
+        <Types>
+            <!--{param([Alias("TypeDefinition")]$TypeDefinitions) $TypeDefinitions }-->
+        </Types>
+        '
+
+        typeDefinition.ps1xml template '
+        <Type>
+            <!--{param([Alias("PSTypeName")]$TypeName) "<Name>$($typename)</Name>" }-->
+            <!--{param([Alias("PSMembers","Member")]$Members) "<Members>$($members)</Members>" }-->
+        </Type>
+        '
+
+        scriptMethod.ps1xml template '
+        <ScriptMethod>
+            <!--{param([Alias("Name")]$MethodName) "<Name>$($MethodName)</Name>" }-->
+            <!--{param([ScriptBlock]$MethodDefinition) "<Script>$([Security.SecurityElement]::Escape("$MethodDefinition"))</Script>" }-->
+        </ScriptMethod>
+        '
+    }
+
+
+    $typesFile.Save("Test.types.ps1xml",
+        $typeDefinition.Evaluate(@{
+            TypeName='foobar'
+            Members = 
+                @($scriptMethod.Evaluate(
+                    @{
+                        MethodName = 'foo'
+                        MethodDefinition = {"foo"}
+                    }
+                ),$scriptMethod.Evaluate(
+                    @{
+                        MethodName = 'bar'
+                        MethodDefinition = {"bar"}
+                    }
+                ),$scriptMethod.Evaluate(
+                    @{
+                        MethodName = 'baz'
+                        MethodDefinition = {"baz"}
+                    }
+                ))
+        })
+    )
 #>
 [ValidatePattern('\.(?>xml|xaml|ps1xml)$')]
 param(
@@ -54,6 +101,27 @@ process {
     
     if ($Parameter) { $splat.Parameter = $Parameter }
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
+
+    $splat.ForeachObject = {
+        $in = $_
+        if (($in -is [string]) -or 
+            ($in.GetType -and $in.GetType().IsPrimitive)) {
+            $in
+        } elseif ($in.ChildNodes) {
+            foreach ($inChildNode in $in.ChildNodes) {
+                if ($inChildNode.NodeType -ne 'XmlDeclaration') {
+                    $inChildNode.OuterXml
+                }
+            }
+        } else {
+            $inXml = (ConvertTo-Xml -Depth 100 -InputObject $in)
+            foreach ($inChildNode in $inXml.ChildNodes) {
+                if ($inChildNode.NodeType -ne 'XmlDeclaration') {
+                    $inChildNode.OuterXml
+                }
+            }
+        }
+    }
 
     # If we are being used within a keyword,
     if ($AsTemplateObject) {
