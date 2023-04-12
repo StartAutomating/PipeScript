@@ -273,7 +273,7 @@ process {
             }
             $inlineAstString = $inlineAstString
             $ForeachObject = 
-                if ($this.ForeachObject) {
+                if ("$($this.ForeachObject)" -notmatch "(?>^\s{0,}$|^\s{0,}\{\s{0,}\}\s{0,}$)") {
                     $this.ForeachObject
                 } else { $ForeachObject }
             $begin = 
