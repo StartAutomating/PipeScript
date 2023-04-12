@@ -1,4 +1,6 @@
 
+
+
 function PipeScript.Optimizer.ConsolidateAspects {
     <#
     .SYNOPSIS
