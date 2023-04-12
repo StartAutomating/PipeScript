@@ -12,8 +12,16 @@
     Author            = 'James Brundage'
     FunctionsToExport = '' <#{
         $exportNames = Get-ChildItem -Recurse -Filter '*-*.ps1' |
-            Where-Object Name -notmatch '\.[^\.]+\.ps1' |
-            Foreach-Object { $_.Name.Substring(0, $_.Name.Length - $_.Extension.Length) }
+            Where-Object Name -notmatch '\.ps1?\.ps1$' |            
+            Foreach-Object {
+              foreach ($match in @(
+                  [Regex]::Matches((Get-Content -Raw $_.FullName), "^function\s(?<n>[\S-[\(\)]]+)\s{0,}\{", 'Multiline')
+              )) {
+                if ($match.Groups["n"] -match '\p{P}') {
+                  $match.Groups["n"]
+                }
+              }              
+            }
         "'$($exportNames -join "','")'"
     }#>
     PrivateData = @{
