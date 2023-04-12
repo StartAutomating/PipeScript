@@ -149,7 +149,9 @@ begin {
             return
         }
 
-        if (-not $NoTranspile) {
+        if ((-not $NoTranspile) -and 
+            $ExecutionContext.SessionState.InvokeCommand.GetCommand('.>PipeScript','Alias')
+        ) {
             $TranspiledOutput = $InlineScriptBlock | .>Pipescript
             if ($TranspiledOutput -is [ScriptBlock]) {
                 $InlineScriptBlock = $TranspiledOutput
