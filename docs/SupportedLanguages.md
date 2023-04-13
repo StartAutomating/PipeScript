@@ -32,6 +32,7 @@ These are all of the transpilers currently included in PipeScript:
 |[OpenSCAD.Template](Transpilers/Templates/OpenSCAD.Template.psx.ps1)      |OpenSCAD Template Transpiler.   |```\.scad$```                   |
 |[Perl.Template](Transpilers/Templates/Perl.Template.psx.ps1)              |Perl Template Transpiler.       |```\.(?>pl\\|pod)$```           |
 |[PHP.Template](Transpilers/Templates/PHP.Template.psx.ps1)                |PHP Template Transpiler.        |```\.php$```                    |
+|[PS1XML.Template](Transpilers/Templates/PS1XML.Template.psx.ps1)          |PS1XML Template Transpiler.     |```\.ps1xml$```                 |
 |[PSD1.Template](Transpilers/Templates/PSD1.Template.psx.ps1)              |PSD1 Template Transpiler.       |```\.psd1$```                   |
 |[Python.Template](Transpilers/Templates/Python.Template.psx.ps1)          |Python Template Transpiler.     |```\.py$```                     |
 |[R.Template](Transpilers/Templates/R.Template.psx.ps1)                    |R Template Transpiler.          |```\.r$```                      |
@@ -48,5 +49,5 @@ These are all of the transpilers currently included in PipeScript:
 |[TypeScript.Template](Transpilers/Templates/TypeScript.Template.psx.ps1)  |TypeScript Template Transpiler. |```\.tsx{0,1}```                |
 |[WebAssembly.Template](Transpilers/Templates/WebAssembly.Template.psx.ps1)|WebAssembly Template Transpiler.|```\.wat$```                    |
 |[XAML.Template](Transpilers/Templates/XAML.Template.psx.ps1)              |XAML Template Transpiler.       |```\.xaml$```                   |
-|[XML.Template](Transpilers/Templates/XML.Template.psx.ps1)                |XML Template Transpiler.        |```\.(?>xml\\|xaml\\|ps1xml)$```|
+|[XML.Template](Transpilers/Templates/XML.Template.psx.ps1)                |XML Template Transpiler.        |```\.xml$```                    |
 |[YAML.Template](Transpilers/Templates/YAML.Template.psx.ps1)              |Yaml Template Transpiler.       |```\.(?>yml\\|yaml)$```         |
