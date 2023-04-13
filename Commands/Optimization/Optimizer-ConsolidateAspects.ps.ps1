@@ -129,6 +129,6 @@ PipeScript.Optimizer function ConsolidateAspects {
             }
         ) -join [Environment]::NewLine)")
 
-        Update-PipeScript -RegexReplacement $regexReplacements -ScriptBlock $ScriptBlock -Prepend $prepend
+        # Update-PipeScript -RegexReplacement $regexReplacements -ScriptBlock $ScriptBlock -Prepend $prepend
     }
 }
