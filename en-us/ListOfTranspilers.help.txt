@@ -97,6 +97,7 @@ These are all of the transpilers currently included in PipeScript:
 |[VBN](Transpilers/Parameters/VBN.psx.ps1)                                                  |ValueFromPiplineByPropertyName Shorthand          |
 |[VFP](Transpilers/Parameters/VFP.psx.ps1)                                                  |ValueFromPipline Shorthand                        |
 |[WebAssembly.Template](Transpilers/Templates/WebAssembly.Template.psx.ps1)                 |WebAssembly Template Transpiler.                  |
+|[XAML.Template](Transpilers/Templates/XAML.Template.psx.ps1)                               |XAML Template Transpiler.                         |
 |[XML.Template](Transpilers/Templates/XML.Template.psx.ps1)                                 |XML Template Transpiler.                          |
 |[YAML.Template](Transpilers/Templates/YAML.Template.psx.ps1)                               |Yaml Template Transpiler.                         |
 
