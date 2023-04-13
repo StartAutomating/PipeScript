@@ -34,7 +34,7 @@ $starsTemplate = Invoke-PipeScript {
     '
 }
 ```
-$starsTemplate.SaveTemplate("$pwd\Stars.svg")
+$starsTemplate.Save("$pwd\Stars.svg")
 
 
 ---
