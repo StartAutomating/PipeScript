@@ -1,6 +1,6 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 46 languages or file types.
+PipeScript can be used to generate 47 languages or file types.
 
 ### Supported Languages
 
@@ -35,6 +35,7 @@ PipeScript can be used to generate 46 languages or file types.
 |[OpenSCAD](OpenSCAD.Template.psx.ps1)      |OpenSCAD Template Transpiler.   |```\.scad$```                   |
 |[Perl](Perl.Template.psx.ps1)              |Perl Template Transpiler.       |```\.(?>pl\\|pod)$```           |
 |[PHP](PHP.Template.psx.ps1)                |PHP Template Transpiler.        |```\.php$```                    |
+|[PS1XML](PS1XML.Template.psx.ps1)          |PS1XML Template Transpiler.     |```\.ps1xml$```                 |
 |[PSD1](PSD1.Template.psx.ps1)              |PSD1 Template Transpiler.       |```\.psd1$```                   |
 |[Python](Python.Template.psx.ps1)          |Python Template Transpiler.     |```\.py$```                     |
 |[R](R.Template.psx.ps1)                    |R Template Transpiler.          |```\.r$```                      |
@@ -51,7 +52,7 @@ PipeScript can be used to generate 46 languages or file types.
 |[TypeScript](TypeScript.Template.psx.ps1)  |TypeScript Template Transpiler. |```\.tsx{0,1}```                |
 |[WebAssembly](WebAssembly.Template.psx.ps1)|WebAssembly Template Transpiler.|```\.wat$```                    |
 |[XAML](XAML.Template.psx.ps1)              |XAML Template Transpiler.       |```\.xaml$```                   |
-|[XML](XML.Template.psx.ps1)                |XML Template Transpiler.        |```\.(?>xml\\|xaml\\|ps1xml)$```|
+|[XML](XML.Template.psx.ps1)                |XML Template Transpiler.        |```\.xml$```                    |
 |[YAML](YAML.Template.psx.ps1)              |Yaml Template Transpiler.       |```\.(?>yml\\|yaml)$```         |
 
 
