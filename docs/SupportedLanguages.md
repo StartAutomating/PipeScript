@@ -47,5 +47,6 @@ These are all of the transpilers currently included in PipeScript:
 |[TOML.Template](Transpilers/Templates/TOML.Template.psx.ps1)              |TOML Template Transpiler.       |```\.toml$```                   |
 |[TypeScript.Template](Transpilers/Templates/TypeScript.Template.psx.ps1)  |TypeScript Template Transpiler. |```\.tsx{0,1}```                |
 |[WebAssembly.Template](Transpilers/Templates/WebAssembly.Template.psx.ps1)|WebAssembly Template Transpiler.|```\.wat$```                    |
+|[XAML.Template](Transpilers/Templates/XAML.Template.psx.ps1)              |XAML Template Transpiler.       |```\.xaml$```                   |
 |[XML.Template](Transpilers/Templates/XML.Template.psx.ps1)                |XML Template Transpiler.        |```\.(?>xml\\|xaml\\|ps1xml)$```|
 |[YAML.Template](Transpilers/Templates/YAML.Template.psx.ps1)              |Yaml Template Transpiler.       |```\.(?>yml\\|yaml)$```         |
