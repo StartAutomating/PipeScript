@@ -39,9 +39,7 @@ $AspectCommandAst
 )
 
 process {
-   
-
- $aspectName = "Aspect?$(@($AspectCommandAst.CommandElements)[0])"
+    $aspectName = "Aspect?$(@($AspectCommandAst.CommandElements)[0])"
     $aspectCommands = @($ExecutionContext.SessionState.InvokeCommand.GetCommands($aspectName, 'Function,Alias', $true))
     
     if (-not $aspectCommands) { return }
