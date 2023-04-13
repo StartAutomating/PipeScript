@@ -4,6 +4,17 @@ describe Update-PipeScript {
             Update-PipeScript -ScriptBlock { $v } -RenameVariable @{v='x'} |
                 Should -BeLike '*$x*'
         }
+
+        it 'Can remove a region' {
+            Update-ScriptBlock {
+                #region Before
+                Before
+                #endregion Before
+                #region After
+                After
+                #endregion After
+            } -ReplaceRegion @{"Before"= ""} | Should -BeLike *after*
+        }
     }
 
     context 'Updating text' {
@@ -32,7 +43,7 @@ describe Update-PipeScript {
 
             Update-PipeScript -ScriptBlock { dynamicParam { hello } } -Append { goodbye } | Should -BeLike '*dynamicParam*{*hello*goodbye*}*'
 
-            Update-PipeScript -ScriptBlock { dynamicParam { hello } end { } } -Append { goodbye } | Should -BeLike '*dynamicParam*{*hello*goodbye*}*'
+            Update-PipeScript -ScriptBlock { dynamicParam { hello } end { } } -Append { goodbye } | Should -BeLike '*dynamicParam*{*hello*}*end*{*goodbye*}*'
         }
     }
 }
