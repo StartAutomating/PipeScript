@@ -83,6 +83,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Rust.Template](Transpilers/Templates/Rust.Template.psx.ps1)                               |Rust Template Transpiler.                         |
 |[Scala.Template](Transpilers/Templates/Scala.Template.psx.ps1)                             |Scala Template Transpiler.                        |
 |[SQL.Template](Transpilers/Templates/SQL.Template.psx.ps1)                                 |SQL Template Transpiler.                          |
+|[SVG.template](Transpilers/Templates/SVG.template.psx.ps1)                                 |SVG Template Transpiler.                          |
 |[TCL.Template](Transpilers/Templates/TCL.Template.psx.ps1)                                 |TCL/TK Template Transpiler.                       |
 |[TOML.Template](Transpilers/Templates/TOML.Template.psx.ps1)                               |TOML Template Transpiler.                         |
 |[TypeScript.Template](Transpilers/Templates/TypeScript.Template.psx.ps1)                   |TypeScript Template Transpiler.                   |
