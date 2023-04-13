@@ -509,7 +509,7 @@ $replacePattern
     }
 ), `$true)
 `$templateObject.psobject.members.Add([PSScriptMethod]::new(
-    'SaveTemplate', {
+    'Save', {
         $SaveTemplate
     }
 ), `$true)

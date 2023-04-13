@@ -14,7 +14,7 @@
         '
     }
     
-    $starsTemplate.SaveTemplate("$pwd\Stars.svg")
+    $starsTemplate.Save("$pwd\Stars.svg")
 #>
 [ValidatePattern('\.svg$')]
 param(
