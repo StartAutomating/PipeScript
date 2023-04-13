@@ -68,6 +68,7 @@ These are all of the transpilers currently included in PipeScript:
 |[PipeScript.TypeConstraint](Transpilers/Core/PipeScript.TypeConstraint.psx.ps1)            |Transpiles Type Constraints                       |
 |[PipeScript.TypeExpression](Transpilers/Core/PipeScript.TypeExpression.psx.ps1)            |The PipeScript TypeExpression Transpiler          |
 |[ProxyCommand](Transpilers/ProxyCommand.psx.ps1)                                           |Creates Proxy Commands                            |
+|[PS1XML.Template](Transpilers/Templates/PS1XML.Template.psx.ps1)                           |PS1XML Template Transpiler.                       |
 |[PSD1.Template](Transpilers/Templates/PSD1.Template.psx.ps1)                               |PSD1 Template Transpiler.                         |
 |[Python.Template](Transpilers/Templates/Python.Template.psx.ps1)                           |Python Template Transpiler.                       |
 |[R.Template](Transpilers/Templates/R.Template.psx.ps1)                                     |R Template Transpiler.                            |
