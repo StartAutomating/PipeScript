@@ -1,5 +1,3 @@
-
-
 function New-PipeScript {
     <#
     .Synopsis
