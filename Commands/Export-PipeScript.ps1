@@ -59,7 +59,7 @@ function Export-Pipescript {
                 $alreadyBuilt[$buildFileTemplate.Source] = $true
             }
 
-            $EventsFromThisBuild = Get-Event | 
+            $EventsFromThisBuild = Get-Event |
                 Where-Object TimeGenerated -gt $ThisBuildStartedAt |
                 Where-Object SourceIdentifier -Like '*PipeScript*'
             
@@ -72,7 +72,6 @@ function Export-Pipescript {
 
             $alreadyBuilt[$buildFile.Source] = $true
         }
-
 
         $BuildTime = [DateTime]::Now - $buildStarted
         Write-Progress "Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" "Finished In $($BuildTime) " -Completed -id $filesToBuildID
