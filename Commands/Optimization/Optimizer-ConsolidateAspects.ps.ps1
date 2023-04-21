@@ -112,8 +112,8 @@ PipeScript.Optimizer function ConsolidateAspects {
                 })
 
             $uniquePotentialNames = $potentialNames | Select-Object -Unique
-            if ($uniquePotentialNames -and 
-                $uniquePotentialNames -isnot [Object[]]) {                
+            if ($uniquePotentialNames -and
+                $uniquePotentialNames -isnot [Object[]]) {
                 $consolidations[$k] = $uniquePotentialNames
             }
         }
