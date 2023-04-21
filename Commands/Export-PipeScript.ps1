@@ -50,15 +50,26 @@ function Export-Pipescript {
 
             $buildFileTemplate = $buildFile.Template
             if ($buildFileTemplate -and $buildFile.PipeScriptType -ne 'Template') {
-                Invoke-PipeScript $buildFileTemplate.Source
+                try {
+                    Invoke-PipeScript $buildFileTemplate.Source
+                } catch {
+                    $ex = $_
+                    Write-Error -ErrorRecord $ex
+                }
                 $alreadyBuilt[$buildFileTemplate.Source] = $true
             }
 
             $EventsFromThisBuild = Get-Event | 
                 Where-Object TimeGenerated -gt $ThisBuildStartedAt |
-                Where-Object SourceIdentifier -Like 'PipeScript.*'
+                Where-Object SourceIdentifier -Like '*PipeScript*'
             
-            Invoke-PipeScript $buildFile.Source 
+            try {
+                Invoke-PipeScript $buildFile.Source
+            } catch {
+                $ex = $_
+                Write-Error -ErrorRecord $ex
+            }
+
             $alreadyBuilt[$buildFile.Source] = $true
         }
 
