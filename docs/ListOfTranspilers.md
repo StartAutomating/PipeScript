@@ -44,6 +44,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Json.Template](Transpilers/Templates/Json.Template.psx.ps1)                               |JSON PipeScript Transpiler.                       |
 |[JSONSchema.Protocol](Transpilers/Protocols/JSONSchema.Protocol.psx.ps1)                   |json schema protocol                              |
 |[Kotlin.Template](Transpilers/Templates/Kotlin.Template.psx.ps1)                           |Kotlin Template Transpiler.                       |
+|[Kusto.Template](Transpilers/Templates/Kusto.Template.psx.ps1)                             |Kusto Template Transpiler.                        |
 |[Latex.Template](Transpilers/Templates/Latex.Template.psx.ps1)                             |Latex Template Transpiler.                        |
 |[LUA.Template](Transpilers/Templates/LUA.Template.psx.ps1)                                 |LUA Template Transpiler.                          |
 |[Markdown.Template](Transpilers/Templates/Markdown.Template.psx.ps1)                       |Markdown Template Transpiler.                     |
