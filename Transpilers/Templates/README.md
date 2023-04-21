@@ -1,6 +1,6 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 47 languages or file types.
+PipeScript can be used to generate 48 languages or file types.
 
 ### Supported Languages
 
@@ -28,6 +28,7 @@ PipeScript can be used to generate 47 languages or file types.
 |[JavaScript](JavaScript.Template.psx.ps1)  |JavaScript Template Transpiler. |```\.js$```                     |
 |[Json](Json.Template.psx.ps1)              |JSON PipeScript Transpiler.     |```\.json$```                   |
 |[Kotlin](Kotlin.Template.psx.ps1)          |Kotlin Template Transpiler.     |```\.kt$```                     |
+|[Kusto](Kusto.Template.psx.ps1)            |Kusto Template Transpiler.      |```\.kql$```                    |
 |[Latex](Latex.Template.psx.ps1)            |Latex Template Transpiler.      |```\.(?>latex\\|tex)$```        |
 |[LUA](LUA.Template.psx.ps1)                |LUA Template Transpiler.        |```\.lua$```                    |
 |[Markdown](Markdown.Template.psx.ps1)      |Markdown Template Transpiler.   |```\.(?>md\\|markdown\\|txt)$```|
