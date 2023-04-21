@@ -106,8 +106,8 @@ function PipeScript.Optimizer.ConsolidateAspects {
                     }
                 })
             $uniquePotentialNames = $potentialNames | Select-Object -Unique
-            if ($uniquePotentialNames -and 
-                $uniquePotentialNames -isnot [Object[]]) {                
+            if ($uniquePotentialNames -and
+                $uniquePotentialNames -isnot [Object[]]) {
                 $consolidations[$k] = $uniquePotentialNames
             }
         }
@@ -121,7 +121,12 @@ function PipeScript.Optimizer.ConsolidateAspects {
                 "`$$($consolidate.Value) = $($consolidate.Key)"
             }
         ) -join [Environment]::NewLine)")
-        # Update-PipeScript -RegexReplacement $regexReplacements -ScriptBlock $ScriptBlock -Prepend $prepend
+        if ($consolidations.Count) {
+            Update-PipeScript -RegexReplacement $regexReplacements -ScriptBlock $ScriptBlock -Prepend $prepend
+        }
+        else {
+            $ScriptBlock
+        }
     }
 }
 
