@@ -95,6 +95,21 @@ If set, will pass thru the included item
 
 
 
+#### **Exclude**
+
+The exclusion pattern to use.
+
+
+
+
+
+
+|Type        |Required|Position|PipelineInput|Aliases       |
+|------------|--------|--------|-------------|--------------|
+|`[String[]]`|false   |named   |false        |ExcludePattern|
+
+
+
 #### **VariableAst**
 
 
@@ -106,6 +121,17 @@ If set, will pass thru the included item
 
 
 
+#### **CommandAst**
+
+
+
+
+|Type          |Required|Position|PipelineInput |
+|--------------|--------|--------|--------------|
+|`[CommandAst]`|true    |named   |true (ByValue)|
+
+
+
 
 
 ---
@@ -113,5 +139,8 @@ If set, will pass thru the included item
 
 ### Syntax
 ```PowerShell
-Include [-FilePath] <String> [-AsByte] [-Passthru] -VariableAst <VariableExpressionAst> [<CommonParameters>]
+Include [-FilePath] <String> [-AsByte] [-Passthru] [-Exclude <String[]>] -VariableAst <VariableExpressionAst> [<CommonParameters>]
+```
+```PowerShell
+Include [-FilePath] <String> [-AsByte] [-Passthru] [-Exclude <String[]>] -CommandAst <CommandAst> [<CommonParameters>]
 ```
