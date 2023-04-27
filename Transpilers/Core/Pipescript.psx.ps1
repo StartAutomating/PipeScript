@@ -81,10 +81,46 @@ begin {
         $TranspilersCachedAt = [datetime]::Now
     }    
 
-    . RefreshTranspilers        
+    . RefreshTranspilers
+    
+    $TranspilationCallstack = Get-PSCallStack
+    $IsNested = foreach ($callstackEntry in $TranspilationCallstack) {
+        if ($callstackEntry.InvocationInfo.MyCommand.Name -eq $myCmd.Name) {
+            if ($callstackEntry.InvocationInfo -ne $MyInvocation) {
+                $true; break
+            }
+        }
+    }
+    $pipeScriptCommands = @()
+    $preCommands  = @()
+    $postCommands = @()
+    if (-not $IsNested) {
+        $pipeScriptCommands = $ExecutionContext.SessionState.InvokeCommand.GetCommands('PipeScript*', 'Function,Alias', $true)
+        foreach ($pipeScriptCommand in $pipeScriptCommands) {
+            if ($pipeScriptCommand.Name -match '^PipeScript.(?>Pre|Analyze)' -and 
+                $pipeScriptCommand.CouldPipeType([scriptblock])) {
+                $preCommands += $pipeScriptCommand
+            }
+            if ($pipeScriptCommand.Name -match '^PipeScript.(?>Post|Optimize)' -and
+                $pipeScriptCommand.CouldPipeType([scriptblock])                
+            ) {
+                $postCommands += $pipeScriptCommand
+            }
+        }
+        $preCommands = $preCommands | Sort-Object Rank, Name
+        $postCommands = $postCommands | Sort-Object Rank, Name
+    }
 }
 
 process {
+    if (-not $IsNested -and $preCommands) {
+        foreach ($pre in $preCommands) {
+            $preOut = $ScriptBlock | & $pre
+            if ($preOut -and $preOut -is [scriptblock]) {
+                $ScriptBlock = $preOut
+            }
+        }
+    }
     # First, make a copy of our input parameters.
     $invocationParams = [Ordered]@{} + $PSBoundParameters
 
@@ -378,6 +414,15 @@ process {
             
             $transpiledScriptBlock =
                 [ScriptBlock]::Create($newScript)
+
+            if (-not $IsNested -and $postCommands) {
+                foreach ($post in $postCommands) {
+                    $postOut = $transpiledScriptBlock | & $post 
+                    if ($postOut -and $postOut -is [scriptblock]) {
+                        $transpiledScriptBlock = $postOut
+                    }
+                }
+            }
             
             $transpiledScriptBlock
             # output the new script.

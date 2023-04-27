@@ -98,22 +98,8 @@ HTTP Accept indicates what content types the web request will accept as a respon
     [ScriptBlock]
     $Begin,
     # The process block.
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [ValidateScript({
-        if ($_ -isnot [ScriptBlock]) { return $true }
-        if ($_.Ast.DynamicParamBlock -or $_.Ast.BeginBlock -or $_.Ast.ProcessBlock) {
-            throw "ScriptBlock should not have any named blocks"
-        }
-        return $true    
-    })]
-    [ValidateScript({
-        if ($_ -isnot [ScriptBlock]) { return $true }
-        if ($_.Ast.ParamBlock.Parameters.Count) {
-            throw "ScriptBlock should not have parameters"
-        }
-        return $true    
-    })]
-    [Alias('ProcessBlock')]
+    [Parameter(ValueFromPipeline,ValueFromPipelineByPropertyName)]    
+    [Alias('ProcessBlock','ScriptBlock')]
     [ScriptBlock]
     $Process,
     # The end block.
@@ -198,6 +184,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
         $allEndBlocks          = @()
         $allProcessBlocks      = @()
         $allHeaders            = @()
+        ${?<EmptyParameterBlock>} = '^[\s\r\n]{0,}param\(' -replace '\)[\s\r\n]{0,}$'
         filter embedParameterHelp {
                     if ($_ -notmatch '^\s\<\#' -and $_ -notmatch '^\s\#') {
                         $commentLines = @($_ -split '(?>\r\n|\n)')
@@ -282,13 +269,13 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             if ($EachParameter.Value.Ast.ParamBlock) {
                                 # embed the parameter block (except for the param keyword)
                                 $EachParameter.Value.Ast.ParamBlock.Extent.ToString() -replace
-                                    '^[\s\r\n]{0,}param\(' -replace '\)[\s\r\n]{0,}$'
+                                    ${?<EmptyParameterBlock>}
                             } else {
                                 # Otherwise
                                 '[Parameter(ValueFromPipelineByPropertyName)]' + (
                                 $EachParameter.Value.ToString() -replace
                                     "\`$$($eachParameter.Key)[\s\r\n]$" -replace # Replace any trailing variables
-                                    'param\(\)[\s\r\n]{0,}$'  # then replace any empty param blocks.
+                                    ${?<EmptyParameterBlock>}  # then replace any empty param blocks.
                                 )
                             }
                     }
@@ -449,7 +436,28 @@ HTTP Accept indicates what content types the web request will accept as a respon
         }
         # process,
         if ($process) {
-            $allProcessBlocks += $process
+            if ($process.BeginBlock -or 
+                $process.ProcessBlock -or 
+                $process.DynamicParameterBlock -or 
+                $Process.ParamBlock) {
+                if ($process.DynamicParameterBlock) {
+                    $allDynamicParameters += $process.DynamicParameterBlock
+                }
+                if ($process.ParamBlock) {
+                    $parameterScriptBlocks += $Process
+                }
+                if ($Process.BeginBlock) {
+                    $allBeginBlocks += $Process.BeginBlock -replace ${?<EmptyParameterBlock>}
+                }
+                if ($process.ProcessBlock) {
+                    $allProcessBlocks += $process.ProcessBlock
+                }
+                if ($process.EndBlock) {
+                    $allEndBlocks += $Process.EndBlock -replace ${?<EmptyParameterBlock>}
+                }
+            } else {
+                $allProcessBlocks += $process -replace ${?<EmptyParameterBlock>}
+            }            
         }
         # or end blocks.
         if ($end) {
@@ -494,7 +502,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
         if ($parameterScriptBlocks) {
             $parameterScriptBlocks += [ScriptBlock]::Create($newParamBlock)
             # join them with the new parameter block.
-            $newParamBlock = $parameterScriptBlocks | Join-PipeScript
+            $newParamBlock = $parameterScriptBlocks | Join-PipeScript -IncludeBlockType param
         }
         
         # If we provided a -FunctionName, we'll be declaring a function.
@@ -510,7 +518,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                 $NoTranspile = $false
             }
         # Create the script block by combining together the provided parts.
-        $createdScriptBlock = [scriptblock]::Create("$(if ($functionDeclaration) { "$functionDeclaration"})
+        $ScriptToBe = "$(if ($functionDeclaration) { "$functionDeclaration"})
 $($allHeaders -join [Environment]::Newline)
 $newParamBlock
 $(if ($allDynamicParameters) {
@@ -528,7 +536,8 @@ $(if ($allEndBlocks -and -not $allBeginBlocks -and -not $allProcessBlocks) {
     @(@("end {") + $allEndBlocks + '}') -join [Environment]::Newline
 })
 $(if ($functionDeclaration) { '}'}) 
-")
+"
+        $createdScriptBlock = [scriptblock]::Create($ScriptToBe)
         # If -NoTranspile was passed, 
         if ($createdScriptBlock -and $NoTranspile) {
             $createdScriptBlock # output the script as-is

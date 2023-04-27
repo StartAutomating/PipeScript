@@ -1,5 +1,5 @@
 #require -Module HelpOut
-Push-Location $PSScriptRoot
+Push-Location ($PSScriptRoot | Split-Path)
 
 $PipeScriptLoaded = Get-Module PipeScript
 if (-not $PipeScriptLoaded) {

@@ -48,6 +48,7 @@
     } | .>PipeScript
 #>
 param(
+# The command that will be inherited.
 [Parameter(Mandatory,Position=0)]
 [Alias('CommandName')]
 [string]
@@ -104,6 +105,37 @@ $IncludeParameter,
 [string[]]
 $ExcludeParameter,
 
+# The ArgumentList parameter name
+# When inheriting an application, a parameter is created to accept any remaining arguments.
+# This is the name of that parameter (by default, 'ArgumentList')
+# This parameter is ignored when inheriting from anything other than an application.
+[Alias('ArgumentListParameter')]
+[string]
+$ArgumentListParameterName = 'ArgumentList',
+
+# The ArgumentList parameter aliases
+# When inheriting an application, a parameter is created to accept any remaining arguments.
+# These are the aliases for that parameter (by default, 'Arguments' and 'Args')
+# This parameter is ignored when inheriting from anything other than an application.
+[Alias('ArgumentListParameters','ArgumentListParameterNames')]
+[string[]]
+$ArgumentListParameterAlias = @('Arguments', 'Args'),
+
+# The ArgumentList parameter type
+# When inheriting an application, a parameter is created to accept any remaining arguments.
+# This is the type of that parameter (by default, '[string[]]')
+# This parameter is ignored when inheriting from anything other than an application.
+[type]
+$ArgumentListParameterType = [string[]],
+
+# The help for the argument list parameter.
+# When inheriting an application, a parameter is created to accept any remaining arguments.
+# This is the help of that parameter (by default, 'Arguments to $($InhertedApplication.Name)')
+# This parameter is ignored when inheriting from anything other than an application.
+[Alias('ArgumentListParameterDescription')]
+[string]
+$ArgumentListParameterHelp = 'Arguments to $($InhertedApplication.Name)',
+
 [Parameter(ValueFromPipeline,ParameterSetName='ScriptBlock')]
 [scriptblock]
 $ScriptBlock = {}
@@ -147,19 +179,38 @@ process {
         $Proxy = $true # it implies -Proxy.
     }
 
-    # In a couple of cases, we're inheriting an application.
-    # In this scenario, we want to use the same wrapper [ScriptBlock]
-    $applicationWrapper = {
-        param(
-        [Parameter(ValueFromRemainingArguments)]
-        [string[]]
-        $ArgumentList
-        )
-        
-        process {
+    $InhertedApplication = 
+        if ($resolvedCommand -is [Management.Automation.ApplicationInfo]) {
+            $resolvedCommand
+        }
+        elseif (
+            $resolvedCommand -is [Management.Automation.AliasInfo] -and 
+            $resolvedCommand.ResolvedCommand -is [Management.Automation.ApplicationInfo]
+        ) {
+            $resolvedCommand.ResolvedCommand
+        }
+
+    if ($InhertedApplication) {
+        # In a couple of cases, we're inheriting an application.
+        # In this scenario, we want to use the same wrapper [ScriptBlock]
+        $paramHelp = 
+            foreach ($helpLine in $ExecutionContext.SessionState.InvokeCommand.ExpandString($ArgumentListParameterHelp) -split '(?>\r\n|\n)') {
+                "# $HelpLine"
+            }
+
+        $applicationWrapper = New-PipeScript -Parameter @{
+            $ArgumentListParameterName = @(                
+                $paramHelp
+                "[Parameter(ValueFromRemainingArguments)]"                
+                "[Alias('$($ArgumentListParameterAlias -join "','")')]"
+                "[$ArgumentListParameterType]"
+                "`$$ArgumentListParameterName"
+            )
+        } -Process {
             & $baseCommand @ArgumentList
-        }        
+        }     
     }
+    
 
     # Now we get the script block that we're going to inherit.
     $resolvedScriptBlock =

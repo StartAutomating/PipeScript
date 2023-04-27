@@ -112,9 +112,9 @@ The process block.
 
 
 
-|Type           |Required|Position|PipelineInput        |Aliases     |
-|---------------|--------|--------|---------------------|------------|
-|`[ScriptBlock]`|false   |4       |true (ByPropertyName)|ProcessBlock|
+|Type           |Required|Position|PipelineInput                 |Aliases                     |
+|---------------|--------|--------|------------------------------|----------------------------|
+|`[ScriptBlock]`|false   |4       |true (ByValue, ByPropertyName)|ProcessBlock<br/>ScriptBlock|
 
 
 

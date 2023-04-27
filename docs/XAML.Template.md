@@ -1,11 +1,11 @@
-ADA.Template
-------------
+XAML.Template
+-------------
 
 
 
 
 ### Synopsis
-ADA Template Transpiler.
+XAML Template Transpiler.
 
 
 
@@ -14,43 +14,12 @@ ADA Template Transpiler.
 
 ### Description
 
-Allows PipeScript to be used to generate ADA.
+Allows PipeScript to generate XAML.
 
-Because ADA Scripts only allow single-line comments, this is done using a pair of comment markers.
+Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
 
--- { or -- PipeScript{  begins a PipeScript block
+Executed output will be converted to XAML
 
--- } or -- }PipeScript  ends a PipeScript block
-
-
-
----
-
-
-### Examples
-#### EXAMPLE 1
-```PowerShell
-Invoke-PipeScript {
-    $AdaScript = '    
-with Ada.Text_IO;
-```
-procedure Hello_World is
-begin
-    -- {
-
-    Uncommented lines between these two points will be ignored
-
-    --  # Commented lines will become PipeScript / PowerShell.
-    -- param($message = "hello world")        
-    -- "Ada.Text_IO.Put_Line (`"$message`");"
-    -- }
-end Hello_World;    
-'
-
-    [OutputFile('.\HelloWorld.ps1.adb')]$AdaScript
-}
-
-Invoke-PipeScript .\HelloWorld.ps1.adb
 
 
 ---
@@ -124,8 +93,8 @@ A list of arguments.
 
 ### Syntax
 ```PowerShell
-ADA.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
+XAML.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
 ```PowerShell
-ADA.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
+XAML.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```

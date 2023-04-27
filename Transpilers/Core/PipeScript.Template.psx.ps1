@@ -139,7 +139,7 @@ begin {
             return
         }
 
-        if ($LinePattern) {
+        if ($LinePattern -and $match.Groups["IsSingleLine"].Value) {
             $pipeScriptLines = @($pipeScriptText -split '(?>\r\n|\n)')
             $pipeScriptText  = $pipeScriptLines -match $LinePattern -replace $LinePattern -join [Environment]::Newline
         }
@@ -149,7 +149,9 @@ begin {
             return
         }
 
-        if (-not $NoTranspile) {
+        if ((-not $NoTranspile) -and 
+            $ExecutionContext.SessionState.InvokeCommand.GetCommand('.>PipeScript','Alias')
+        ) {
             $TranspiledOutput = $InlineScriptBlock | .>Pipescript
             if ($TranspiledOutput -is [ScriptBlock]) {
                 $InlineScriptBlock = $TranspiledOutput
@@ -271,7 +273,7 @@ process {
             }
             $inlineAstString = $inlineAstString
             $ForeachObject = 
-                if ($this.ForeachObject) {
+                if ("$($this.ForeachObject)" -notmatch "(?>^\s{0,}$|^\s{0,}\{\s{0,}\}\s{0,}$)") {
                     $this.ForeachObject
                 } else { $ForeachObject }
             $begin = 
@@ -507,7 +509,7 @@ $replacePattern
     }
 ), `$true)
 `$templateObject.psobject.members.Add([PSScriptMethod]::new(
-    'SaveTemplate', {
+    'Save', {
         $SaveTemplate
     }
 ), `$true)

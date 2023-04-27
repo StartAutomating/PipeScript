@@ -59,6 +59,10 @@ The Help Transpiler allows you to write inline help without directly writing com
 ### Parameters
 #### **Synopsis**
 
+The synopsis of the help topic
+
+
+
 
 
 
@@ -69,6 +73,10 @@ The Help Transpiler allows you to write inline help without directly writing com
 
 
 #### **Description**
+
+The description of the help topic
+
+
 
 
 
@@ -81,6 +89,10 @@ The Help Transpiler allows you to write inline help without directly writing com
 
 #### **Example**
 
+One or more examples
+
+
+
 
 
 
@@ -92,6 +104,10 @@ The Help Transpiler allows you to write inline help without directly writing com
 
 #### **Link**
 
+One or more links
+
+
+
 
 
 
@@ -102,6 +118,10 @@ The Help Transpiler allows you to write inline help without directly writing com
 
 
 #### **ScriptBlock**
+
+A ScriptBlock.  If this is provided, the help will be added to this scriptblock.
+
+
 
 
 

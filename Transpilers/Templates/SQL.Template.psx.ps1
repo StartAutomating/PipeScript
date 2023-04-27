@@ -66,7 +66,11 @@ $ArgumentList
 begin {
     
     # We start off by declaring a number of regular expressions:
-    $startComment = '(?>(?>--|/\*)\s{0,}(?:PipeScript)?\s{0,}\{)'    
+    $startComment = '(?>
+        (?>
+            (?<IsSingleLine>--)|
+            /\*
+        )\s{0,}(?:PipeScript)?\s{0,}\{)'
     $endComment   = '(?>
         --\s{0,}\}\s{0,}(?:PipeScript)?
         |

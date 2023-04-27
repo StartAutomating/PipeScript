@@ -1,38 +1,14 @@
 <#
 .SYNOPSIS
-    ADA Template Transpiler.
+    XAML Template Transpiler.
 .DESCRIPTION
-    Allows PipeScript to be used to generate ADA.
-    
-    Because ADA Scripts only allow single-line comments, this is done using a pair of comment markers.
+    Allows PipeScript to generate XAML.
 
-    -- { or -- PipeScript{  begins a PipeScript block
+    Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
 
-    -- } or -- }PipeScript  ends a PipeScript block                
-.EXAMPLE
-    Invoke-PipeScript {
-        $AdaScript = '    
-    with Ada.Text_IO;
-
-    procedure Hello_World is
-    begin
-        -- {
-
-        Uncommented lines between these two points will be ignored
-
-        --  # Commented lines will become PipeScript / PowerShell.
-        -- param($message = "hello world")        
-        -- "Ada.Text_IO.Put_Line (`"$message`");"
-        -- }
-    end Hello_World;    
-    '
-    
-        [OutputFile('.\HelloWorld.ps1.adb')]$AdaScript
-    }
-
-    Invoke-PipeScript .\HelloWorld.ps1.adb
+    Executed output will be converted to XAML
 #>
-[ValidatePattern('\.ad[bs]$')]
+[ValidatePattern('\.xaml$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline,ParameterSetName='TemplateFile')]
@@ -55,17 +31,18 @@ $ArgumentList
 
 begin {
     # We start off by declaring a number of regular expressions:
-    $startComment = '(?>(?<IsSingleLine>--)\s{0,}(?:PipeScript)?\s{0,}\{)'
-    $endComment   = '(?>--\s{0,}\}\s{0,}(?:PipeScript)?\s{0,})'        
-    $startRegex = "(?<PSStart>${startComment})"
-    $endRegex   = "(?<PSEnd>${endComment})"
-
+    $startComment = '<\!--' # * Start Comments ```<!--```
+    $endComment   = '-->'   # * End Comments   ```-->```
+    $Whitespace   = '[\s\n\r]{0,}'
+    # * StartRegex     ```$StartComment + '{' + $Whitespace```
+    $startRegex = "(?<PSStart>${startComment}\{$Whitespace)"
+    # * EndRegex       ```$whitespace + '}' + $EndComment```
+    $endRegex   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
+    
     # Create a splat containing arguments to the core inline transpiler
     $Splat      = [Ordered]@{
         StartPattern  = $startRegex
         EndPattern    = $endRegex
-         # Using -LinePattern will skip any inline code not starting with --
-        LinePattern   = "^\s{0,}--\s{0,}"
     }
 }
 
@@ -80,6 +57,27 @@ process {
     if ($Parameter) { $splat.Parameter = $Parameter }
     if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
 
+    $splat.ForeachObject = {
+        $in = $_
+        if (($in -is [string]) -or 
+            ($in.GetType -and $in.GetType().IsPrimitive)) {
+            $in
+        } elseif ($in.ChildNodes) {
+            foreach ($inChildNode in $in.ChildNodes) {
+                if ($inChildNode.NodeType -ne 'XmlDeclaration') {
+                    $inChildNode.OuterXml
+                }
+            }
+        } else {
+            $inXml = (ConvertTo-Xml -Depth 100 -InputObject $in)
+            foreach ($inChildNode in $inXml.ChildNodes) {
+                if ($inChildNode.NodeType -ne 'XmlDeclaration') {
+                    $inChildNode.OuterXml
+                }
+            }
+        }
+    }
+
     # If we are being used within a keyword,
     if ($AsTemplateObject) {
         $splat # output the parameters we would use to evaluate this file.
@@ -88,4 +86,3 @@ process {
         .>PipeScript.Template @Splat # and output the changed file.
     }
 }
-

@@ -83,6 +83,10 @@ Invoke-PipeScript {
 ### Parameters
 #### **Command**
 
+The command that will be inherited.
+
+
+
 
 
 
@@ -264,6 +268,78 @@ Excluded parameters with default values will declare the default value at the be
 
 
 
+#### **ArgumentListParameterName**
+
+The ArgumentList parameter name
+When inheriting an application, a parameter is created to accept any remaining arguments.
+This is the name of that parameter (by default, 'ArgumentList')
+This parameter is ignored when inheriting from anything other than an application.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput|Aliases              |
+|----------|--------|--------|-------------|---------------------|
+|`[String]`|false   |named   |false        |ArgumentListParameter|
+
+
+
+#### **ArgumentListParameterAlias**
+
+The ArgumentList parameter aliases
+When inheriting an application, a parameter is created to accept any remaining arguments.
+These are the aliases for that parameter (by default, 'Arguments' and 'Args')
+This parameter is ignored when inheriting from anything other than an application.
+
+
+
+
+
+
+|Type        |Required|Position|PipelineInput|Aliases                                              |
+|------------|--------|--------|-------------|-----------------------------------------------------|
+|`[String[]]`|false   |named   |false        |ArgumentListParameters<br/>ArgumentListParameterNames|
+
+
+
+#### **ArgumentListParameterType**
+
+The ArgumentList parameter type
+When inheriting an application, a parameter is created to accept any remaining arguments.
+This is the type of that parameter (by default, '[string[]]')
+This parameter is ignored when inheriting from anything other than an application.
+
+
+
+
+
+
+|Type    |Required|Position|PipelineInput|
+|--------|--------|--------|-------------|
+|`[Type]`|false   |named   |false        |
+
+
+
+#### **ArgumentListParameterHelp**
+
+The help for the argument list parameter.
+When inheriting an application, a parameter is created to accept any remaining arguments.
+This is the help of that parameter (by default, 'Arguments to $($InhertedApplication.Name)')
+This parameter is ignored when inheriting from anything other than an application.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput|Aliases                         |
+|----------|--------|--------|-------------|--------------------------------|
+|`[String]`|false   |named   |false        |ArgumentListParameterDescription|
+
+
+
 #### **ScriptBlock**
 
 
@@ -282,5 +358,5 @@ Excluded parameters with default values will declare the default value at the be
 
 ### Syntax
 ```PowerShell
-Inherit [-Command] <String> [-Abstract] [-Override] [-Dynamic] [-Proxy] [-CommandType <String[]>] [-ExcludeBlockType <String[]>] [-IncludeBlockType <String[]>] [-IncludeParameter <String[]>] [-ExcludeParameter <String[]>] [-ScriptBlock <ScriptBlock>] [<CommonParameters>]
+Inherit [-Command] <String> [-Abstract] [-Override] [-Dynamic] [-Proxy] [-CommandType <String[]>] [-ExcludeBlockType <String[]>] [-IncludeBlockType <String[]>] [-IncludeParameter <String[]>] [-ExcludeParameter <String[]>] [-ArgumentListParameterName <String>] [-ArgumentListParameterAlias <String[]>] [-ArgumentListParameterType <Type>] [-ArgumentListParameterHelp <String>] [-ScriptBlock <ScriptBlock>] [<CommonParameters>]
 ```

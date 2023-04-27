@@ -1,12 +1,22 @@
 <#
 .SYNOPSIS
-    XML Template Transpiler.
+    SVG Template Transpiler.
 .DESCRIPTION
-    Allows PipeScript to generate XML.
+    Allows PipeScript to generate SVG.
 
     Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
+.EXAMPLE
+    $starsTemplate = Invoke-PipeScript {
+        Stars.svg template '
+            <!--{
+                Invoke-RestMethod https://pssvg.start-automating.com/Examples/Stars.svg
+            }-->
+        '
+    }
+    
+    $starsTemplate.Save("$pwd\Stars.svg")
 #>
-[ValidatePattern('\.xml$')]
+[ValidatePattern('\.svg$')]
 param(
 # The command information.  This will include the path to the file.
 [Parameter(Mandatory,ValueFromPipeline,ParameterSetName='TemplateFile')]

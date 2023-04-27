@@ -63,7 +63,7 @@ $ArgumentList
 
 begin {
     # We start off by declaring a number of regular expressions:
-    $startComment = '(?>(?>''|rem)\s{0,}(?:PipeScript)?\s{0,}\{)'
+    $startComment = '(?>(?<IsSingleLine>(?>''|rem))\s{0,}(?:PipeScript)?\s{0,}\{)'
     $endComment   = '(?>(?>''|rem)\s{0,}(?:PipeScript)?\s{0,}\})'        
     $startRegex = "(?<PSStart>${startComment})"
     $endRegex   = "(?<PSEnd>${endComment})"

@@ -26,6 +26,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Decorate](Transpilers/Decorate.psx.ps1)                                                   |decorate transpiler                               |
 |[Define](Transpilers/Define.psx.ps1)                                                       |Defines a variable                                |
 |[Dot](Transpilers/Syntax/Dot.psx.ps1)                                                      |Dot Notation                                      |
+|[Eiffel.Template](Transpilers/Templates/Eiffel.Template.psx.ps1)                           |Eiffel Template Transpiler.                       |
 |[EqualityComparison](Transpilers/Syntax/EqualityComparison.psx.ps1)                        |Allows equality comparison.                       |
 |[EqualityTypeComparison](Transpilers/Syntax/EqualityTypeComparison.psx.ps1)                |Allows equality type comparison.                  |
 |[Explicit](Transpilers/Explicit.psx.ps1)                                                   |Makes Output from a PowerShell function Explicit. |
@@ -43,6 +44,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Json.Template](Transpilers/Templates/Json.Template.psx.ps1)                               |JSON PipeScript Transpiler.                       |
 |[JSONSchema.Protocol](Transpilers/Protocols/JSONSchema.Protocol.psx.ps1)                   |json schema protocol                              |
 |[Kotlin.Template](Transpilers/Templates/Kotlin.Template.psx.ps1)                           |Kotlin Template Transpiler.                       |
+|[Kusto.Template](Transpilers/Templates/Kusto.Template.psx.ps1)                             |Kusto Template Transpiler.                        |
 |[Latex.Template](Transpilers/Templates/Latex.Template.psx.ps1)                             |Latex Template Transpiler.                        |
 |[LUA.Template](Transpilers/Templates/LUA.Template.psx.ps1)                                 |LUA Template Transpiler.                          |
 |[Markdown.Template](Transpilers/Templates/Markdown.Template.psx.ps1)                       |Markdown Template Transpiler.                     |
@@ -57,6 +59,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Perl.Template](Transpilers/Templates/Perl.Template.psx.ps1)                               |Perl Template Transpiler.                         |
 |[PHP.Template](Transpilers/Templates/PHP.Template.psx.ps1)                                 |PHP Template Transpiler.                          |
 |[PipedAssignment](Transpilers/Syntax/PipedAssignment.psx.ps1)                              |Piped Assignment Transpiler                       |
+|[PipeScript.Aspect](Transpilers/Core/PipeScript.Aspect.psx.ps1)                            |Aspect Transpiler                                 |
 |[PipeScript.AttributedExpression](Transpilers/Core/PipeScript.AttributedExpression.psx.ps1)|The PipeScript AttributedExpression Transpiler    |
 |[Pipescript.FunctionDefinition](Transpilers/Core/Pipescript.FunctionDefinition.psx.ps1)    |PipeScript Function Transpiler                    |
 |[PipeScript.ParameterAttribute](Transpilers/Core/PipeScript.ParameterAttribute.psx.ps1)    |
@@ -66,6 +69,7 @@ These are all of the transpilers currently included in PipeScript:
 |[PipeScript.TypeConstraint](Transpilers/Core/PipeScript.TypeConstraint.psx.ps1)            |Transpiles Type Constraints                       |
 |[PipeScript.TypeExpression](Transpilers/Core/PipeScript.TypeExpression.psx.ps1)            |The PipeScript TypeExpression Transpiler          |
 |[ProxyCommand](Transpilers/ProxyCommand.psx.ps1)                                           |Creates Proxy Commands                            |
+|[PS1XML.Template](Transpilers/Templates/PS1XML.Template.psx.ps1)                           |PS1XML Template Transpiler.                       |
 |[PSD1.Template](Transpilers/Templates/PSD1.Template.psx.ps1)                               |PSD1 Template Transpiler.                         |
 |[Python.Template](Transpilers/Templates/Python.Template.psx.ps1)                           |Python Template Transpiler.                       |
 |[R.Template](Transpilers/Templates/R.Template.psx.ps1)                                     |R Template Transpiler.                            |
@@ -81,6 +85,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Rust.Template](Transpilers/Templates/Rust.Template.psx.ps1)                               |Rust Template Transpiler.                         |
 |[Scala.Template](Transpilers/Templates/Scala.Template.psx.ps1)                             |Scala Template Transpiler.                        |
 |[SQL.Template](Transpilers/Templates/SQL.Template.psx.ps1)                                 |SQL Template Transpiler.                          |
+|[SVG.template](Transpilers/Templates/SVG.template.psx.ps1)                                 |SVG Template Transpiler.                          |
 |[TCL.Template](Transpilers/Templates/TCL.Template.psx.ps1)                                 |TCL/TK Template Transpiler.                       |
 |[TOML.Template](Transpilers/Templates/TOML.Template.psx.ps1)                               |TOML Template Transpiler.                         |
 |[TypeScript.Template](Transpilers/Templates/TypeScript.Template.psx.ps1)                   |TypeScript Template Transpiler.                   |
@@ -94,5 +99,6 @@ These are all of the transpilers currently included in PipeScript:
 |[VBN](Transpilers/Parameters/VBN.psx.ps1)                                                  |ValueFromPiplineByPropertyName Shorthand          |
 |[VFP](Transpilers/Parameters/VFP.psx.ps1)                                                  |ValueFromPipline Shorthand                        |
 |[WebAssembly.Template](Transpilers/Templates/WebAssembly.Template.psx.ps1)                 |WebAssembly Template Transpiler.                  |
+|[XAML.Template](Transpilers/Templates/XAML.Template.psx.ps1)                               |XAML Template Transpiler.                         |
 |[XML.Template](Transpilers/Templates/XML.Template.psx.ps1)                                 |XML Template Transpiler.                          |
 |[YAML.Template](Transpilers/Templates/YAML.Template.psx.ps1)                               |Yaml Template Transpiler.                         |

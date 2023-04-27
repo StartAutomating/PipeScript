@@ -1,3 +1,27 @@
+## PipeScript 0.2.5:
+
+* Added Support for Aspects (#401)
+* Support for Pre/Post commands in Core Transpiler
+  * Commands Named PipeScript.PreProcess / PipeScript.Analyzer will run before transpilation of a ScriptBlock 
+  * Commands Named PipeScript.PostProcess / PipeScript.Optimizer will run after transpilation of a ScriptBlock
+* Adding PipeScript.Optimizer.ConsolidateAspects (Fixes #413)
+* Conditional Keywords Fixes (Fixes #402)
+* New-PipeScript: Improving Pipelining (Fixes #400)
+* Update-PipeScript:
+  * Tracing Events (#407)
+  * Support for Insertions (#405, #406, #407)
+* Template Improvements
+  * Templates can now be either singleline or multiline (Fixes #398)
+* New Language Support
+  * Eiffel (#404)
+  * PS1XML (#414)
+  * SVG (#411)
+  * XAML (#414)  
+* XML Transpilers support inline xml output (Fixes #412)
+* Added initial demo file (Fixes #420)
+
+---
+
 ## PipeScript 0.2.4:
 
 * Conditional Keywords now support throw/return (#389/#388) (also, fixed #387)

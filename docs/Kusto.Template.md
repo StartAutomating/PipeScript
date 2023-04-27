@@ -1,11 +1,11 @@
-ADA.Template
-------------
+Kusto.Template
+--------------
 
 
 
 
 ### Synopsis
-ADA Template Transpiler.
+Kusto Template Transpiler.
 
 
 
@@ -14,43 +14,18 @@ ADA Template Transpiler.
 
 ### Description
 
-Allows PipeScript to be used to generate ADA.
+Allows PipeScript to generate Kusto files.
 
-Because ADA Scripts only allow single-line comments, this is done using a pair of comment markers.
+Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
--- { or -- PipeScript{  begins a PipeScript block
+Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
 
--- } or -- }PipeScript  ends a PipeScript block
+The Kusto Template Transpiler will consider the following syntax to be empty:
 
+* ```null```
+* ```""```
+* ```''```
 
-
----
-
-
-### Examples
-#### EXAMPLE 1
-```PowerShell
-Invoke-PipeScript {
-    $AdaScript = '    
-with Ada.Text_IO;
-```
-procedure Hello_World is
-begin
-    -- {
-
-    Uncommented lines between these two points will be ignored
-
-    --  # Commented lines will become PipeScript / PowerShell.
-    -- param($message = "hello world")        
-    -- "Ada.Text_IO.Put_Line (`"$message`");"
-    -- }
-end Hello_World;    
-'
-
-    [OutputFile('.\HelloWorld.ps1.adb')]$AdaScript
-}
-
-Invoke-PipeScript .\HelloWorld.ps1.adb
 
 
 ---
@@ -124,8 +99,8 @@ A list of arguments.
 
 ### Syntax
 ```PowerShell
-ADA.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
+Kusto.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
 ```PowerShell
-ADA.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
+Kusto.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```

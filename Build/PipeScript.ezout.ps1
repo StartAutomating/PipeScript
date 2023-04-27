@@ -2,7 +2,7 @@
 #  Install-Module EZOut or https://github.com/StartAutomating/EZOut
 $myFile = $MyInvocation.MyCommand.ScriptBlock.File
 $myModuleName = 'PipeScript'
-$myRoot = $myFile | Split-Path
+$myRoot = $myFile | Split-Path | Split-Path
 Push-Location $myRoot
 $formatting = @(
     # Add your own Write-FormatView here,

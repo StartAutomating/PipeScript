@@ -1,6 +1,6 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 43 languages or file types.
+PipeScript can be used to generate 48 languages or file types.
 
 ### Supported Languages
 
@@ -18,6 +18,7 @@ PipeScript can be used to generate 43 languages or file types.
 |[CSharp](CSharp.Template.psx.ps1)          |C# Template Transpiler.         |```\.cs$```                     |
 |[CSS](CSS.Template.psx.ps1)                |CSS Template Transpiler.        |```\.s{0,1}css$```              |
 |[Dart](Dart.Template.psx.ps1)              |Dart Template Transpiler.       |```\.(?>dart)$```               |
+|[Eiffel](Eiffel.Template.psx.ps1)          |Eiffel Template Transpiler.     |```\.e$```                      |
 |[Go](Go.Template.psx.ps1)                  |Go Template Transpiler.         |```\.go$```                     |
 |[HAXE](HAXE.Template.psx.ps1)              |Haxe Template Transpiler.       |```\.hx$```                     |
 |[HCL](HCL.Template.psx.ps1)                |HCL Template Transpiler.        |```\.hcl$```                    |
@@ -27,6 +28,7 @@ PipeScript can be used to generate 43 languages or file types.
 |[JavaScript](JavaScript.Template.psx.ps1)  |JavaScript Template Transpiler. |```\.js$```                     |
 |[Json](Json.Template.psx.ps1)              |JSON PipeScript Transpiler.     |```\.json$```                   |
 |[Kotlin](Kotlin.Template.psx.ps1)          |Kotlin Template Transpiler.     |```\.kt$```                     |
+|[Kusto](Kusto.Template.psx.ps1)            |Kusto Template Transpiler.      |```\.kql$```                    |
 |[Latex](Latex.Template.psx.ps1)            |Latex Template Transpiler.      |```\.(?>latex\\|tex)$```        |
 |[LUA](LUA.Template.psx.ps1)                |LUA Template Transpiler.        |```\.lua$```                    |
 |[Markdown](Markdown.Template.psx.ps1)      |Markdown Template Transpiler.   |```\.(?>md\\|markdown\\|txt)$```|
@@ -34,6 +36,7 @@ PipeScript can be used to generate 43 languages or file types.
 |[OpenSCAD](OpenSCAD.Template.psx.ps1)      |OpenSCAD Template Transpiler.   |```\.scad$```                   |
 |[Perl](Perl.Template.psx.ps1)              |Perl Template Transpiler.       |```\.(?>pl\\|pod)$```           |
 |[PHP](PHP.Template.psx.ps1)                |PHP Template Transpiler.        |```\.php$```                    |
+|[PS1XML](PS1XML.Template.psx.ps1)          |PS1XML Template Transpiler.     |```\.ps1xml$```                 |
 |[PSD1](PSD1.Template.psx.ps1)              |PSD1 Template Transpiler.       |```\.psd1$```                   |
 |[Python](Python.Template.psx.ps1)          |Python Template Transpiler.     |```\.py$```                     |
 |[R](R.Template.psx.ps1)                    |R Template Transpiler.          |```\.r$```                      |
@@ -44,11 +47,13 @@ PipeScript can be used to generate 43 languages or file types.
 |[Rust](Rust.Template.psx.ps1)              |Rust Template Transpiler.       |```\.rs$```                     |
 |[Scala](Scala.Template.psx.ps1)            |Scala Template Transpiler.      |```\.(?>scala\\|sc)$```         |
 |[SQL](SQL.Template.psx.ps1)                |SQL Template Transpiler.        |```\.sql$```                    |
+|[SVG](SVG.template.psx.ps1)                |SVG Template Transpiler.        |```\.svg$```                    |
 |[TCL](TCL.Template.psx.ps1)                |TCL/TK Template Transpiler.     |```\.t(?>cl\\|k)$```            |
 |[TOML](TOML.Template.psx.ps1)              |TOML Template Transpiler.       |```\.toml$```                   |
 |[TypeScript](TypeScript.Template.psx.ps1)  |TypeScript Template Transpiler. |```\.tsx{0,1}```                |
 |[WebAssembly](WebAssembly.Template.psx.ps1)|WebAssembly Template Transpiler.|```\.wat$```                    |
-|[XML](XML.Template.psx.ps1)                |XML Template Transpiler.        |```\.(?>xml\\|xaml\\|ps1xml)$```|
+|[XAML](XAML.Template.psx.ps1)              |XAML Template Transpiler.       |```\.xaml$```                   |
+|[XML](XML.Template.psx.ps1)                |XML Template Transpiler.        |```\.xml$```                    |
 |[YAML](YAML.Template.psx.ps1)              |Yaml Template Transpiler.       |```\.(?>yml\\|yaml)$```         |
 
 

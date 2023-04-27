@@ -17,6 +17,12 @@
         [Include('*-*.ps1')]$psScriptRoot
     } | .>PipeScript
 #>
+[ValidateScript({
+    if ($_ -is [Management.Automation.Language.CommandAst]) {
+        return $_.CommandsElements[0].Value -in 'include','includes'
+    }
+})]
+[Alias('Includes')]
 param(
 # The File Path to Include
 [Parameter(Mandatory,Position=0)]
@@ -31,10 +37,44 @@ $AsByte,
 [switch]
 $Passthru,
 
+# The exclusion pattern to use.
+[Alias('ExcludePattern')]
+[string[]]
+$Exclude = '\.[^\.]+\.ps1$',
+
 [Parameter(Mandatory,ParameterSetName='VariableAST', ValueFromPipeline)]
 [Management.Automation.Language.VariableExpressionast]
-$VariableAst
+$VariableAst,
+
+
+[Parameter(Mandatory,ParameterSetName='CommandAst',ValueFromPipeline)]
+[Management.Automation.Language.CommandAst]
+$CommandAst
 )
+
+process {
+
+    if ($psCmdlet.ParameterSetName -eq 'CommandAst') {
+        # Gather some information about our calling context
+        $myParams = [Ordered]@{} + $PSBoundParameters
+        # and attempt to parse it as a sentance (only allowing it to match this particular command)
+        $mySentence = $commandAst.AsSentence($MyInvocation.MyCommand)
+        $myCmd = $MyInvocation.MyCommand
+
+        # Walk thru all mapped parameters in the sentence
+        foreach ($paramName in $mySentence.Parameters.Keys) {
+            if (-not $myParams[$paramName]) { # If the parameter was not directly supplied
+                $myParams[$paramName] = $mySentence.Parameters[$paramName] # grab it from the sentence.
+                foreach ($myParam in $myCmd.Parameters.Values) {
+                    if ($myParam.Aliases -contains $paramName) { # set any variables that share the name of an alias
+                        $ExecutionContext.SessionState.PSVariable.Set($myParam.Name, $mySentence.Parameters[$paramName])
+                    }
+                }
+                # and set this variable for this value.
+                $ExecutionContext.SessionState.PSVariable.Set($paramName, $mySentence.Parameters[$paramName])
+            }
+        }
+    }
 
 # Determine the command we would be including (relative to the current path)
 $includingCommand = $ExecutionContext.SessionState.InvokeCommand.GetCommand($FilePath, 'All')
@@ -140,12 +180,19 @@ if ($psCmdlet.ParameterSetName -eq 'ScriptBlock' -or
     [ScriptBlock]::Create("$($VariableAst) = $IncludedScript")
 } elseif ($VariableAst.VariablePath -notmatch '^null$') {
     [ScriptBlock]::Create(@"
-foreach (`$file in (Get-ChildItem -Path "$($VariableAst)" -Filter "$FilePath" -Recurse)) {
+:ToIncludeFiles foreach (`$file in (Get-ChildItem -Path "$($VariableAst)" -Filter "$FilePath" -Recurse)) {
     if (`$file.Extension -ne '.ps1')      { continue }  # Skip if the extension is not .ps1
-    if (`$file.Name -match '\.[^\.]+\.ps1$') { continue }  # Skip if the file is an unrelated file.
+    foreach (`$exclusion in '$($Exclude -replace "'","''" -join "','")') {
+        if (-not `$exclusion) { continue }
+        if (`$file.Name -match `$exclusion) {
+            continue ToIncludeFiles  # Skip excluded files
+        }
+    }     
     . `$file.FullName$(
     if ($Passthru) { [Environment]::NewLine + (' ' * 4) + '$file'}
     )
 }
 "@)
+}
+
 }

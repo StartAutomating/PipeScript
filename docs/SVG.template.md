@@ -1,11 +1,11 @@
-ADA.Template
+SVG.template
 ------------
 
 
 
 
 ### Synopsis
-ADA Template Transpiler.
+SVG Template Transpiler.
 
 
 
@@ -14,13 +14,9 @@ ADA Template Transpiler.
 
 ### Description
 
-Allows PipeScript to be used to generate ADA.
+Allows PipeScript to generate SVG.
 
-Because ADA Scripts only allow single-line comments, this is done using a pair of comment markers.
-
--- { or -- PipeScript{  begins a PipeScript block
-
--- } or -- }PipeScript  ends a PipeScript block
+Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
 
 
 
@@ -30,27 +26,15 @@ Because ADA Scripts only allow single-line comments, this is done using a pair o
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
-Invoke-PipeScript {
-    $AdaScript = '    
-with Ada.Text_IO;
-```
-procedure Hello_World is
-begin
-    -- {
-
-    Uncommented lines between these two points will be ignored
-
-    --  # Commented lines will become PipeScript / PowerShell.
-    -- param($message = "hello world")        
-    -- "Ada.Text_IO.Put_Line (`"$message`");"
-    -- }
-end Hello_World;    
-'
-
-    [OutputFile('.\HelloWorld.ps1.adb')]$AdaScript
+$starsTemplate = Invoke-PipeScript {
+    Stars.svg template '
+        <!--{
+            Invoke-RestMethod https://pssvg.start-automating.com/Examples/Stars.svg
+        }-->
+    '
 }
-
-Invoke-PipeScript .\HelloWorld.ps1.adb
+```
+$starsTemplate.Save("$pwd\Stars.svg")
 
 
 ---
@@ -124,8 +108,8 @@ A list of arguments.
 
 ### Syntax
 ```PowerShell
-ADA.Template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
+SVG.template -CommandInfo <CommandInfo> [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
 ```PowerShell
-ADA.Template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
+SVG.template -AsTemplateObject [-Parameter <IDictionary>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```

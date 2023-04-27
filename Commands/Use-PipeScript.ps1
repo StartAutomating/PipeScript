@@ -59,7 +59,7 @@
                 }
             }
 
-        if (-not $mySafeName) {
+        if (-not $mySafeName -or $mySafeName -eq 'Use-PipeScript') {
             $mySafeName = 'PipeScript'
         }
 

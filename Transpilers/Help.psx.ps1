@@ -29,19 +29,24 @@
 #>
 [CmdletBinding(DefaultParameterSetName='Parameter')]
 param(
+# The synopsis of the help topic
 [Parameter(Mandatory,Position=0)]
 [string]
 $Synopsis,
 
+# The description of the help topic
 [string]
 $Description,
 
+# One or more examples
 [string[]]
 $Example,
 
+# One or more links
 [string[]]
 $Link,
 
+# A ScriptBlock.  If this is provided, the help will be added to this scriptblock.
 [Parameter(ValueFromPipeline,ParameterSetName='ScriptBlock')]
 [scriptblock]
 $ScriptBlock
