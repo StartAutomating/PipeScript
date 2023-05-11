@@ -299,8 +299,8 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             elseif ($parameterMetadata.Attribute) { $parameterMetadata.Attribute }
                         $aliases =
                             if ($parameterMetadata.Alias) { $parameterMetadata.Alias }
-                            elseif ($parameterMetadata.Aliases) { $parameterMetadata.Aliases }
-                        $parameterHelp =
+                            elseif ($parameterMetadata.Aliases) { $parameterMetadata.Aliases }                        
+                        [string]$parameterHelp =
                             if ($parameterMetadata.Help) { $parameterMetadata.Help}                            
                         $aliasAttribute = @(foreach ($alias in $aliases) {
                             $alias -replace "'","''"                            
