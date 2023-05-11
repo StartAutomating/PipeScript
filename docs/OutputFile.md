@@ -22,22 +22,25 @@ Outputs the result of a script into a file.
 
 
 ### Examples
-#### EXAMPLE 1
-```PowerShell
+
+### EXAMPLE 1
+```powershell
 Invoke-PipeScript {
     [OutputFile("hello.txt")]
     param()
-```
-'hello world'
+    'hello world'
 }
+```
+
 #### EXAMPLE 2
 ```PowerShell
 Invoke-PipeScript {
     param()
-```
-$Message = 'hello world'
+
+    $Message = 'hello world'
     [Save(".\Hello.txt")]$Message
 }
+```
 
 
 ---
