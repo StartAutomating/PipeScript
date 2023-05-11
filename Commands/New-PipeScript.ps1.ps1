@@ -62,7 +62,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
     $Begin,
 
     # The process block.
-    [Parameter(ValueFromPipeline,ValueFromPipelineByPropertyName)]    
+    [Parameter(ValueFromPipeline,ValueFromPipelineByPropertyName)]
     [Alias('ProcessBlock','ScriptBlock')]
     [ScriptBlock]
     $Process,
@@ -91,7 +91,10 @@ HTTP Accept indicates what content types the web request will accept as a respon
     $AutoParameterType = [PSObject],
 
     # If provided, will add inline help to parameters.
-    [Collections.IDictionary]
+    [ValidateTypes(TypeName={
+        [Collections.IDictionary],
+        [string]
+    })]
     $ParameterHelp,
 
     <#
@@ -184,7 +187,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                 indentHelpLine $Synopsis
                 ".Description"
                 indentHelpLine $Description
-                
+
                 foreach ($helpExample in $Example) {
                     ".Example"
                     indentHelpLine $helpExample
@@ -192,13 +195,13 @@ HTTP Accept indicates what content types the web request will accept as a respon
                 foreach ($helplink in $Link) {
                     ".Link"
                     indentHelpLine $helplink
-                } 
+                }
                 "#>"
             ) -join [Environment]::Newline
 
             $allHeaders += $helpHeader
         }
-        
+
         if ($Attribute) {
             $allHeaders += $Attribute
         }
@@ -237,7 +240,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                     elseif ($EachParameter.Value -is [string]) {
                         # embed it directly.
                         $ParametersToCreate[$EachParameter.Key] = $EachParameter.Value
-                    }                    
+                    }
                     # If the value is a ScriptBlock
                     elseif ($EachParameter.Value -is [ScriptBlock]) {
                         # Embed it
@@ -261,17 +264,17 @@ HTTP Accept indicates what content types the web request will accept as a respon
                         $ParametersToCreate[$EachParameter.Key] = # join it's elements by newlines
                             $EachParameter.Value -join [Environment]::Newline
                     }
-                    elseif ($EachParameter.Value -is [Collections.IDictionary] -or 
+                    elseif ($EachParameter.Value -is [Collections.IDictionary] -or
                         $EachParameter.Value -is [PSObject]) {
                         $parameterMetadata = $EachParameter.Value
                         $parameterName = $EachParameter.Key
                         if ($parameterMetadata.Name) {
                             $parameterName = $parameterMetadata.Name
                         }
-                        
+
                         $parameterAttributeParts = @()
                         $ParameterOtherAttributes = @()
-                        $attrs = 
+                        $attrs =
                             if ($parameterMetadata.Attributes) { $parameterMetadata.Attributes }
                             elseif ($parameterMetadata.Attribute) { $parameterMetadata.Attribute }
 
@@ -280,16 +283,16 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             elseif ($parameterMetadata.Aliases) { $parameterMetadata.Aliases }
 
                         $parameterHelp =
-                            if ($parameterMetadata.Help) { $parameterMetadata.Help}                            
+                            if ($parameterMetadata.Help) { $parameterMetadata.Help}
 
                         $aliasAttribute = @(foreach ($alias in $aliases) {
-                            $alias -replace "'","''"                            
+                            $alias -replace "'","''"
                         }) -join "','"
 
                         if ($aliasAttribute) {
                             $aliasAttribute = "[Alias('$aliasAttribute')]"
                         }
-                        
+
                         foreach ($attr in $attrs) {
                             if ($attr -notmatch '^\[') {
                                 $parameterAttributeParts += $attr
@@ -298,7 +301,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             }
                         }
 
-                        $parameterType = 
+                        $parameterType =
                             if ($parameterMetadata.Type) {$parameterMetadata.Type }
                             elseif ($parameterMetadata.ParameterType) {$parameterMetadata.ParameterType }
 
@@ -318,7 +321,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             elseif ($parameterType) {
                                 "[PSTypeName('$($parameterType -replace '^System\.')')]"
                             }
-                            
+
                             if ($ParameterOtherAttributes) {
                                 $ParameterOtherAttributes
                             }
@@ -428,9 +431,9 @@ HTTP Accept indicates what content types the web request will accept as a respon
 
         # process,
         if ($process) {
-            if ($process.BeginBlock -or 
-                $process.ProcessBlock -or 
-                $process.DynamicParameterBlock -or 
+            if ($process.BeginBlock -or
+                $process.ProcessBlock -or
+                $process.DynamicParameterBlock -or
                 $Process.ParamBlock) {
                 if ($process.DynamicParameterBlock) {
                     $allDynamicParameters += $process.DynamicParameterBlock
@@ -449,7 +452,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                 }
             } else {
                 $allProcessBlocks += $process -replace ${?<EmptyParameterBlock>}
-            }            
+            }
         }
 
         # or end blocks.
@@ -500,7 +503,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
             # join them with the new parameter block.
             $newParamBlock = $parameterScriptBlocks | Join-PipeScript -IncludeBlockType param
         }
-        
+
         # If we provided a -FunctionName, we'll be declaring a function.
         $functionDeclaration =
             # If the -FunctionType is function or filter
@@ -532,15 +535,15 @@ $(if ($allEndBlocks -and -not $allBeginBlocks -and -not $allProcessBlocks) {
 } elseif ($allEndBlocks) {
     @(@("end {") + $allEndBlocks + '}') -join [Environment]::Newline
 })
-$(if ($functionDeclaration) { '}'}) 
+$(if ($functionDeclaration) { '}'})
 "
 
         $createdScriptBlock = [scriptblock]::Create($ScriptToBe)
 
-        # If -NoTranspile was passed, 
+        # If -NoTranspile was passed,
         if ($createdScriptBlock -and $NoTranspile) {
             $createdScriptBlock # output the script as-is
-        } elseif ($createdScriptBlock) { # otherwise            
+        } elseif ($createdScriptBlock) { # otherwise
             $createdScriptBlock | .>PipeScript # output the transpiled script.
         }
     }
