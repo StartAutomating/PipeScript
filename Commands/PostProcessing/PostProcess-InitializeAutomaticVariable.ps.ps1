@@ -6,20 +6,24 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
         Initializes any automatic variables at the beginning of a script block.
 
         This enables Automatic?Variable* and Magic?Variable* commands to be populated and populated effeciently.
+        
+        For example:
+        * If a function exists named Automatic.Variable.MyCallstack
+        * AND $myCallStack is used within a ScriptBlock
 
-            
+        Then the body of Automatic.Variable.MyCallstack will be added to the top of the ScriptBlock.
+
     .EXAMPLE
+        # Declare an automatic variable, MyCallStack
         Import-PipeScript {
-            Automatic.Variable. function MyCallstack {
+            Automatic.Variable function MyCallstack {
                 Get-PSCallstack
             }
         }
 
         {
             $MyCallstack
-        } | Use-PipeScript
-
-        
+        } | Use-PipeScript        
     #>
     param(
     [vfp(Mandatory)]
@@ -31,8 +35,8 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
         # First, let's find all commands that automatic or magic variables.
         # Let's find all possible commands by wildcards (Automatic?Variable* or Magic?Variable*)
         $allAutomaticVariableCommands = @(
-            $ExecutionContext.SessionState.InvokeCommand.GetCommands('Automatic?Variable?*','Function', $true) -match '^Automatic\p{P}Variable\p{P}'
-            $ExecutionContext.SessionState.InvokeCommand.GetCommands('Magic?Variable?*','Function', $true) -match '^Magic\p{P}Variable\p{P}'
+            $ExecutionContext.SessionState.InvokeCommand.GetCommands('Automatic?Variable?*','Function,Alias,Cmdlet', $true) -match '^Automatic\p{P}Variable\p{P}'
+            $ExecutionContext.SessionState.InvokeCommand.GetCommands('Magic?Variable?*','Function,Alias,Cmdlet', $true) -match '^Magic\p{P}Variable\p{P}'
         )
         # Then, let's create a lookup table by the name of the automatic variable
         $allAutomaticVariables = [Ordered]@{}
@@ -46,8 +50,29 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
                 $automaticVariableCommand
         }
         
-        # Once we've collected all of these automatic variables, the keys are all of the names.
-        $allAutomaticVariableNames = $allAutomaticVariables.Keys        
+        # Declare a quick filter to get the definition of the automatic variable
+        filter GetAutomaticVariableDefinition {
+            $automaticVariableCommand = $_
+            if (-not $automaticVariableCommand) {
+                $automaticVariableCommand = $args
+            }
+
+            # Resolve any alias as far as we can
+            while ($automaticVariableCommand -is [Management.Automation.AliasInfo]) {
+                $automaticVariableCommand = $automaticVariableCommand.ResolvedCommand
+            }
+
+            # If we've resolved to a function
+            if ($automaticVariableCommand -is [Management.Automation.FunctionInfo]) {
+                # inline it's scriptblock (trimming whitespace)
+                "$($automaticVariableCommand.ScriptBlock)" -replace '^\s{0,}' -replace '\s{0,}$'
+            }
+            # If we've resolved to a cmdlet
+            elseif ($automaticVariableCommand -is [Management.Automation.CmdletInfo]) {
+                # call it directly
+                "$($automaticVariableCommand)"
+            }
+        }
     }
 
     process {
@@ -64,7 +89,7 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
             # If we have an automatic variable by that variable name
             if ($allAutomaticVariables[$variableName]) {
                 # stringify it's script block and add it to our dictionary of prepends
-                $prependDefinitions[$variableName] = "$($allAutomaticVariables[$variableName].ScriptBlock)" -replace '^\s{0,}' -replace '\s{0,}$'
+                $prependDefinitions[$variableName] = $allAutomaticVariables[$variableName] | GetAutomaticVariableDefinition                    
             }
         }
 
