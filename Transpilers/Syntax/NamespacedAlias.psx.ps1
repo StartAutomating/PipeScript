@@ -45,11 +45,12 @@ process {
     # If the pattern was `<>`, make the separator `<`.
     elseif ($namespaceSeparator -eq '<>') { $namespaceSeparator = '<' }
 
-    $namespace = $namespace -replace "$namespaceSeparatorPattern$"
+    $namespace = $namespace -replace "$namespaceSeparatorPattern$"    
 
     $locationsEmbed = '"' + $($locations -replace '"','`"' -join '","') + '"'
 
-    [ScriptBlock]::Create("
+    $scriptBlockToCreate = 
+    "
 `$aliasNamespace = '$($namespace -replace "'","''")'
 `$aliasNamespaceSeparator = '$namespaceSeparator'
 `$aliasesToCreate = [Ordered]@{}
@@ -62,12 +63,14 @@ foreach (`$aliasNamespacePattern in $locationsEmbed) {
             $aliasesToCreate[$aliasName] = $commandsToAlias            
         }
     }
-
-    if (Test-Path $aliasNamespacePattern) {
+    elseif (Test-Path $aliasNamespacePattern) {
         foreach ($fileToAlias in (Get-ChildItem -Path $aliasNamespacePattern)) {
             $aliasName = $aliasNamespace, $fileToAlias.Name -join $aliasNamespaceSeparator
             $aliasesToCreate[$aliasName] = $fileToAlias.FullName            
         }
+    }
+    else {
+        $aliasNamespace += $aliasNamespaceSeparator + $aliasNamespacePattern + $aliasNamespaceSeparator
     }
 } + "
 }
@@ -80,7 +83,9 @@ foreach ($toCreateAlias in $aliasesToCreate.GetEnumerator()) {
     }
     Set-Alias $aliasName $commandToAlias
 }
-})
+}
+
+[ScriptBlock]::Create($scriptBlockToCreate)
     
 
     
