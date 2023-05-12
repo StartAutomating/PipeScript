@@ -107,13 +107,18 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
             # make it all one big string
             $toPrepend = 
                 foreach ($toPrepend in $prependDefinitions.GetEnumerator()) {
-                    $variableName = $toPrepend.Key
+                    $variableName  = $toPrepend.Key
+                    $variableValue = $toPrepend.Value
+                    if ($variableValue -notmatch '^\@[\(\{\[]' -or 
+                        $variableValue -match '[\r\n]') {
+                        $variableValue = "`$($variableValue)"
+                    }
                     # Define the automatic variable by name
                     $(if ($variableName -match '\p{P}') { # (if it had punctuation)
                         "`${$($variableName)}" # enclose in brackets
                     } else { # otherwise
                         "`$$($variableName)" # just use $VariableName
-                    }) + '=' + "`$($($toPrepend.Value))" # prepend the definition of the function within $()
+                    }) + '=' + "$variableValue" # prepend the definition of the function.
                     # Why?  Because this way, the automatic variable is declared at the same scope as the ScriptBlock.
                     # (By the way, this means you cannot have _any_ parameters on an automatic variable)
                 }
