@@ -17,6 +17,11 @@ Initializes any automatic variables
 Initializes any automatic variables at the beginning of a script block.
 This enables Automatic?Variable* and Magic?Variable* commands to be populated and populated effeciently.
 
+For example:
+* If a function exists named Automatic.Variable.MyCallstack
+* AND $myCallStack is used within a ScriptBlock
+Then the body of Automatic.Variable.MyCallstack will be added to the top of the ScriptBlock.
+
 
 
 ---
@@ -25,8 +30,9 @@ This enables Automatic?Variable* and Magic?Variable* commands to be populated an
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
+# Declare an automatic variable, MyCallStack
 Import-PipeScript {
-    Automatic.Variable. function MyCallstack {
+    Automatic.Variable function MyCallstack {
         Get-PSCallstack
     }
 }
