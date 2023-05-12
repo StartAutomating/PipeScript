@@ -32,12 +32,15 @@ A Command can & $myself to use anonymous recursion.
 
 #### EXAMPLE 2
 ```PowerShell
+# By using $Myself, we can write an anonymously recursive fibonacci sequence.
 Invoke-PipeScript {
-    param($n = 1)
-    if ($n -gt 0) {
-        $n + (& $myself ($n + 1))
+    param([int]$n = 1)
+    if ($n -lt 2) {
+        $n
+    } else {
+        (& $myself ($n -1)) + (& $myself ($n -2))
     }
-} -ArgumentList 3
+} -ArgumentList 10
 ```
 
 
