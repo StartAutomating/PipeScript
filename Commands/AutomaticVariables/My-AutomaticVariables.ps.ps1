@@ -13,7 +13,14 @@ Automatic.Variable function MySelf {
         {
             $mySelf
         } | Use-PipeScript
-    #>
-    param()
+    .EXAMPLE
+        Invoke-PipeScript {
+            param($n = 1)
+
+            if ($n -gt 0) {
+                $n + (& $myself ($n + 1))
+            }
+        } -ArgumentList 3
+    #>    
     $MyInvocation.MyCommand.ScriptBlock
 }
