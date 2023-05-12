@@ -57,3 +57,17 @@ function Automatic.Variable.MySelf {
     $MyInvocation.MyCommand.ScriptBlock
 }
 
+
+
+function Automatic.Variable.MyParameters {
+    <#
+    .SYNOPSIS
+        $MyParameters
+    .DESCRIPTION
+        $MyParameters is an automatic variable that is a copy of $psBoundParameters.
+        This leaves you more free to change it.
+    #>
+    param()
+    [Ordered]@{} + $PSBoundParameters
+}
+
