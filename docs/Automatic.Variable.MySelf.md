@@ -30,6 +30,16 @@ A Command can & $myself to use anonymous recursion.
 } | Use-PipeScript
 ```
 
+#### EXAMPLE 2
+```PowerShell
+Invoke-PipeScript {
+    param($n = 1)
+    if ($n -gt 0) {
+        $n + (& $myself ($n + 1))
+    }
+} -ArgumentList 3
+```
+
 
 
 ---
