@@ -1,5 +1,13 @@
 # Declares various 'my' automatic variables
-Automatic.Variable Alias MyCallstack Get-PSCallstack
+Automatic.Variable function MyCallstack {
+    <#
+    .SYNOPSIS
+        $MyCallStack
+    .DESCRIPTION
+        $MyCallstack is an automatic variable that contains the current callstack.
+    #>
+    @(Get-PSCallstack)
+}
 
 Automatic.Variable function MySelf {
     <#
@@ -37,6 +45,15 @@ Automatic.Variable function MyParameters {
 
         This leaves you more free to change it.
     #>
-    param()
     [Ordered]@{} + $PSBoundParameters
+}
+
+Automatic.Variable function MyCaller {
+    <#
+    .SYNOPSIS
+        $MyCaller
+    .DESCRIPTION
+        $MyCaller is an automatic variable that contains the InvocationInfo that called this command.
+    #>
+    $MyCallstack[-1]
 }
