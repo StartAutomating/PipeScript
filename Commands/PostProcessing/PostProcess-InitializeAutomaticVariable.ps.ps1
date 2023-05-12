@@ -67,9 +67,9 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
             # If we've resolved to a function
             if ($automaticVariableCommand -is [Management.Automation.FunctionInfo]) {
                 # take a quick second to check that the function is "right"
-                if (-not $automaticVariableCommand.Ast.Body.EndBlock) {
+                if (-not $automaticVariableCommand.ScriptBlock.Ast.Body.EndBlock) {
                     Write-Error "$automaticVariableCommand does not have an end block"
-                } elseif (-not $automaticVariableCommand.Ast.Body.EndBlock.Unnamed) {
+                } elseif (-not $automaticVariableCommand.ScriptBlock.Ast.Body.EndBlock.Unnamed) {
                     Write-Error "$automaticVariableCommand end block should not be named"
                 } else {
                     # if it is, inline it's scriptblock (trimmed of some whitespace).
