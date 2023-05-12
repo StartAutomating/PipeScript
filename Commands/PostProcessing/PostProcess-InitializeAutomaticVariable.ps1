@@ -18,9 +18,11 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
                 Get-PSCallstack
             }
         }
+        # Now we can use $MyCallstack as-is.
+        # It will be initialized at the beginning of the script
         {
             $MyCallstack
-        } | Use-PipeScript        
+        } | Use-PipeScript
     #>
     param(
     [Parameter(Mandatory,ValueFromPipeline)]
@@ -58,8 +60,15 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
                     }
                     # If we've resolved to a function
                     if ($automaticVariableCommand -is [Management.Automation.FunctionInfo]) {
-                        # inline it's scriptblock (trimming whitespace)
-                        "$($automaticVariableCommand.ScriptBlock)" -replace '^\s{0,}' -replace '\s{0,}$'
+                        # take a quick second to check that the function is "right"
+                        if (-not $automaticVariableCommand.Ast.Body.EndBlock) {
+                            Write-Error "$automaticVariableCommand does not have an end block"
+                        } elseif (-not $automaticVariableCommand.Ast.Body.EndBlock.Unnamed) {
+                            Write-Error "$automaticVariableCommand end block should not be named"
+                        } else {
+                            # if it is, inline it's scriptblock (trimmed of some whitespace).
+                            "$($automaticVariableCommand.ScriptBlock.Ast.Body.EndBlock.ToString())" -replace '^\s{0,}' -replace '\s{0,}$'
+                        }                
                     }
                     # If we've resolved to a cmdlet
                     elseif ($automaticVariableCommand -is [Management.Automation.CmdletInfo]) {
