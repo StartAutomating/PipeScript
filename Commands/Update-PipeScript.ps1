@@ -120,6 +120,41 @@
     [Collections.IDictionary]
     $InsertBeforeAst = [Ordered]@{},
 
+    # A dictionary of items to insert at the start of another item's AST block.
+    # The key should be an AST element.
+    # The nearest block start will be the point that the item is inserted.
+    [ValidateScript({
+        $badKeys =
+            foreach ($k in $_.Keys) {
+                if ($k -isnot [Management.Automation.Language.Ast]) {
+                    $k
+                }
+            }
+        if ($badKeys) {
+            throw "-AstReplacement contains bad keys: $badKeys"
+        }
+        return $true
+    })]
+    [Collections.IDictionary]
+    $InsertBlockStart = [Ordered]@{},
+
+    # A dictionary of items to insert at the start of another item's AST block.
+    # The key should be an AST element.
+    # The nearest block end will be the point that the item is inserted.
+    [ValidateScript({
+        $badKeys =
+            foreach ($k in $_.Keys) {
+                if ($k -isnot [Management.Automation.Language.Ast]) {
+                    $k
+                }
+            }
+        if ($badKeys) {
+            throw "-AstReplacement contains bad keys: $badKeys"
+        }
+        return $true
+    })]
+    [Collections.IDictionary]
+    $InsertBlockEnd = [Ordered]@{},
 
     # A dictionary of text insertions.
     # The key is the insertion index.
@@ -549,6 +584,71 @@
 
         }
         #endregion Append and Prepend
+
+        #region InsertBlockStart
+        if ($InsertBlockStart.Count) {
+            foreach ($item in @(
+                $InsertBlockStart.GetEnumerator() |
+                Sort-Object { $_.Key.Extent.StartOffset }
+            )) {
+                $astItem = $item.Key
+                while ($astItem -and $astItem -isnot [Management.Automation.Language.NamedBlockAst]) {
+                    $astItem = $astItem.Parent
+                }
+                if ($astItem -is [Management.Automation.Language.NamedBlockAst]) {
+                    $astBlockKind = if ($astItem.Unnamed) {
+                        ''
+                    } else {
+                        $astItem.BlockKind
+                    }
+                    $match = [Regex]::new("$astBlockKind\s{0,}\{\s{0,}",'IgnoreCase').Match($Text,
+                        [Math]::Max(
+                            $potentialInsertLocations[-1].Extent.StartOffset - $ScriptBlockAst.StartOffset - 5, 0
+                        )
+                    )
+                    $insertAt = 
+                        if ($match.Success) {
+                            # and use -TextInsertion at that location.
+                            $match.Index + $match.Length
+                        } else {
+                            0
+                        }
+                    
+                    if (-not $TextInsertion["$insertAt"]) {
+                        $TextInsertion["$insertAt"] = @($item.Value)
+                    } else {
+                        $TextInsertion["$insertAt"] += $item.Value
+                    }                        
+                    
+                }
+            }
+        }
+        #endregion InsertBlockStart
+        
+        #region InsertBlockEnd
+        if ($InsertBlockEnd.Count) {
+            foreach ($item in @(
+                $InsertBlockEnd.GetEnumerator() |
+                Sort-Object { $_.Key.Extent.StartOffset }
+            )) {
+                $astItem = $item.Key
+                while ($astItem -and $astItem -isnot [Management.Automation.Language.NamedBlockAst]) {
+                    $astItem = $astItem.Parent
+                }
+                if ($astItem -is [Management.Automation.Language.NamedBlockAst]) {
+                    # If we're in a named block, there _really_ should be statements.
+                    $insertPoint = $astItem.Statements[-1]
+                    if ($insertPoint) {
+                        if (-not $InsertAfterAst[$insertPoint]) {
+                            $InsertAfterAst[$insertPoint] = $item.Value
+                        } else {
+                            $InsertAfterAst[$insertPoint] = @($InsertAfterAst[$insertPoint]) + $item.Value
+                        }                         
+                    }                    
+                }
+            }
+        }
+        #endregion InsertBlockEnd
 
         #region Insert Before AST
         # If we had any AST insertions

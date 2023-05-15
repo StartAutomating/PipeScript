@@ -45,5 +45,17 @@ describe Update-PipeScript {
 
             Update-PipeScript -ScriptBlock { dynamicParam { hello } end { } } -Append { goodbye } | Should -BeLike '*dynamicParam*{*hello*}*end*{*goodbye*}*'
         }
+
+        it 'Can -InsertBlockStart' {
+            $testScriptBlock =  { "world" }
+            $testStringExpression = $testScriptBlock.Ast.EndBlock.Statements[0].PipelineElements[0].Expression
+            $testScriptBlock | Update-PipeScript -InsertBlockStart @{$testStringExpression= {"hello"}} | Should -BeLike "*hello*world*"
+        }
+
+        it 'Can -InsertBlockEnd' {
+            $testScriptBlock =  { "hello" }
+            $testStringExpression = $testScriptBlock | Search-PipeScript -AstType *String* | Select-Object -ExpandProperty Result
+            $testScriptBlock | Update-PipeScript -InsertBlockEnd @{$testStringExpression= {"world"}} | Should -BeLike "*hello*world*"
+        }
     }
 }
