@@ -91,10 +91,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
     $AutoParameterType = [PSObject],
 
     # If provided, will add inline help to parameters.
-    [ValidateTypes(TypeName={
-        [Collections.IDictionary],
-        [string]
-    })]
+    [Collections.IDictionary]
     $ParameterHelp,
 
     <#
