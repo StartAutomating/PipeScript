@@ -84,12 +84,10 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
     process {
         $inObj = $_
         if ($psCmdlet.ParameterSetName -eq 'FunctionDefinition') {
-            $ScriptBlock = [scriptblock]::Create($FunctionDefinitionAst.Body -replace '^\{' -replace '\}$')            
+            $ScriptBlock = [scriptblock]::Create($FunctionDefinitionAst.Body -replace '^\{' -replace '\}$')
         }
         # Find all Variables
         $allVariables = @($ScriptBlock | Search-PipeScript -AstType VariableExpressionAst | Select-Object -ExpandProperty Result)
-
-        
         
         # If there were no variables in this script block, return.
         if (-not $allVariables) { return }
