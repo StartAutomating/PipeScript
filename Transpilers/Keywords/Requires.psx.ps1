@@ -13,7 +13,7 @@ using namespace System.Management.Automation.Language
 
 [ValidateScript({
     $validateVar = $_
-    if ($validateVar -is [CommandAst]) {
+    if ($validateVar -is [Management.Automation.Language.CommandAst]) {
         $cmdAst = $validateVar
         if ($cmdAst.CommandElements[0].Value -in 'require', 'requires') {
             return $true
@@ -65,7 +65,7 @@ $VariableLoader,
 
 # The Command AST.  This will be provided when using the transpiler as a keyword.
 [Parameter(Mandatory,ParameterSetName='CommandAST',ValueFromPipeline)]
-[CommandAst]
+[Management.Automation.Language.CommandAst]
 $CommandAst,
 
 # The ScriptBlock.  This will be provided when using the transpiler as an attribute.
@@ -111,7 +111,7 @@ process {
             }
         }) -join ','
         $moduleRequirementScript = [ScriptBlock]::Create(
-("foreach (`$moduleRequirement in $moduleRequirementsList) {
+("`$ImportedRequirements = foreach (`$moduleRequirement in $moduleRequirementsList) {
     `$requireLatest = $(if ($Latest) { '$true' } else { '$false' })
     `$ModuleLoader  = $(if ($moduleLoader) { "{
         $moduleLoader
@@ -124,7 +124,7 @@ process {
         if (-not $foundModuleRequirement) {
             # If it wasn't,
             $foundModuleRequirement = try { # try loading it
-                Import-Module -Name $moduleRequirement -PassThru -Global -ErrorAction 'Continue'
+                Import-Module -Name $moduleRequirement -PassThru -Global -ErrorAction 'Ignore'
             } catch {                
                 $null
             }
