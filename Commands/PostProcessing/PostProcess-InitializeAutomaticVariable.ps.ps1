@@ -51,8 +51,9 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
             # The automatic variable name is 
             $AutomaticVariableName = 
                 # the magic|automatic followed by punctuation followed by variable followed by punctuation.
-                $automaticVariableCommand -replace '(?>Magic|Automatic)\p{P}Variable\p{P}' -replace '\p{P}$' -replace '^(?>PowerShell|PipeScript)'
-            $allAutomaticVariables[$AutomaticVariableName] = 
+                $automaticVariableCommand -replace '(?>Magic|Automatic)\p{P}Variable\p{P}' -replace '^(?>PowerShell|PipeScript)' -replace
+                    '^\p{P}' -replace '\p{P}$' 
+            $allAutomaticVariables[$AutomaticVariableName] =
                 $automaticVariableCommand
         }
         

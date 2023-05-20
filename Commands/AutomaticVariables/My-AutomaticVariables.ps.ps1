@@ -1,15 +1,15 @@
 # Declares various 'my' automatic variables
-Automatic.Variable function MyCallstack {
+PipeScript.Automatic.Variable function MyCallstack {
     <#
     .SYNOPSIS
         $MyCallStack
     .DESCRIPTION
         $MyCallstack is an automatic variable that contains the current callstack.
     #>
-    @(Get-PSCallstack)
+    @(Get-PSCallstack) # Set $MyCallstack
 }
 
-Automatic.Variable function MySelf {
+PipeScript.Automatic.Variable function MySelf {
     <#
     .SYNOPSIS
         $MySelf
@@ -33,7 +33,7 @@ Automatic.Variable function MySelf {
             }
         } -ArgumentList 10
     #>    
-    $MyInvocation.MyCommand.ScriptBlock
+    $MyInvocation.MyCommand.ScriptBlock # Set $mySelf
 }
 
 Automatic.Variable function MyParameters {
@@ -44,6 +44,10 @@ Automatic.Variable function MyParameters {
         $MyParameters is an automatic variable that is a copy of $psBoundParameters.
 
         This leaves you more free to change it.
+    .EXAMPLE
+        Invoke-PipeScript -ScriptBlock {
+            $MyParameters
+        }
     #>
     [Ordered]@{} + $PSBoundParameters
 }
@@ -53,7 +57,29 @@ Automatic.Variable function MyCaller {
     .SYNOPSIS
         $MyCaller
     .DESCRIPTION
-        $MyCaller is an automatic variable that contains the InvocationInfo that called this command.
+        $MyCaller is an automatic variable that contains the CallstackFrame that called this command.
+
+        Also Known As:
+
+        * $CallStackPeek
     #>
-    $MyCallstack[-1]
+    [Alias('Automatic.Variable.CallstackPeek')]
+    param()
+    $myCallStack[-1] # Initialize MyCaller
+}
+
+Automatic.Variable function MyCaller {
+    <#
+    .SYNOPSIS
+        $MyCaller
+    .DESCRIPTION
+        $MyCaller is an automatic variable that contains the CallstackFrame that called this command.
+
+        Also Known As:
+
+        * $CallStackPeek
+    #>
+    [Alias('Automatic.Variable.CallstackPeek')]
+    param()
+    $myCallStack[-1] # Initialize MyCaller
 }
