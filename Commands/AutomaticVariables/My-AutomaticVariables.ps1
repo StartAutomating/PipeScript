@@ -1,7 +1,5 @@
 # Declares various 'my' automatic variables
 
-$MyCallstack=@(Get-PSCallstack)
-
 function Automatic.Variable.MyCallstack {
     <#
     .SYNOPSIS
@@ -61,6 +59,8 @@ function Automatic.Variable.MyCaller {
     .DESCRIPTION
         $MyCaller is an automatic variable that contains the InvocationInfo that called this command.
     #>
-    $MyCallstack[-1]
+   
+$MyCallstack=@(Get-PSCallstack)
+ $MyCallstack[-1]
 }
 
