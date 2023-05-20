@@ -56,7 +56,18 @@ Import-PipeScript {
 
 |Type           |Required|Position|PipelineInput |
 |---------------|--------|--------|--------------|
-|`[ScriptBlock]`|true    |1       |true (ByValue)|
+|`[ScriptBlock]`|true    |named   |true (ByValue)|
+
+
+
+#### **FunctionDefinitionAst**
+
+
+
+
+|Type                     |Required|Position|PipelineInput |
+|-------------------------|--------|--------|--------------|
+|`[FunctionDefinitionAst]`|true    |named   |true (ByValue)|
 
 
 
@@ -67,5 +78,8 @@ Import-PipeScript {
 
 ### Syntax
 ```PowerShell
-PipeScript.PostProcess.InitializeAutomaticVariables [-ScriptBlock] <ScriptBlock> [<CommonParameters>]
+PipeScript.PostProcess.InitializeAutomaticVariables -ScriptBlock <ScriptBlock> [<CommonParameters>]
+```
+```PowerShell
+PipeScript.PostProcess.InitializeAutomaticVariables -FunctionDefinitionAst <FunctionDefinitionAst> [<CommonParameters>]
 ```
