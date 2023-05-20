@@ -21,6 +21,17 @@ $MyCommandAst is an automatic variable that contains the abstract syntax tree us
 ---
 
 
+### Examples
+#### EXAMPLE 1
+```PowerShell
+& (Use-PipeScript { $myCommandAst })
+```
+
+
+
+---
+
+
 ### Syntax
 ```PowerShell
 PipeScript.Automatic.Variable.MyCommandAst [<CommonParameters>]
