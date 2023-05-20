@@ -25,6 +25,9 @@ Also Known As:
 
 ### Examples
 #### EXAMPLE 1
+```PowerShell
+Invoke-PipeScript { $myCaller }
+```
 
 
 
