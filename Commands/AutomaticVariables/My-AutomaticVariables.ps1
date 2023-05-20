@@ -69,9 +69,7 @@ function PipeScript.Automatic.Variable.MyCaller {
     #>
     [Alias('Automatic.Variable.CallstackPeek')]
     param()
-   
-$myCallStack=@(Get-PSCallstack)
- $myCallStack[-1] # Initialize MyCaller
+    $myCallStack[-1] # Initialize MyCaller
 }
 
 
@@ -84,10 +82,7 @@ function PipeScript.Automatic.Variable.MyCommandAst {
         $MyCommandAst is an automatic variable that contains the abstract syntax tree used to invoke this command.
     #>    
     param()
-   
-$MyCaller=$($myCallStack=@(Get-PSCallstack)
-     $myCallStack[-1])
- if ($MyCaller) {
+    if ($MyCaller) {
         $myInv = $MyInvocation
         $MyCaller.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
             param($ast) 
