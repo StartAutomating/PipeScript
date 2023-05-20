@@ -39,7 +39,7 @@ function PipeScript.Automatic.Variable.MySelf {
 
 
 
-function Automatic.Variable.MyParameters {
+function PipeScript.Automatic.Variable.MyParameters {
     <#
     .SYNOPSIS
         $MyParameters
@@ -56,7 +56,7 @@ function Automatic.Variable.MyParameters {
 
 
 
-function Automatic.Variable.MyCaller {
+function PipeScript.Automatic.Variable.MyCaller {
     <#
     .SYNOPSIS
         $MyCaller
@@ -67,26 +67,6 @@ function Automatic.Variable.MyCaller {
     #>
     [Alias('Automatic.Variable.CallstackPeek')]
     param()
-   
-$myCallStack=@(Get-PSCallstack)
- $myCallStack[-1] # Initialize MyCaller
-}
-
-
-
-function Automatic.Variable.MyCaller {
-    <#
-    .SYNOPSIS
-        $MyCaller
-    .DESCRIPTION
-        $MyCaller is an automatic variable that contains the CallstackFrame that called this command.
-        Also Known As:
-        * $CallStackPeek
-    #>
-    [Alias('Automatic.Variable.CallstackPeek')]
-    param()
-   
-$myCallStack=@(Get-PSCallstack)
- $myCallStack[-1] # Initialize MyCaller
+    $myCallStack[-1] # Initialize MyCaller
 }
 
