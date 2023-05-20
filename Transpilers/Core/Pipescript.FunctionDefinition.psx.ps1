@@ -11,7 +11,35 @@ param(
 $FunctionDefinition
 )
 
+begin {
+    $pipeScriptCommands = $ExecutionContext.SessionState.InvokeCommand.GetCommands('PipeScript*', 'Function,Alias', $true)
+    foreach ($pipeScriptCommand in $pipeScriptCommands) {
+        if ($pipeScriptCommand.Name -match '^PipeScript.(?>Pre|Analyze)' -and 
+            $pipeScriptCommand.CouldPipeType([Management.Automation.Language.FunctionDefinitionAst])) {
+            $preCommands += $pipeScriptCommand
+        }
+        if ($pipeScriptCommand.Name -match '^PipeScript.(?>Post|Optimize)' -and
+            $pipeScriptCommand.CouldPipeType([Management.Automation.Language.FunctionDefinitionAst])
+        ) {
+            $postCommands += $pipeScriptCommand
+        }
+    }
+    $preCommands  = $preCommands | Sort-Object Rank, Name
+    $postCommands = $postCommands | Sort-Object Rank, Name
+}
+
 process {
+    #region PreCommands
+    if ($preCommands) {
+        foreach ($pre in $preCommands) {
+            $preOut = $FunctionDefinition | & $pre
+            if ($preOut -and $preOut -is [Management.Automation.Language.FunctionDefinitionAst]) {
+                $FunctionDefinition = $preOut
+            }
+        }
+    }
+    #endregion PreCommands
+
     $TranspilerSteps = @()
     $realFunctionName = $functionDefinition.Name
     if ($FunctionDefinition.Name -match '\W(?<Name>\w+)$' -or
@@ -91,7 +119,7 @@ process {
         }
         # containing the transpiled funciton body.
         $transpiledFunctionBody = [ScriptBlock]::Create(($functionDefinition.Body.Extent -replace '^{' -replace '}$')) |
-            .>Pipescript -Transpiler $transpilerSteps
+            .>Pipescript -Transpiler $transpilerSteps        
         
         # If there were not partial commands, life is easy, we just return the transpiled ScriptBlock
         if (-not $partialCommands) {
@@ -126,6 +154,19 @@ process {
     )
     # Create a new script block
     $transpiledFunction = [ScriptBlock]::Create($newFunction -join [Environment]::NewLine)
+
+    $transpiledFunctionAst = $transpiledFunction.Ast.EndBlock.Statements[0]
+    if ($postCommands -and 
+        $transpiledFunctionAst -is [Management.Automation.Language.FunctionDefinitionAst]) {
+        foreach ($post in $postCommands) {
+            $postOut = $transpiledFunctionAst | & $post
+            if ($postOut -and $postOut -is [Management.Automation.Language.FunctionDefinitionAst]) {
+                $transpiledFunctionAst = $postOut
+            }
+        }
+
+        $transpiledFunction = [scriptblock]::Create("$transpiledFunctionAst")
+    }
 
     Import-PipeScript -ScriptBlock $transpiledFunction -NoTranspile
     # Create an event indicating that a function has been transpiled.

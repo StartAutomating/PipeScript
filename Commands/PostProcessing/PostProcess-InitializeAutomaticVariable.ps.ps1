@@ -28,9 +28,13 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
         } | Use-PipeScript
     #>
     param(
-    [vfp(Mandatory)]
+    [vfp(Mandatory,ParameterSetName='ScriptBlock')]
     [scriptblock]
-    $ScriptBlock
+    $ScriptBlock,
+
+    [vfp(Mandatory,ParameterSetName='FunctionDefinition')]
+    [Management.Automation.Language.FunctionDefinitionAst]
+    $FunctionDefinitionAst
     )
 
     begin {
@@ -85,8 +89,14 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
     }
 
     process {
+        $inObj = $_
+
+        if ($psCmdlet.ParameterSetName -eq 'FunctionDefinition') {
+            $ScriptBlock = [scriptblock]::Create($FunctionDefinitionAst.Body -replace '^\{' -replace '\}$')
+        }
         # Find all Variables
-        $allVariables = @($ScriptBlock | Search-PipeScript -AstType VariableExpressionAst -Recurse | Select-Object -ExpandProperty Result)
+        $allVariables = @($ScriptBlock | Search-PipeScript -AstType VariableExpressionAst | Select-Object -ExpandProperty Result)
+        
         # If there were no variables in this script block, return.
         return if -not $allVariables
 
@@ -124,9 +134,23 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
                 }
             
             # Turn our big string into a script block
-            $toPrepend = [ScriptBlock]::create( $toPrepend)
-            # and prepend it to this script block.
-            Update-ScriptBlock -ScriptBlock $scriptBlock -Prepend $toPrepend
+            $toPrepend = [ScriptBlock]::create($toPrepend)
+            # and prepend it to this script block.            
+            $updatedScriptBlock = Update-ScriptBlock -ScriptBlock $scriptBlock -Prepend $toPrepend
+            switch ($psCmdlet.ParameterSetName) {
+                ScriptBlock {
+                    $updatedScriptBlock
+                }
+                FunctionDefinition {
+                    [scriptblock]::Create(
+                        @(
+                            "$(if ($FunctionDefinitionAst.IsFilter) { "filter"} else { "function"}) $($functionDefinition.Name) {"
+                            $UpdatedScriptBlock
+                            "}"
+                        ) -join [Environment]::NewLine
+                    ).Ast.EndBlock.Statements[0]
+                }
+            }
         }
     }
 }
