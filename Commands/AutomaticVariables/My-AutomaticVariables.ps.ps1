@@ -76,13 +76,13 @@ PipeScript.Automatic.Variable function MyCommandAst {
         $MyCommandAst is an automatic variable that contains the abstract syntax tree used to invoke this command.        
     #>    
     param()
-    if ($MyCaller) {
-        $myInv = $MyInvocation
-        $MyCaller.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
-            param($ast) 
-                $ast.Extent.StartLineNumber -eq $myInv.ScriptLineNumber -and
-                $ast.Extent.StartColumnNumber -eq $myInv.OffsetInLine -and 
-                $ast -is [Management.Automation.Language.CommandAst]
-        },$true)
-    }
+    
+    $myInv = $MyInvocation
+    $MyCaller.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
+        param($ast) 
+            $ast.Extent.StartLineNumber -eq $myInv.ScriptLineNumber -and
+            $ast.Extent.StartColumnNumber -eq $myInv.OffsetInLine -and 
+            $ast -is [Management.Automation.Language.CommandAst]
+    },$true)
+
 }
