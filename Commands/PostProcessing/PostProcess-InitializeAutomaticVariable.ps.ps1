@@ -41,8 +41,8 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
         # First, let's find all commands that automatic or magic variables.
         # Let's find all possible commands by wildcards (Automatic?Variable* or Magic?Variable*)
         $allAutomaticVariableCommands = @(
-            $ExecutionContext.SessionState.InvokeCommand.GetCommands('*Automatic?Variable?*','Function,Alias,Cmdlet', $true) -match '^Automatic\p{P}Variable\p{P}'
-            $ExecutionContext.SessionState.InvokeCommand.GetCommands('*Magic?Variable?*','Function,Alias,Cmdlet', $true) -match '^Magic\p{P}Variable\p{P}'
+            $ExecutionContext.SessionState.InvokeCommand.GetCommands('*Automatic?Variable?*','Function,Alias,Cmdlet', $true) -match 'Automatic\p{P}Variable\p{P}'
+            $ExecutionContext.SessionState.InvokeCommand.GetCommands('*Magic?Variable?*','Function,Alias,Cmdlet', $true) -match 'Magic\p{P}Variable\p{P}'
         )
         # Then, let's create a lookup table by the name of the automatic variable
         $allAutomaticVariables = [Ordered]@{}
