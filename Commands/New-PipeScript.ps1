@@ -300,7 +300,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                         $aliases =
                             if ($parameterMetadata.Alias) { $parameterMetadata.Alias }
                             elseif ($parameterMetadata.Aliases) { $parameterMetadata.Aliases }
-                        $parameterHelp =
+                        [string]$parameterHelpText =
                             if ($parameterMetadata.Help) { $parameterMetadata.Help}                            
                         $aliasAttribute = @(foreach ($alias in $aliases) {
                             $alias -replace "'","''"                            
@@ -320,8 +320,8 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             if ($parameterMetadata.Type) {$parameterMetadata.Type }
                             elseif ($parameterMetadata.ParameterType) {$parameterMetadata.ParameterType }
                         $ParametersToCreate[$parameterName] = @(
-                            if ($ParameterHelp) {
-                                $ParameterHelp | embedParameterHelp
+                            if ($ParameterHelpText) {
+                                $ParameterHelpText | embedParameterHelp
                             }
                             if ($parameterAttributeParts) {
                                 "[Parameter($($parameterAttributeParts -join ','))]"
