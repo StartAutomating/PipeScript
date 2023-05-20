@@ -23,6 +23,14 @@ Also Known As:
 ---
 
 
+### Examples
+#### EXAMPLE 1
+
+
+
+---
+
+
 ### Syntax
 ```PowerShell
 PipeScript.Automatic.Variable.MyCaller [<CommonParameters>]
