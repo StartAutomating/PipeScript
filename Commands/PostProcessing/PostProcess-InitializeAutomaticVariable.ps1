@@ -71,7 +71,7 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
                             Write-Error "$automaticVariableCommand end block should not be named"
                         } else {
                             # if it is, inline it's scriptblock (trimmed of some whitespace).
-                            "$($automaticVariableCommand.ScriptBlock.Ast.Body.EndBlock.ToString())" -replace '^\s{0,}' -replace '\s{0,}$'
+                            "$($automaticVariableCommand.ScriptBlock.Ast.Body.EndBlock.ToString())" -replace '^\s{0,}param\(\)' -replace '^\s{0,}' -replace '\s{0,}$'
                         }                
                     }
                     # If we've resolved to a cmdlet
