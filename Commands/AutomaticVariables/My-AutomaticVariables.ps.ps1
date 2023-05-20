@@ -67,22 +67,3 @@ PipeScript.Automatic.Variable function MyCaller {
     param()
     $myCallStack[-1] # Initialize MyCaller
 }
-
-PipeScript.Automatic.Variable function MyCommandAst {
-    <#
-    .SYNOPSIS
-        $MyCommandAst
-    .DESCRIPTION
-        $MyCommandAst is an automatic variable that contains the abstract syntax tree used to invoke this command.        
-    #>    
-    param()
-    
-    $myInv = $MyInvocation
-    $MyCaller.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
-        param($ast) 
-            $ast.Extent.StartLineNumber -eq $myInv.ScriptLineNumber -and
-            $ast.Extent.StartColumnNumber -eq $myInv.OffsetInLine -and 
-            $ast -is [Management.Automation.Language.CommandAst]
-    },$true)
-
-}
