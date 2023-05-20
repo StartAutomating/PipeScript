@@ -1,18 +1,18 @@
 # Declares various 'my' automatic variables
 
-function Automatic.Variable.MyCallstack {
+function PipeScript.Automatic.Variable.MyCallstack {
     <#
     .SYNOPSIS
         $MyCallStack
     .DESCRIPTION
         $MyCallstack is an automatic variable that contains the current callstack.
     #>
-    @(Get-PSCallstack)
+    @(Get-PSCallstack) # Set $MyCallstack
 }
 
 
 
-function Automatic.Variable.MySelf {
+function PipeScript.Automatic.Variable.MySelf {
     <#
     .SYNOPSIS
         $MySelf
@@ -34,7 +34,7 @@ function Automatic.Variable.MySelf {
             }
         } -ArgumentList 10
     #>    
-    $MyInvocation.MyCommand.ScriptBlock
+    $MyInvocation.MyCommand.ScriptBlock # Set $mySelf
 }
 
 
@@ -46,6 +46,10 @@ function Automatic.Variable.MyParameters {
     .DESCRIPTION
         $MyParameters is an automatic variable that is a copy of $psBoundParameters.
         This leaves you more free to change it.
+    .EXAMPLE
+        Invoke-PipeScript -ScriptBlock {
+            $MyParameters
+        }
     #>
     [Ordered]@{} + $PSBoundParameters
 }
@@ -57,10 +61,32 @@ function Automatic.Variable.MyCaller {
     .SYNOPSIS
         $MyCaller
     .DESCRIPTION
-        $MyCaller is an automatic variable that contains the InvocationInfo that called this command.
+        $MyCaller is an automatic variable that contains the CallstackFrame that called this command.
+        Also Known As:
+        * $CallStackPeek
     #>
+    [Alias('Automatic.Variable.CallstackPeek')]
+    param()
    
-$MyCallstack=@(Get-PSCallstack)
- $MyCallstack[-1]
+$myCallStack=@(Get-PSCallstack)
+ $myCallStack[-1] # Initialize MyCaller
+}
+
+
+
+function Automatic.Variable.MyCaller {
+    <#
+    .SYNOPSIS
+        $MyCaller
+    .DESCRIPTION
+        $MyCaller is an automatic variable that contains the CallstackFrame that called this command.
+        Also Known As:
+        * $CallStackPeek
+    #>
+    [Alias('Automatic.Variable.CallstackPeek')]
+    param()
+   
+$myCallStack=@(Get-PSCallstack)
+ $myCallStack[-1] # Initialize MyCaller
 }
 
