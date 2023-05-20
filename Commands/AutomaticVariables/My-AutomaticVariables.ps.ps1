@@ -63,7 +63,7 @@ PipeScript.Automatic.Variable function MyCaller {
 
         * $CallStackPeek
     .EXAMPLE
-        
+        Invoke-PipeScript { $myCaller }
     #>
     [Alias('Automatic.Variable.CallstackPeek')]
     param()
@@ -76,6 +76,8 @@ PipeScript.Automatic.Variable function MyCommandAst {
         $MyCommandAst
     .DESCRIPTION
         $MyCommandAst is an automatic variable that contains the abstract syntax tree used to invoke this command.
+    .EXAMPLE
+        & (Use-PipeScript { $myCommandAst })
     #>    
     param()
     if ($MyCaller) {
