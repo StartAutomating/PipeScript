@@ -10,7 +10,7 @@
     CompanyName       = 'Start-Automating'
     Copyright         = '2022 Start-Automating'
     Author            = 'James Brundage'
-    FunctionsToExport = 'Export-Pipescript','Get-PipeScript','Get-Transpiler','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript','PipeScript.Optimizer.ConsolidateAspects','PipeScript.Automatic.Variable.MyCallstack','PipeScript.Automatic.Variable.MySelf','Automatic.Variable.MyParameters','Automatic.Variable.MyCaller','Automatic.Variable.MyCaller','PipeScript.PostProcess.InitializeAutomaticVariables'
+    FunctionsToExport = 'Export-Pipescript','Get-PipeScript','Get-Transpiler','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript','PipeScript.Optimizer.ConsolidateAspects','PipeScript.Automatic.Variable.MyCallstack','PipeScript.Automatic.Variable.MySelf','PipeScript.Automatic.Variable.MyParameters','PipeScript.Automatic.Variable.MyCaller','PipeScript.PostProcess.InitializeAutomaticVariables'
     PrivateData = @{
         FileTypes = @{
             Transpiler = @{
