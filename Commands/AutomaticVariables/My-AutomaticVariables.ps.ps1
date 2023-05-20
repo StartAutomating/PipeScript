@@ -36,7 +36,7 @@ PipeScript.Automatic.Variable function MySelf {
     $MyInvocation.MyCommand.ScriptBlock # Set $mySelf
 }
 
-Automatic.Variable function MyParameters {
+PipeScript.Automatic.Variable function MyParameters {
     <#
     .SYNOPSIS
         $MyParameters
@@ -52,7 +52,7 @@ Automatic.Variable function MyParameters {
     [Ordered]@{} + $PSBoundParameters
 }
 
-Automatic.Variable function MyCaller {
+PipeScript.Automatic.Variable function MyCaller {
     <#
     .SYNOPSIS
         $MyCaller
@@ -68,18 +68,21 @@ Automatic.Variable function MyCaller {
     $myCallStack[-1] # Initialize MyCaller
 }
 
-Automatic.Variable function MyCaller {
+PipeScript.Automatic.Variable function MyCommandAst {
     <#
     .SYNOPSIS
-        $MyCaller
+        $MyCommandAst
     .DESCRIPTION
-        $MyCaller is an automatic variable that contains the CallstackFrame that called this command.
-
-        Also Known As:
-
-        * $CallStackPeek
-    #>
-    [Alias('Automatic.Variable.CallstackPeek')]
+        $MyCommandAst is an automatic variable that contains the abstract syntax tree used to invoke this command.        
+    #>    
     param()
-    $myCallStack[-1] # Initialize MyCaller
+    if ($MyCaller) {
+        $myInv = $MyInvocation
+        $MyCaller.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
+            param($ast) 
+                $ast.Extent.StartLineNumber -eq $myInv.ScriptLineNumber -and
+                $ast.Extent.StartColumnNumber -eq $myInv.OffsetInLine -and 
+                $ast -is [Management.Automation.Language.CommandAst]
+        },$true)
+    }
 }
