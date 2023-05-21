@@ -1,5 +1,6 @@
 
-$callstackPeek=$($myCallStack[-1])
+$callstackPeek=$($myCallStack=@(Get-PSCallstack)
+ $myCallStack[-1])
 :ToIncludeFiles foreach ($file in (Get-ChildItem -Path "$psScriptRoot" -Filter "*-*" -Recurse)) {
     if ($file.Extension -ne '.ps1')      { continue }  # Skip if the extension is not .ps1
     foreach ($exclusion in '\.[^\.]+\.ps1$') {
