@@ -88,10 +88,27 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
             $ScriptBlock = [scriptblock]::Create($FunctionDefinitionAst.Body -replace '^\{' -replace '\}$')
         }
         # Find all Variables
-        $allVariables = @($ScriptBlock | Search-PipeScript -AstType VariableExpressionAst | Select-Object -ExpandProperty Result)
+        $allVariables = @($ScriptBlock | Search-PipeScript -AstType VariableExpressionAst -Recurse | Select-Object -ExpandProperty Result)
         
         # If there were no variables in this script block, return.
         if (-not $allVariables) { return }
+        if ($psCmdlet.ParameterSetName -eq 'ScriptBlock') {
+            $allVariables = @(:nextVariable foreach ($var in $allVariables) {
+                $varParent = $var.Parent
+                
+                while ($varParent) {
+                    if ($varParent -is [Management.Automation.Language.FunctionDefinitionAst]) {
+                        continue nextVariable
+                    }
+                    if ($varParent -is [Management.Automation.Language.AssignmentStatementAst] -and 
+                        $varParent.Left -eq $var) {
+                        continue nextVariable
+                    }
+                    $varParent = $varParent.Parent    
+                }
+                $var                
+            })
+        }
         # Let's collect all of the variables we need to define
         $prependDefinitions = [Ordered]@{}
         foreach ($var in $allVariables) {
