@@ -69,7 +69,9 @@ function PipeScript.Automatic.Variable.MyCaller {
     #>
     [Alias('Automatic.Variable.CallstackPeek')]
     param()
-    $myCallStack[-1] # Initialize MyCaller
+   
+$myCallStack=@(Get-PSCallstack)
+ $myCallStack[-1] # Initialize MyCaller
 }
 
 
@@ -84,7 +86,10 @@ function PipeScript.Automatic.Variable.MyCommandAst {
         & (Use-PipeScript { $myCommandAst })
     #>    
     param()
-    if ($MyCaller) {
+   
+$MyCaller=$($myCallStack=@(Get-PSCallstack)
+     $myCallStack[-1])
+ if ($MyCaller) {
         $myInv = $MyInvocation
         $MyCaller.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
             param($ast) 
