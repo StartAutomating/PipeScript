@@ -12,7 +12,7 @@ $FunctionDefinition
 )
 
 begin {
-    $pipeScriptCommands = @($ExecutionContext.SessionState.InvokeCommand.GetCommands('PipeScript*', 'Function,Alias', $true)) -match '^PipeScript\.(?>Pre\|Post|Analyze|Optimize)'
+    $pipeScriptCommands = @($ExecutionContext.SessionState.InvokeCommand.GetCommands('PipeScript*', 'Function,Alias', $true)) -match '^PipeScript\.(?>Pre|Post|Analyze|Optimize)'
     $preCommands = @()
     $postCommands = @()
     foreach ($pipeScriptCommand in $pipeScriptCommands) {
