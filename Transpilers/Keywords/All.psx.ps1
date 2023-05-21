@@ -13,7 +13,7 @@
 .EXAMPLE
     function mallard([switch]$Quack) { $Quack }
     Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Unique
-    . {all functions that quack are ducks}.Transpile()
+    all functions that quack are ducks
     Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Unique
 .EXAMPLE
     
@@ -102,7 +102,7 @@ $Where,
 
 # The action that will be run
 [Parameter(ValueFromPipelineByPropertyName,Position=2)]
-[Alias('Is','Are','Foreach','Foreach-Object','Can','Could','Should')]
+[Alias('Is','Are','Foreach','Foreach-Object','Can','Could','Should', 'Is A', 'Is An', 'Are a', 'Are an')]
 $For,
 
 # The way to sort data before it is outputted.
