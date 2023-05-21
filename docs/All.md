@@ -36,7 +36,7 @@ all that glitters
 ```PowerShell
 function mallard([switch]$Quack) { $Quack }
 Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Unique
-. {all functions that quack are ducks}.Transpile()
+all functions that quack are ducks
 Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Unique
 ```
 
@@ -220,9 +220,9 @@ The action that will be run
 
 
 
-|Type      |Required|Position|PipelineInput        |Aliases                                                               |
-|----------|--------|--------|---------------------|----------------------------------------------------------------------|
-|`[Object]`|false   |3       |true (ByPropertyName)|Is<br/>Are<br/>Foreach<br/>Foreach-Object<br/>Can<br/>Could<br/>Should|
+|Type      |Required|Position|PipelineInput        |Aliases                                                                                                       |
+|----------|--------|--------|---------------------|--------------------------------------------------------------------------------------------------------------|
+|`[Object]`|false   |3       |true (ByPropertyName)|Is<br/>Are<br/>Foreach<br/>Foreach-Object<br/>Can<br/>Could<br/>Should<br/>Is A<br/>Is An<br/>Are a<br/>Are an|
 
 
 
