@@ -119,44 +119,44 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
                 $prependDefinitions[$variableName] = $allAutomaticVariables[$variableName] | GetAutomaticVariableDefinition                    
             }
         }
-        # If we neeed to prepend anything
-        if ($prependDefinitions.Count) {
-            # make it all one big string
-            $toPrepend = 
-                foreach ($toPrepend in $prependDefinitions.GetEnumerator()) {
-                    $variableName  = $toPrepend.Key
-                    $variableValue = $toPrepend.Value
-                    if ($variableValue -notmatch '^\@[\(\{\[]' -or 
-                        $variableValue -match '[\r\n]') {
-                        $variableValue = "`$($variableValue)"
-                    }
-                    # Define the automatic variable by name
-                    $(if ($variableName -match '\p{P}') { # (if it had punctuation)
-                        "`${$($variableName)}" # enclose in brackets
-                    } else { # otherwise
-                        "`$$($variableName)" # just use $VariableName
-                    }) + '=' + "$variableValue" # prepend the definition of the function.
-                    # Why?  Because this way, the automatic variable is declared at the same scope as the ScriptBlock.
-                    # (By the way, this means you cannot have _any_ parameters on an automatic variable)
+        # If we don't need to prepend anything, return
+        if (-not $prependDefinitions.Count) { return }
+        
+        # Otherwise, make it all one big string.
+        $toPrepend = 
+            foreach ($toPrepend in $prependDefinitions.GetEnumerator()) {
+                $variableName  = $toPrepend.Key
+                $variableValue = $toPrepend.Value
+                if ($variableValue -notmatch '^\@[\(\{\[]' -or 
+                    $variableValue -match '[\r\n]') {
+                    $variableValue = "`$($variableValue)"
                 }
-            
-            # Turn our big string into a script block
-            $toPrepend = [ScriptBlock]::create($toPrepend)
-            # and prepend it to this script block.            
-            $updatedScriptBlock = Update-ScriptBlock -ScriptBlock $scriptBlock -Prepend $toPrepend
-            switch ($psCmdlet.ParameterSetName) {
-                ScriptBlock {
-                    $updatedScriptBlock
-                }
-                FunctionDefinition {
-                    [scriptblock]::Create(
-                        @(
-                            "$(if ($FunctionDefinitionAst.IsFilter) { "filter"} else { "function"}) $($functionDefinition.Name) {"
-                            $UpdatedScriptBlock
-                            "}"
-                        ) -join [Environment]::NewLine
-                    ).Ast.EndBlock.Statements[0]
-                }
+                # Define the automatic variable by name
+                $(if ($variableName -match '\p{P}') { # (if it had punctuation)
+                    "`${$($variableName)}" # enclose in brackets
+                } else { # otherwise
+                    "`$$($variableName)" # just use $VariableName
+                }) + '=' + "$variableValue" # prepend the definition of the function.
+                # Why?  Because this way, the automatic variable is declared at the same scope as the ScriptBlock.
+                # (By the way, this means you cannot have _any_ parameters on an automatic variable)
+            }
+        
+        # Turn our big string into a script block
+        $toPrepend = [ScriptBlock]::create($toPrepend)
+        # and prepend it to this script block.            
+        $updatedScriptBlock = Update-ScriptBlock -ScriptBlock $scriptBlock -Prepend $toPrepend
+        switch ($psCmdlet.ParameterSetName) {
+            ScriptBlock {
+                $updatedScriptBlock
+            }
+            FunctionDefinition {
+                [scriptblock]::Create(
+                    @(
+                        "$(if ($FunctionDefinitionAst.IsFilter) { "filter"} else { "function"}) $($functionDefinition.Name) {"
+                        $UpdatedScriptBlock
+                        "}"
+                    ) -join [Environment]::NewLine
+                ).Ast.EndBlock.Statements[0]
             }
         }
     }
