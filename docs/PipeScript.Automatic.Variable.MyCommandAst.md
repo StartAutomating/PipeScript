@@ -14,7 +14,7 @@ $MyCommandAst
 
 ### Description
 
-$MyCommandAst is an automatic variable that contains the abstract syntax tree used to invoke this command.
+$MyCommandAst contains the abstract syntax tree used to invoke this command.
 
 
 
