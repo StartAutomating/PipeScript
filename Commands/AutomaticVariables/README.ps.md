@@ -2,7 +2,7 @@ Automatic Variables Commands allow the definition of an automatic variable.
 
 Instead of these commands being run directly, they will be embedded inline.
 
-Automatic Variables are embedded by [PostProcess.InitializeAutomaticVariable](docs/PostProcess.InitializeAutomaticVariable.md).
+Automatic Variables are embedded in post processing by [PostProcess.InitializeAutomaticVariable](docs/PostProcess.InitializeAutomaticVariable.md).
 
 ~~~PipeScript{
     # Then, let's create a lookup table by the name of the automatic variable
