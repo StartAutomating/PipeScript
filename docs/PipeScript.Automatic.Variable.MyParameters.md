@@ -14,7 +14,7 @@ $MyParameters
 
 ### Description
 
-$MyParameters is an automatic variable that is a copy of $psBoundParameters.
+$MyParameters contains a copy of $psBoundParameters.
 This leaves you more free to change it.
 
 
