@@ -14,7 +14,7 @@ $IsPipedTo
 
 ### Description
 
-$IsPipedTo is an automatic variable that determines if a command is being piped to.
+$IsPipedTo determines if a command is being piped to.
 
 
 
