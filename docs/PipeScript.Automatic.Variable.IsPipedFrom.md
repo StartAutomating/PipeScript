@@ -14,7 +14,7 @@ $IsPipedFrom
 
 ### Description
 
-$IsPipedFrom is an automatic variable that determines if the pipeline continues after this command.
+$IsPipedFrom determines if the pipeline continues after this command.
 
 
 
@@ -29,7 +29,7 @@ $IsPipedFrom is an automatic variable that determines if the pipeline continues 
 
 #### EXAMPLE 2
 ```PowerShell
-& (Use-PipeScript { $IsPipedFrom }) | Foreach-Object { $_ } # Should -Be $False
+& (Use-PipeScript { $IsPipedFrom }) | Foreach-Object { $_ } # Should -Be $true
 ```
 
 
