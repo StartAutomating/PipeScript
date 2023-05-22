@@ -14,7 +14,7 @@ PipeScript.Automatic.Variable function MySelf {
     .SYNOPSIS
         $MySelf
     .DESCRIPTION
-        $MySelf is an automatic variable that contains the currently executing ScriptBlock.
+        $MySelf contains the currently executing ScriptBlock.
 
         A Command can & $myself to use anonymous recursion.
     .EXAMPLE
@@ -41,7 +41,7 @@ PipeScript.Automatic.Variable function MyParameters {
     .SYNOPSIS
         $MyParameters
     .DESCRIPTION
-        $MyParameters is an automatic variable that is a copy of $psBoundParameters.
+        $MyParameters contains a copy of $psBoundParameters.
 
         This leaves you more free to change it.
     .EXAMPLE
@@ -57,11 +57,7 @@ PipeScript.Automatic.Variable function MyCaller {
     .SYNOPSIS
         $MyCaller
     .DESCRIPTION
-        $MyCaller is an automatic variable that contains the CallstackFrame that called this command.
-
-        Also Known As:
-
-        * $CallStackPeek
+        $MyCaller (aka $CallStackPeek) contains the CallstackFrame that called this command.    
     .EXAMPLE
         Invoke-PipeScript { $myCaller }
     #>
@@ -75,7 +71,7 @@ PipeScript.Automatic.Variable function MyCommandAst {
     .SYNOPSIS
         $MyCommandAst
     .DESCRIPTION
-        $MyCommandAst is an automatic variable that contains the abstract syntax tree used to invoke this command.
+        $MyCommandAst contains the abstract syntax tree used to invoke this command.
     .EXAMPLE
         & (Use-PipeScript { $myCommandAst })
     #>    

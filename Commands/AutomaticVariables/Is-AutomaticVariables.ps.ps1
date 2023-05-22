@@ -3,7 +3,7 @@ PipeScript.Automatic.Variable function IsPipedTo {
     .SYNOPSIS
         $IsPipedTo
     .DESCRIPTION
-        $IsPipedTo is an automatic variable that determines if a command is being piped to.
+        $IsPipedTo determines if a command is being piped to.
     .EXAMPLE
         & (Use-PipeScript { $IsPipedTo }) # Should -Be $False
     .EXAMPLE
@@ -19,11 +19,11 @@ PipeScript.Automatic.Variable function IsPipedFrom {
     .SYNOPSIS
         $IsPipedFrom
     .DESCRIPTION
-        $IsPipedFrom is an automatic variable that determines if the pipeline continues after this command.
+        $IsPipedFrom determines if the pipeline continues after this command.
     .EXAMPLE
         & (Use-PipeScript { $IsPipedFrom }) # Should -Be $False
     .EXAMPLE
-        & (Use-PipeScript { $IsPipedFrom }) | Foreach-Object { $_ } # Should -Be $False
+        & (Use-PipeScript { $IsPipedFrom }) | Foreach-Object { $_ } # Should -Be $true
     #>    
     param()
     $myInvocation.PipelinePosition -lt $myInvocation.PipelineLength
