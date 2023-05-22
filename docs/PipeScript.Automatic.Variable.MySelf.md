@@ -14,7 +14,7 @@ $MySelf
 
 ### Description
 
-$MySelf is an automatic variable that contains the currently executing ScriptBlock.
+$MySelf contains the currently executing ScriptBlock.
 A Command can & $myself to use anonymous recursion.
 
 
