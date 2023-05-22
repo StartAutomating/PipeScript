@@ -317,6 +317,20 @@ $decamelCase = [Regex]::new('(?&lt;=[a-z])(?=[A-Z])')
     </Members>
   </Type>
   <Type>
+    <Name>Automatic.Variable.Command</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>VariableName</Name>
+        <GetScriptBlock>
+                        $this -replace '(?&gt;Magic|Automatic)\p{P}Variable\p{P}' -replace 
+    '^(?&gt;PowerShell|PipeScript)' -replace
+    '^\p{P}' -replace '\p{P}$'
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
     <Name>System.Management.Automation.Language.CommandAst</Name>
     <Members>
       <AliasProperty>
