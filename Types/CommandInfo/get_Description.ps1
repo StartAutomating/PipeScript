@@ -1,4 +1,4 @@
-if ($this -is [Manangement.Automation.AliasInfo]) {
+if ($this -is [Management.Automation.AliasInfo]) {
     $resolveThis = $this
     while ($resolveThis.ResolvedCommand) {
         $resolveThis = $resolveThis.ResolvedCommand
