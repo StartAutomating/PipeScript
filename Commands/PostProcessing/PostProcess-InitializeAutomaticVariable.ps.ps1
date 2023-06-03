@@ -123,9 +123,14 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
         # Let's collect all of the variables we need to define
         $prependDefinitions = [Ordered]@{}
         foreach ($var in $allVariables) {
+            $assigned = $var.GetAssignments()                                    
             $variableName = "$($var.VariablePath)"
-            # If we have an automatic variable by that variable name
+            # If we have an automatic variable by that variable name            
             if ($allAutomaticVariables[$variableName]) {
+                # see if it's assigned anywhere
+                $assigned = @($var.GetAssignments())
+                # if it was, continue if that "anywhere" was before here.
+                continue if ($assigned -and $assigned.Extent.StartOffset -le $var.Extent.StartOffset)
                 # stringify it's script block and add it to our dictionary of prepends
                 $prependDefinitions[$variableName] = $allAutomaticVariables[$variableName] | GetAutomaticVariableDefinition                    
             }
@@ -133,11 +138,14 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
 
         # If we don't need to prepend anything, return
         return if -not $prependDefinitions.Count
+
+        $AlreadyPrepended = @()
         
         # Otherwise, make it all one big string.
         $toPrepend = 
-            foreach ($toPrepend in $prependDefinitions.GetEnumerator()) {
+            foreach ($toPrepend in $prependDefinitions.GetEnumerator()) {                
                 $variableName  = $toPrepend.Key
+                if ($AlreadyPrepended -contains $variableName) { continue }
                 $variableValue = $toPrepend.Value
                 if ($variableValue -notmatch '^\@[\(\{\[]' -or 
                     $variableValue -match '[\r\n]') {
@@ -151,6 +159,7 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
                 }) + '=' + "$variableValue" # prepend the definition of the function.
                 # Why?  Because this way, the automatic variable is declared at the same scope as the ScriptBlock.
                 # (By the way, this means you cannot have _any_ parameters on an automatic variable)
+                $AlreadyPrepended += $variableName
             }
         
         # Turn our big string into a script block
