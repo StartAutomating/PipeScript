@@ -33,11 +33,11 @@ foreach ($parent in $this.GetLineage()) {
                 $ast.Left.Find({
                     param($leftAst)
                     $leftAst -is [Management.Automation.Language.VariableExpressionAST] -and
-                    $leftAst.Extent.ToString() -eq $astVariableName
+                    "$leftAst" -eq $astVariableName
                 }, $false)
             ) -or (
                 $ast -is [Management.Automation.Language.ParameterAst] -and 
-                $ast.Name.ToString() -eq $astVariableName
+                "$($ast.Name)" -eq $astVariableName
             )
 
         if ($IsAssignment -and -not $variableFoundAt[$ast.Extent.StartOffset]) {

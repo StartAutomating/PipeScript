@@ -100,14 +100,5 @@ if ($closestAssignment.Right -is [Management.Automation.Language.PipelineAst]) {
     }
 }
 
-
-
-
-
-
 # If we don't know, return nothing
 return
-
-
-
-
