@@ -1,4 +1,4 @@
-#region Piecemeal [ 0.3.10 ] : Easy Extensible Plugins for PowerShell
+#region Piecemeal [ 0.4 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
 # Install-Piecemeal -ExtensionNoun 'PipeScript' -ExtensionPattern '\.psx\.ps1{0,1}$','\.ps1{0,1}\.(?<ext>[^.]+$)','\.ps1{0,1}$','^PipeScript.' -ExtensionTypeName 'PipeScript' -OutputPath '/home/runner/work/PipeScript/PipeScript/Commands/Get-PipeScript.ps1'
@@ -1040,12 +1040,16 @@ function Get-PipeScript
 
         if ($Force) {
             $script:PipeScripts  = $null
+            $script:PipeScriptsByName    = $null
             $script:AllCommands = @()
         }
         if (-not $script:PipeScripts)
         {
-            $script:PipeScriptsFromFiles = [Ordered]@{}
-            $script:PipeScriptsFileTimes = [Ordered]@{}
+            $script:PipeScriptsFromFiles     = [Ordered]@{}
+            $script:PipeScriptsFileTimes     = [Ordered]@{}
+            $script:PipeScriptsByName        = [Ordered]@{}
+            $script:PipeScriptsByDisplayName = [Ordered]@{}
+            $script:PipeScriptsByPattern     = [Ordered]@{}
             $script:PipeScripts =
                 @(@(
                 #region Find PipeScript in Loaded Modules
@@ -1091,6 +1095,36 @@ function Get-PipeScript
                 $ExecutionContext.SessionState.InvokeCommand.GetCommands('*', 'Function,Alias',$true) -match $extensionFullRegex
                 #endregion Find PipeScript in Loaded Commands
                 ) | Select-Object -Unique | Sort-Object Rank, Name)
+
+            foreach ($extCmd in $script:PipeScripts) {
+                if (-not $script:PipeScriptsByName[$extCmd.Name]) {
+                    $script:PipeScriptsByName[$extCmd.Name] = $extCmd
+                }
+                else {
+                    $script:PipeScriptsByName[$extCmd.Name] = @($script:PipeScriptsByName[$extCmd.Name]) + $extCmd
+                }
+                if ($extCmd.DisplayName) {
+                    if (-not $script:PipeScriptsByDisplayName[$extCmd.DisplayName]) {
+                        $script:PipeScriptsByDisplayName[$extCmd.DisplayName] = $extCmd
+                    }
+                    else {
+                        $script:PipeScriptsByDisplayName[$extCmd.DisplayName] = @($script:PipeScriptsByDisplayName[$extCmd.DisplayName]) + $extCmd
+                    }   
+                }
+                $ExtensionCommandAliases = @($ExtensionCommand.Attributes.AliasNames)
+                $ExtensionCommandAliasRegexes = @($ExtensionCommandAliases -match '^/' -match '/$')
+                if ($ExtensionCommandAliasRegexes) {
+                    foreach ($extensionAliasRegex in $ExtensionCommandAliases) {
+                        $regex = [Regex]::New($extensionAliasRegex -replace '^/' -replace '/$', 'IgnoreCase,IgnorePatternWhitespace')
+                        if (-not $script:PipeScriptsByPattern[$regex]) {
+                            $script:PipeScriptsByPattern[$regex] = $extCmd
+                        } else {
+                            $script:PipeScriptsByPattern[$regex] = @($script:PipeScriptsByPattern[$regex]) + $extCmd
+                        }
+                    }
+                }
+                
+            }
         }
         #endregion Find Extensions
     }
@@ -1098,7 +1132,7 @@ function Get-PipeScript
     process {
 
         if ($PipeScriptPath) {
-            @(foreach ($_ in Get-ChildItem -Recurse -Path $PipeScriptPath -File) {
+            @(foreach ($_ in Get-ChildItem -Recurse:$($PipeScriptPath -notmatch '^\.[\\/]') -Path $PipeScriptPath -File) {
                 if ($_.Name -notmatch $extensionFullRegex) { continue }
                 if ($CommandName -or $PipeScriptName) {
                     ConvertToExtension $_ |
@@ -1116,14 +1150,34 @@ function Get-PipeScript
                 # This section can be updated by using Install-Piecemeal -ForeachObject
                 #endregion Install-Piecemeal -ForeachObject
         } elseif ($CommandName -or $PipeScriptName) {
-            $script:PipeScripts |
-                . WhereExtends $CommandName |                
-                OutputExtension
+            if (-not $CommandName -and -not $like -and -not $Match) {
+                foreach ($exn in $PipeScriptName) {
+                    if ($script:PipeScriptsByName[$exn]) {
+                        $script:PipeScriptsByName[$exn] | OutputExtension
+                    }
+                    if ($script:PipeScriptsByDisplayName[$exn]) {
+                        $script:PipeScriptsByDisplayName[$exn] | OutputExtension
+                    }
+                    if ($script:PipeScriptsByPattern.Count) {
+                        foreach ($patternAndValue in $script:PipeScriptsByPattern.GetEnumerator()) {
+                            if ($patternAndValue.Key.IsMatch($exn)) {
+                                $patternAndValue.Value | OutputExtension
+                            }
+                        }
+                        $script:PipeScriptsByDisplayName[$exn]
+                    }
+                }                
+            } else {
+                $script:PipeScripts |
+                    . WhereExtends $CommandName |
+                    OutputExtension
+            }
+            
         } else {
             $script:PipeScripts | 
                 OutputExtension
         }
     }
 }
-#endregion Piecemeal [ 0.3.10 ] : Easy Extensible Plugins for PowerShell
+#endregion Piecemeal [ 0.4 ] : Easy Extensible Plugins for PowerShell
 
