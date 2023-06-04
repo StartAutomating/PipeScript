@@ -70,7 +70,15 @@ return $this
       <ScriptMethod>
         <Name>GetLineage</Name>
         <Script>
-                        $thisParent = $this.Parent
+                        &lt;#
+.SYNOPSIS
+    Gets AST Lineage
+.DESCRIPTION
+    Gets the Lineage of an Abstract Syntax Tree element.
+    
+    The Lineage is all of the Abstract Syntax Tree's parents.
+#&gt;
+$thisParent = $this.Parent
 while ($thisParent) {
     $thisParent
     $thisParent  = $thisParent.Parent
@@ -322,7 +330,13 @@ $decamelCase = [Regex]::new('(?&lt;=[a-z])(?=[A-Z])')
       <ScriptProperty>
         <Name>VariableName</Name>
         <GetScriptBlock>
-                        $this -replace '(?&gt;Magic|Automatic)\p{P}Variable\p{P}' -replace 
+                        &lt;#
+.SYNOPSIS
+    Gets the automatic variable name
+.DESCRIPTION
+    Gets the name of an automatic variable that is defined in an Automatic?Variable* command.
+#&gt;
+$this -replace '(?&gt;Magic|Automatic)\p{P}Variable\p{P}' -replace 
     '^(?&gt;PowerShell|PipeScript)' -replace
     '^\p{P}' -replace '\p{P}$'
 
