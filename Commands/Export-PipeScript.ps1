@@ -22,7 +22,7 @@ function Export-Pipescript {
 
     process {
         if ($env:GITHUB_WORKSPACE) {
-            "##group##Discovering files", "from: $InputPath" | Out-Host
+            "::group::Discovering files", "from: $InputPath" | Out-Host
         }
         $filesToBuild = 
             @(if (-not $InputPath) {
@@ -38,13 +38,17 @@ function Export-Pipescript {
             })
 
         if ($env:GITHUB_WORKSPACE) {
-            "$($filesToBuild.Length) files to build" | Out-Host
-            "##endgroup##"
+            "$($filesToBuild.Length) files to built" | Out-Host
+            "::endgroup::" | Out-Host
         }
         
         $buildStarted = [DateTime]::Now
         $alreadyBuilt = [Ordered]@{}
         $filesToBuildCount, $filesToBuildTotal, $filesToBuildID  = 0, $filesToBuild.Length, $(Get-Random)
+
+        if ($env:GITHUB_WORKSPACE) {
+            "::group::Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" | Out-Host                
+        }
         foreach ($buildFile in $filesToBuild) {
             
             $ThisBuildStartedAt = [DateTime]::Now                
@@ -53,8 +57,11 @@ function Export-Pipescript {
                 $FilesToBuildCount++
                 $FilesToBuildCount * 100 / $filesToBuildTotal 
             ) -id $filesToBuildID
-
+            
             if ($alreadyBuilt[$buildFile.Source]) { continue }
+
+
+
 
             $buildFileTemplate = $buildFile.Template
             if ($buildFileTemplate -and $buildFile.PipeScriptType -ne 'Template') {
@@ -71,14 +78,26 @@ function Export-Pipescript {
                 Where-Object TimeGenerated -gt $ThisBuildStartedAt |
                 Where-Object SourceIdentifier -Like '*PipeScript*'
             
-            try {
-                Invoke-PipeScript $buildFile.Source
-            } catch {
-                $ex = $_
-                Write-Error -ErrorRecord $ex
-            }
+            $FileBuildStarted = [datetime]::now
+            $buildOutput = 
+                try {
+                    Invoke-PipeScript $buildFile.Source
+                } catch {
+                    $ex = $_
+                    Write-Error -ErrorRecord $ex
+                }
 
+            if ($buildOutput) {
+                if ($env:GITHUB_WORKSPACE) {
+                    "$($buildFile.Source) [$([datetime]::now - $FileBuildStarted)]" | Out-Host
+                }
+                $buildOutput
+            }
+            
             $alreadyBuilt[$buildFile.Source] = $true
+        }
+        if ($env:GITHUB_WORKSPACE) {
+            "::endgroup::Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal] : $($buildFile.Source)" | Out-Host                
         }
 
         $BuildTime = [DateTime]::Now - $buildStarted
