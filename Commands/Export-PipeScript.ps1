@@ -38,7 +38,8 @@ function Export-Pipescript {
             })
 
         if ($env:GITHUB_WORKSPACE) {
-            "$($filesToBuild.Length) files to built" | Out-Host
+            "$($filesToBuild.Length) files to build:" | Out-Host
+            $filesToBuild.FullName -join [Environment]::NewLine | Out-Host
             "::endgroup::" | Out-Host
         }
         
@@ -70,6 +71,12 @@ function Export-Pipescript {
                 } catch {
                     $ex = $_
                     Write-Error -ErrorRecord $ex
+                    if ($env:GITHUB_WORKSPACE) {
+                        $fileAndLine = @(@($ex.ScriptStackTrace -split [Environment]::newLine)[-1] -split ',\s',2)[-1]
+                        $file, $line = $fileAndLine -split ':\s\D+\s', 2
+                        
+                        "::error file=$File,line=$line::$($ex.Exception.Message)" | Out-Host
+                    }
                 }
                 $alreadyBuilt[$buildFileTemplate.Source] = $true
             }
@@ -102,11 +109,12 @@ function Export-Pipescript {
             
             $alreadyBuilt[$buildFile.Source] = $true
         }
+        $BuildTime = [DateTime]::Now - $buildStarted
         if ($env:GITHUB_WORKSPACE) {
+            "$filesToBuildTotal in $($BuildTime)" | Out-Host
             "::endgroup::Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal] : $($buildFile.Source)" | Out-Host                
         }
-
-        $BuildTime = [DateTime]::Now - $buildStarted
+        
         Write-Progress "Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" "Finished In $($BuildTime) " -Completed -id $filesToBuildID
     }
 }
