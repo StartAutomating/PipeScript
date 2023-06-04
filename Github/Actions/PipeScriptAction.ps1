@@ -166,6 +166,8 @@ if (-not $SkipBuild) {
     
     $buildOutputFiles = @(Build-Pipescript -InputPath $env:GITHUB_WORKSPACE -ErrorVariable pipeScriptBuildErrors)
     if ($buildOutputFiles) {
+        "::notice:: $($buildOutputFiles.Length) files outputted" | Out-Host        
+        "$($buildOutputFiles.FullName -join [Environment]::newLine)" | Out-Host
         $buildOutputFiles |
             . $processScriptOutput  | 
             Out-Host
@@ -173,6 +175,7 @@ if (-not $SkipBuild) {
 }
 
 if ($pipeScriptBuildErrors) {
+    "There were build errors" | Out-Host
     "::error::$($pipeScriptBuildErrors | Out-String)" | Out-Host
     $pipeScriptBuildErrors
     exit 1
