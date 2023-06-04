@@ -90,7 +90,13 @@ function Export-Pipescript {
             if ($buildOutput) {
                 if ($env:GITHUB_WORKSPACE) {
                     "$($buildFile.Source) [$([datetime]::now - $FileBuildStarted)]" | Out-Host
+                    if ($buildOutput -is [Management.Automation.ErrorRecord]) {
+                        $buildOutput | Out-Host
+                    } else {
+                        $buildOutput.FullName | Out-Host
+                    }
                 }
+                
                 $buildOutput
             }
             
