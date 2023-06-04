@@ -1,4 +1,4 @@
-#region Piecemeal [ 0.4 ] : Easy Extensible Plugins for PowerShell
+#region Piecemeal [ 0.4.1 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
 # Install-Piecemeal -ExtensionNoun 'Transpiler' -ExtensionPattern '\.psx\.ps1$','^PipeScript\p{P}Transpiler\p{P}(?!(?>format|types|tests)\p{P})','^psx\p{P}' -ExtensionTypeName 'PipeScript.Transpiler' -OutputPath '/home/runner/work/PipeScript/PipeScript/Commands/Get-Transpiler.ps1'
@@ -612,6 +612,8 @@ function Get-Transpiler
 
                     $ExtensionDynamicParameters = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
                     $Extension = $this
+                    $ExtensionMetadata = $Extension -as [Management.Automation.CommandMetaData]
+                    if (-not $ExtensionMetadata) { return $ExtensionDynamicParameters }
 
                     :nextDynamicParameter foreach ($in in @(($Extension -as [Management.Automation.CommandMetaData]).Parameters.Keys)) {
                         $attrList = [Collections.Generic.List[Attribute]]::new()
@@ -1111,15 +1113,25 @@ function Get-Transpiler
                         $script:TranspilersByDisplayName[$extCmd.DisplayName] = @($script:TranspilersByDisplayName[$extCmd.DisplayName]) + $extCmd
                     }   
                 }
-                $ExtensionCommandAliases = @($ExtensionCommand.Attributes.AliasNames)
-                $ExtensionCommandAliasRegexes = @($ExtensionCommandAliases -match '^/' -match '/$')
+                $ExtensionCommandAliases = @($extCmd.Attributes.AliasNames)
+                $ExtensionCommandAliasRegexes  = @($ExtensionCommandAliases -match '^/' -match '/$')
+                $ExtensionCommandNormalAliases = @($ExtensionCommandAliases -notmatch '^/')
                 if ($ExtensionCommandAliasRegexes) {
-                    foreach ($extensionAliasRegex in $ExtensionCommandAliases) {
+                    foreach ($extensionAliasRegex in $ExtensionCommandAliasRegexes) {
                         $regex = [Regex]::New($extensionAliasRegex -replace '^/' -replace '/$', 'IgnoreCase,IgnorePatternWhitespace')
                         if (-not $script:TranspilersByPattern[$regex]) {
                             $script:TranspilersByPattern[$regex] = $extCmd
                         } else {
                             $script:TranspilersByPattern[$regex] = @($script:TranspilersByPattern[$regex]) + $extCmd
+                        }
+                    }
+                }
+                if ($ExtensionCommandNormalAliases) {
+                    foreach ($extensionAlias in $ExtensionCommandNormalAliases) {
+                        if (-not $script:TranspilersByName[$extensionAlias]) {
+                            $script:TranspilersByName[$extensionAlias] = $extCmd
+                        } else {
+                            $script:TranspilersByName[$extensionAlias] = @($script:TranspilersByName[$extensionAlias]) + $extCmd
                         }
                     }
                 }
@@ -1179,5 +1191,5 @@ function Get-Transpiler
         }
     }
 }
-#endregion Piecemeal [ 0.4 ] : Easy Extensible Plugins for PowerShell
+#endregion Piecemeal [ 0.4.1 ] : Easy Extensible Plugins for PowerShell
 
