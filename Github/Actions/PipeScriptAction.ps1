@@ -161,18 +161,22 @@ $PipeScriptTook = [Datetime]::Now - $PipeScriptStart
 "::notice:: .PipeScript ran in $($PipeScriptTook.TotalMilliseconds) ms" | Out-Host
 
 $BuildPipeScriptStart = [DateTime]::Now
+$pipeScriptBuildErrors = $null
 if (-not $SkipBuild) {
-    $pipeScriptBuildErrors = $null
+    
     $buildOutputFiles = @(Build-Pipescript -InputPath $env:GITHUB_WORKSPACE -ErrorVariable pipeScriptBuildErrors)
-    if ($pipeScriptBuildErrors) {
-        $pipeScriptBuildErrors
-        exit 1
-    } else {
+    if ($buildOutputFiles) {
         $buildOutputFiles |
             . $processScriptOutput  | 
             Out-Host
-    }    
+    }        
 }
+
+if ($pipeScriptBuildErrors) {
+    "::error::$($pipeScriptBuildErrors | Out-String)"
+    $pipeScriptBuildErrors
+    exit 1
+} 
 
 
 

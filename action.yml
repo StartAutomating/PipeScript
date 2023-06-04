@@ -37,12 +37,12 @@ runs:
       id: PipeScriptAction
       shell: pwsh
       env: 
-        PipeScript: ${{inputs.PipeScript}}
-        UserName: ${{inputs.UserName}}
-        CommitMessage: ${{inputs.CommitMessage}}
         InstallModule: ${{inputs.InstallModule}}
+        CommitMessage: ${{inputs.CommitMessage}}
         SkipBuild: ${{inputs.SkipBuild}}
+        PipeScript: ${{inputs.PipeScript}}
         UserEmail: ${{inputs.UserEmail}}
+        UserName: ${{inputs.UserName}}
       run: |
         $Parameters = @{}
         $Parameters.PipeScript = ${env:PipeScript}
@@ -222,18 +222,22 @@ runs:
         "::notice:: .PipeScript ran in $($PipeScriptTook.TotalMilliseconds) ms" | Out-Host
         
         $BuildPipeScriptStart = [DateTime]::Now
+        $pipeScriptBuildErrors = $null
         if (-not $SkipBuild) {
-            $pipeScriptBuildErrors = $null
+            
             $buildOutputFiles = @(Build-Pipescript -InputPath $env:GITHUB_WORKSPACE -ErrorVariable pipeScriptBuildErrors)
-            if ($pipeScriptBuildErrors) {
-                $pipeScriptBuildErrors
-                exit 1
-            } else {
+            if ($buildOutputFiles) {
                 $buildOutputFiles |
                     . $processScriptOutput  | 
                     Out-Host
-            }    
+            }        
         }
+        
+        if ($pipeScriptBuildErrors) {
+            "::error::$($pipeScriptBuildErrors | Out-String)"
+            $pipeScriptBuildErrors
+            exit 1
+        } 
         
         
         
