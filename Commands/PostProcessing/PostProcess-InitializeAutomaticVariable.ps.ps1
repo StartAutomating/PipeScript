@@ -127,10 +127,9 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
             $variableName = "$($var.VariablePath)"
             # If we have an automatic variable by that variable name            
             if ($allAutomaticVariables[$variableName]) {
-                # see if it's assigned anywhere
-                $assigned = @($var.GetAssignments())
-                # if it was, continue if that "anywhere" was before here.
-                continue if ($assigned -and $assigned.Extent.StartOffset -le $var.Extent.StartOffset)
+                # see if it's assigned anywhere before here
+                $assigned = @($var.GetAssignments())                
+                continue if $assigned -and $assigned.Extent.StartOffset -le $var.Extent.StartOffset
                 # stringify it's script block and add it to our dictionary of prepends
                 $prependDefinitions[$variableName] = $allAutomaticVariables[$variableName] | GetAutomaticVariableDefinition                    
             }
