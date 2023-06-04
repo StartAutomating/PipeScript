@@ -1,3 +1,13 @@
+<#
+.SYNOPSIS
+    Gets the parameters of an attribute
+.DESCRIPTION
+    Gets the named parameters of an attribute.
+.EXAMPLE
+    {
+        [AnAttribute(Parameter='Value')]$null
+    }.Ast.EndBlock.Statements[0].PipelineElements[0].Expression.Attribute.Parameters
+#>
 $Parameter    = [Ordered]@{}
 # Collect all of the arguments of the attribute, in the order they were specified.
 $argsInOrder = @(
