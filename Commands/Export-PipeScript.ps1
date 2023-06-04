@@ -39,7 +39,7 @@ function Export-Pipescript {
 
         if ($env:GITHUB_WORKSPACE) {
             "$($filesToBuild.Length) files to build:" | Out-Host
-            $filesToBuild.FullName -join [Environment]::NewLine | Out-Host
+            $filesToBuild.Source -join [Environment]::NewLine | Out-Host
             "::endgroup::" | Out-Host
         }
         
