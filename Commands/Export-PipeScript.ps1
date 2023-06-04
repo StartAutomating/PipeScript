@@ -21,6 +21,9 @@ function Export-Pipescript {
     )
 
     process {
+        if ($env:GITHUB_WORKSPACE) {
+            "##group##Discovering files", "from: $InputPath" | Out-Host
+        }
         $filesToBuild = 
             @(if (-not $InputPath) {
                 Get-PipeScript -PipeScriptPath $pwd |
@@ -33,6 +36,11 @@ function Export-Pipescript {
                         Sort-Object PipeScriptType, Source
                 }
             })
+
+        if ($env:GITHUB_WORKSPACE) {
+            "$($filesToBuild.Length) files to build" | Out-Host
+            "##endgroup##"
+        }
         
         $buildStarted = [DateTime]::Now
         $alreadyBuilt = [Ordered]@{}
