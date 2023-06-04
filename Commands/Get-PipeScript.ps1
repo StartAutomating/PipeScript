@@ -1,4 +1,4 @@
-#region Piecemeal [ 0.4 ] : Easy Extensible Plugins for PowerShell
+#region Piecemeal [ 0.4.1 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
 # Install-Piecemeal -ExtensionNoun 'PipeScript' -ExtensionPattern '\.psx\.ps1{0,1}$','\.ps1{0,1}\.(?<ext>[^.]+$)','\.ps1{0,1}$','^PipeScript.' -ExtensionTypeName 'PipeScript' -OutputPath '/home/runner/work/PipeScript/PipeScript/Commands/Get-PipeScript.ps1'
@@ -612,6 +612,8 @@ function Get-PipeScript
 
                     $ExtensionDynamicParameters = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
                     $Extension = $this
+                    $ExtensionMetadata = $Extension -as [Management.Automation.CommandMetaData]
+                    if (-not $ExtensionMetadata) { return $ExtensionDynamicParameters }
 
                     :nextDynamicParameter foreach ($in in @(($Extension -as [Management.Automation.CommandMetaData]).Parameters.Keys)) {
                         $attrList = [Collections.Generic.List[Attribute]]::new()
@@ -1111,15 +1113,25 @@ function Get-PipeScript
                         $script:PipeScriptsByDisplayName[$extCmd.DisplayName] = @($script:PipeScriptsByDisplayName[$extCmd.DisplayName]) + $extCmd
                     }   
                 }
-                $ExtensionCommandAliases = @($ExtensionCommand.Attributes.AliasNames)
-                $ExtensionCommandAliasRegexes = @($ExtensionCommandAliases -match '^/' -match '/$')
+                $ExtensionCommandAliases = @($extCmd.Attributes.AliasNames)
+                $ExtensionCommandAliasRegexes  = @($ExtensionCommandAliases -match '^/' -match '/$')
+                $ExtensionCommandNormalAliases = @($ExtensionCommandAliases -notmatch '^/')
                 if ($ExtensionCommandAliasRegexes) {
-                    foreach ($extensionAliasRegex in $ExtensionCommandAliases) {
+                    foreach ($extensionAliasRegex in $ExtensionCommandAliasRegexes) {
                         $regex = [Regex]::New($extensionAliasRegex -replace '^/' -replace '/$', 'IgnoreCase,IgnorePatternWhitespace')
                         if (-not $script:PipeScriptsByPattern[$regex]) {
                             $script:PipeScriptsByPattern[$regex] = $extCmd
                         } else {
                             $script:PipeScriptsByPattern[$regex] = @($script:PipeScriptsByPattern[$regex]) + $extCmd
+                        }
+                    }
+                }
+                if ($ExtensionCommandNormalAliases) {
+                    foreach ($extensionAlias in $ExtensionCommandNormalAliases) {
+                        if (-not $script:PipeScriptsByName[$extensionAlias]) {
+                            $script:PipeScriptsByName[$extensionAlias] = $extCmd
+                        } else {
+                            $script:PipeScriptsByName[$extensionAlias] = @($script:PipeScriptsByName[$extensionAlias]) + $extCmd
                         }
                     }
                 }
@@ -1179,5 +1191,5 @@ function Get-PipeScript
         }
     }
 }
-#endregion Piecemeal [ 0.4 ] : Easy Extensible Plugins for PowerShell
+#endregion Piecemeal [ 0.4.1 ] : Easy Extensible Plugins for PowerShell
 
