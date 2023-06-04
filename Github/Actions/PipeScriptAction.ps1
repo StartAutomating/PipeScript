@@ -159,7 +159,7 @@ if ($PipeScript) {
 
 $PipeScriptTook = [Datetime]::Now - $PipeScriptStart
 "::notice:: .PipeScript ran in $($PipeScriptTook.TotalMilliseconds) ms" | Out-Host
-
+"::notice:: Building Files in '$env:GITHUB_WORKSPACE'" | Out-Host
 $BuildPipeScriptStart = [DateTime]::Now
 $pipeScriptBuildErrors = $null
 if (-not $SkipBuild) {
@@ -173,7 +173,7 @@ if (-not $SkipBuild) {
 }
 
 if ($pipeScriptBuildErrors) {
-    "::error::$($pipeScriptBuildErrors | Out-String)"
+    "::error::$($pipeScriptBuildErrors | Out-String)" | Out-Host
     $pipeScriptBuildErrors
     exit 1
 } 
