@@ -15,6 +15,18 @@ describe Update-PipeScript {
                 #endregion After
             } -ReplaceRegion @{"Before"= ""} | Should -BeLike *after*
         }
+
+        it 'Can replace an AST element' {
+            $scriptBlock = {
+                # $x
+                $x
+            }
+            $varAst = $scriptBlock.Ast.EndBlock.Statements[0].PipelineElements[0].Expression
+            Update-ScriptBlock -AstReplacement @{
+                $varAst = {$y}
+            } -ScriptBlock $scriptBlock | Should -BeLike '*#*$x*$y*'
+
+        }
     }
 
     context 'Updating text' {
@@ -57,5 +69,5 @@ describe Update-PipeScript {
             $testStringExpression = $testScriptBlock | Search-PipeScript -AstType *String* | Select-Object -ExpandProperty Result
             $testScriptBlock | Update-PipeScript -InsertBlockEnd @{$testStringExpression= {"world"}} | Should -BeLike "*hello*world*"
         }
-    }
+    }    
 }
