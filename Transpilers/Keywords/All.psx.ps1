@@ -99,7 +99,9 @@ $Things,
     'That Are', 'That Have', 'That','Condition','Where-Object', 'With a', 'With the', 'With', 
     'That Match', 'Match', 'Matching',
     'That Matches','Match Expression','Match Regular Expression', 'Match Pattern', 'Matches Pattern',
-    'That Are Like', 'Like', 'Like Wildcard'
+    'That Are Like', 'Like', 'Like Wildcard',
+    'Greater Than', 'Greater', 'Greater Than Or Equal', 'GT', 'GE',
+    'Less Than', 'Less', 'Less Than Or Equal', 'LT', 'LE'
 )]
 $Where,
 
@@ -168,6 +170,24 @@ begin {
                 "like" {
                     $operator, $notOperator, $flipOrder =
                         "like", "notlike", $false
+                }
+                "(?>greater|^g[e|t]$)" {
+                    $operator = "g$(if ($clauseName -match 'equal' -or $clauseName -eq 'ge') {
+                        "e"
+                    } else {
+                        "t"
+                    })"
+                    $operator, $notOperator, $flipOrder, $checkMembers, $checkParameters, $checkTypeName =
+                        "$operator", "$($operator -replace 'g','l')", $false, $false, $false, $false
+                }
+                "(?>less|^l[e|t]$)" {
+                    $operator = "g$(if ($clauseName -match 'equal' -or $clauseName -eq 'le') {
+                        "e"
+                    } else {
+                        "t"
+                    })"
+                    $operator, $notOperator, $flipOrder, $checkMembers, $checkParameters, $checkTypeName =
+                        "$operator", "$($operator -replace 'g','l')", $false, $false, $false, $false
                 }                    
                 default {
                     $operator, $notOperator, $flipOrder =
@@ -180,14 +200,27 @@ begin {
                 } else {
                     "($targetExpr -$operator `$item)"
                 }
+
+            $fuzzyChecks = @(
+                "# If the item stringify's to the value", "$itemOperatorCheck" -join [Environment]::NewLine
+
+                if ($checkMembers) {
+                    "# or it has a member $Operator the value", "(`$item.psobject.Members.Name -$operator $targetExpr)" -join [Environment]::NewLine
+                }
+                
+                if ($checkParameters) {
+                    "# or it has a Parameter $Operator the value", "(`$item.Parameters.Keys -$operator $targetExpr)" -join [Environment]::NewLine
+                }
+                
+                if ($checkTypeName) {
+                    "# or it's typenames are named $targetExpr","(`$item.pstypenames -$operator $targetExpr)" -join [Environment]::NewLine
+                }
+            ) -join (" -or" + [Environment]::NewLine)
 "
 
 # Interpreting $targetExpr with fuzzy logic        
 if (-not (
-$itemOperatorCheck -or                           # If the item stringify's to the value
-(`$item.psobject.properties.Name -$operator $targetExpr) -or  # or has a $targetExpr property
-(`$item.Parameters.Keys -$operator $targetExpr) -or           # or it's parameters are named $targetExpr
-(`$item.pstypenames -$operator $targetExpr)                   # or it's typenames are named $targetExpr
+    $fuzzyChecks
 )) {    
 continue nextItem # keep moving
 }"
@@ -458,7 +491,6 @@ if ($Sort) {
 }
 
 if ($For) {
-
 $collectionVariable = if (-not ($Where -or $Sort)) {
     '$inputCollection'
 } else {
