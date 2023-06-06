@@ -34,9 +34,11 @@ command <parametername> ...<parameterargument> (etc)
     
 either more natural or PowerShell syntax should be allowed, for example:
 
+~~~PowerShell
 all functions can Quack {
     "quack"
 }
+~~~
 
 would map to the command all and the parameters -Function and -Can (with the arguments Quack and {"quack"})
 
