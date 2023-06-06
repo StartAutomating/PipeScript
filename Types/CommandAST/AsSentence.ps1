@@ -225,6 +225,7 @@ $potentialCommandIndex = -1
             $currentParameter = $commandParameter.ParameterName
             
             $currentClause = @($currentParameter)
+            $currentClauseValues = @()
             # We need to get the parameter metadata as well.
             $currentParameterMetadata = 
                 # If it was the real name of a parameter, this is easy
@@ -255,15 +256,17 @@ $potentialCommandIndex = -1
                 }
                 # and move onto the next element.                
                 $clauses += [PSCustomObject][Ordered]@{
-                    PSTypeName    = 'PipeScript.Sentence.Clause'
-                    Name          = if ($currentParameter) { $currentParameter} else { '' }
-                    ParameterName = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
-                    Words         = $currentClause
+                    PSTypeName      = 'PipeScript.Sentence.Clause'
+                    Name            = if ($currentParameter) { $currentParameter} else { '' }
+                    ParameterName   = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+                    Words           = $currentClause
+                    ParameterValues = @($commandParameter.Argument)
                 }
                 $currentParameter = ''
                 $currentParameterMetadata = $null
                 
                 $currentClause = @()
+                $currentClauseValues = @()
                 continue
             }
             # Since we have found a parameter, we advance the index.
@@ -292,10 +295,11 @@ $potentialCommandIndex = -1
                 if ($currentClause) {
                     # output the existing clause
                     $clauses += [PSCustomObject][Ordered]@{
-                        PSTypeName    = 'PipeScript.Sentence.Clause'
-                        Name          = if ($currentParameter) { $currentParameter} else { '' }
-                        ParameterName = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
-                        Words         = $currentClause
+                        PSTypeName      = 'PipeScript.Sentence.Clause'
+                        Name            = if ($currentParameter) { $currentParameter} else { '' }
+                        ParameterName   = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+                        Words           = $currentClause
+                        ParameterValues = $currentClauseValues
                     }                         
                 }
 
@@ -305,6 +309,7 @@ $potentialCommandIndex = -1
                 
                 
                 $currentClause = @($commandElements[$commandElementIndex..($commandElementIndex + $barewordSequenceIndex)])
+                $currentClauseValues = @()
                 $commandElementIndex = $commandElementIndex +$barewordSequenceIndex + 1
 
                 $parameterFound = $true
@@ -330,13 +335,14 @@ $potentialCommandIndex = -1
 
         # If we have our current parameter, but it is a switch,
         if ($currentParameter -and $currentParameterMetadata.ParameterType -eq [switch]) {        
-            $mappedParameters[$currentParameter] = $true # set it             
+            $mappedParameters[$currentParameter] = $true # set it.
             if ($currentClause) {                
                 $clauses += [PSCustomObject][Ordered]@{
-                    PSTypeName    = 'PipeScript.Sentence.Clause'
-                    Name          = if ($currentParameter) { $currentParameter} else { '' }
-                    ParameterName = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
-                    Words         = $currentClause
+                    PSTypeName      = 'PipeScript.Sentence.Clause'
+                    Name            = if ($currentParameter) { $currentParameter} else { '' }
+                    ParameterName   = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+                    Words           = $currentClause
+                    ParameterValues = $currentClauseValues
                 }                                     
             }
             $currentParameter = '' # and clear the current parameter.
@@ -355,6 +361,7 @@ $potentialCommandIndex = -1
                     Name          = if ($currentParameter) { $currentParameter} else { '' }
                     ParameterName = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
                     Words         = $currentClause
+                    ParameterValues = $currentClauseValues
                 }
                 $currentParameter = $null
                 $currentParameterMetadata = $null
@@ -373,6 +380,7 @@ $potentialCommandIndex = -1
             $currentParameter = $valueFromRemainingArgumentsParameter.Name
             $currentParameterMetadata = $valueFromRemainingArgumentsParameter            
             $currentClause = @()
+            $currentClauseValues = @()
         }
 
         $commandElementValue =
@@ -398,19 +406,22 @@ $potentialCommandIndex = -1
                     $commandElementValue
                 }
             $currentClause += $commandElement
+            $currentClauseValues = @(@($currentClauseValues) -ne $null) + $commandElementValue
         } else {
             # otherwise add the command element to our unbound parameters.
             $unboundParameters += $commandElementValue                
             $currentClause += $commandElement
+            $currentClauseValues = @(@($currentClauseValues) -ne $null) + $commandElementValue
         }
     }
 
     if ($currentClause) {
         $clauses += [PSCustomObject][Ordered]@{
-            PSTypeName    = 'PipeScript.Sentence.Clause'
-            Name          = if ($currentParameter) { $currentParameter} else { '' }
-            ParameterName = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
-            Words         = $currentClause
+            PSTypeName       = 'PipeScript.Sentence.Clause'
+            Name             = if ($currentParameter) { $currentParameter} else { '' }
+            ParameterName    = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+            Words            = $currentClause
+            ParameterValues  = $currentClauseValues
         }                        
     }
 
