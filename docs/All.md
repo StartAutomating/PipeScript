@@ -61,6 +61,21 @@ Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Uniq
 
 
 ### Parameters
+#### **InputObject**
+
+The input to be searched.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput        |Aliases                     |
+|----------|--------|--------|---------------------|----------------------------|
+|`[Object]`|false   |1       |true (ByPropertyName)|In<br/>Of<br/>The<br/>Object|
+
+
+
 #### **Functions**
 
 If set, include all functions in the input.
@@ -181,21 +196,6 @@ If set, will include all of the variables, aliases, functions, and scripts in th
 
 
 
-#### **InputObject**
-
-The input to be searched.
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput        |Aliases                     |
-|----------|--------|--------|---------------------|----------------------------|
-|`[Object]`|false   |1       |true (ByPropertyName)|In<br/>Of<br/>The<br/>Object|
-
-
-
 #### **Where**
 
 An optional condition
@@ -205,9 +205,9 @@ An optional condition
 
 
 
-|Type      |Required|Position|PipelineInput        |Aliases                                                                                        |
-|----------|--------|--------|---------------------|-----------------------------------------------------------------------------------------------|
-|`[Object]`|false   |2       |true (ByPropertyName)|That Are<br/>That Have<br/>That<br/>Condition<br/>Where-Object<br/>With a<br/>With the<br/>With|
+|Type      |Required|Position|PipelineInput        |Aliases                                                                                                       |
+|----------|--------|--------|---------------------|--------------------------------------------------------------------------------------------------------------|
+|`[Object]`|false   |2       |true (ByPropertyName)|That Are<br/>That Have<br/>That<br/>Condition<br/>Where-Object<br/>With a<br/>With the<br/>With<br/>That Match|
 
 
 
@@ -278,5 +278,5 @@ The Command AST
 
 ### Syntax
 ```PowerShell
-All [-Functions] [-Commands] [-Cmdlets] [-Aliases] [-Applications] [-Scripts] [-Variables] [-Things] [[-InputObject] <Object>] [[-Where] <Object>] [[-For] <Object>] [[-Sort] <Object>] [-Descending] -CommandAst <CommandAst> [<CommonParameters>]
+All [[-InputObject] <Object>] [-Functions] [-Commands] [-Cmdlets] [-Aliases] [-Applications] [-Scripts] [-Variables] [-Things] [[-Where] <Object>] [[-For] <Object>] [[-Sort] <Object>] [-Descending] -CommandAst <CommandAst> [<CommonParameters>]
 ```
