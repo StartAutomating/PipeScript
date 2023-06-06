@@ -4,7 +4,7 @@
 .DESCRIPTION
     The all keyword is a powerful way to accomplish several useful scenarios with a very natural syntax.
 
-    `all` can get all of a set of things that match a criteria and run one or more post-conditions.        
+    `all` can get all of a set of things that match a criteria and run one or more post-conditions.
 .EXAMPLE
     & {
     $glitters = @{glitters=$true}
@@ -95,12 +95,27 @@ $Things,
 
 # An optional condition
 [Parameter(ValueFromPipelineByPropertyName,Position=1)]
-[Alias('That Are', 'That Have', 'That','Condition','Where-Object', 'With a', 'With the', 'With', 'That Match')]
+[Alias(
+    'That Are', 'That Have', 'That','Condition','Where-Object', 'With a', 'With the', 'With', 
+    'That Match', 'Match', 'Matching',
+    'That Matches','Match Expression','Match Regular Expression', 'Match Pattern', 'Matches Pattern',
+    'That Are Like', 'Like', 'Like Wildcard'
+)]
 $Where,
 
 # The action that will be run
 [Parameter(ValueFromPipelineByPropertyName,Position=2)]
-[Alias('Is','Are','Foreach','Foreach-Object','Can','Could','Should', 'Is A', 'Is An', 'Are a', 'Are an')]
+[Alias('Is','Are',
+    'Foreach',
+    'Foreach-Object',
+    'Can',
+    'Could',
+    'Should', 
+    'Is A', 
+    'Is An', 
+    'Are a', 
+    'Are an'
+)]
 $For,
 
 # The way to sort data before it is outputted.
@@ -120,6 +135,67 @@ $Descending,
 $CommandAst
 )
 
+begin {
+    filter WhereValueToCondition
+    {
+        param($ClauseName)
+        $parameterValue = $_
+        if ($parameterValue -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
+            $parameterValue = $parameterValue.ConvertFromAST()
+        }
+        if (($parameterValue -isnot [Management.Automation.Language.VariableExpressionAst]) -and
+            ($parameterValue -is [ScriptBlock] -or $parameterValue -is [Management.Automation.Language.Ast])
+        ) {
+            "if (-not `$($($parameterValue.Transpile())
+)) { continue nextItem } "
+        } else {
+            $targetExpr = 
+                if ($parameterValue -is [Management.Automation.Language.VariableExpressionAst]) {
+                    "$parameterValue"
+                } else {
+                    "'$("$parameterValue".Replace("'","''"))'"
+                }
+            
+            $operator, $notOperator, $flipOrder, $checkMembers, $checkParameters, $checkTypeName = 
+                $null, $null       , $null     , $true        , $true           , $true
+
+            switch -Regex ($clauseName) {
+                # If the clause mentioned the word match
+                "match" {
+                    $operator, $notOperator, $flipOrder =
+                        "match", "notmatch", $false
+                }
+                "like" {
+                    $operator, $notOperator, $flipOrder =
+                        "like", "notlike", $false
+                }                    
+                default {
+                    $operator, $notOperator, $flipOrder =
+                        "eq", "ne", $true
+                }
+            }
+            $itemOperatorCheck = 
+                if (-not $flipOrder) {
+                    "(`$item -$operator $targetExpr)"
+                } else {
+                    "($targetExpr -$operator `$item)"
+                }
+"
+
+# Interpreting $targetExpr with fuzzy logic        
+if (-not (
+$itemOperatorCheck -or                           # If the item stringify's to the value
+(`$item.psobject.properties.Name -$operator $targetExpr) -or  # or has a $targetExpr property
+(`$item.Parameters.Keys -$operator $targetExpr) -or           # or it's parameters are named $targetExpr
+(`$item.pstypenames -$operator $targetExpr)                   # or it's typenames are named $targetExpr
+)) {    
+continue nextItem # keep moving
+}"
+        }
+    }        
+    
+}
+
 process {    
     # Gather some information about our calling context
     $myParams = [Ordered]@{} + $PSBoundParameters
@@ -132,6 +208,12 @@ process {
     $callstack       = Get-PSCallStack
     $callCount       = @($callstack | 
         Where-Object { $_.InvocationInfo.MyCommand.Name -eq $myCmdName}).count - 1
+
+    foreach ($parameterMetadata in ($MyInvocation.MyCommand -as [Management.Automation.CommandMetadata]).Parameters.Values) {
+        if (-not $parameterMetadata.Attributes.Mandatory) {
+            $ExecutionContext.SessionState.PSVariable.Set($parameterMetadata.Name, $null)
+        }
+    }
 
     # Walk thru all mapped parameters in the sentence
     foreach ($paramName in $mySentence.Parameters.Keys) {
@@ -240,6 +322,25 @@ process {
                         }
                     }
                 }
+        } else {
+            foreach ($sentenceArg in @($mySentence.Arguments)) {
+                if (-not $sentenceArg) { continue }
+                if ($sentenceArg -is [ScriptBlock] -and 
+                    -not ($mySentence.Clauses.ParameterName -eq 'InputObject')) {
+                    if (-not $For) {
+                        $for = $sentenceArg
+                    } else {
+                        $for = @($for) + $sentenceArg
+                    }
+                } else {
+                    if (-not $Where) {
+                        $Where = $sentenceArg
+                    }
+                    else {
+                        $where = @($Where) + $sentenceArg
+                    }
+                }
+            }
         }
     }
 
@@ -283,10 +384,12 @@ process {
     #region Generate Script
     $generatedScript = @(
 
-    # Create an input collection with all of our input
+    # Create an input collection with all of our input.
+
+    # If we're just getting, we don't need to assign this
     if (-not ($Where -or $For -or $sort)) {
         $InputCollectionScript
-    } else {
+    } else {        
         '
         # Collect all items into an input collection
         $inputCollection = ' + $InputCollectionScript
@@ -294,6 +397,19 @@ process {
 
 
 if ($Where) {
+    $whereClauses = 
+        @(
+        if ($mySentence.Arguments) {
+            $where | WhereValueToCondition
+        }
+        foreach ($clause in $mySentence.Clauses) { 
+            if ($clause.ParameterName -ne 'Where') { continue }
+
+            foreach ($parameterValue in $clause.ParameterValues) {                
+                $parameterValue | WhereValueToCondition -ClauseName $clause.Name
+            }            
+        })
+    
 @(
     # If -Where was provided, filter the input
 
@@ -312,27 +428,7 @@ if ($Where) {
     "
     }) 
         
-    $(
-        @(foreach ($wh in $where) {
-            if ($wh -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
-                $wh = $wh.ConvertFromAST()
-            }
-            if ($wh -is [ScriptBlock] -or $wh -is [Management.Automation.Language.Ast]) {
-                "if (-not `$($($wh.Transpile())
-    )) { continue } "
-            }
-            elseif ($wh -is [string]) {
-                $safeStr = $($wh -replace "'", "''")
-                "if (-not (                                          # Unless it 
-                    (`$null -ne `$item.'$safeStr') -or               # has a '$safeStr' property                
-                    (`$null -ne `$item.Parameters.'$safeStr') -or    # or it's parameters have the property '$safeStr'
-                    (`$item.pstypenames -contains '$safeStr')        # or it's typenames have the property '$safeStr'
-    )) {    
-        continue # keep moving
-    }"
-            }
-        }) -join ([Environment]::NewLine + (' ' * 8))
-    )
+    $($whereClauses -join ([Environment]::NewLine + (' ' * 4)))
     
     `$item
     "    
@@ -362,10 +458,16 @@ if ($Sort) {
 }
 
 if ($For) {
+
+$collectionVariable = if (-not ($Where -or $Sort)) {
+    '$inputCollection'
+} else {
+    '$filteredCollection'
+}
 # If -For was specified, we generate code to walk over each item in the filtered collection
 "
 # Walk over each item in the filtered collection
-foreach (`$item in `$filteredCollection) {
+foreach (`$item in $collectionVariable) {
     # we set `$this, `$psItem, and `$_ for ease-of-use.
     `$this = `$_ = `$psItem = `$item
 "
