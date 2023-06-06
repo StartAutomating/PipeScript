@@ -205,9 +205,9 @@ An optional condition
 
 
 
-|Type      |Required|Position|PipelineInput        |Aliases                                                                                                       |
-|----------|--------|--------|---------------------|--------------------------------------------------------------------------------------------------------------|
-|`[Object]`|false   |2       |true (ByPropertyName)|That Are<br/>That Have<br/>That<br/>Condition<br/>Where-Object<br/>With a<br/>With the<br/>With<br/>That Match|
+|Type      |Required|Position|PipelineInput        |Aliases                                                                                                                                                                                                                                                                                    |
+|----------|--------|--------|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|`[Object]`|false   |2       |true (ByPropertyName)|That Are<br/>That Have<br/>That<br/>Condition<br/>Where-Object<br/>With a<br/>With the<br/>With<br/>That Match<br/>Match<br/>Matching<br/>That Matches<br/>Match Expression<br/>Match Regular Expression<br/>Match Pattern<br/>Matches Pattern<br/>That Are Like<br/>Like<br/>Like Wildcard|
 
 
 
