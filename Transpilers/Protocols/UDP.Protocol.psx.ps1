@@ -103,7 +103,7 @@ process {
 
         # If we still don't have a -Send parameter, error out.
         if (-not $commandParameters.Send) {            
-            Write-Error "Nothing to $(if ($methodName -ne 'Send') {'-'})Send"
+            Write-Verbose "Nothing to $(if ($methodName -ne 'Send') {'-'} else {"Send"})"
             return
         }
 
