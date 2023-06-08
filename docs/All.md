@@ -198,7 +198,40 @@ If set, will include all of the variables, aliases, functions, and scripts in th
 
 #### **Where**
 
-An optional condition
+A condition.
+
+If the condition is a ScriptBlock, it will act similar to Where-Object.
+
+If the condition is not a script block, the conditional will be inferred by the word choice.
+
+For example:
+~~~PowerShell
+all functions matching PipeScript
+~~~
+
+will return all functions that match the pattern 'PipeScript'
+
+Or:
+
+~~~PowerShell
+all in 1..100 greater than 50
+~~~
+
+will return all numbers in 1..100 that are greater than 50.
+
+Often, these conditionals will be checked against multiple targets.
+
+For example:
+
+~~~PowerShell
+all cmdlets that ID
+~~~
+
+Will check all cmdlets to see if:
+* they are named "ID"
+* OR they have members named "ID"
+* OR they have parameters named "ID"
+* OR their PSTypenames contains "ID"
 
 
 
@@ -213,16 +246,22 @@ An optional condition
 
 #### **For**
 
-The action that will be run
+An action that will be run on every returned item.
+
+As with the -Where parameter, the word choice used for For can be impactful.
+
+In most circumstances, passing a [ScriptBlock] will work similarly to a foreach statment.
+
+When "Should" is present within the word choice, it attach that script as an expectation that can be checked later.
 
 
 
 
 
 
-|Type      |Required|Position|PipelineInput        |Aliases                                                                                                       |
-|----------|--------|--------|---------------------|--------------------------------------------------------------------------------------------------------------|
-|`[Object]`|false   |3       |true (ByPropertyName)|Is<br/>Are<br/>Foreach<br/>Foreach-Object<br/>Can<br/>Could<br/>Should<br/>Is A<br/>Is An<br/>Are a<br/>Are an|
+|Type      |Required|Position|PipelineInput        |Aliases                                                                                                                                                                                                        |
+|----------|--------|--------|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|`[Object]`|false   |3       |true (ByPropertyName)|Is<br/>Are<br/>Foreach<br/>Foreach-Object<br/>Can<br/>And Can<br/>Could<br/>And Could<br/>Should<br/>And Should<br/>Is A<br/>And Is A<br/>Is An<br/>And Is An<br/>Are a<br/>And Are a<br/>Are an<br/>And Are An|
 
 
 
@@ -258,7 +297,8 @@ If output should be sorted in descending order.
 
 #### **CommandAst**
 
-The Command AST
+The Command AST.
+This parameter and parameter set are present so that this command can be transpiled from source, and are unlikely to be used.
 
 
 
