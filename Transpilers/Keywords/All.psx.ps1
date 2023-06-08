@@ -93,7 +93,44 @@ $Variables,
 [switch]
 $Things,
 
-# An optional condition
+<#
+A condition.
+
+If the condition is a ScriptBlock, it will act similar to Where-Object.
+
+If the condition is not a script block, the conditional will be inferred by the word choice.
+
+For example:
+~~~PowerShell
+all functions matching PipeScript
+~~~
+
+will return all functions that match the pattern 'PipeScript'
+
+Or:
+
+~~~PowerShell
+all in 1..100 greater than 50
+~~~
+
+will return all numbers in 1..100 that are greater than 50.
+
+Often, these conditionals will be checked against multiple targets.
+
+For example:
+
+~~~PowerShell
+all cmdlets that ID
+~~~
+
+Will check all cmdlets to see if:
+* they are named "ID"
+* OR they have members named "ID"
+* OR they have parameters named "ID"
+* OR their PSTypenames contains "ID"
+
+#>
+ 
 [Parameter(ValueFromPipelineByPropertyName,Position=1)]
 [Alias(
     'That Are', 'That Have', 'That','Condition','Where-Object', 'With a', 'With the', 'With', 
@@ -105,18 +142,35 @@ $Things,
 )]
 $Where,
 
-# The action that will be run
+<#
+
+An action that will be run on every returned item.
+
+As with the -Where parameter, the word choice used for For can be impactful.
+
+In most circumstances, passing a [ScriptBlock] will work similarly to a foreach statment.
+
+When "Should" is present within the word choice, it attach that script as an expectation that can be checked later.
+
+#>
 [Parameter(ValueFromPipelineByPropertyName,Position=2)]
 [Alias('Is','Are',
     'Foreach',
     'Foreach-Object',
     'Can',
+    'And Can',
     'Could',
-    'Should', 
-    'Is A', 
+    'And Could',
+    'Should',
+    'And Should', 
+    'Is A',
+    'And Is A', 
     'Is An', 
+    'And Is An',
     'Are a', 
-    'Are an'
+    'And Are a',
+    'Are an',
+    'And Are An'
 )]
 $For,
 
@@ -131,7 +185,8 @@ $Sort,
 [switch]
 $Descending,
 
-# The Command AST
+# The Command AST.
+# This parameter and parameter set are present so that this command can be transpiled from source, and are unlikely to be used. 
 [Parameter(Mandatory,ParameterSetName='CommandAST',ValueFromPipeline)]
 [Management.Automation.Language.CommandAst]
 $CommandAst
@@ -227,6 +282,96 @@ continue nextItem # keep moving
         }
     }        
     
+
+    filter ForValueToAction {
+        param($ClauseName)        
+        $forValue = $_
+        $forCount++        
+
+        if ($forValue -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
+            $forValue = $forValue.ConvertFromAST()
+        }
+        if (($forValue -isnot [Management.Automation.Language.VariableExpressionAst]) -and
+            ($forValue -is [ScriptBlock] -or $forValue -is [Management.Automation.Language.Ast])
+        ) {
+            switch -Regex ($clauseName) {
+                Should {
+                    "
+                    # When we say all ... should, we're setting an expectation:
+                    `$expectation = {
+                        $($forValue.Transpile())
+                    }
+                    # If the object did not have an expectations property
+                    if (-not `$item.psobject.Properties['.ShouldBe']) {
+                        # create an empty list
+                        `$item.psobject.Properties.add([psnoteproperty]::new('.ShouldBe', @()))
+                    }
+
+                    # If the object has an expectations property, see if this expectation is already set.
+                    if (`$item.psobject.Properties['.ShouldBe'] -and 
+                        `$item.'.ShouldBe' -as [string[]] -notcontains `"`$expectation`") {
+                        `$item.'.ShouldBe' += `$expectation
+                    }
+                    "
+                }                
+                default {
+                    $forHasOutput = $true
+                    "$($forValue.Transpile())"
+                }
+            }            
+        } else {
+            $targetExpr = 
+                if ($forValue -is [Management.Automation.Language.VariableExpressionAst]) {
+                    "$forValue"
+                } else {
+                    "'$("$forValue".Replace("'","''"))'"
+                }
+
+            switch -Regex ($clauseName) {
+                Should {
+    "
+    # When we say all ... should, we're setting an expectation:    
+    # If the object did not have an expectations property
+    if (-not `$item.psobject.Properties['.ShouldBe']) {
+        # create an empty list
+        `$item.psobject.Properties.add([psnoteproperty]::new('.ShouldBe', @()))
+    }
+
+    # If the object has an expectations property, see if this expectation is already set.
+    if (`$item.psobject.Properties['.Should'] -and 
+        `$item.'.ShouldBe' -as [string[]] -notcontains $targetExpr) {
+        `$item.'.ShouldBe' += $targetExpr
+    }
+    "
+                }
+                default {
+"
+$(if ($forValue -is [Management.Automation.Language.VariableExpressionAst]) {
+"if ($targetExpr -is [ScriptBlock] -or 
+    $targetExpr -is [Management.Automation.CommandInfo]) {
+    & $targetExpr
+}
+else"
+})$(if ($variable -or $Things) {   
+"if (`$item.value -and `$item.value.pstypenames.insert) {
+    if (`$item.value.pstypenames -notcontains $targetExpr) {
+        `$item.value.pstypenames.insert(0, $targetExpr)
+    }
+}
+else"})if (`$item.pstypenames.insert -and `$item.pstypenames -notcontains $targetExpr) {
+    `$item.pstypenames.insert(0, $targetExpr)
+}
+"
+                }
+            }
+        }
+
+        # If the For does not have an expression that could output
+        # and we are on the last item
+        # output the item.
+        if (-not $ForHasOutput -and ($forCount -eq $forLength)) {"`$item"}
+        
+    }
 }
 
 process {    
@@ -242,6 +387,7 @@ process {
     $callCount       = @($callstack | 
         Where-Object { $_.InvocationInfo.MyCommand.Name -eq $myCmdName}).count - 1
 
+    # Unset the value for each parameter variable, to avoid pipeline stickiness problems.
     foreach ($parameterMetadata in ($MyInvocation.MyCommand -as [Management.Automation.CommandMetadata]).Parameters.Values) {
         if (-not $parameterMetadata.Attributes.Mandatory) {
             $ExecutionContext.SessionState.PSVariable.Set($parameterMetadata.Name, $null)
@@ -249,6 +395,7 @@ process {
     }
 
     # Walk thru all mapped parameters in the sentence
+    $SetVariableErrors = @{}
     foreach ($paramName in $mySentence.Parameters.Keys) {
         if (-not $myParams[$paramName]) { # If the parameter was not directly supplied
             $myParams[$paramName] = $mySentence.Parameters[$paramName] # grab it from the sentence.
@@ -257,11 +404,18 @@ process {
                     $ExecutionContext.SessionState.PSVariable.Set($myParam.Name, $mySentence.Parameters[$paramName])
                 }
             }
-            # and set this variable for this value.
-            $ExecutionContext.SessionState.PSVariable.Set($paramName, $mySentence.Parameters[$paramName])
+            # and try to set this variable for this value.
+            try {
+                $ExecutionContext.SessionState.PSVariable.Set($paramName, $mySentence.Parameters[$paramName])
+            } catch {
+                $SetVariableErrors[$paramName] = $_
+            }
         }
     }
-    
+
+    $impliedFor   = @()
+    $impliedWhere = @()
+
     # Now all of the remaining code in this transpiler should act as if we called it from the command line.
 
     # Nowe we need to set up the input set
@@ -347,12 +501,7 @@ process {
                         $sentanceArg
                     } else {
                         # and [strings]s and [ScriptBlock]s will become -Where parameters.
-                        if (-not $Where) {
-                            $Where = $sentanceArg
-                        }
-                        else {
-                            $where = @($Where) + $sentanceArg
-                        }
+                        $impliedWhere += $sentanceArg                        
                     }
                 }
         } else {
@@ -360,18 +509,9 @@ process {
                 if (-not $sentenceArg) { continue }
                 if ($sentenceArg -is [ScriptBlock] -and 
                     -not ($mySentence.Clauses.ParameterName -eq 'InputObject')) {
-                    if (-not $For) {
-                        $for = $sentenceArg
-                    } else {
-                        $for = @($for) + $sentenceArg
-                    }
+                    $impliedFor += $sentanceArg                    
                 } else {
-                    if (-not $Where) {
-                        $Where = $sentenceArg
-                    }
-                    else {
-                        $where = @($Where) + $sentenceArg
-                    }
+                    $impliedWhere += $sentanceArg
                 }
             }
         }
@@ -398,6 +538,7 @@ process {
             }
         # If we still don't have an inputset, default it to 'things'
         if (-not $inputSet) {
+            $Things = $true
             $inputSet = @(
                 {$ExecutionContext.SessionState.InvokeCommand.GetCommands('*', 'Alias,Function,Filter,Cmdlet', $true)}, 
                 {Get-ChildItem -Path variable:}
@@ -420,7 +561,7 @@ process {
     # Create an input collection with all of our input.
 
     # If we're just getting, we don't need to assign this
-    if (-not ($Where -or $For -or $sort)) {
+    if (-not ($Where -or $For -or $impliedFor -or $sort -or $impliedWhere)) {
         $InputCollectionScript
     } else {        
         '
@@ -429,16 +570,16 @@ process {
     }
 
 
-if ($Where) {
+if ($Where -or $impliedWhere) {
     $whereClauses = 
         @(
-        if ($mySentence.Arguments) {
-            $where | WhereValueToCondition
+        if ($impliedWhere) {
+            $impliedWhere | WhereValueToCondition
         }
         foreach ($clause in $mySentence.Clauses) { 
             if ($clause.ParameterName -ne 'Where') { continue }
 
-            foreach ($parameterValue in $clause.ParameterValues) {                
+            foreach ($parameterValue in $clause.ParameterValues) {             
                 $parameterValue | WhereValueToCondition -ClauseName $clause.Name
             }            
         })
@@ -450,13 +591,19 @@ if ($Where) {
 # Since filtering conditions have been passed, we must filter item-by-item
 `$filteredCollection = :nextItem foreach (`$item in `$inputCollection) {
     # we set `$this, `$psItem, and `$_ for ease-of-use.
-    `$this = `$_ = `$psItem = `$item
+    `$this = `$_ = `$psItem = `$item 
     $(if ($Variables -or $Things) {
     "
     # Some of the items may be variables.
     if (`$item -is [Management.Automation.PSVariable]) {
         # In this case, reassign them to their value.
         `$this = `$_ = `$psItem = `$item = `$item.Value
+    }
+
+    # Some variables may be dictionaries,
+    # but it will be easier to look at everything as an object.
+    if (`$item -is [Collections.IDictionary]) {
+        `$item = [PSCustomObject]`$item
     }
     "
     }) 
@@ -490,7 +637,30 @@ if ($Sort) {
 "
 }
 
-if ($For) {
+if ($For -or $impliedFor) {
+    $forClauses = @($impliedFor) + @(
+        foreach ($clause in $mySentence.Clauses) { 
+            if ($clause.ParameterName -ne 'For') { continue }
+            $clause.ParameterValues
+        }
+    )
+    $forClauses = @($forClauses | Select-Object -Unique)
+    $forLength = $forClauses.Length
+    $forCount  = 0
+    $forHasOutput = $false
+    $forClauses = @(                
+        if ($impliedFor) {
+            $impliedFor | . ForValueToAction
+        }
+        foreach ($clause in $mySentence.Clauses) { 
+            if ($clause.ParameterName -ne 'For') { continue }
+            
+            foreach ($forValue in $clause.ParameterValues) {
+                if ($impliedFor -contains $forValue) { continue }
+                $forValue | . ForValueToAction -ClauseName $clause.Name
+            }
+        }        
+    )    
 $collectionVariable = if (-not ($Where -or $Sort)) {
     '$inputCollection'
 } else {
@@ -502,38 +672,7 @@ $collectionVariable = if (-not ($Where -or $Sort)) {
 foreach (`$item in $collectionVariable) {
     # we set `$this, `$psItem, and `$_ for ease-of-use.
     `$this = `$_ = `$psItem = `$item
-"
-    $forLength = @($for).Length
-    $forCount  = 0 
-    foreach ($fo in $for) {
-        $forCount++
-        if ($fo -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
-            $fo = $fo.ConvertFromAST()
-        }
-        
-        if ($fo -is [ScriptBlock] -or $fo -is [Management.Automation.Language.Ast]) {
-            $fo.Transpile()
-        }
-
-        if ($fo -is [string]) {
-            $safeStr = $fo -replace "'", "''"
-            "
-$(if ($variable) {
-"if (`$item.value -and `$item.value.pstypenames.insert) {
-    if (`$item.value.pstypenames -notcontains '$safeStr') {
-        `$item.value.pstypenames.insert(0, '$safeStr')
-    }
-}
-else"})if (`$item.pstypenames.insert -and `$item.pstypenames -notcontains '$safeStr') {
-    `$item.pstypenames.insert(0, '$safeStr')
-}
-$(if ($forCount -eq $forLength) {"`$item"})
-"
-        }
-
-    }
-
-"
+    $($forClauses -join ([Environment]::NewLine + (' ' * 4))) 
 }   
 "    
 } elseif ($where -or $Sort -or $for) {
