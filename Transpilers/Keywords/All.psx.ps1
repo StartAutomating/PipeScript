@@ -203,8 +203,9 @@ begin {
         if (($parameterValue -isnot [Management.Automation.Language.VariableExpressionAst]) -and
             ($parameterValue -is [ScriptBlock] -or $parameterValue -is [Management.Automation.Language.Ast])
         ) {
-            "if (-not `$($($parameterValue.Transpile())
-)) { continue nextItem } "
+            "if (-not `$(
+                $($parameterValue.Transpile())
+            )) { continue nextItem } "
         } else {
             $targetExpr = 
                 if ($parameterValue -is [Management.Automation.Language.VariableExpressionAst]) {
@@ -302,15 +303,15 @@ continue nextItem # keep moving
                         $($forValue.Transpile())
                     }
                     # If the object did not have an expectations property
-                    if (-not `$item.psobject.Properties['.ShouldBe']) {
+                    if (-not `$item.psobject.Properties['.Should']) {
                         # create an empty list
-                        `$item.psobject.Properties.add([psnoteproperty]::new('.ShouldBe', @()))
+                        `$item.psobject.Properties.add([psnoteproperty]::new('.Should', @()))
                     }
 
                     # If the object has an expectations property, see if this expectation is already set.
-                    if (`$item.psobject.Properties['.ShouldBe'] -and 
-                        `$item.'.ShouldBe' -as [string[]] -notcontains `"`$expectation`") {
-                        `$item.'.ShouldBe' += `$expectation
+                    if (`$item.psobject.Properties['.Should'] -and 
+                        `$item.'.Should' -as [string[]] -notcontains `"`$expectation`") {
+                        `$item.'.Should' += `$expectation
                     }
                     "
                 }                
@@ -332,15 +333,15 @@ continue nextItem # keep moving
     "
     # When we say all ... should, we're setting an expectation:    
     # If the object did not have an expectations property
-    if (-not `$item.psobject.Properties['.ShouldBe']) {
+    if (-not `$item.psobject.Properties['.Should']) {
         # create an empty list
-        `$item.psobject.Properties.add([psnoteproperty]::new('.ShouldBe', @()))
+        `$item.psobject.Properties.add([psnoteproperty]::new('.Should', @()))
     }
 
     # If the object has an expectations property, see if this expectation is already set.
     if (`$item.psobject.Properties['.Should'] -and 
-        `$item.'.ShouldBe' -as [string[]] -notcontains $targetExpr) {
-        `$item.'.ShouldBe' += $targetExpr
+        `$item.'.Should' -as [string[]] -notcontains $targetExpr) {
+        `$item.'.Should' += $targetExpr
     }
     "
                 }
@@ -661,7 +662,7 @@ if ($For -or $impliedFor) {
             }
         }        
     )    
-$collectionVariable = if (-not ($Where -or $Sort)) {
+$collectionVariable = if (-not ($Where -or $Sort -or $impliedWhere)) {
     '$inputCollection'
 } else {
     '$filteredCollection'
@@ -675,8 +676,8 @@ foreach (`$item in $collectionVariable) {
     $($forClauses -join ([Environment]::NewLine + (' ' * 4))) 
 }   
 "    
-} elseif ($where -or $Sort -or $for) {
-    "`$filteredCollection"        
+} elseif ($where -or $impliedWhere -or $Sort) {
+    "`$filteredCollection"
 }
 )
 
