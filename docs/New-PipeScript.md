@@ -254,9 +254,9 @@ A description of the script's functionality.  If provided with -Synopsis, will g
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[String]`|false   |11      |false        |
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[String]`|false   |11      |true (ByPropertyName)|
 
 
 
@@ -269,9 +269,9 @@ A short synopsis of the script's functionality.  If provided with -Description, 
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[String]`|false   |12      |false        |
+|Type      |Required|Position|PipelineInput        |Aliases|
+|----------|--------|--------|---------------------|-------|
+|`[String]`|false   |12      |true (ByPropertyName)|Summary|
 
 
 
