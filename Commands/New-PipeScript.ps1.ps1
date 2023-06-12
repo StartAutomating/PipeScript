@@ -182,7 +182,25 @@ HTTP Accept indicates what content types the web request will accept as a respon
 
     }
 
-    process {
+    process {        
+        if ($InputObject -is [Collections.IDictionary]) {
+            $InputObject = [PSCustomObject]$InputObject
+            $myCmd = $MyInvocation.MyCommand
+            :nextParameter foreach ($param in $myCmd.Parameters.Values) {
+                if ($null -ne $inputObject.($param.Name)) {
+                    $ExecutionContext.SessionState.PSVariable.Set($param.Name, $inputObject.($param.Name))
+                }
+                else {
+                    foreach ($paramAlias in $param.Aliases) {
+                        if ($null -ne $inputObject.$paramAlias) {
+                            $ExecutionContext.SessionState.PSVariable.Set($param.Name, $inputObject.$paramAlias)
+                            continue nextParameter
+                        }                           
+                    }
+                }
+            }            
+        }
+
         if ($Synopsis) {
             if (-not $Description) { $Description = $Synopsis }
             function indentHelpLine {
