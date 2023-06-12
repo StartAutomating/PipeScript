@@ -19,7 +19,7 @@
     } | .>PipeScript
 #>
 [CmdletBinding(DefaultParameterSetName='ValueNames')]
-[Alias('SmartAlias','DynamicAlais')]
+[Alias('ValidValue')]
 param(
 # A list of valid values.
 # To provide a dynamic list, provide a `[ScriptBlock]` value in the attribute.
@@ -48,13 +48,11 @@ process {
             @(foreach ($value in $Values) {
                 "$(if ($Prefix) { $Prefix })$value$(if ($Suffix) { $Suffix })"            
             })
-    
-    
+        
     if ($PSCmdlet.ParameterSetName -eq 'VariableExpressionAST') {
         [scriptblock]::Create("[ValidateSet('$($values -join "','")')]$VariableAST")
     } else {
         [scriptblock]::Create("[ValidateSet('$($values -join "','")')]param()")
-
     }
 }
 
