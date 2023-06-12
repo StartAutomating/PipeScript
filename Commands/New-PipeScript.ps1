@@ -156,9 +156,12 @@ HTTP Accept indicates what content types the web request will accept as a respon
     [string]
     $FunctionType = 'function',
     # A description of the script's functionality.  If provided with -Synopsis, will generate help.
+    [Parameter(ValueFromPipelineByPropertyName)]
     [string]
     $Description,
     # A short synopsis of the script's functionality.  If provided with -Description, will generate help.
+    [Parameter(ValueFromPipelineByPropertyName)]
+    [Alias('Summary')]
     [string]
     $Synopsis,
     # A list of examples to use in help.  Will be ignored if -Synopsis and -Description are not passed.
