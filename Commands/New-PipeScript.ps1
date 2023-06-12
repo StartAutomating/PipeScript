@@ -35,34 +35,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
     # * As the ```[string]``` name of an untyped parameter.
     # * As a ```[ScriptBlock]``` containing only parameters.
     [Parameter(ValueFromPipelineByPropertyName)]
-    [ValidateScript({
-        if ($_ -isnot [ScriptBlock]) { return $true }
-        $statementCount = 0
-        $statementCount += $_.Ast.DynamicParamBlock.Statements.Count
-        $statementCount += $_.Ast.BeginBlock.Statements.Count
-        $statementCount += $_.Ast.ProcessBlock.Statements.Count
-        $statementCount += $_.Ast.EndBlock.Statements.Count
-        if ($statementCount) {
-            throw "ScriptBlock should have no statements"
-        } else { 
-            return $true
-        }
-    })]
-    [ValidateScript({
-    $validTypeList = [System.Collections.IDictionary],[System.String],[System.Object[]],[System.Management.Automation.ScriptBlock],[System.Reflection.PropertyInfo],[System.Reflection.PropertyInfo[]],[System.Reflection.ParameterInfo],[System.Reflection.ParameterInfo[]],[System.Reflection.MethodInfo],[System.Reflection.MethodInfo[]]
-    $thisType = $_.GetType()
-    $IsTypeOk =
-        $(@( foreach ($validType in $validTypeList) {
-            if ($_ -as $validType) {
-                $true;break
-            }
-        }))
-    if (-not $isTypeOk) {
-        throw "Unexpected type '$(@($thisType)[0])'.  Must be 'System.Collections.IDictionary','string','System.Object[]','scriptblock','System.Reflection.PropertyInfo','System.Reflection.PropertyInfo[]','System.Reflection.ParameterInfo','System.Reflection.ParameterInfo[]','System.Reflection.MethodInfo','System.Reflection.MethodInfo[]'."
-    }
-    return $true
-    })]
-    
+    [Alias('Parameters')]
     $Parameter,
     # The dynamic parameter block.
     [Parameter(ValueFromPipelineByPropertyName)]
@@ -260,195 +233,201 @@ HTTP Accept indicates what content types the web request will accept as a respon
         }
         # If -Parameter was passed, we will need to define parameters.
         if ($parameter) {
-            # this will end up populating an [Ordered] dictionary, $parametersToCreate.
-            # However, for ease of use, -Parameter can be very flexible.
-            # The -Parameter can be a dictionary of parameters.
-            if ($Parameter -is [Collections.IDictionary]) {
-                $parameterType = ''
-                # If it is, walk thur each parameter in the dictionary
-                foreach ($EachParameter in $Parameter.GetEnumerator()) {
-                    # Continue past any parameters we already have
-                    if ($ParametersToCreate.Contains($EachParameter.Key)) {
-                        continue
-                    }
-                    # If the parameter is a string and the value is not a variable
-                    if ($EachParameter.Value -is [string] -and $EachParameter.Value -notlike '*$*') {
-                        $parameterName = $EachParameter.Key
-                        $ParametersToCreate[$EachParameter.Key] =
-                            @(
-                                if ($parameterHelp -and $parameterHelp[$eachParameter.Key]) {
-                                    $parameterHelp[$eachParameter.Key] | embedParameterHelp
+            foreach ($param in $parameter) {
+                # this will end up populating an [Ordered] dictionary, $parametersToCreate.
+                # However, for ease of use, -Parameter can be very flexible.
+                # The -Parameter can be a dictionary of parameters.
+                if ($Param -is [Collections.IDictionary]) {
+                    $parameterType = ''
+                    # If it is, walk thur each parameter in the dictionary
+                    foreach ($EachParameter in $Param.GetEnumerator()) {
+                        # Continue past any parameters we already have
+                        if ($ParametersToCreate.Contains($EachParameter.Key)) {
+                            continue
+                        }
+                        # If the parameter is a string and the value is not a variable
+                        if ($EachParameter.Value -is [string] -and $EachParameter.Value -notlike '*$*') {
+                            $parameterName = $EachParameter.Key
+                            $ParametersToCreate[$EachParameter.Key] =
+                                @(
+                                    if ($parameterHelp -and $parameterHelp[$eachParameter.Key]) {
+                                        $parameterHelp[$eachParameter.Key] | embedParameterHelp
+                                    }
+                                    $parameterAttribute = "[Parameter(ValueFromPipelineByPropertyName)]"
+                                    $parameterType
+                                    '$' + $parameterName
+                                ) -ne ''
+                        }
+                        # If the value is a string and the value contains variables
+                        elseif ($EachParameter.Value -is [string]) {
+                            # embed it directly.
+                            $ParametersToCreate[$EachParameter.Key] = $EachParameter.Value
+                        }                    
+                        # If the value is a ScriptBlock
+                        elseif ($EachParameter.Value -is [ScriptBlock]) {
+                            # Embed it
+                            $ParametersToCreate[$EachParameter.Key] =
+                                # If there was a param block on the script block
+                                if ($EachParameter.Value.Ast.ParamBlock) {
+                                    # embed the parameter block (except for the param keyword)
+                                    $EachParameter.Value.Ast.ParamBlock.Extent.ToString() -replace
+                                        ${?<EmptyParameterBlock>}
+                                } else {
+                                    # Otherwise
+                                    '[Parameter(ValueFromPipelineByPropertyName)]' + (
+                                    $EachParameter.Value.ToString() -replace
+                                        "\`$$($eachParameter.Key)[\s\r\n]$" -replace # Replace any trailing variables
+                                        ${?<EmptyParameterBlock>}  # then replace any empty param blocks.
+                                    )
                                 }
-                                $parameterAttribute = "[Parameter(ValueFromPipelineByPropertyName)]"
-                                $parameterType
-                                '$' + $parameterName
-                            ) -ne ''
-                    }
-                    # If the value is a string and the value contains variables
-                    elseif ($EachParameter.Value -is [string]) {
-                        # embed it directly.
-                        $ParametersToCreate[$EachParameter.Key] = $EachParameter.Value
-                    }                    
-                    # If the value is a ScriptBlock
-                    elseif ($EachParameter.Value -is [ScriptBlock]) {
-                        # Embed it
-                        $ParametersToCreate[$EachParameter.Key] =
-                            # If there was a param block on the script block
-                            if ($EachParameter.Value.Ast.ParamBlock) {
-                                # embed the parameter block (except for the param keyword)
-                                $EachParameter.Value.Ast.ParamBlock.Extent.ToString() -replace
-                                    ${?<EmptyParameterBlock>}
-                            } else {
-                                # Otherwise
-                                '[Parameter(ValueFromPipelineByPropertyName)]' + (
-                                $EachParameter.Value.ToString() -replace
-                                    "\`$$($eachParameter.Key)[\s\r\n]$" -replace # Replace any trailing variables
-                                    ${?<EmptyParameterBlock>}  # then replace any empty param blocks.
-                                )
-                            }
-                    }
-                    # If the value was an array
-                    elseif ($EachParameter.Value -is [Object[]]) {
-                        $ParametersToCreate[$EachParameter.Key] = # join it's elements by newlines
-                            $EachParameter.Value -join [Environment]::Newline
-                    }
-                    elseif ($EachParameter.Value -is [Collections.IDictionary] -or 
-                        $EachParameter.Value -is [PSObject]) {
-                        $parameterMetadata = $EachParameter.Value
-                        $parameterName = $EachParameter.Key
-                        if ($parameterMetadata.Name) {
-                            $parameterName = $parameterMetadata.Name
                         }
-                        
-                        $parameterAttributeParts = @()
-                        $ParameterOtherAttributes = @()
-                        $attrs = 
-                            if ($parameterMetadata.Attributes) { $parameterMetadata.Attributes }
-                            elseif ($parameterMetadata.Attribute) { $parameterMetadata.Attribute }
-                        $aliases =
-                            if ($parameterMetadata.Alias) { $parameterMetadata.Alias }
-                            elseif ($parameterMetadata.Aliases) { $parameterMetadata.Aliases }
-                        [string]$parameterHelpText =
-                            if ($parameterMetadata.Help) { $parameterMetadata.Help}                            
-                        $aliasAttribute = @(foreach ($alias in $aliases) {
-                            $alias -replace "'","''"                            
-                        }) -join "','"
-                        if ($aliasAttribute) {
-                            $aliasAttribute = "[Alias('$aliasAttribute')]"
+                        # If the value was an array
+                        elseif ($EachParameter.Value -is [Object[]]) {
+                            $ParametersToCreate[$EachParameter.Key] = # join it's elements by newlines
+                                $EachParameter.Value -join [Environment]::Newline
                         }
-                        
-                        foreach ($attr in $attrs) {
-                            if ($attr -notmatch '^\[') {
-                                $parameterAttributeParts += $attr
-                            } else {
-                                $ParameterOtherAttributes += $attr
-                            }
-                        }
-                        $parameterType = 
-                            if ($parameterMetadata.Type) {$parameterMetadata.Type }
-                            elseif ($parameterMetadata.ParameterType) {$parameterMetadata.ParameterType }
-                        $ParametersToCreate[$parameterName] = @(
-                            if ($ParameterHelpText) {
-                                $ParameterHelpText | embedParameterHelp
-                            }
-                            if ($parameterAttributeParts) {
-                                "[Parameter($($parameterAttributeParts -join ','))]"
-                            }
-                            if ($aliasAttribute) {
-                                $aliasAttribute
-                            }
-                            if ($parameterType -as [type]) {
-                                "[$(($parameterType -as [type]).FullName -replace '^System\.')]"
-                            }
-                            elseif ($parameterType) {
-                                "[PSTypeName('$($parameterType -replace '^System\.')')]"
+                        elseif ($EachParameter.Value -is [Collections.IDictionary] -or 
+                            $EachParameter.Value -is [PSObject]) {
+                            $parameterMetadata = $EachParameter.Value
+                            $parameterName = $EachParameter.Key
+                            if ($parameterMetadata.Name) {
+                                $parameterName = $parameterMetadata.Name
                             }
                             
-                            if ($ParameterOtherAttributes) {
-                                $ParameterOtherAttributes
+                            $parameterAttributeParts = @()
+                            $ParameterOtherAttributes = @()
+                            $attrs = 
+                                if ($parameterMetadata.Attributes) { $parameterMetadata.Attributes }
+                                elseif ($parameterMetadata.Attribute) { $parameterMetadata.Attribute }
+                            $aliases =
+                                if ($parameterMetadata.Alias) { $parameterMetadata.Alias }
+                                elseif ($parameterMetadata.Aliases) { $parameterMetadata.Aliases }
+                            [string]$parameterHelpText =
+                                if ($parameterMetadata.Help) { $parameterMetadata.Help}                            
+                            $aliasAttribute = @(foreach ($alias in $aliases) {
+                                $alias -replace "'","''"                            
+                            }) -join "','"
+                            if ($aliasAttribute) {
+                                $aliasAttribute = "[Alias('$aliasAttribute')]"
                             }
-                            '$' + ($parameterName -replace '^$')
-                        ) -join [Environment]::newLine
-                    }
-                }
-            }
-            # If the parameter was a string
-            elseif ($Parameter -is [string])
-            {
-                # treat it as  parameter name
-                $ParametersToCreate[$Parameter] =
-                    @(
-                    if ($parameterHelp -and $parameterHelp[$Parameter]) {
-                        $parameterHelp[$Parameter] | embedParameterHelp
-                    }
-                    "[Parameter(ValueFromPipelineByPropertyName)]"
-                    "`$$Parameter"
-                    ) -join [Environment]::NewLine
-            }
-            # If the parameter is a [ScriptBlock]
-            elseif ($parameter -is [scriptblock])
-            {
-                # add it to a list of parameter script blocks.
-                $parameterScriptBlocks +=
-                    if ($parameter.Ast.ParamBlock) {
-                        $parameter
-                    }
-            }
-            # If the -Parameter was provided via reflection
-            elseif ($parameter -is [Reflection.PropertyInfo] -or
-                $parameter -as [Reflection.PropertyInfo[]] -or
-                $parameter -is [Reflection.ParameterInfo] -or
-                $parameter -as [Reflection.ParameterInfo[]] -or
-                $parameter -is [Reflection.MethodInfo] -or
-                $parameter -as [Reflection.MethodInfo[]]
-            ) {
-                # check to see if it's a method
-                if ($parameter -is [Reflection.MethodInfo] -or
-                    $parameter -as [Reflection.MethodInfo[]]) {
-                    $parameter = @(foreach ($methodInfo in $parameter) {
-                        $methodInfo.GetParameters() # if so, reflect the method's parameters
-                    })
-                }
-                # Walk over each parameter
-                foreach ($prop in $Parameter) {
-                    # If it is a property info that cannot be written, skip.
-                    if ($prop -is [Reflection.PropertyInfo] -and -not $prop.CanWrite) { continue }
-                    # Determine the reflected parameter type.
-                    $paramType =
-                        if ($prop.ParameterType) {
-                            $prop.ParameterType
-                        } elseif ($prop.PropertyType) {
-                            $prop.PropertyType
-                        } else {
-                            [PSObject]
-                        }
-                    $ParametersToCreate[$prop.Name] =
-                        @(
-                            if ($parameterHelp -and $parameterHelp[$prop.Name]) {
-                                $parameterHelp[$prop.Name] | embedParameterHelp
-                            }
-                            $parameterAttribute = "[Parameter(ValueFromPipelineByPropertyName)]"
-                            $parameterAttribute
-                            if ($paramType -eq [boolean]) {
-                                "[switch]"
-                            } elseif ($WeaklyTyped) {
-                                if ($paramType.GetInterface([Collections.IDictionary])) {
-                                    "[Collections.IDictionary]"
+                            
+                            foreach ($attr in $attrs) {
+                                if ($attr -notmatch '^\[') {
+                                    $parameterAttributeParts += $attr
+                                } else {
+                                    $ParameterOtherAttributes += $attr
                                 }
-                                elseif ($paramType.GetInterface([Collections.IList])) {
-                                    "[PSObject[]]"
+                            }
+                            $parameterType = 
+                                if ($parameterMetadata.Type) {$parameterMetadata.Type }
+                                elseif ($parameterMetadata.ParameterType) {$parameterMetadata.ParameterType }
+                            $ParametersToCreate[$parameterName] = @(
+                                if ($ParameterHelpText) {
+                                    $ParameterHelpText | embedParameterHelp
+                                }
+                                if ($parameterAttributeParts) {
+                                    "[Parameter($($parameterAttributeParts -join ','))]"
+                                }
+                                if ($aliasAttribute) {
+                                    $aliasAttribute
+                                }
+                                if ($parameterType -as [type]) {
+                                    "[$(($parameterType -as [type]).FullName -replace '^System\.')]"
+                                }
+                                elseif ($parameterType) {
+                                    "[PSTypeName('$($parameterType -replace '^System\.')')]"
+                                }
+                                
+                                if ($ParameterOtherAttributes) {
+                                    $ParameterOtherAttributes
+                                }
+                                '$' + ($parameterName -replace '^$')
+                            ) -join [Environment]::newLine
+                        }
+                    }
+                }
+                # If the parameter was a string
+                elseif ($Param -is [string])
+                {
+                    # treat it as  parameter name
+                    $ParametersToCreate[$Param] =
+                        @(
+                        if ($parameterHelp -and $parameterHelp[$Param]) {
+                            $parameterHelp[$Param] | embedParameterHelp
+                        }
+                        "[Parameter(ValueFromPipelineByPropertyName)]"
+                        "`$$Param"
+                        ) -join [Environment]::NewLine
+                }
+                # If the parameter is a [ScriptBlock]
+                elseif ($Param -is [scriptblock])
+                {
+                    # add it to a list of parameter script blocks.
+                    $parameterScriptBlocks +=
+                        if ($Param.Ast.ParamBlock) {
+                            $Param
+                        }
+                }
+                # If the -Parameter was provided via reflection
+                elseif ($Param -is [Reflection.PropertyInfo] -or
+                    $Param -as [Reflection.PropertyInfo[]] -or
+                    $Param -is [Reflection.ParameterInfo] -or
+                    $Param -as [Reflection.ParameterInfo[]] -or
+                    $Param -is [Reflection.MethodInfo] -or
+                    $Param -as [Reflection.MethodInfo[]]
+                ) {
+                    # check to see if it's a method
+                    if ($Param -is [Reflection.MethodInfo] -or
+                        $Param -as [Reflection.MethodInfo[]]) {
+                        $Param = @(foreach ($methodInfo in $Param) {
+                            $methodInfo.GetParameters() # if so, reflect the method's parameters
+                        })
+                    }
+                    # Walk over each parameter
+                    foreach ($prop in $Param) {
+                        # If it is a property info that cannot be written, skip.
+                        if ($prop -is [Reflection.PropertyInfo] -and -not $prop.CanWrite) { continue }
+                        # Determine the reflected parameter type.
+                        $paramType =
+                            if ($prop.ParameterType) {
+                                $prop.ParameterType
+                            } elseif ($prop.PropertyType) {
+                                $prop.PropertyType
+                            } else {
+                                [PSObject]
+                            }
+                        $ParametersToCreate[$prop.Name] =
+                            @(
+                                if ($parameterHelp -and $parameterHelp[$prop.Name]) {
+                                    $parameterHelp[$prop.Name] | embedParameterHelp
+                                }
+                                $parameterAttribute = "[Parameter(ValueFromPipelineByPropertyName)]"
+                                $parameterAttribute
+                                if ($paramType -eq [boolean]) {
+                                    "[switch]"
+                                } elseif ($WeaklyTyped) {
+                                    if ($paramType.GetInterface([Collections.IDictionary])) {
+                                        "[Collections.IDictionary]"
+                                    }
+                                    elseif ($paramType.GetInterface([Collections.IList])) {
+                                        "[PSObject[]]"
+                                    }
+                                    else {
+                                        "[PSObject]"
+                                    }
                                 }
                                 else {
-                                    "[PSObject]"
+                                    "[$($paramType -replace '^System\.')]"
                                 }
-                            }
-                            else {
-                                "[$($paramType -replace '^System\.')]"
-                            }
-                            '$' + $prop.Name
-                        ) -ne ''
+                                '$' + $prop.Name
+                            ) -ne ''
+                    }
+                }
+                elseif ($Param -is [PSObject]) {
+                    
                 }
             }
+            
         }
         # If there is header content,
         if ($header) {
