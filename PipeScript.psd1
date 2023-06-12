@@ -12,14 +12,35 @@
     Author            = 'James Brundage'
     FunctionsToExport = 'Export-Pipescript','Get-PipeScript','Get-Transpiler','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript','PipeScript.Optimizer.ConsolidateAspects','PipeScript.Automatic.Variable.IsPipedTo','PipeScript.Automatic.Variable.IsPipedFrom','PipeScript.Automatic.Variable.MyCallstack','PipeScript.Automatic.Variable.MySelf','PipeScript.Automatic.Variable.MyParameters','PipeScript.Automatic.Variable.MyCaller','PipeScript.Automatic.Variable.MyCommandAst','PipeScript.PostProcess.InitializeAutomaticVariables','PipeScript.PostProcess.PartialFunction'
     PrivateData = @{
-        FileTypes = @{
-            Transpiler = @{
-                Pattern = '\.psx\.ps1$'
-                Wildcard  = '*.psx.ps1'
-                Description = @'               
-Transpiles an object into anything.
-'@                
-            }
+        CommandTypes = @{
+            'Aspect' =
+                '(?>PipeScript\p{P})?Aspect\p{P}'
+            'AutomaticVariable' =               
+              '(?>PipeScript\p{P})?(?>Automatic|Magic)\p{P}?Variable\p{P}'
+            'Sentence'   =              
+              '(?>PipeScript\p{P})?Sentence\p{P}'
+            'Interface'  =
+              '(?>PipeScript\p{P})?Interface\p{P}'
+            'Partial'    =
+              '(?>PipeScript\p{P})?Partial\p{P}'
+            'Protocol'   =
+              '(?>PipeScript\p{P})?(?>Protocol\p{P}|\p{P}Protocol)'
+            'Transpiler' = 
+                @{
+                    Description = 'Transpiles an object into anything.'
+                    Pattern = '
+                        (?>
+                            (?:\.psx\.ps1$) # A .PSX.PS1 Script
+                                |
+                            (?:PipeScript\p{P})?(?>Transpiler|PSX) # Or a command Named Transpiler|PSX
+                        )
+                    '
+                }
+              
+            'Template'   =
+              '\.ps1{0,1}\.(?<ext>[^\.]+$)'
+        }
+        FileTypes = @{            
             PipeScript = @{
                 Pattern = '\.psx\.ps1{0,1}$',
                     '\.ps1{0,1}\.(?<ext>[^.]+$)',
