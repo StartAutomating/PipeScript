@@ -96,6 +96,7 @@ These are all of the transpilers currently included in PipeScript:
 |[ValidatePropertyName](Transpilers/Parameters/ValidatePropertyName.psx.ps1)                |Validates Property Names                          |
 |[ValidateScriptBlock](Transpilers/Parameters/ValidateScriptBlock.psx.ps1)                  |Validates Script Blocks                           |
 |[ValidateTypes](Transpilers/Parameters/ValidateTypes.psx.ps1)                              |Validates if an object is one or more types.      |
+|[ValidValues](Transpilers/Parameters/ValidValues.psx.ps1)                                  |Dynamically Defines ValidateSet attributes        |
 |[VBN](Transpilers/Parameters/VBN.psx.ps1)                                                  |ValueFromPiplineByPropertyName Shorthand          |
 |[VFP](Transpilers/Parameters/VFP.psx.ps1)                                                  |ValueFromPipline Shorthand                        |
 |[WebAssembly.Template](Transpilers/Templates/WebAssembly.Template.psx.ps1)                 |WebAssembly Template Transpiler.                  |
