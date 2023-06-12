@@ -54,6 +54,22 @@ New-PipeScript -Parameter @{"bar"=@{
 
 
 ### Parameters
+#### **InputObject**
+
+An input object.  
+This can be anything, but will override certain parameters if it is a ScriptBlock.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput |
+|----------|--------|--------|--------------|
+|`[Object]`|false   |named   |true (ByValue)|
+
+
+
 #### **Parameter**
 
 Defines one or more parameters for a ScriptBlock.
@@ -69,7 +85,7 @@ Parameters can be defined in a few ways:
 
 |Type      |Required|Position|PipelineInput        |
 |----------|--------|--------|---------------------|
-|`[Object]`|false   |1       |true (ByPropertyName)|
+|`[Object]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -84,7 +100,7 @@ The dynamic parameter block.
 
 |Type           |Required|Position|PipelineInput        |Aliases              |
 |---------------|--------|--------|---------------------|---------------------|
-|`[ScriptBlock]`|false   |2       |true (ByPropertyName)|DynamicParameterBlock|
+|`[ScriptBlock]`|false   |named   |true (ByPropertyName)|DynamicParameterBlock|
 
 
 
@@ -99,22 +115,24 @@ The begin block.
 
 |Type           |Required|Position|PipelineInput        |Aliases   |
 |---------------|--------|--------|---------------------|----------|
-|`[ScriptBlock]`|false   |3       |true (ByPropertyName)|BeginBlock|
+|`[ScriptBlock]`|false   |named   |true (ByPropertyName)|BeginBlock|
 
 
 
 #### **Process**
 
 The process block.
+If a [ScriptBlock] is piped in and this has not been provided,
+-Process will be mapped to that script.
 
 
 
 
 
 
-|Type           |Required|Position|PipelineInput                 |Aliases                     |
-|---------------|--------|--------|------------------------------|----------------------------|
-|`[ScriptBlock]`|false   |4       |true (ByValue, ByPropertyName)|ProcessBlock<br/>ScriptBlock|
+|Type           |Required|Position|PipelineInput        |Aliases                     |
+|---------------|--------|--------|---------------------|----------------------------|
+|`[ScriptBlock]`|false   |named   |true (ByPropertyName)|ProcessBlock<br/>ScriptBlock|
 
 
 
@@ -129,7 +147,7 @@ The end block.
 
 |Type           |Required|Position|PipelineInput        |Aliases |
 |---------------|--------|--------|---------------------|--------|
-|`[ScriptBlock]`|false   |5       |true (ByPropertyName)|EndBlock|
+|`[ScriptBlock]`|false   |named   |true (ByPropertyName)|EndBlock|
 
 
 
@@ -144,7 +162,7 @@ The script header.
 
 |Type      |Required|Position|PipelineInput        |
 |----------|--------|--------|---------------------|
-|`[String]`|false   |6       |true (ByPropertyName)|
+|`[String]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -176,7 +194,7 @@ By default, ```[PSObject]```.
 
 |Type    |Required|Position|PipelineInput|
 |--------|--------|--------|-------------|
-|`[Type]`|false   |7       |false        |
+|`[Type]`|false   |named   |false        |
 
 
 
@@ -191,7 +209,7 @@ If provided, will add inline help to parameters.
 
 |Type           |Required|Position|PipelineInput|
 |---------------|--------|--------|-------------|
-|`[IDictionary]`|false   |8       |false        |
+|`[IDictionary]`|false   |named   |false        |
 
 
 
@@ -225,7 +243,7 @@ The name of the function to create.
 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
-|`[String]`|false   |9       |false        |
+|`[String]`|false   |named   |false        |
 
 
 
@@ -241,7 +259,7 @@ If the function type is not function or filter, it will be treated as a function
 
 |Type      |Required|Position|PipelineInput|Aliases                               |
 |----------|--------|--------|-------------|--------------------------------------|
-|`[String]`|false   |10      |false        |FunctionNamespace<br/>CommandNamespace|
+|`[String]`|false   |named   |false        |FunctionNamespace<br/>CommandNamespace|
 
 
 
@@ -256,7 +274,7 @@ A description of the script's functionality.  If provided with -Synopsis, will g
 
 |Type      |Required|Position|PipelineInput        |
 |----------|--------|--------|---------------------|
-|`[String]`|false   |11      |true (ByPropertyName)|
+|`[String]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -271,7 +289,7 @@ A short synopsis of the script's functionality.  If provided with -Description, 
 
 |Type      |Required|Position|PipelineInput        |Aliases|
 |----------|--------|--------|---------------------|-------|
-|`[String]`|false   |12      |true (ByPropertyName)|Summary|
+|`[String]`|false   |named   |true (ByPropertyName)|Summary|
 
 
 
@@ -286,7 +304,7 @@ A list of examples to use in help.  Will be ignored if -Synopsis and -Descriptio
 
 |Type        |Required|Position|PipelineInput|Aliases |
 |------------|--------|--------|-------------|--------|
-|`[String[]]`|false   |13      |false        |Examples|
+|`[String[]]`|false   |named   |false        |Examples|
 
 
 
@@ -301,7 +319,7 @@ A list of links to use in help.  Will be ignored if -Synopsis and -Description a
 
 |Type        |Required|Position|PipelineInput|Aliases|
 |------------|--------|--------|-------------|-------|
-|`[String[]]`|false   |14      |false        |Links  |
+|`[String[]]`|false   |named   |false        |Links  |
 
 
 
@@ -316,7 +334,7 @@ A list of attributes to declare on the scriptblock.
 
 |Type        |Required|Position|PipelineInput|
 |------------|--------|--------|-------------|
-|`[String[]]`|false   |15      |false        |
+|`[String[]]`|false   |named   |false        |
 
 
 
@@ -342,5 +360,5 @@ If set, will not transpile the created code.
 
 ### Syntax
 ```PowerShell
-New-PipeScript [[-Parameter] <Object>] [[-DynamicParameter] <ScriptBlock>] [[-Begin] <ScriptBlock>] [[-Process] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Header] <String>] [-AutoParameter] [[-AutoParameterType] <Type>] [[-ParameterHelp] <IDictionary>] [-WeaklyTyped] [[-FunctionName] <String>] [[-FunctionType] <String>] [[-Description] <String>] [[-Synopsis] <String>] [[-Example] <String[]>] [[-Link] <String[]>] [[-Attribute] <String[]>] [-NoTranspile] [<CommonParameters>]
+New-PipeScript [-InputObject <Object>] [-Parameter <Object>] [-DynamicParameter <ScriptBlock>] [-Begin <ScriptBlock>] [-Process <ScriptBlock>] [-End <ScriptBlock>] [-Header <String>] [-AutoParameter] [-AutoParameterType <Type>] [-ParameterHelp <IDictionary>] [-WeaklyTyped] [-FunctionName <String>] [-FunctionType <String>] [-Description <String>] [-Synopsis <String>] [-Example <String[]>] [-Link <String[]>] [-Attribute <String[]>] [-NoTranspile] [<CommonParameters>]
 ```
