@@ -117,10 +117,13 @@ HTTP Accept indicates what content types the web request will accept as a respon
     $FunctionType = 'function',
 
     # A description of the script's functionality.  If provided with -Synopsis, will generate help.
+    [vbn()]
     [string]
     $Description,
 
     # A short synopsis of the script's functionality.  If provided with -Description, will generate help.
+    [vbn()]
+    [Alias('Summary')]
     [string]
     $Synopsis,
 
