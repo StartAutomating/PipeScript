@@ -25,7 +25,14 @@ HTTP Accept indicates what content types the web request will accept as a respon
         }}
     #>
     [Alias('New-ScriptBlock')]
+    [CmdletBinding(PositionalBinding=$false)]
     param(
+
+    # An input object.  
+    # This can be anything, but will override certain parameters if it is a ScriptBlock.
+    [vfp()]
+    $InputObject,
+
     # Defines one or more parameters for a ScriptBlock.
     # Parameters can be defined in a few ways:
     # * As a ```[Collections.Dictionary]``` of Parameters
@@ -62,7 +69,9 @@ HTTP Accept indicates what content types the web request will accept as a respon
     $Begin,
 
     # The process block.
-    [Parameter(ValueFromPipeline,ValueFromPipelineByPropertyName)]    
+    # If a [ScriptBlock] is piped in and this has not been provided,
+    # -Process will be mapped to that script.
+    [Parameter(ValueFromPipelineByPropertyName)]    
     [Alias('ProcessBlock','ScriptBlock')]
     [ScriptBlock]
     $Process,
@@ -143,7 +152,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
 
     # If set, will not transpile the created code.
     [switch]
-    $NoTranspile
+    $NoTranspile    
     )
 
     begin {
@@ -174,7 +183,8 @@ HTTP Accept indicates what content types the web request will accept as a respon
     }
 
     process {
-        if ($Synopsis -and $Description) {
+        if ($Synopsis) {
+            if (-not $Description) { $Description = $Synopsis }
             function indentHelpLine {
                 foreach ($line in $args -split '(?>\r\n|\n)') {
                     (' ' * 4) + $line.TrimEnd()
@@ -427,6 +437,10 @@ HTTP Accept indicates what content types the web request will accept as a respon
         # begin,
         if ($Begin) {
             $allBeginBlocks += $begin
+        }
+
+        if ($InputObject -is [scriptblock] -and -not $process) {
+            $process = $InputObject
         }
 
         # process,
