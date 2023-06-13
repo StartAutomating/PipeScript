@@ -1,6 +1,5 @@
 # Declares various 'my' automatic variables
-
-function PipeScript.Automatic.Variable.MyCallstack {
+PipeScript.Automatic.Variable function MyCallstack {
     <#
     .SYNOPSIS
         $MyCallStack
@@ -10,14 +9,13 @@ function PipeScript.Automatic.Variable.MyCallstack {
     @(Get-PSCallstack) # Set $MyCallstack
 }
 
-
-
-function PipeScript.Automatic.Variable.MySelf {
+PipeScript.Automatic.Variable function MySelf {
     <#
     .SYNOPSIS
         $MySelf
     .DESCRIPTION
         $MySelf contains the currently executing ScriptBlock.
+
         A Command can & $myself to use anonymous recursion.
     .EXAMPLE
         {
@@ -27,6 +25,7 @@ function PipeScript.Automatic.Variable.MySelf {
         # By using $Myself, we can write an anonymously recursive fibonacci sequence.
         Invoke-PipeScript {
             param([int]$n = 1)
+
             if ($n -lt 2) {
                 $n
             } else {
@@ -37,14 +36,13 @@ function PipeScript.Automatic.Variable.MySelf {
     $MyInvocation.MyCommand.ScriptBlock # Set $mySelf
 }
 
-
-
-function PipeScript.Automatic.Variable.MyParameters {
+PipeScript.Automatic.Variable function MyParameters {
     <#
     .SYNOPSIS
         $MyParameters
     .DESCRIPTION
         $MyParameters contains a copy of $psBoundParameters.
+
         This leaves you more free to change it.
     .EXAMPLE
         Invoke-PipeScript -ScriptBlock {
@@ -54,9 +52,7 @@ function PipeScript.Automatic.Variable.MyParameters {
     [Ordered]@{} + $PSBoundParameters
 }
 
-
-
-function PipeScript.Automatic.Variable.MyCaller {
+PipeScript.Automatic.Variable function MyCaller {
     <#
     .SYNOPSIS
         $MyCaller
@@ -67,14 +63,10 @@ function PipeScript.Automatic.Variable.MyCaller {
     #>
     [Alias('Automatic.Variable.CallstackPeek')]
     param()
-   
-$myCallStack=@(Get-PSCallstack)
- $myCallStack[-1] # Initialize MyCaller
+    $myCallStack[-1] # Initialize MyCaller
 }
 
-
-
-function PipeScript.Automatic.Variable.MyCommandAst {
+PipeScript.Automatic.Variable function MyCommandAst {
     <#
     .SYNOPSIS
         $MyCommandAst
@@ -84,10 +76,7 @@ function PipeScript.Automatic.Variable.MyCommandAst {
         & (Use-PipeScript { $myCommandAst })
     #>    
     param()
-   
-$MyCaller=$($myCallStack=@(Get-PSCallstack)
-     $myCallStack[-1])
- if ($MyCaller) {
+    if ($MyCaller) {
         $myInv = $MyInvocation
         $MyCaller.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
             param($ast) 
@@ -97,4 +86,3 @@ $MyCaller=$($myCallStack=@(Get-PSCallstack)
         },$true)
     }
 }
-
