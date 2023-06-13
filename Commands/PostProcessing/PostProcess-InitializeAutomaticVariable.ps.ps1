@@ -38,11 +38,19 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
     )
 
     begin {
+        $AutomaticVariablePattern = [Regx]::new('
+        (?>
+        (?:PipeScript\p{P})?
+        (?>
+            Automatic|
+            Magic
+        )\p{P}Variable\p{P}
+        )
+        ','IgnoreCase,IgnorePatternWhitespace')
         # First, let's find all commands that automatic or magic variables.
         # Let's find all possible commands by wildcards (Automatic?Variable* or Magic?Variable*)
         $allAutomaticVariableCommands = @(
-            $ExecutionContext.SessionState.InvokeCommand.GetCommands('*Automatic?Variable?*','Function,Alias,Cmdlet', $true) -match 'Automatic\p{P}Variable\p{P}'
-            $ExecutionContext.SessionState.InvokeCommand.GetCommands('*Magic?Variable?*','Function,Alias,Cmdlet', $true) -match 'Magic\p{P}Variable\p{P}'
+            $ExecutionContext.SessionState.InvokeCommand.GetCommands('*Variable*','Function,Alias,Cmdlet', $true) -match $AutomaticVariablePattern        
         )
         # Then, let's create a lookup table by the name of the automatic variable
         $allAutomaticVariables = [Ordered]@{}
@@ -128,7 +136,8 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
             # If we have an automatic variable by that variable name            
             if ($allAutomaticVariables[$variableName]) {
                 # see if it's assigned anywhere before here
-                $assigned = @($var.GetAssignments())                
+                $assigned = @($var.GetAssignments())
+                # see if it's assigned anywhere before here                
                 continue if $assigned -and $assigned.Extent.StartOffset -le $var.Extent.StartOffset
                 # stringify it's script block and add it to our dictionary of prepends
                 $prependDefinitions[$variableName] = $allAutomaticVariables[$variableName] | GetAutomaticVariableDefinition                    
@@ -142,7 +151,7 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
         
         # Otherwise, make it all one big string.
         $toPrepend = 
-            foreach ($toPrepend in $prependDefinitions.GetEnumerator()) {                
+            @(foreach ($toPrepend in $prependDefinitions.GetEnumerator()) {                
                 $variableName  = $toPrepend.Key
                 if ($AlreadyPrepended -contains $variableName) { continue }
                 $variableValue = $toPrepend.Value
@@ -159,7 +168,7 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
                 # Why?  Because this way, the automatic variable is declared at the same scope as the ScriptBlock.
                 # (By the way, this means you cannot have _any_ parameters on an automatic variable)
                 $AlreadyPrepended += $variableName
-            }
+            }) -join [Environment]::newLine
         
         # Turn our big string into a script block
         $toPrepend = [ScriptBlock]::create($toPrepend)
