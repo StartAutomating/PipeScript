@@ -79,7 +79,7 @@
     }
 
     # Attempt to resolve the command
-    $resolvedCommand = $executionContext.SessionState.InvokeCommand.GetCommand($cmd.CommandElements[0], 'All')
+    $resolvedCommand = $executionContext.SessionState.InvokeCommand.GetCommand($cmdAst.CommandElements[0], 'All')
     if ($resolvedCommand) {
         # If it exists, return false.
         return $false
