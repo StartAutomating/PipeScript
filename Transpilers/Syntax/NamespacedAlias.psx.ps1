@@ -22,7 +22,14 @@
     # The second element must be 'alias'.
     if ($cmdAst.CommandElements[1].Value -ne 'alias') {
         return $false
-    }    
+    }
+    
+    # Attempt to resolve the command
+    $resolvedCommand = $executionContext.SessionState.InvokeCommand.GetCommand($cmd.CommandElements[0], 'All')
+    if ($resolvedCommand) {
+        # If it exists, return false.
+        return $false
+    }
     return $true
 })]
 param(

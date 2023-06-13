@@ -77,6 +77,13 @@
     if ($cmdAst.CommandElements[-1] -isnot [Management.Automation.Language.ScriptBlockExpressionAst]) {
         return $false
     }
+
+    # Attempt to resolve the command
+    $resolvedCommand = $executionContext.SessionState.InvokeCommand.GetCommand($cmd.CommandElements[0], 'All')
+    if ($resolvedCommand) {
+        # If it exists, return false.
+        return $false
+    }
     return $true
 })]
 param(
