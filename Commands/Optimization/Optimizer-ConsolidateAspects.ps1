@@ -1,4 +1,5 @@
-PipeScript.Optimizer function ConsolidateAspects {
+
+function PipeScript.Optimizer.ConsolidateAspects {
     <#
     .SYNOPSIS
         Consolidates Code Aspects
@@ -7,7 +8,6 @@ PipeScript.Optimizer function ConsolidateAspects {
     .EXAMPLE
         {        
             a.txt Template 'abc'
-
             b.txt Template 'abc'
         } | .>PipeScript
     .EXAMPLE
@@ -23,15 +23,13 @@ PipeScript.Optimizer function ConsolidateAspects {
         } | .>PipeScript
     #>
     param(
-    [vfp(Mandatory)]
+    [Parameter(Mandatory,ValueFromPipeline)]
     [scriptblock]
     $ScriptBlock
     )
-
     process {
         # Find all ScriptBlockExpressions
         $allExpressions = @($ScriptBlock | Search-PipeScript -AstType ScriptBlockExpression)
-
         $scriptBlockExpressions = [Ordered]@{}
         
         foreach ($expression in $allExpressions) {
@@ -47,8 +45,6 @@ PipeScript.Optimizer function ConsolidateAspects {
                 $scriptBlockExpressions["$matchingAst"]  += @($matchingAst)
             }
         }
-
-
         # Any bucket 
         $consolidations = [Ordered]@{}
         foreach ($k in $scriptBlockExpressions.Keys) {
@@ -70,7 +66,6 @@ PipeScript.Optimizer function ConsolidateAspects {
                 @(foreach ($value in $scriptBlockExpressions[$k]) {
                     $grandParent = $value.Parent.Parent
                     $greatGrandParent = $value.Parent.Parent.Parent
-
                     # If it's in a hashtable, use the key
                     if ($greatGrandParent -is [Management.Automation.Language.HashtableAst]) {
                         foreach ($kvp in $greatGrandParent.KeyValuePairs) {
@@ -110,14 +105,12 @@ PipeScript.Optimizer function ConsolidateAspects {
                         $null = $null
                     }
                 })
-
             $uniquePotentialNames = $potentialNames | Select-Object -Unique
             if ($uniquePotentialNames -and
                 $uniquePotentialNames -isnot [Object[]]) {
                 $consolidations[$k] = $uniquePotentialNames
             }
         }
-
         # Turn each of the consolidations into a regex replacement
         $regexReplacements = [Ordered]@{}
         # and a bunch of content to prepend.
@@ -128,7 +121,6 @@ PipeScript.Optimizer function ConsolidateAspects {
                 "`$$($consolidate.Value) = $($consolidate.Key)"
             }
         ) -join [Environment]::NewLine)")
-
         if ($consolidations.Count) {
             Update-PipeScript -RegexReplacement $regexReplacements -ScriptBlock $ScriptBlock -Prepend $prepend
         }
@@ -137,4 +129,5 @@ PipeScript.Optimizer function ConsolidateAspects {
         }
     }
 }
+
 

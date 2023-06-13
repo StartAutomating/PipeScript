@@ -1,4 +1,5 @@
-PipeScript.PostProcess function PartialFunction {
+
+function PipeScript.PostProcess.PartialFunction {
     <#
     .SYNOPSIS
         Expands partial functions
@@ -14,17 +15,15 @@ PipeScript.PostProcess function PartialFunction {
             
             function testPartialFunction {}
         }
-
         testPartialFunction # Should -BeLike '*TestPartialFunction*'
     #>
     param(
     # The function definition.
-    [vfp(Mandatory,ParameterSetName='FunctionDefinition')]
+    [Parameter(Mandatory,ParameterSetName='FunctionDefinition',ValueFromPipeline)]
     [Management.Automation.Language.FunctionDefinitionAst]
     $FunctionDefinitionAst
     )
     
-
     process {
         $realFunctionName = $FunctionDefinitionAst.Name
         $partialCommands = @(
@@ -37,7 +36,6 @@ PipeScript.PostProcess function PartialFunction {
         
                 $partialCommands = @(foreach ($partialFunction in $script:PartialCommands) {
                     # Only real partials should be considered.
-
                     if ($partialFunction -notmatch  'partial\p{P}') { continue }
                     # Partials should not combine with other partials.
                     
@@ -59,7 +57,6 @@ PipeScript.PostProcess function PartialFunction {
                         $partialFunction
                     }
                 })
-
                 # If there were any partial commands
                 if ($partialCommands) {
                     # sort them by rank and name.
@@ -68,8 +65,7 @@ PipeScript.PostProcess function PartialFunction {
             }
         )
         
-        return if (-not $partialCommands) {}
-
+        if ((-not $partialCommands)) { return }
         
         $originalDefinition = [ScriptBlock]::Create(($functionDefinitionAst.Body.Extent -replace '^{' -replace '}$'))
         # If there were any partial commands,
@@ -96,15 +92,12 @@ PipeScript.PostProcess function PartialFunction {
             }
         ) | # Take all of the combined input and pipe in into Join-PipeScript
             Join-PipeScript -Transpile
-
-
         $inlineParameters =
             if ($FunctionDefinition.Parameters) {
                 "($($FunctionDefinition.Parameters -join ','))"
             } else {
                 ''
             }
-
         $joinedFunction = @(if ($FunctionDefinition.IsFilter) {
             "filter", $realFunctionName, $inlineParameters, '{' -ne '' -join ' '
         } else {
@@ -116,4 +109,5 @@ PipeScript.PostProcess function PartialFunction {
         $joinedFunction.Ast.EndBlock.Statements[0]        
     }
 }
+
 
