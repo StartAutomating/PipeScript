@@ -48,6 +48,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Latex.Template](Transpilers/Templates/Latex.Template.psx.ps1)                             |Latex Template Transpiler.                        |
 |[LUA.Template](Transpilers/Templates/LUA.Template.psx.ps1)                                 |LUA Template Transpiler.                          |
 |[Markdown.Template](Transpilers/Templates/Markdown.Template.psx.ps1)                       |Markdown Template Transpiler.                     |
+|[ModuleCommandTypes](Transpilers/Modules/ModuleCommandTypes.psx.ps1)                       |Gets Module Command Types                         |
 |[ModuleExports](Transpilers/Modules/ModuleExports.psx.ps1)                                 |Gets Module Exports                               |
 |[ModuleRelationship](Transpilers/Modules/ModuleRelationship.psx.ps1)                       |Gets Module Relationships                         |
 |[NamespacedAlias](Transpilers/Syntax/NamespacedAlias.psx.ps1)                              |Declares a namespaced alias                       |
