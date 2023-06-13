@@ -83,9 +83,9 @@ Parameters can be defined in a few ways:
 
 
 
-|Type      |Required|Position|PipelineInput        |
-|----------|--------|--------|---------------------|
-|`[Object]`|false   |named   |true (ByPropertyName)|
+|Type      |Required|Position|PipelineInput        |Aliases   |
+|----------|--------|--------|---------------------|----------|
+|`[Object]`|false   |named   |true (ByPropertyName)|Parameters|
 
 
 
