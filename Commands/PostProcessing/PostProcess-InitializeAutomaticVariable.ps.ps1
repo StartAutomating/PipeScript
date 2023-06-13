@@ -38,7 +38,7 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
     )
 
     begin {
-        $AutomaticVariablePattern = [Regx]::new('
+        $AutomaticVariablePattern = [Regex]::new('
         (?>
         (?:PipeScript\p{P})?
         (?>
