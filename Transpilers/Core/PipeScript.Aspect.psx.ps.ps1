@@ -4,6 +4,9 @@
 .DESCRIPTION
     The Aspect Transpiler allows for any Aspect command to be embedded inline anywhere the aspect is found.
 
+    Aspects enable aspect-oriented programming in PipeScript.
+
+    Aspects should be small self-contained functions that solve one "aspect" of a problem.    
 .EXAMPLE
     Import-PipeScript {
         aspect function SayHi {
@@ -11,8 +14,8 @@
             else { $args }
         }
         function Greetings {
-            SayHi
-            SayHi "hallo Welt"
+            SayHi # Aspects can be referred to by their short name
+            Aspect.SayHi "hallo Welt" # or their long name
         }
     }
 
@@ -26,6 +29,7 @@
     
     # Determine the aspect name
     $aspectName = "Aspect?$(@($validating.CommandElements)[0])"
+    $aspectName = $aspectName -replace "AspectAspect", 'Aspect'
     # and see if we have any matching commands
     $aspectCommand = @($ExecutionContext.SessionState.InvokeCommand.GetCommands($aspectName, 'Function,Alias', $true))
     # If we do, this is a valid aspect.
@@ -39,7 +43,9 @@ $AspectCommandAst
 )
 
 process {
+    
     $aspectName = "Aspect?$(@($AspectCommandAst.CommandElements)[0])"
+    $aspectName = $aspectName -replace "AspectAspect", 'Aspect'
     $aspectCommands = @($ExecutionContext.SessionState.InvokeCommand.GetCommands($aspectName, 'Function,Alias', $true))
     
     return if -not $aspectCommands
