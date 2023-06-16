@@ -13,8 +13,11 @@
     FunctionsToExport = 'Export-Pipescript','Get-PipeScript','Get-Transpiler','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript','Aspect.ModuleCommandType','Aspect.ModuleCommandPattern','Aspect.ModuleExtendedCommand','PipeScript.Optimizer.ConsolidateAspects','PipeScript.PostProcess.InitializeAutomaticVariables','PipeScript.PostProcess.PartialFunction','PipeScript.Automatic.Variable.IsPipedTo','PipeScript.Automatic.Variable.IsPipedFrom','PipeScript.Automatic.Variable.MyCallstack','PipeScript.Automatic.Variable.MySelf','PipeScript.Automatic.Variable.MyParameters','PipeScript.Automatic.Variable.MyCaller','PipeScript.Automatic.Variable.MyCommandAst'
     PrivateData = @{
         CommandTypes = @{
-            'Aspect' =
-                '(?>PipeScript\p{P})?Aspect\p{P}'
+            'Aspect' = @{
+                Description = 'An aspect of code'
+                Pattern = '(?>PipeScript\p{P})?Aspect\p{P}'                
+            }
+                
             'AutomaticVariable' =               
               '(?>PipeScript\p{P})?(?>Automatic|Magic)\p{P}?Variable\p{P}'
             'Sentence'   =              
@@ -29,10 +32,10 @@
                 @{
                     Description = 'Transpiles an object into anything.'
                     Pattern = '
-                        (?<![-_])(?>
+                        (?>
                             (?:\.psx\.ps1$) # A .PSX.PS1 Script
                                 |
-                            (?<![-_]) # not after dash or underscore
+                            (?<![\-_]) # not after dash or underscore
                             (?:PipeScript\p{P})?(?>Transpiler|PSX)
                             (?!.+?\.ps1$) 
                         )
@@ -40,7 +43,7 @@
                 }
               
             'Template'   =
-              '\.ps1{0,1}\.(?<ext>[^\.]+$)'
+                '\.ps1{0,1}\.(?<ext>[^\.]+$)'
         }
         FileTypes = @{            
             PipeScript = @{
