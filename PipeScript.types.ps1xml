@@ -355,6 +355,29 @@ $this -replace '(?&gt;Magic|Automatic)\p{P}Variable\p{P}' -replace
     </Members>
   </Type>
   <Type>
+    <Name>BuildScript.Command</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>Template</Name>
+        <GetScriptBlock>
+                        $potentialTemplatePaths =
+    @(
+        $this.Source -replace '\.ps1$', '.ps.ps1'
+        $this.Source -replace '\.ps1$', '.ps1.ps1'
+    )
+
+foreach ($potentialTemplatePath in $potentialTemplatePaths ) {
+    if (Test-Path $potentialTemplatePath) {
+        return (Get-PipeScript -PipeScriptPath $potentialTemplatePath)
+    }    
+}
+
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
     <Name>System.Management.Automation.Language.CommandAst</Name>
     <Members>
       <AliasProperty>
