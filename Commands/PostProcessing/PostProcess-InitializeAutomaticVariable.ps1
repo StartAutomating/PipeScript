@@ -96,31 +96,29 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
             $ScriptBlock = [scriptblock]::Create($FunctionDefinitionAst.Body -replace '^\{' -replace '\}$')
         }
         # Find all Variables
-        $allVariables = @($ScriptBlock | Search-PipeScript -AstType VariableExpressionAst -Recurse | Select-Object -ExpandProperty Result)
+        $knownFunctionExtent = $null
+        $allVariables = @($ScriptBlock | Search-PipeScript -AstCondition {
+            param($ast)
+            if ($ast -is [Management.Automation.Language.FunctionDefinitionAst]) {
+                $knownFunctionExtent = $ast.Extent
+            }
+            if ($ast -isnot [Management.Automation.Language.VariableExpressionAST]) { return $false }
+            if ($ast.Splatted) { return $false}
+            
+            if ($knownFunctionExtent -and $ast.Extent.StartOffset -ge $knownFunctionExtent.StartOffset -and $ast.Extent.EndOffset -lt $knownFunctionExtent.EndOffset) {
+                return $false
+            }
+            if ($ast.Parent -is [Management.Automation.Language.AssignmentStatementAst] -and $ast.Parent.Left -eq $ast) {
+                return $false
+            }
+            return $true
+        } -Recurse | Select-Object -ExpandProperty Result)
         
         # If there were no variables in this script block, return.
         if (-not $allVariables) { return }
-        if ($psCmdlet.ParameterSetName -eq 'ScriptBlock') {
-            $allVariables = @(:nextVariable foreach ($var in $allVariables) {
-                $varParent = $var.Parent
-                
-                while ($varParent) {
-                    if ($varParent -is [Management.Automation.Language.FunctionDefinitionAst]) {
-                        continue nextVariable
-                    }
-                    if ($varParent -is [Management.Automation.Language.AssignmentStatementAst] -and 
-                        $varParent.Left -eq $var) {
-                        continue nextVariable
-                    }
-                    $varParent = $varParent.Parent    
-                }
-                $var                
-            })
-        }
         # Let's collect all of the variables we need to define
         $prependDefinitions = [Ordered]@{}
-        foreach ($var in $allVariables) {
-            $assigned = $var.GetAssignments()                                    
+        foreach ($var in $allVariables) {            
             $variableName = "$($var.VariablePath)"
             # If we have an automatic variable by that variable name            
             if ($allAutomaticVariables[$variableName]) {
@@ -168,7 +166,7 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
             FunctionDefinition {
                 [scriptblock]::Create(
                     @(
-                        "$(if ($FunctionDefinitionAst.IsFilter) { "filter"} else { "function"}) $($functionDefinition.Name) {"
+                        "$(if ($FunctionDefinitionAst.IsFilter) { "filter"} else { "function"}) $($FunctionDefinitionAst.Name) {"
                         $UpdatedScriptBlock
                         "}"
                     ) -join [Environment]::NewLine
