@@ -52,12 +52,31 @@ Consolidates any ScriptBlockExpressions with the same content into variables.
 ### Parameters
 #### **ScriptBlock**
 
+The ScriptBlock.  All aspects used more than once within this ScriptBlock will be consolidated.
+
+
+
 
 
 
 |Type           |Required|Position|PipelineInput |
 |---------------|--------|--------|--------------|
-|`[ScriptBlock]`|true    |1       |true (ByValue)|
+|`[ScriptBlock]`|true    |named   |true (ByValue)|
+
+
+
+#### **FunctionDefinitionAst**
+
+The Function Definition.  All aspects used more than once within this Function Definition will be consolidated.
+
+
+
+
+
+
+|Type                     |Required|Position|PipelineInput |
+|-------------------------|--------|--------|--------------|
+|`[FunctionDefinitionAst]`|true    |named   |true (ByValue)|
 
 
 
@@ -68,5 +87,8 @@ Consolidates any ScriptBlockExpressions with the same content into variables.
 
 ### Syntax
 ```PowerShell
-PipeScript.Optimizer.ConsolidateAspects [-ScriptBlock] <ScriptBlock> [<CommonParameters>]
+PipeScript.Optimizer.ConsolidateAspects -ScriptBlock <ScriptBlock> [<CommonParameters>]
+```
+```PowerShell
+PipeScript.Optimizer.ConsolidateAspects -FunctionDefinitionAst <FunctionDefinitionAst> [<CommonParameters>]
 ```
