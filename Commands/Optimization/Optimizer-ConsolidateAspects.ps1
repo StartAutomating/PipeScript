@@ -36,13 +36,27 @@ function PipeScript.Optimizer.ConsolidateAspects {
         if ($psCmdlet.ParameterSetName -eq 'FunctionDefinition') {
             $ScriptBlock = [scriptblock]::Create($FunctionDefinitionAst.Body -replace '^\{' -replace '\}$')
         }
-        # Find all ScriptBlockExpressions        
+        # Find all ScriptBlockExpressions
+        $knownFunctionExtent = $null        
         $allExpressions = @($ScriptBlock | Search-PipeScript -AstCondition {
             param($ast)
+            if ($ast -is [Management.Automation.Language.FunctionDefinitionAst]) {
+                $knownFunctionExtent = $ast.Extent
+            }
             if ($ast -isnot [Management.Automation.Language.ScriptBlockExpressionAst]) { return $false }
-            if ($ast.Parent -is [Management.Automation.Language.AttributeAst]) { return $false }
-            if ($ast.Parent -is [Management.Automation.Language.AssignmentStatementAst]) { return $false }
-            if ($ast.Parent -is [Management.Automation.Language.CommandAst]) { return $false }
+            if ($knownFunctionExtent -and $ast.Extent.StartOffset -ge $knownFunctionExtent.StartOffset -and $ast.Extent.EndOffset -lt $knownFunctionExtent.EndOffset) {
+                return $false
+            }
+            if ($ast.Parent -is [Management.Automation.Language.AttributeAst]) {
+                return $false
+            }
+            if ($ast.Parent -is [Management.Automation.Language.AssignmentStatementAst]) { 
+                return $false
+            }
+            if ($ast.Parent -is [Management.Automation.Language.CommandAst] -and 
+                $ast.Parent.CommandElements[0] -ne $ast) { 
+                return $false
+            }
             return $true
         } -Recurse)
         $scriptBlockExpressions = [Ordered]@{}
@@ -137,7 +151,7 @@ function PipeScript.Optimizer.ConsolidateAspects {
         $astReplacement = [Ordered]@{}
         # and a bunch of content to prepend.
         foreach ($consolidate in $consolidations.GetEnumerator()) {            
-            $astReplacement[$consolidate.Key] = '$' + $($consolidate.Value -replace '^\$' + ([Environment]::NewLine))
+            $astReplacement[$consolidate.Key] = [ScriptBlock]::Create('$' + $($consolidate.Value -replace '^\$' + ([Environment]::NewLine)))
         }
         
         $prepend  = if ($consolidatedScriptBlocks) {
@@ -148,7 +162,7 @@ function PipeScript.Optimizer.ConsolidateAspects {
             ) -join [Environment]::NewLine)")
         }
         $updatedScriptBlock = 
-            if ($consolidations.Count) {
+            if ($astReplacement.Count -gt 1) {
                 Update-PipeScript -AstReplacement $astReplacement -ScriptBlock $ScriptBlock -Prepend $prepend
             }
             else {
