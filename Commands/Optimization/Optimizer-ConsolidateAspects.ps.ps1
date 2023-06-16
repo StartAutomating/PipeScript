@@ -39,14 +39,14 @@ PipeScript.Optimizer function ConsolidateAspects {
             $ScriptBlock = [scriptblock]::Create($FunctionDefinitionAst.Body -replace '^\{' -replace '\}$')
         }
 
-        # Find all ScriptBlockExpressions
-        # Find all ScriptBlockExpressions
+        # Find all ScriptBlockExpressions        
         $allExpressions = @($ScriptBlock | Search-PipeScript -AstCondition {
             param($ast)
 
             if ($ast -isnot [Management.Automation.Language.ScriptBlockExpressionAst]) { return $false }
             if ($ast.Parent -is [Management.Automation.Language.AttributeAst]) { return $false }
             if ($ast.Parent -is [Management.Automation.Language.AssignmentStatementAst]) { return $false }
+            if ($ast.Parent -is [Management.Automation.Language.CommandAst]) { return $false }
             return $true
         } -Recurse)
 
