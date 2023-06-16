@@ -54,10 +54,11 @@ function PipeScript.Optimizer.ConsolidateAspects {
             }
             # and bucket the rest
             $matchingAst = $expression.Result -replace '\s'
+            
             if (-not $scriptBlockExpressions["$matchingAst"]) {
-                $scriptBlockExpressions["$matchingAst"]  = @($matchingAst)
+                $scriptBlockExpressions["$matchingAst"]  = @($expression.Result)
             } else {
-                $scriptBlockExpressions["$matchingAst"]  += @($matchingAst)
+                $scriptBlockExpressions["$matchingAst"]  += @($expression.Result)
             }
         }
         # Any bucket 
@@ -70,7 +71,7 @@ function PipeScript.Optimizer.ConsolidateAspects {
             }
             # is fair game for consolidation
             # (if it's not itself
-            if ("$k" -eq "$ScriptBlock") {
+            if ("$k" -eq ("$ScriptBlock" -replace '\s')) {
                 continue
             }
             # or blank)
@@ -125,7 +126,7 @@ function PipeScript.Optimizer.ConsolidateAspects {
             $uniquePotentialNames = $potentialNames | Select-Object -Unique
             if ($uniquePotentialNames -and
                 $uniquePotentialNames -isnot [Object[]]) {
-                
+                $uniquePotentialNames = "${uniquePotentialNames}Aspect"
                 $consolidatedScriptBlocks[$uniquePotentialNames] = $scriptBlockExpressions[$k][0]
                 foreach ($scriptExpression in $scriptBlockExpressions) {
                     $consolidations["$value"] = $uniquePotentialNames
@@ -137,13 +138,13 @@ function PipeScript.Optimizer.ConsolidateAspects {
         # and a bunch of content to prepend.
         foreach ($consolidate in $consolidations.GetEnumerator()) {
             $k = [regex]::Escape($consolidate.Key)                
-            $regexReplacements[$k] = '$' + $($consolidate.Value -replace '^\$' + ([Environment]::NewLine))
+            $regexReplacements[$k] = '$' + $($consolidate -replace '^\$' + ([Environment]::NewLine))
         }
         
         $prepend  = if ($consolidatedScriptBlocks) {
             [scriptblock]::Create("$(@(
                 foreach ($consolidate in $consolidatedScriptBlocks.GetEnumerator()) {                                
-                    "`$$($consolidate.Value) = $($consolidatedScriptBlocks[$k])"                
+                    "`$$($consolidate.Key) = $($consolidatedScriptBlocks[$consolidate.Key])"                
                 }
             ) -join [Environment]::NewLine)")
         }

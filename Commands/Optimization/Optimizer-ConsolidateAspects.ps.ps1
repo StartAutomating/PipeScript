@@ -135,7 +135,7 @@ PipeScript.Optimizer function ConsolidateAspects {
             $uniquePotentialNames = $potentialNames | Select-Object -Unique
             if ($uniquePotentialNames -and
                 $uniquePotentialNames -isnot [Object[]]) {
-                $uniquePotentialNames += "Aspect"
+                $uniquePotentialNames = "${uniquePotentialNames}Aspect"
                 $consolidatedScriptBlocks[$uniquePotentialNames] = $scriptBlockExpressions[$k][0]
                 foreach ($scriptExpression in $scriptBlockExpressions) {
                     $consolidations["$value"] = $uniquePotentialNames
@@ -148,7 +148,7 @@ PipeScript.Optimizer function ConsolidateAspects {
         # and a bunch of content to prepend.
         foreach ($consolidate in $consolidations.GetEnumerator()) {
             $k = [regex]::Escape($consolidate.Key)                
-            $regexReplacements[$k] = '$' + $($consolidate.Value -replace '^\$' + ([Environment]::NewLine))
+            $regexReplacements[$k] = '$' + $($consolidate -replace '^\$' + ([Environment]::NewLine))
         }
         
         $prepend  = if ($consolidatedScriptBlocks) {
