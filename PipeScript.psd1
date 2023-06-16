@@ -29,10 +29,12 @@
                 @{
                     Description = 'Transpiles an object into anything.'
                     Pattern = '
-                        (?>
+                        (?<![-_])(?>
                             (?:\.psx\.ps1$) # A .PSX.PS1 Script
                                 |
-                            (?:PipeScript\p{P})?(?>Transpiler|PSX) # Or a command Named Transpiler|PSX
+                            (?<![-_]) # not after dash or underscore
+                            (?:PipeScript\p{P})?(?>Transpiler|PSX)
+                            (?!.+?\.ps1$) 
                         )
                     '
                 }
