@@ -138,17 +138,16 @@ PipeScript.Optimizer function ConsolidateAspects {
                 $uniquePotentialNames = "${uniquePotentialNames}Aspect"
                 $consolidatedScriptBlocks[$uniquePotentialNames] = $scriptBlockExpressions[$k][0]
                 foreach ($scriptExpression in $scriptBlockExpressions) {
-                    $consolidations["$value"] = $uniquePotentialNames
+                    $consolidations[$value] = $uniquePotentialNames
                 }
             }
         }
 
         # Turn each of the consolidations into a regex replacement
-        $regexReplacements = [Ordered]@{}
+        $astReplacement = [Ordered]@{}
         # and a bunch of content to prepend.
-        foreach ($consolidate in $consolidations.GetEnumerator()) {
-            $k = [regex]::Escape($consolidate.Key)                
-            $regexReplacements[$k] = '$' + $($consolidate -replace '^\$' + ([Environment]::NewLine))
+        foreach ($consolidate in $consolidations.GetEnumerator()) {            
+            $astReplacement[$consolidate.Key] = '$' + $($consolidate.Value -replace '^\$' + ([Environment]::NewLine))
         }
         
         $prepend  = if ($consolidatedScriptBlocks) {
@@ -161,7 +160,7 @@ PipeScript.Optimizer function ConsolidateAspects {
 
         $updatedScriptBlock = 
             if ($consolidations.Count) {
-                Update-PipeScript -RegexReplacement $regexReplacements -ScriptBlock $ScriptBlock -Prepend $prepend
+                Update-PipeScript -AstReplacement $astReplacement -ScriptBlock $ScriptBlock -Prepend $prepend
             }
             else {
                 $ScriptBlock
