@@ -26,8 +26,11 @@
     }#>
     PrivateData = @{
         CommandTypes = @{
-            'Aspect' =
-                '(?>PipeScript\p{P})?Aspect\p{P}'
+            'Aspect' = @{
+                Description = 'An aspect of code'
+                Pattern = '(?>PipeScript\p{P})?Aspect\p{P}'                
+            }
+                
             'AutomaticVariable' =               
               '(?>PipeScript\p{P})?(?>Automatic|Magic)\p{P}?Variable\p{P}'
             'Sentence'   =              
@@ -42,10 +45,10 @@
                 @{
                     Description = 'Transpiles an object into anything.'
                     Pattern = '
-                        (?<![-_])(?>
+                        (?>
                             (?:\.psx\.ps1$) # A .PSX.PS1 Script
                                 |
-                            (?<![-_]) # not after dash or underscore
+                            (?<![\-_]) # not after dash or underscore
                             (?:PipeScript\p{P})?(?>Transpiler|PSX)
                             (?!.+?\.ps1$) 
                         )
@@ -53,7 +56,7 @@
                 }
               
             'Template'   =
-              '\.ps1{0,1}\.(?<ext>[^\.]+$)'
+                '\.ps1{0,1}\.(?<ext>[^\.]+$)'
         }
         FileTypes = @{            
             PipeScript = @{
