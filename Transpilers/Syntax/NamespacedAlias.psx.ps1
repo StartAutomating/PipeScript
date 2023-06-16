@@ -25,12 +25,13 @@
     }
     
     # Attempt to resolve the command
-    $resolvedCommand = $executionContext.SessionState.InvokeCommand.GetCommand($cmdAst.CommandElements[0], 'All')
-    if ($resolvedCommand) {
-        # If it exists, return false.
-        return $false
+    $potentialCmdName = $cmdAst.CommandElements[0]
+    # Attempt to resolve the command
+    if (-not $global:AllCommands) {
+        $global:AllCommands = $executionContext.SessionState.InvokeCommand.GetCommands('*','Alias,Function,Cmdlet', $true)
     }
-    return $true
+    $potentialCmdName = "$($cmdAst.CommandElements[0])"
+    return -not ($global:AllCommands.Name -eq $potentialCmdName)    
 })]
 param(
 # The CommandAST that will be transformed.
