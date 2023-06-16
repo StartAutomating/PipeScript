@@ -29,10 +29,17 @@
     
     # Determine the aspect name
     $aspectName = "Aspect?$(@($validating.CommandElements)[0])"
-    $aspectName = $aspectName -replace "AspectAspect", 'Aspect'
+    $aspectName = $aspectName -replace "Aspect\?Aspect", 'Aspect'
+    if (-not $script:KnownAspects) {
+        $script:KnownAspects = @{}
+    }
+    if ($script:KnownAspects.Contains($aspectName)) {
+        return $script:KnownAspects[$aspectName]
+    }
     # and see if we have any matching commands
     $aspectCommand = @($ExecutionContext.SessionState.InvokeCommand.GetCommands($aspectName, 'Function,Alias', $true))
-    # If we do, this is a valid aspect.
+        # If we do, this is a valid aspect.
+    $script:KnownAspects[$aspectName] = ($aspectCommand.Length -as [bool])
     return ($aspectCommand.Length -as [bool])
 })]
 param(
@@ -45,7 +52,7 @@ $AspectCommandAst
 process {
     
     $aspectName = "Aspect?$(@($AspectCommandAst.CommandElements)[0])"
-    $aspectName = $aspectName -replace "AspectAspect", 'Aspect'
+    $aspectName = $aspectName -replace "Aspect\?Aspect", 'Aspect'
     $aspectCommands = @($ExecutionContext.SessionState.InvokeCommand.GetCommands($aspectName, 'Function,Alias', $true))
     
     return if -not $aspectCommands
