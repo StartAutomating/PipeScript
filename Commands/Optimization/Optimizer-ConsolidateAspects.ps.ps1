@@ -59,11 +59,11 @@ PipeScript.Optimizer function ConsolidateAspects {
             }
             # and bucket the rest
             $matchingAst = $expression.Result -replace '\s'
-
+            
             if (-not $scriptBlockExpressions["$matchingAst"]) {
-                $scriptBlockExpressions["$matchingAst"]  = @($matchingAst)
+                $scriptBlockExpressions["$matchingAst"]  = @($expression.Result)
             } else {
-                $scriptBlockExpressions["$matchingAst"]  += @($matchingAst)
+                $scriptBlockExpressions["$matchingAst"]  += @($expression.Result)
             }
         }
 
@@ -78,7 +78,7 @@ PipeScript.Optimizer function ConsolidateAspects {
             }
             # is fair game for consolidation
             # (if it's not itself
-            if ("$k" -eq "$ScriptBlock") {
+            if ("$k" -eq ("$ScriptBlock" -replace '\s')) {
                 continue
             }
             # or blank)
@@ -135,7 +135,7 @@ PipeScript.Optimizer function ConsolidateAspects {
             $uniquePotentialNames = $potentialNames | Select-Object -Unique
             if ($uniquePotentialNames -and
                 $uniquePotentialNames -isnot [Object[]]) {
-                
+                $uniquePotentialNames += "Aspect"
                 $consolidatedScriptBlocks[$uniquePotentialNames] = $scriptBlockExpressions[$k][0]
                 foreach ($scriptExpression in $scriptBlockExpressions) {
                     $consolidations["$value"] = $uniquePotentialNames
@@ -154,7 +154,7 @@ PipeScript.Optimizer function ConsolidateAspects {
         $prepend  = if ($consolidatedScriptBlocks) {
             [scriptblock]::Create("$(@(
                 foreach ($consolidate in $consolidatedScriptBlocks.GetEnumerator()) {                                
-                    "`$$($consolidate.Value) = $($consolidatedScriptBlocks[$k])"                
+                    "`$$($consolidate.Key) = $($consolidatedScriptBlocks[$consolidate.Key])"                
                 }
             ) -join [Environment]::NewLine)")
         }
