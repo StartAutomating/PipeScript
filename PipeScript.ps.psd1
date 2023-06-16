@@ -28,19 +28,26 @@
         CommandTypes = @{
             'Aspect' = @{
                 Description = 'An aspect of code'
-                Pattern = '(?>PipeScript\p{P})?Aspect\p{P}'                
+                Pattern = '(?>PipeScript\p{P})?Aspect\p{P}'
             }
-                
-            'AutomaticVariable' =               
-              '(?>PipeScript\p{P})?(?>Automatic|Magic)\p{P}?Variable\p{P}'
-            'Sentence'   =              
-              '(?>PipeScript\p{P})?Sentence\p{P}'
+            'AutomaticVariable' =
+                '(?>PipeScript\p{P})?(?>Automatic|Magic)\p{P}?Variable\p{P}'
+            'BuildScript'    = @{
+                Description = 'A file that will be run at build time.'
+                Pattern = '(?<=(?>^|\.))build\.ps1$'
+            }
+            'PipeScriptNoun' = @{
+                Description = 'Commands with the noun PipeScript'
+                Pattern = '[^\-]+\-PipeScript$'
+            }
             'Interface'  =
-              '(?>PipeScript\p{P})?Interface\p{P}'
+                '(?>PipeScript\p{P})?Interface\p{P}'
             'Partial'    =
-              '(?>PipeScript\p{P})?Partial\p{P}'
+                '(?>PipeScript\p{P})?Partial\p{P}'
             'Protocol'   =
-              '(?>PipeScript\p{P})?(?>Protocol\p{P}|\p{P}Protocol)'
+                '(?>PipeScript\p{P})?(?>Protocol\p{P}|\p{P}Protocol)'
+            'Sentence'   =              
+                '(?>PipeScript\p{P})?Sentence\p{P}'
             'Transpiler' = 
                 @{
                     Description = 'Transpiles an object into anything.'
