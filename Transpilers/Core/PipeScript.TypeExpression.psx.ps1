@@ -9,6 +9,18 @@
         [include[a.ps1]]
     } | .>PipeScript
 #>
+[ValidateScript({
+    $validating = $_
+    if (-not $validating.TypeName) { return $false }
+    $IsRealType = $TypeExpressionAst.TypeName.GetReflectionType()
+    if ($IsRealType) { return $false }
+    
+    if ($TypeExpressionAst.TypeName.TypeName) {
+        return $TypeExpressionAst.TypeName.TypeName.Name -ne 'ordered'
+    } else {
+        return $TypeExpressionAst.TypeName.Name -ne 'ordered'
+    }    
+})]
 param(
 # The attributed expression
 [Parameter(Mandatory,ParameterSetName='AttributedExpressionAst',ValueFromPipeline)]
