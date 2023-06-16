@@ -96,7 +96,7 @@ function Export-Pipescript {
 
             if ($buildOutput) {
                 if ($env:GITHUB_WORKSPACE) {
-                    
+                    "::group::$($buildFile.Source)" | Out-Host
                     if ($buildOutput -is [Management.Automation.ErrorRecord]) {
                         $buildOutput | Out-Host
                     } else {
@@ -111,6 +111,7 @@ function Export-Pipescript {
                         $evt.MessageData
                     }) -join ' '
                     "$($buildFile.Source) [$($FileBuildEnded - $FileBuildStarted)] ( $([timespan]::FromMilliseconds($totalProcessTime)) post processing ($postProcessMessage)) " | Out-Host
+                    "::endgroup::" | Out-Host
                     Get-Event -SourceIdentifier PipeScript.PostProcess.Complete -ErrorAction Ignore | Remove-Event
                 }
                 
