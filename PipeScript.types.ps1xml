@@ -1409,6 +1409,16 @@ return $Metadata
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>PipeScriptType</Name>
+        <GetScriptBlock>
+                        
+if ($this.pstypenames -like '*.Command') {
+    $this.pstypenames -like '*.Command' -replace '\.Command'
+}
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Rank</Name>
         <GetScriptBlock>
                         foreach ($attr in $this.ScriptBlock.Attributes) {
