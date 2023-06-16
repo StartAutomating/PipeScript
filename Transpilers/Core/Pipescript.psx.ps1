@@ -419,16 +419,16 @@ process {
             $transpiledScriptBlock =
                 [ScriptBlock]::Create($newScript)
 
-            if (-not $IsNested -and $postCommands) {
-                $postProcessStart = [DateTime]::now
+            if (-not $IsNested -and $postCommands) {                
                 foreach ($post in $postCommands) {
+                    $postProcessStart = [DateTime]::now
                     $postOut = $transpiledScriptBlock | & $post 
+                    $postProcessEnd = [DateTime]::now
+                    $null = New-Event -SourceIdentifier "PipeScript.PostProcess.Complete" -Sender $ScriptBlock -EventArguments $post -MessageData ($postProcessEnd - $postProcessStart)                    
                     if ($postOut -and $postOut -is [scriptblock]) {
                         $transpiledScriptBlock = $postOut
                     }
-                }
-                $postProcessEnd = [DateTime]::now
-                $null = New-Event -SourceIdentifier "PipeScript.PostProcess.Complete" -Sender $ScriptBlock -EventArguments $postCommands -MessageData ($postProcessEnd - $postProcessStart)
+                }                                
             }
             
             $transpiledScriptBlock

@@ -104,10 +104,13 @@ function Export-Pipescript {
                     }
                     $FileBuildEnded = [DateTime]::now
                     $totalProcessTime = 0 
+                    $postProcessMessage = @(
                     foreach ($evt in Get-Event -SourceIdentifier PipeScript.PostProcess.Complete -ErrorAction Ignore) {
                         $totalProcessTime += $evt.MessageData.TotalMilliseconds
-                    }
-                    "$($buildFile.Source) [$($FileBuildEnded - $FileBuildStarted)] ( $([timespan]::FromMilliseconds($totalProcessTime)) post processing)" | Out-Host
+                        $evt.SourceArgs[0]
+                        $evt.MessageData
+                    }) -join ' '
+                    "$($buildFile.Source) [$($FileBuildEnded - $FileBuildStarted)] ( $([timespan]::FromMilliseconds($totalProcessTime)) post processing ($postProcessMessage)) " | Out-Host
                     Get-Event -SourceIdentifier PipeScript.PostProcess.Complete -ErrorAction Ignore | Remove-Event
                 }
                 
