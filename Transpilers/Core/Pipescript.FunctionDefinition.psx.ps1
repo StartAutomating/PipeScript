@@ -97,7 +97,11 @@ process {
             $postProcessStart = [DateTime]::now
             $postOut = $transpiledFunctionAst | & $post
             $postProcessEnd = [DateTime]::now
-            $null = New-Event -SourceIdentifier "PipeScript.PostProcess.Complete" -Sender $FunctionDefinition -EventArguments $post -MessageData ($postProcessEnd - $postProcessStart)
+            $null = New-Event -SourceIdentifier "PipeScript.PostProcess.Complete" -Sender $FunctionDefinition -EventArguments $post -MessageData ([PSCustomObject][Ordered]@{
+                Command = $post
+                InputObject = $transpiledFunctionAst
+                Duration = ($postProcessEnd - $postProcessStart)
+            })
             if ($postOut -and $postOut -is [Management.Automation.Language.FunctionDefinitionAst]) {
                 $transpiledFunctionAst = $postOut
             }

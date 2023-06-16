@@ -424,7 +424,11 @@ process {
                     $postProcessStart = [DateTime]::now
                     $postOut = $transpiledScriptBlock | & $post 
                     $postProcessEnd = [DateTime]::now
-                    $null = New-Event -SourceIdentifier "PipeScript.PostProcess.Complete" -Sender $ScriptBlock -EventArguments $post -MessageData ($postProcessEnd - $postProcessStart)                    
+                    $null = New-Event -SourceIdentifier "PipeScript.PostProcess.Complete" -Sender $ScriptBlock -EventArguments $post -MessageData ([PSCustomObject][Ordered]@{
+                        Command = $post
+                        InputObject = $transpiledScriptBlock
+                        Duration = ($postProcessEnd - $postProcessStart)
+                    })
                     if ($postOut -and $postOut -is [scriptblock]) {
                         $transpiledScriptBlock = $postOut
                     }

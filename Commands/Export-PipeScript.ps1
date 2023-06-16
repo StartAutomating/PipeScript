@@ -94,24 +94,50 @@ function Export-Pipescript {
                     Write-Error -ErrorRecord $ex
                 }
 
+            $EventsFromFileBuild = Get-Event -SourceIdentifier *PipeScript* |
+                Where-Object TimeGenerated -gt $FileBuildStarted |
+                Where-Object SourceIdentifier -Like '*PipeScript*'
+
             if ($buildOutput) {
-                if ($env:GITHUB_WORKSPACE) {
-                    "::group::$($buildFile.Source)" | Out-Host
+                
+                if ($env:GITHUB_WORKSPACE) {                    
+                    $FileBuildEnded = [DateTime]::now
+                    "$($buildFile.Source)", "$('=' * $buildFile.Source.Length)", "Output:" -join [Environment]::newLine | Out-Host
                     if ($buildOutput -is [Management.Automation.ErrorRecord]) {
                         $buildOutput | Out-Host
                     } else {
                         $buildOutput.FullName | Out-Host
                     }
-                    $FileBuildEnded = [DateTime]::now
                     $totalProcessTime = 0 
+                    $timingOfCommands = $EventsFromFileBuild | 
+                        Where-Object { $_.MessageData.Command -and $_.MessageData.Duration} |
+                        Select-Object -ExpandProperty MessageData | 
+                        Group-Object Command |
+                        Select-Object -Property @{
+                            Name = 'Command'
+                            Expression = { $_.Name }
+                        }, Count, @{
+                            Name= 'Duration'
+                            Expression = { 
+                                $totalDuration = 0
+                                foreach ($duration in $_.Group.Duration) { 
+                                    $totalDuration += $duration.TotalMilliseconds
+                                }
+                                [timespan]::FromMilliseconds($totalDuration)
+                            }
+                        } | 
+                        Sort-Object Duration -Descending
+                        
                     $postProcessMessage = @(
-                    foreach ($evt in Get-Event -SourceIdentifier PipeScript.PostProcess.Complete -ErrorAction Ignore) {
+                        
+                    foreach ($evt in $completionEvents) {
                         $totalProcessTime += $evt.MessageData.TotalMilliseconds
                         $evt.SourceArgs[0]
                         $evt.MessageData
                     }) -join ' '
-                    "$($buildFile.Source) [$($FileBuildEnded - $FileBuildStarted)] ( $([timespan]::FromMilliseconds($totalProcessTime)) post processing ($postProcessMessage)) " | Out-Host
-                    "::endgroup::" | Out-Host
+                    "Built in $($FileBuildEnded - $FileBuildStarted)" | Out-Host
+                    "Commands Run:" | Out-Host
+                    $timingOfCommands | Out-Host
                     Get-Event -SourceIdentifier PipeScript.PostProcess.Complete -ErrorAction Ignore | Remove-Event
                 }
                 
