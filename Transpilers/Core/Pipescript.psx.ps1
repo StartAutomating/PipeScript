@@ -59,6 +59,10 @@ $Transpiler
 begin {
     $myCmd = $MyInvocation.MyCommand
 
+    # Set up a global variable for all commands.
+    # This will actually return an enumerable, which we can re-enumerate any number of times we want.
+    $global:AllCommands = $ExecutionContext.SessionState.InvokeCommand.GetCommands('*', 'Alias,Function,Cmdlet',$true)
+
     function RefreshTranspilers([switch]$Force) {
         $PotentialTranspilers = Get-Transpiler -Force:$Force
 
@@ -416,12 +420,15 @@ process {
                 [ScriptBlock]::Create($newScript)
 
             if (-not $IsNested -and $postCommands) {
+                $postProcessStart = [DateTime]::now
                 foreach ($post in $postCommands) {
                     $postOut = $transpiledScriptBlock | & $post 
                     if ($postOut -and $postOut -is [scriptblock]) {
                         $transpiledScriptBlock = $postOut
                     }
                 }
+                $postProcessEnd = [DateTime]::now
+                $null = New-Event -SourceIdentifier "PipeScript.PostProcess.Complete" -Sender $ScriptBlock -EventArguments $postCommands -MessageData ($postProcessEnd - $postProcessStart)
             }
             
             $transpiledScriptBlock

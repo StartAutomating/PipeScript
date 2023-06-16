@@ -92,13 +92,15 @@ process {
     $transpiledFunctionAst = $transpiledFunction.Ast.EndBlock.Statements[0]
     if ($postCommands -and 
         $transpiledFunctionAst -is [Management.Automation.Language.FunctionDefinitionAst]) {
+        $postProcessStart = [DateTime]::now
         foreach ($post in $postCommands) {
             $postOut = $transpiledFunctionAst | & $post
             if ($postOut -and $postOut -is [Management.Automation.Language.FunctionDefinitionAst]) {
                 $transpiledFunctionAst = $postOut
             }
         }
-
+        $postProcessEnd = [DateTime]::now
+        $null = New-Event -SourceIdentifier "PipeScript.PostProcess.Complete" -Sender $FunctionDefinition -EventArguments $postCommands -MessageData ($postProcessEnd - $postProcessStart)
         $transpiledFunction = [scriptblock]::Create("$transpiledFunctionAst")
     }
 

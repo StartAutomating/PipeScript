@@ -96,12 +96,19 @@ function Export-Pipescript {
 
             if ($buildOutput) {
                 if ($env:GITHUB_WORKSPACE) {
-                    "$($buildFile.Source) [$([datetime]::now - $FileBuildStarted)]" | Out-Host
+                    
                     if ($buildOutput -is [Management.Automation.ErrorRecord]) {
                         $buildOutput | Out-Host
                     } else {
                         $buildOutput.FullName | Out-Host
                     }
+                    $FileBuildEnded = [DateTime]::now
+                    $totalProcessTime = 0 
+                    foreach ($evt in Get-Event -SourceIdentifier PipeScript.PostProcess.Complete) {
+                        $totalProcessTime += $evt.MessageData.TotalMilliseconds
+                    }
+                    "$($buildFile.Source) [$($FileBuildEnded - $FileBuildStarted)] ( $([timespan]::FromMilliseconds($totalProcessTime)) post processing)" | Out-Host
+                    Get-Event -SourceIdentifier PipeScript.PostProcess.Complete -ErrorAction Ignore | Remove-Event
                 }
                 
                 $buildOutput
