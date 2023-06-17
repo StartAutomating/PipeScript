@@ -596,5 +596,4 @@ jobs:
         uses: StartAutomating/EZOut@master
       - name: UseHelpOut
         uses: StartAutomating/HelpOut@master
-env: 
-  NoCoverage: true
+
