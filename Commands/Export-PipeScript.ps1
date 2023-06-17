@@ -8,8 +8,6 @@ function Export-Pipescript {
         Any Source Generator Files Discovered by PipeScript will be run, which will convert them into source code.
     .EXAMPLE
         Export-PipeScript
-    .EXAMPLE
-        Build-PipeScript
     #>
     [Alias('Build-PipeScript','bps','eps')]
     param(
