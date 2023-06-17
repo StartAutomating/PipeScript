@@ -14,7 +14,7 @@ function Import-PipeScript
         }
     .EXAMPLE
         Import-PipeScript -ScriptBlock {
-            partial function f() {
+            partial function f {
                 "This will be added to any function named f."
             }
         }
