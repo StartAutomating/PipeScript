@@ -2,9 +2,13 @@
 function Aspect.ModuleCommandType {
     <#
     .SYNOPSIS
-        Returns a module's command types
+        Outputs a module's command types
     .DESCRIPTION
-        Returns the command types defined in a module's manifest.        
+        Outputs the command types defined in a module's manifest.
+    .EXAMPLE
+        # Outputs a series of PSObjects with information about command types.
+        # The two primary pieces of information are the `.Name` and `.Pattern`.
+        Aspect.ModuleCommandType -Module PipeScript # Should -BeOfType ([PSObject])
     #>
     [Alias('Aspect.ModuleCommandTypes')]
     param(
@@ -65,9 +69,11 @@ function Aspect.ModuleCommandType {
 function Aspect.ModuleCommandPattern {
     <#
     .SYNOPSIS
-        Returns a module's command pattern
+        Outputs a module's command pattern
     .DESCRIPTION
-        Returns a regular expression that can match 
+        Outputs a regular expression that can be used to match any command pattern.
+    .EXAMPLE
+        Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
     #>
     param(
     # The name of a module, or a module info object.
@@ -185,9 +191,11 @@ function Aspect.ModuleExtendedCommand {
                           & { 
                               <#
                               .SYNOPSIS
-                                  Returns a module's command pattern
+                                  Outputs a module's command pattern
                               .DESCRIPTION
-                                  Returns a regular expression that can match 
+                                  Outputs a regular expression that can be used to match any command pattern.
+                              .EXAMPLE
+                                  Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
                               #>
                               param(
                               # The name of a module, or a module info object.
@@ -246,9 +254,7 @@ function Aspect.ModuleExtendedCommand {
                                   [Regex]::new("($combinedRegex)", 'IgnoreCase,IgnorePatternWhitespace')
                               }
                            } $ModuleInfo -Prefix $prefix -Suffix $Suffix
-        
-        
-        if ($FilePath) {
+        if ($PSBoundParameters['FilePath']) {
             $(
                     # Collect all items into an input collection
                     $inputCollection = @($executionContext.SessionState.InvokeCommand.GetCommands('*','Script',$true)
@@ -278,44 +284,18 @@ function Aspect.ModuleExtendedCommand {
                     }
                 } }
             ))
-            # Since filtering conditions have been passed, we must filter item-by-item
-            $filteredCollection = :nextItem foreach ($item in $inputCollection) {
-                # we set $this, $psItem, and $_ for ease-of-use.
-                $this = $_ = $psItem = $item 
-                 
-                    
-                
-            # Interpreting $CommandPattern with fuzzy logic        
-            if (-not (
-                # If the item stringify's to the value
-            ($item -match $CommandPattern) -or
-            # or it has a member match the value
-            ($item.psobject.Members.Name -match $CommandPattern) -or
-            # or it has a Parameter match the value
-            ($item.Parameters.Keys -match $CommandPattern) -or
-            # or it's typenames are named $CommandPattern
-            ($item.pstypenames -match $CommandPattern)
-            )) {    
-            continue nextItem # keep moving
-            }
-                
-                $item
-                
-                
-            }
             # Walk over each item in the filtered collection
-            foreach ($item in $filteredCollection) {
+            foreach ($item in $inputCollection) {
                 # we set $this, $psItem, and $_ for ease-of-use.
                 $this = $_ = $psItem = $item
                 
-                            $cmd = $_
-                            $n = $cmd.Name
-                            $matched = $CommandPattern.Match($n)
-                            if (-not $matched.Success) { return }
+                            $cmd = $_                
+                            $matched = $CommandPattern.Match("$cmd")
+                            if (-not $matched.Success) { continue }
                             foreach ($group in $matched.Groups) {
                                 if (-not $group.Success) { continue }
                                 if ($null -ne ($group.Name -as [int])) { continue }
-                                $groupName = $group.Name -replace '_', '.'
+                                $groupName = $group.Name.Replace('_','.')
                                 if ($cmd.pstypenames -notcontains $groupName) {
                                     $cmd.pstypenames.insert(0, $groupName)
                                 }                    
@@ -329,40 +309,14 @@ function Aspect.ModuleExtendedCommand {
             $(
                     # Collect all items into an input collection
                     $inputCollection = @($executionContext.SessionState.InvokeCommand.GetCommands('*','Alias, Function, Cmdlet',$true))
-            # Since filtering conditions have been passed, we must filter item-by-item
-            $filteredCollection = :nextItem foreach ($item in $inputCollection) {
-                # we set $this, $psItem, and $_ for ease-of-use.
-                $this = $_ = $psItem = $item 
-                 
-                    
-                
-            # Interpreting $CommandPattern with fuzzy logic        
-            if (-not (
-                # If the item stringify's to the value
-            ($item -match $CommandPattern) -or
-            # or it has a member match the value
-            ($item.psobject.Members.Name -match $CommandPattern) -or
-            # or it has a Parameter match the value
-            ($item.Parameters.Keys -match $CommandPattern) -or
-            # or it's typenames are named $CommandPattern
-            ($item.pstypenames -match $CommandPattern)
-            )) {    
-            continue nextItem # keep moving
-            }
-                
-                $item
-                
-                
-            }
             # Walk over each item in the filtered collection
-            foreach ($item in $filteredCollection) {
+            foreach ($item in $inputCollection) {
                 # we set $this, $psItem, and $_ for ease-of-use.
                 $this = $_ = $psItem = $item
                 
-                            $cmd = $_
-                            $n = $cmd.Name
-                            $matched = $CommandPattern.Match($n)
-                            if (-not $matched.Success) { return }
+                            $cmd = $_                
+                            $matched = $CommandPattern.Match("$cmd")
+                            if (-not $matched.Success) { continue }
                             foreach ($group in $matched.Groups) {
                                 if (-not $group.Success) { continue }
                                 if ($null -ne ($group.Name -as [int])) { continue }
