@@ -7,7 +7,7 @@ $commandsInModule = Get-Command -Module $moduleName
 
 $commandsWithExamples = $commandsInModule | Where-Object { $_.Examples }
 
-$examplePattern = [Regex]::new('(?<ws>[\s\r\n]{0,})\#\sShould\s(?<C>.+?)$', 'Multiline,IgnoreCase,IgnorePatternWhitespace')
+$examplePattern = [Regex]::new('(?<ws>[\s\r\n]{0,})\#\s(?<P>(?:.|\s){0,}?(?=\z|Should))?Should\s(?<C>.+?)$', 'Multiline,IgnoreCase,IgnorePatternWhitespace')
 
 $testsDirectory = $moduleInfo | Split-Path | Join-Path -ChildPath Tests | Join-Path -ChildPath "Examples"
 
@@ -24,7 +24,7 @@ foreach ($commandShouldWork in $commandsWithExamples) {
     foreach ($commandExample in $commandShouldWork.Examples) {
         $exampleCounter++
         "    it '$commandShouldWork Example $($exampleCounter)' {"
-            $examplePattern.Replace($commandExample, ' | Should ${C}')    
+            $examplePattern.Replace($commandExample, ' | ${P} Should ${C}')
         "    }"
     }
     "}"
