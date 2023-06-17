@@ -5,7 +5,7 @@ Aspect.ModuleCommandType
 
 
 ### Synopsis
-Returns a module's command types
+Outputs a module's command types
 
 
 
@@ -14,7 +14,20 @@ Returns a module's command types
 
 ### Description
 
-Returns the command types defined in a module's manifest.
+Outputs the command types defined in a module's manifest.
+
+
+
+---
+
+
+### Examples
+#### EXAMPLE 1
+```PowerShell
+# Outputs a series of PSObjects with information about command types.
+# The two primary pieces of information are the `.Name` and `.Pattern`.
+Aspect.ModuleCommandType -Module PipeScript # Should -BeOfType ([PSObject])
+```
 
 
 
