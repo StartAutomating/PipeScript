@@ -149,6 +149,39 @@ If provided, will exclude these parameters from the input.
 
 
 
+#### **BlankParameter**
+
+If provided, will make a blank parameter for every -PositionOffset.
+This is so, presumably, whatever has already been provided in these positions will bind correctly.
+The name of this parameter, by default, will be "ArgumentN" (for example, Argument1)
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
+
+
+#### **BlankParameterName**
+
+The name of the blank parameter.
+If there is a -PositionOffset, this will make a blank parameter by this name for the position.
+
+
+
+
+
+
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |7       |false        |
+
+
+
 
 
 ---
@@ -156,5 +189,5 @@ If provided, will exclude these parameters from the input.
 
 ### Syntax
 ```PowerShell
-Aspect.DynamicParameter [[-InputObject] <Object>] [[-ParameterSetName] <String>] [[-PositionOffset] <Int32>] [-NoMandatory] [[-commandList] <String[]>] [[-IncludeParameter] <String[]>] [[-ExcludeParameter] <String[]>] [<CommonParameters>]
+Aspect.DynamicParameter [[-InputObject] <Object>] [[-ParameterSetName] <String>] [[-PositionOffset] <Int32>] [-NoMandatory] [[-commandList] <String[]>] [[-IncludeParameter] <String[]>] [[-ExcludeParameter] <String[]>] [-BlankParameter] [[-BlankParameterName] <String[]>] [<CommonParameters>]
 ```
