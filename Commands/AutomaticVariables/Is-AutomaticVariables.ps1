@@ -24,7 +24,8 @@ function PipeScript.Automatic.Variable.IsPipedFrom {
     .DESCRIPTION
         $IsPipedFrom determines if the pipeline continues after this command.
     .EXAMPLE
-        & (Use-PipeScript { $IsPipedFrom }) # Should -Be $False
+        $PipedFrom = & (Use-PipeScript { $IsPipedFrom })
+        $PipedFrom # Should -Be $False
     .EXAMPLE
         & (Use-PipeScript { $IsPipedFrom }) | Foreach-Object { $_ } # Should -Be $true
     #>    
