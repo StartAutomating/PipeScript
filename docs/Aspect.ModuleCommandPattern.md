@@ -5,7 +5,7 @@ Aspect.ModuleCommandPattern
 
 
 ### Synopsis
-Returns a module's command pattern
+Outputs a module's command pattern
 
 
 
@@ -14,7 +14,18 @@ Returns a module's command pattern
 
 ### Description
 
-Returns a regular expression that can match
+Outputs a regular expression that can be used to match any command pattern.
+
+
+
+---
+
+
+### Examples
+#### EXAMPLE 1
+```PowerShell
+Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
+```
 
 
 
