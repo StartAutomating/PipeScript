@@ -6,7 +6,7 @@ describe 'Join-PipeScript' {
     it 'Join-PipeScript Example 2' {
         {param([string]$x)},
         {param([string]$y)} | 
-            Join-PipeScript | Should -BeLike '*param(*$x,*$y*)*'
+            Join-PipeScript |  Should -BeLike '*param(*$x,*$y*)*'
     }
     it 'Join-PipeScript Example 3' {
         {
