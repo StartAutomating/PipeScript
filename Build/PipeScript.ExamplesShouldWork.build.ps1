@@ -9,7 +9,7 @@ $commandsWithExamples = $commandsInModule | Where-Object { $_.Examples }
 
 $examplePattern = [Regex]::new('(?<ws>[\s\r\n]{0,})\#\sShould\s(?<C>.+?)$', 'Multiline,IgnoreCase,IgnorePatternWhitespace')
 
-$testsDirectory = Split-Path $PSScriptRoot | Split-Path | Join-Path -ChildPath Tests
+$testsDirectory = $moduleInfo | Split-Path | Join-Path -ChildPath Tests
 
 foreach ($commandShouldWork in $commandsWithExamples) {
     $exampleCounter = 0
