@@ -24,7 +24,8 @@ $IsPipedFrom determines if the pipeline continues after this command.
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
-& (Use-PipeScript { $IsPipedFrom }) # Should -Be $False
+$PipedFrom = & (Use-PipeScript { $IsPipedFrom })
+$PipedFrom # Should -Be $False
 ```
 
 #### EXAMPLE 2
