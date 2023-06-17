@@ -38,7 +38,16 @@ function Aspect.DynamicParameter {
     $IncludeParameter,
     # If provided, will exclude these parameters from the input.
     [string[]]
-    $ExcludeParameter
+    $ExcludeParameter,
+    # If provided, will make a blank parameter for every -PositionOffset.
+    # This is so, presumably, whatever has already been provided in these positions will bind correctly.
+    # The name of this parameter, by default, will be "ArgumentN" (for example, Argument1)
+    [switch]
+    $BlankParameter,
+    # The name of the blank parameter.
+    # If there is a -PositionOffset, this will make a blank parameter by this name for the position.    
+    [string[]]
+    $BlankParameterName = "Argument"
     )
     begin {
         $inputQueue = [Collections.Queue]::new()
@@ -48,6 +57,26 @@ function Aspect.DynamicParameter {
     }
     end {        
         $DynamicParameters = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
+        if ($PositionOffset -and 
+            ($BlankParameter -or $PSBoundParameters['BlankParameterName'])) {
+            for ($pos =0; $pos -lt $PositionOffset; $pos++) {
+                $paramName = $BlankParameterName[$pos]
+                if (-not $paramName) {
+                    $paramName = "$($BlankParameterName[-1])$pos"
+                }                
+                $DynamicParameters.Add($paramName, 
+                    [Management.Automation.RuntimeDefinedParameter]::new(
+                        $paramName,
+                        [PSObject], 
+                        @(
+                            $paramAttr = [Management.Automation.ParameterAttribute]::new()
+                            $paramAttr.Position = $pos
+                            $paramAttr
+                        )
+                    )
+                )
+            }
+        }
         while ($inputQueue.Count) {
             $InputObject = $inputQueue.Dequeue()
             $inputCmdMetaData = 
