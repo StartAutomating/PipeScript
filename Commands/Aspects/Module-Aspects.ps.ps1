@@ -1,9 +1,13 @@
 Aspect function ModuleCommandType {
     <#
     .SYNOPSIS
-        Returns a module's command types
+        Outputs a module's command types
     .DESCRIPTION
-        Returns the command types defined in a module's manifest.        
+        Outputs the command types defined in a module's manifest.
+    .EXAMPLE
+        # Outputs a series of PSObjects with information about command types.
+        # The two primary pieces of information are the `.Name` and `.Pattern`.
+        Aspect.ModuleCommandType -Module PipeScript # Should -BeOfType ([PSObject])
     #>
     [Alias('Aspect.ModuleCommandTypes')]
     param(
@@ -51,9 +55,11 @@ Aspect function ModuleCommandType {
 Aspect function ModuleCommandPattern {
     <#
     .SYNOPSIS
-        Returns a module's command pattern
+        Outputs a module's command pattern
     .DESCRIPTION
-        Returns a regular expression that can match 
+        Outputs a regular expression that can be used to match any command pattern.
+    .EXAMPLE
+        Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
     #>
     param(
     # The name of a module, or a module info object.
@@ -152,18 +158,15 @@ Aspect function ModuleExtendedCommand {
         
         $CommandPattern = ModuleCommandPattern $ModuleInfo -Prefix $prefix -Suffix $Suffix
 
-        
-        
-        if ($FilePath) {
-            all scripts in $FilePath matching $CommandPattern foreach {
-                $cmd = $_
-                $n = $cmd.Name
-                $matched = $CommandPattern.Match($n)
-                if (-not $matched.Success) { return }
+        if ($PSBoundParameters['FilePath']) {
+            all scripts in $FilePath foreach {
+                $cmd = $_                
+                $matched = $CommandPattern.Match("$cmd")
+                if (-not $matched.Success) { continue }
                 foreach ($group in $matched.Groups) {
                     if (-not $group.Success) { continue }
                     if ($null -ne ($group.Name -as [int])) { continue }
-                    $groupName = $group.Name -replace '_', '.'
+                    $groupName = $group.Name.Replace('_','.')
                     if ($cmd.pstypenames -notcontains $groupName) {
                         $cmd.pstypenames.insert(0, $groupName)
                     }                    
@@ -172,11 +175,10 @@ Aspect function ModuleExtendedCommand {
             }
         }
         else {
-            all functions cmdlets aliases matching $CommandPattern foreach {
-                $cmd = $_
-                $n = $cmd.Name
-                $matched = $CommandPattern.Match($n)
-                if (-not $matched.Success) { return }
+            all functions cmdlets aliases foreach {
+                $cmd = $_                
+                $matched = $CommandPattern.Match("$cmd")
+                if (-not $matched.Success) { continue }
                 foreach ($group in $matched.Groups) {
                     if (-not $group.Success) { continue }
                     if ($null -ne ($group.Name -as [int])) { continue }
@@ -188,7 +190,5 @@ Aspect function ModuleExtendedCommand {
                 $cmd
             }
         }
-
-
     }
 }
