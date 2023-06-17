@@ -8,7 +8,7 @@ describe 'PipeScript.PostProcess.PartialFunction' {
             
             function testPartialFunction {}
         }
-        testPartialFunction | Should -BeLike '*TestPartialFunction*'
+        testPartialFunction |  Should -BeLike '*TestPartialFunction*'
     }
 }
 
