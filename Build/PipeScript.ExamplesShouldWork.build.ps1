@@ -9,7 +9,11 @@ $commandsWithExamples = $commandsInModule | Where-Object { $_.Examples }
 
 $examplePattern = [Regex]::new('(?<ws>[\s\r\n]{0,})\#\sShould\s(?<C>.+?)$', 'Multiline,IgnoreCase,IgnorePatternWhitespace')
 
-$testsDirectory = $moduleInfo | Split-Path | Join-Path -ChildPath Tests
+$testsDirectory = $moduleInfo | Split-Path | Join-Path -ChildPath Tests | Join-Path -ChildPath "Examples"
+
+if (-not (Test-Path $testsDirectory)) {
+    $null = New-Item -ItemType Directory -Path $testsDirectory
+}
 
 foreach ($commandShouldWork in $commandsWithExamples) {
     $exampleCounter = 0
@@ -26,7 +30,7 @@ foreach ($commandShouldWork in $commandsWithExamples) {
     "}"
     '') -join [Environment]::newLine
 
-    $testFilePath = Join-Path $testsDirectory "examples-$CommandShouldWork.tests.ps1"
+    $testFilePath = Join-Path $testsDirectory "$CommandShouldWork.examples.tests.ps1"
     $exampleFileContent | Set-Content $testFilePath
     Get-Item $testFilePath    
 }
