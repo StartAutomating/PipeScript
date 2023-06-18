@@ -32,7 +32,7 @@ Get-Command Get-Command |
 #### EXAMPLE 2
 ```PowerShell
 Get-Command Get-Process | 
-    Aspect.DynamicParameter -IncludeParameter Name # Select -Expand Key | Should -Be Name
+    Aspect.DynamicParameter -IncludeParameter Name # Select -Expand Keys | Should -Be Name
 ```
 
 
