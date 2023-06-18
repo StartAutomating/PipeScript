@@ -12,6 +12,7 @@ This directory and it's subdirectories contain syntax changes that enable common
 |[EqualityTypeComparison](EqualityTypeComparison.psx.ps1)|[Allows equality type comparison.](EqualityTypeComparison.psx.ps1)|
 |[PipedAssignment](PipedAssignment.psx.ps1)              |[Piped Assignment Transpiler](PipedAssignment.psx.ps1)            |
 |[RegexLiteral](RegexLiteral.psx.ps1)                    |[Regex Literal Transpiler](RegexLiteral.psx.ps1)                  |
+|[WhereMethod](WhereMethod.psx.ps1)                      |[Where Method](WhereMethod.psx.ps1)                               |
 
 
 
@@ -426,5 +427,12 @@ $($Keywords -join '|') # followed by keywords
 $($Keywords -join '|') # followed by keywords
 [\s\p{P}]{0,1}         # followed by whitespace or punctuation
 "@, 'IgnorePatternWhitespace,IgnoreCase')
+~~~
+
+## WhereMethod Example 1
+
+
+~~~PowerShell
+    { Get-PipeScript | ? CouldPipeType([ScriptBlock]) } | Use-PipeScript
 ~~~
 
