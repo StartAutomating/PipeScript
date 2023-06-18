@@ -108,7 +108,7 @@ Aspect function ModuleCommandPattern {
 
             "(?<$Prefix$($categoryKeyValue.Key -replace '\p{P}', '_')$Suffix>$categoryPattern)"
         }) -join ([Environment]::NewLine + '|' + [Environment]::NewLine)
-        [Regex]::new("($combinedRegex)", 'IgnoreCase,IgnorePatternWhitespace')
+        [Regex]::new("($combinedRegex)", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
     }
 }
 
