@@ -32,24 +32,31 @@ function PipeScript.Optimizer.ConsolidateAspects {
     [Management.Automation.Language.FunctionDefinitionAst]
     $FunctionDefinitionAst
     )
+    begin {
+        $findAspectComment = [Regex]::new('# aspect\p{P}(?<n>\S+)', 'IgnoreCase,RightToLeft', '00:00:01')
+    }
     process {
         if ($psCmdlet.ParameterSetName -eq 'FunctionDefinition') {
             $ScriptBlock = [scriptblock]::Create($FunctionDefinitionAst.Body -replace '^\{' -replace '\}$')
         }
         # Find all ScriptBlockExpressions
-        $knownFunctionExtent = $null        
+        $script:FoundFunctionExtent = $null
         $allExpressions = @($ScriptBlock | Search-PipeScript -AstCondition {
             param($ast)
             if ($ast -is [Management.Automation.Language.FunctionDefinitionAst]) {
-                $knownFunctionExtent = $ast.Extent
+                $script:FoundFunctionExtent = $ast.Extent
             }
-            if ($ast -isnot [Management.Automation.Language.ScriptBlockExpressionAst]) { return $false }
-            if ($knownFunctionExtent -and $ast.Extent.StartOffset -ge $knownFunctionExtent.StartOffset -and $ast.Extent.EndOffset -lt $knownFunctionExtent.EndOffset) {
+            if ($ast -isnot [Management.Automation.Language.ScriptBlockExpressionAst]) { return $false }            
+            
+            if ($script:FoundFunctionExtent -and 
+                ($ast.Extent.StartOffset -ge $script:FoundFunctionExtent.StartOffset) -and 
+                ($ast.Extent.EndOffset -lt $script:FoundFunctionExtent.EndOffset)) {
                 return $false
             }
-            if ($ast.Parent -is [Management.Automation.Language.AttributeAst]) {
+            if ($ast.Parent -is [Management.Automation.Language.AttributeAst]) { 
                 return $false
             }
+            
             if ($ast.Parent -is [Management.Automation.Language.AssignmentStatementAst]) { 
                 return $false
             }
@@ -119,31 +126,28 @@ function PipeScript.Optimizer.ConsolidateAspects {
                             }
                         }) -join '_'
                     }
-                    elseif (
+                    elseif (                        
                         # Otherwise, if the previous comment line is "aspect.Name"
-                        $greatGrandParent.Parent -and
-                        $(
-                        $foundCommentLine = [Regex]::new('^\s{0,}#\saspect\p{P}(?<n>\S+)', "Multiline,RightToLeft").Match(
-                            $greatGrandParent.Parent.Extent.ToString(), $grandParent.Extent.StartOffset - $greatGrandParent.Parent.Extent.StartOffset
-                        )                        
-                        $foundCommentLine.Success
-                        )
+                        $greatGrandParent.Parent -and                         
+                        "$($greatGrandParent.Parent)".Substring(0,  $greatGrandParent.Extent.StartOffset - $greatGrandParent.Parent.Extent.StartOffset) -match $findAspectComment
                     ) {
                         # it's the aspect name.
-                        $foundCommentLine.Groups["n"].Value
+                        $matches.n
                     }
                     else {
                         # Otherwise, we don't know what we'd call it (and cannot consolidate)
                         $null = $null
                     }
                 })
-            $uniquePotentialNames = $potentialNames | Select-Object -Unique
-            if ($uniquePotentialNames -and
-                $uniquePotentialNames -isnot [Object[]]) {
-                $uniquePotentialNames = "${uniquePotentialNames}Aspect"
-                $consolidatedScriptBlocks[$uniquePotentialNames] = $scriptBlockExpressions[$k][0]
-                foreach ($scriptExpression in $scriptBlockExpressions) {
-                    $consolidations[$value] = $uniquePotentialNames
+            $uniquePotentialNames = @{}
+            foreach ($potentialName in $potentialNames) {
+                $uniquePotentialNames[$potentialName] = $potentialName
+            }                         
+            if ($uniquePotentialNames.Count -eq 1) {
+                $determinedAspectName = "$(@($uniquePotentialNames.Keys))Aspect"
+                $consolidatedScriptBlocks[$determinedAspectName] = $scriptBlockExpressions[$k][0]
+                foreach ($scriptExpression in $scriptBlockExpressions[$k]) {
+                    $consolidations[$scriptExpression] = $determinedAspectName
                 }
             }
         }
