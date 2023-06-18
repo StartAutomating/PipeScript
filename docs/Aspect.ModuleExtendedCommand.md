@@ -33,6 +33,17 @@ so that the extended commands can be augmented by the extended types system.
 ---
 
 
+### Examples
+#### EXAMPLE 1
+```PowerShell
+Aspect.ModuleExtendedCommand -Module PipeScript # Should -BeOfType ([Management.Automation.CommandInfo])
+```
+
+
+
+---
+
+
 ### Parameters
 #### **Module**
 
@@ -82,12 +93,32 @@ The prefix to apply to each named capture.
 
 #### **FilePath**
 
+The file path(s).  If provided, will look for commands within these paths.
+
+
+
 
 
 
 |Type      |Required|Position|PipelineInput        |Aliases |
 |----------|--------|--------|---------------------|--------|
 |`[Object]`|false   |4       |true (ByPropertyName)|Fullname|
+
+
+
+#### **PSTypeName**
+
+The base PSTypeName(s).
+If provided, any commands that match the pattern will apply these typenames, too.
+
+
+
+
+
+
+|Type        |Required|Position|PipelineInput|
+|------------|--------|--------|-------------|
+|`[String[]]`|false   |5       |false        |
 
 
 
@@ -98,5 +129,5 @@ The prefix to apply to each named capture.
 
 ### Syntax
 ```PowerShell
-Aspect.ModuleExtendedCommand [-Module] <Object> [[-Suffix] <String>] [[-Prefix] <String>] [[-FilePath] <Object>] [<CommonParameters>]
+Aspect.ModuleExtendedCommand [-Module] <Object> [[-Suffix] <String>] [[-Prefix] <String>] [[-FilePath] <Object>] [[-PSTypeName] <String[]>] [<CommonParameters>]
 ```
