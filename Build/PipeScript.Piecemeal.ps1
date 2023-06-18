@@ -10,10 +10,5 @@ Install-Piecemeal -ExtensionNoun 'Transpiler' -ExtensionPattern '\.psx\.ps1$','^
     Join-Path $commandsPath Get-Transpiler.ps1
 )
 
-# So is Get-PipeScript
-Install-Piecemeal -ExtensionNoun 'PipeScript' -ExtensionPattern '\.psx\.ps1{0,1}$','\.ps1{0,1}\.(?<ext>[^.]+$)','\.ps1{0,1}$','^PipeScript.' -ExtensionTypeName 'PipeScript' -OutputPath (
-    Join-Path $commandsPath Get-PipeScript.ps1
-)
-
 # Pop back to wherever we were
 Pop-Location
