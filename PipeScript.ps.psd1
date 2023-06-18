@@ -27,11 +27,29 @@
     PrivateData = @{
         CommandTypes = @{
             'Aspect' = @{
-                Description = 'An aspect of code'
-                Pattern = '(?>PipeScript\p{P})?Aspect\p{P}'
+                Description = 'An aspect of code.'
+                Pattern = '                    
+                    (?>PipeScript\p{P})? # (optionally) PipeScript+Punctuation
+                    Aspect\p{P}          # Followed by Aspect and punctuation.
+                '  
             }
-            'AutomaticVariable' =
-                '(?>PipeScript\p{P})?(?>Automatic|Magic)\p{P}?Variable\p{P}'
+            'Analyzers' = @{
+                Description = 'Analyzation Commands'
+                Pattern     = '
+                    (?>PipeScript\p{P})?   # (optionally) PipeScript+Punctuation
+                    Analy[zs][^\p{P}]+\p{P} # Anal[zs] + Many NotPunctuation + Punctuation
+                '
+            }
+
+            'AutomaticVariable' = @{
+                Description = 'An automatic variable.'
+                Pattern = '
+                    (?>PipeScript\p{P})? # (optionally) PipeScript+Punctuation
+                    (?>Automatic|Magic)  # automatic or magic
+                    \p{P}?Variable\p{P}  # Optional Punctation + Variable + Punctuation
+                '
+            }
+
             'BuildScript'    = @{
                 Description = 'A file that will be run at build time.'
                 Pattern = '(?<=(?>^|\.))build\.ps1$'
@@ -40,14 +58,26 @@
                 Description = 'Commands with the noun PipeScript'
                 Pattern = '[^\-]+\-PipeScript$'
             }
-            'Interface'  =
-                '(?>PipeScript\p{P})?Interface\p{P}'
-            'Partial'    =
-                '(?>PipeScript\p{P})?Partial\p{P}'
-            'Protocol'   =
-                '(?>PipeScript\p{P})?(?>Protocol\p{P}|\p{P}Protocol)'
-            'Sentence'   =              
-                '(?>PipeScript\p{P})?Sentence\p{P}'
+            'Interface'  = @{
+                Description = 'An Interface Command'
+                Pattern = '(?>PipeScript\p{P})?Interface\p{P}'
+            }
+
+            'Partial' = @{
+                Description = 'A partial function.'
+                Pattern = '(?>PipeScript\p{P})?Partial\p{P}'
+            }
+                            
+            'Protocol'   = @{
+                Description = 'Protocol Commands'
+                Pattern = '(?>PipeScript\p{P})?(?>Protocol\p{P}|\p{P}Protocol)'
+            }
+                
+            'Sentence'   = @{
+                Description = 'Sentence Commands'
+                Pattern = '(?>PipeScript\p{P})?Sentence\p{P}'
+            }              
+                            
             'Transpiler' = 
                 @{
                     Description = 'Transpiles an object into anything.'
@@ -62,8 +92,32 @@
                     '
                 }
               
-            'Template'   =
+            'Template'     =
                 '\.ps1{0,1}\.(?<ext>[^\.]+$)'
+
+            'PreProcessor' = @{
+                Description = 'Preprocessing Commands'
+                Pattern     = '
+                    (?>PipeScript\p{P})?  # (optionally) PipeScript+Punctuation
+                    PreProc[^\p{P}]+\p{P} # Preproc + Many NotPunctuation + Punctuation
+                '
+            }
+
+            'PostProcessor' = @{
+                Description = 'PostProcessing Commands'
+                Pattern     = '
+                    (?>PipeScript\p{P})?  # (optionally) PipeScript+Punctuation
+                    PostProc[^\p{P}]+\p{P} # Postproc + Many NotPunctuation + Punctuation
+                '
+            }
+
+            'Optimizer' = @{
+                Description = 'Optimization Commands'
+                Pattern     = '
+                    (?>PipeScript\p{P})?  # (optionally) PipeScript+Punctuation
+                    Optimiz[^\p{P}]+\p{P} # Optimiz + Many NotPunctuation + Punctuation
+                '
+            }
         }
         FileTypes = @{            
             PipeScript = @{
