@@ -11,7 +11,7 @@ function Aspect.DynamicParameter {
             Aspect.DynamicParameter
     .EXAMPLE
         Get-Command Get-Process | 
-            Aspect.DynamicParameter -IncludeParameter Name # Select -Expand Key | Should -Be Name
+            Aspect.DynamicParameter -IncludeParameter Name # Select -Expand Keys | Should -Be Name
     #>
     [Alias('Aspect.DynamicParameters')]
     param(
