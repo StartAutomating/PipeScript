@@ -129,7 +129,7 @@ function Aspect.ModuleCommandPattern {
             if (-not $categoryPattern) { continue }
             "(?<$Prefix$($categoryKeyValue.Key -replace '\p{P}', '_')$Suffix>$categoryPattern)"
         }) -join ([Environment]::NewLine + '|' + [Environment]::NewLine)
-        [Regex]::new("($combinedRegex)", 'IgnoreCase,IgnorePatternWhitespace')
+        [Regex]::new("($combinedRegex)", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
     }
 }
 
@@ -251,7 +251,7 @@ function Aspect.ModuleExtendedCommand {
                                       if (-not $categoryPattern) { continue }
                                       "(?<$Prefix$($categoryKeyValue.Key -replace '\p{P}', '_')$Suffix>$categoryPattern)"
                                   }) -join ([Environment]::NewLine + '|' + [Environment]::NewLine)
-                                  [Regex]::new("($combinedRegex)", 'IgnoreCase,IgnorePatternWhitespace')
+                                  [Regex]::new("($combinedRegex)", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                               }
                            } $ModuleInfo -Prefix $prefix -Suffix $Suffix
         if ($PSBoundParameters['FilePath']) {
