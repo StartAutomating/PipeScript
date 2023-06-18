@@ -121,9 +121,10 @@ Aspect function ModuleExtendedCommand {
 
         Each returned script will be decorated with the typename(s) that match,
         so that the extended commands can be augmented by the extended types system.
-
     .LINK
         Aspect.ModuleCommandPattern
+    .EXAMPLE
+        Aspect.ModuleExtendedCommand -Module PipeScript # Should -BeOfType ([Management.Automation.CommandInfo])
     #>
     [Alias('Aspect.ModuleExtensionCommand')]
     param(
@@ -142,10 +143,16 @@ Aspect function ModuleExtendedCommand {
     [vbn()]
     [string]
     $Prefix,
-        
+
+    # The file path(s).  If provided, will look for commands within these paths.
     [vbn()]
     [Alias('Fullname')]    
-    $FilePath
+    $FilePath,
+
+    # The base PSTypeName(s).
+    # If provided, any commands that match the pattern will apply these typenames, too.
+    [string[]]
+    $PSTypeName
     )
 
     process {        
@@ -167,9 +174,16 @@ Aspect function ModuleExtendedCommand {
                     if (-not $group.Success) { continue }
                     if ($null -ne ($group.Name -as [int])) { continue }
                     $groupName = $group.Name.Replace('_','.')
+                    if ($PSTypeName) {
+                        foreach ($psuedoType in $PSTypeName) {
+                            if ($cmd.pstypenames -notcontains $psuedoType) {
+                                $cmd.pstypenames.insert(0, $psuedoType)        
+                            }
+                        }
+                    }
                     if ($cmd.pstypenames -notcontains $groupName) {
                         $cmd.pstypenames.insert(0, $groupName)
-                    }                    
+                    }
                 }
                 $cmd    
             }
@@ -183,9 +197,16 @@ Aspect function ModuleExtendedCommand {
                     if (-not $group.Success) { continue }
                     if ($null -ne ($group.Name -as [int])) { continue }
                     $groupName = $group.Name -replace '_', '.'
+                    if ($PSTypeName) {
+                        foreach ($psuedoType in $PSTypeName) {
+                            if ($cmd.pstypenames -notcontains $psuedoType) {
+                                $cmd.pstypenames.insert(0, $psuedoType)        
+                            }
+                        }
+                    }
                     if ($cmd.pstypenames -notcontains $groupName) {
                         $cmd.pstypenames.insert(0, $groupName)
-                    }                    
+                    }
                 }
                 $cmd
             }
