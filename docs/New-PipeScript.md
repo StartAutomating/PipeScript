@@ -83,9 +83,9 @@ Parameters can be defined in a few ways:
 
 
 
-|Type      |Required|Position|PipelineInput        |Aliases   |
-|----------|--------|--------|---------------------|----------|
-|`[Object]`|false   |named   |true (ByPropertyName)|Parameters|
+|Type      |Required|Position|PipelineInput        |Aliases                               |
+|----------|--------|--------|---------------------|--------------------------------------|
+|`[Object]`|false   |named   |true (ByPropertyName)|Parameters<br/>Property<br/>Properties|
 
 
 
@@ -353,6 +353,23 @@ If set, will not transpile the created code.
 
 
 
+#### **ReferenceObject**
+
+A Reference Object.
+This can be used for properties that are provided from a JSON Schema or OpenAPI definition or some similar structure.
+It will take a slash based path to a component or property and use that as it's value.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Object]`|false   |named   |false        |
+
+
+
 
 
 ---
@@ -360,5 +377,5 @@ If set, will not transpile the created code.
 
 ### Syntax
 ```PowerShell
-New-PipeScript [-InputObject <Object>] [-Parameter <Object>] [-DynamicParameter <ScriptBlock>] [-Begin <ScriptBlock>] [-Process <ScriptBlock>] [-End <ScriptBlock>] [-Header <String>] [-AutoParameter] [-AutoParameterType <Type>] [-ParameterHelp <IDictionary>] [-WeaklyTyped] [-FunctionName <String>] [-FunctionType <String>] [-Description <String>] [-Synopsis <String>] [-Example <String[]>] [-Link <String[]>] [-Attribute <String[]>] [-NoTranspile] [<CommonParameters>]
+New-PipeScript [-InputObject <Object>] [-Parameter <Object>] [-DynamicParameter <ScriptBlock>] [-Begin <ScriptBlock>] [-Process <ScriptBlock>] [-End <ScriptBlock>] [-Header <String>] [-AutoParameter] [-AutoParameterType <Type>] [-ParameterHelp <IDictionary>] [-WeaklyTyped] [-FunctionName <String>] [-FunctionType <String>] [-Description <String>] [-Synopsis <String>] [-Example <String[]>] [-Link <String[]>] [-Attribute <String[]>] [-NoTranspile] [-ReferenceObject <Object>] [<CommonParameters>]
 ```
