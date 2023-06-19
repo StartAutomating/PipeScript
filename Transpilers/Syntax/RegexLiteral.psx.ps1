@@ -90,6 +90,12 @@ $                        # string end.
     if ($validating.Parent -is [Management.Automation.Language.AttributeAST]) {
         return $false
     }
+    
+    # If we're invoking a member and we are not the expression being invoked, we're invalid.
+    if ($validating.Parent -is [Management.Automation.Language.InvokeMemberExpressionAst] -and 
+        $validating.Parent.Expression -ne $validating) {
+        return $false
+    }
     return $true
 })]
 param(
@@ -149,7 +155,7 @@ process {
 
     $recreatedString = $stringStart + $sparseStringExpr  + $stringEnd
     $optionStr = 
-        if ($matches.Options) {
+        if ($matches.Options -and $matches.Options -as [Text.RegularExpressions.RegexOptions]) {
             "'$($matches.Options)'"
         }
         else {       
@@ -159,6 +165,7 @@ process {
                 "'IgnoreCase'"
             }
         }
+    
     
     [scriptblock]::Create("[regex]::new($recreatedString, $optionStr)")
 }
