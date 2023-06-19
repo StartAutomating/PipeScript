@@ -39,7 +39,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
     # * As the ```[string]``` name of an untyped parameter.
     # * As a ```[ScriptBlock]``` containing only parameters.
     [Parameter(ValueFromPipelineByPropertyName)]
-    [Alias('Parameters')]
+    [Alias('Parameters','Property','Properties')]
     $Parameter,
 
     # The dynamic parameter block.
@@ -140,7 +140,12 @@ HTTP Accept indicates what content types the web request will accept as a respon
 
     # If set, will not transpile the created code.
     [switch]
-    $NoTranspile    
+    $NoTranspile,
+    
+    # A Reference Object.
+    # This can be used for properties that are provided from a JSON Schema or OpenAPI definition or some similar structure.
+    # It will take a slash based path to a component or property and use that as it's value.    
+    $ReferenceObject
     )
 
     begin {
@@ -167,6 +172,28 @@ HTTP Accept indicates what content types the web request will accept as a respon
             }
         }
 
+        filter psuedoTypeToRealType {
+            switch ($_) {
+                string { [string] }
+                integer { [int] }
+                number { [double]}
+                boolean { [switch] }
+                array { [PSObject[]] }
+                object { [PSObject] }
+                default {
+                    if ($_ -as [type]) {
+                        $_ -as [type]
+                    }                    
+                }
+            }
+        }
+
+        filter oneOfTheseProperties
+        {
+            foreach ($arg in $args) {
+                if ($_.$arg) { return $_.$arg }
+            }
+        }
 
     }
 
@@ -224,9 +251,14 @@ HTTP Accept indicates what content types the web request will accept as a respon
 
 
 
-        # If -Parameter was passed, we will need to define parameters.
+        # If -Parameter was passed, we will need to define parameters.        
         if ($parameter) {
-            foreach ($param in $parameter) {
+            # We may also effectively want to recurse thru these values
+            # (that is, a parameter can imply the existence of other parameters)
+            # So, instead of going thru a normal list, we're putting everything into a queue
+            $parameterQueue = [Collections.Queue]::new(@($parameter))
+            while ($parameterQueue.Count) {
+                $param = $parameterQueue.Dequeue()
                 # this will end up populating an [Ordered] dictionary, $parametersToCreate.
                 # However, for ease of use, -Parameter can be very flexible.
                 # The -Parameter can be a dictionary of parameters.
@@ -285,25 +317,33 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             $parameterName = $EachParameter.Key
                             if ($parameterMetadata.Name) {
                                 $parameterName = $parameterMetadata.Name
-                            }
+                            }                            
                             
                             $parameterAttributeParts = @()
                             $ParameterOtherAttributes = @()
-                            $attrs = 
-                                if ($parameterMetadata.Attributes) { $parameterMetadata.Attributes }
-                                elseif ($parameterMetadata.Attribute) { $parameterMetadata.Attribute }
-                            $aliases =
-                                if ($parameterMetadata.Alias) { $parameterMetadata.Alias }
-                                elseif ($parameterMetadata.Aliases) { $parameterMetadata.Aliases }
-                            [string]$parameterHelpText =
-                                if ($parameterMetadata.Help) { $parameterMetadata.Help}                            
+                            $attrs = @($parameterMetadata | oneOfTheseProperties Attribute Attributes)
+                            [string[]]$aliases = @($parameterMetadata | oneOfTheseProperties Alias Aliases)
+
+                            [string]$parameterHelpText = 
+                                $parameterMetadata | oneOfTheseProperties Help Description Synopsis Summary
+
+                            $Bindings = @(
+                                $parameterMetadata | oneOfTheseProperties Binding DefaultBinding DefaultBindingProperty
+                            )
+                            
                             $aliasAttribute = @(foreach ($alias in $aliases) {
                                 $alias -replace "'","''"                            
                             }) -join "','"
                             if ($aliasAttribute) {
                                 $aliasAttribute = "[Alias('$aliasAttribute')]"
                             }
-                            
+
+                            if ($Bindings) {
+                                foreach ($bindingProperty in $Bindings) {
+                                    "[ComponentModel.DefaultBindingProperty('$bindingProperty')]"
+                                }
+                            }
+                                                       
                             foreach ($attr in $attrs) {
                                 if ($attr -notmatch '^\[') {
                                     $parameterAttributeParts += $attr
@@ -311,9 +351,15 @@ HTTP Accept indicates what content types the web request will accept as a respon
                                     $ParameterOtherAttributes += $attr
                                 }
                             }
-                            $parameterType = 
-                                if ($parameterMetadata.Type) {$parameterMetadata.Type }
-                                elseif ($parameterMetadata.ParameterType) {$parameterMetadata.ParameterType }
+
+                            if (
+                                ($parameterMetadata.Mandatory -or $parameterMetadata.required) -and 
+                                ($parameterAttributeParts -notmatch 'Mandatory')) {
+                                $parameterAttributeParts = @('Mandatory') + $parameterAttributeParts
+                            }
+
+                            $parameterType = $parameterMetadata | oneOfTheseProperties Type ParameterType                            
+                            
                             $ParametersToCreate[$parameterName] = @(
                                 if ($ParameterHelpText) {
                                     $ParameterHelpText | embedParameterHelp
@@ -323,12 +369,31 @@ HTTP Accept indicates what content types the web request will accept as a respon
                                 }
                                 if ($aliasAttribute) {
                                     $aliasAttribute
-                                }
+                                }                                
                                 if ($parameterType -as [type]) {
-                                    "[$(($parameterType -as [type]).FullName -replace '^System\.')]"
+                                    $parameterType = $parameterType -as [type]
+                                    switch ($parameterType) {
+                                        [bool] { [switch]}
+                                        [array] { [PSObject[]] }
+                                        [object] { [PSObject] }
+                                    }
+                                    if ($parameterType -eq [bool]) {
+                                        "[switch]"
+                                    } 
+                                    elseif ($parameterType -eq [array]) {
+                                        "[PSObject[]]"
+                                    }
+                                    else {
+                                        "[$($parameterType.FullName -replace '^System\.')]"                                        
+                                    }                                    
                                 }
                                 elseif ($parameterType) {
-                                    "[PSTypeName('$($parameterType -replace '^System\.')')]"
+                                    $PsuedoTypeName = $parameterType | psuedoTypeToRealType
+                                    if ($PsuedoTypeName) {
+                                        $PsuedoTypeName
+                                    } else {
+                                        "[PSTypeName('$($parameterType -replace '^System\.')')]"
+                                    }                                    
                                 }
                                 
                                 if ($ParameterOtherAttributes) {
@@ -417,7 +482,34 @@ HTTP Accept indicates what content types the web request will accept as a respon
                     }
                 }
                 elseif ($Param -is [PSObject]) {
-                    
+                    $paramIsReference = $param.'$ref'
+                    if ($paramIsReference -and $ReferenceObject) {
+                        $ptr = $ReferenceObject
+                        $objectPath = $paramIsReference -replace '^#' -replace '^/' -split '[/\.]' -ne ''
+                        foreach ($op in $objectPath) {
+                            $ptr = $ptr.$op
+                        }
+                        if ($ptr) {
+                            $parameterQueue.Enqueue($ptr)
+                        }
+                        continue
+                    }
+
+                    # If there's a parameter name and schema, we can turn this into something useful.
+                    if ($param.Name -and $param.schema) {
+                        $newParameterInfo = [Ordered]@{name=$param.Name}
+                        if ($param.description) {
+                            $newParameterInfo.Description = $param.Description
+                        }
+                        if ($param.schema.type) {
+                            $newParameterInfo.ParameterType = $param.schema.type | psuedoTypeToRealType
+                        }
+                        if ($param.required -or $param.Mandatory) {
+                            $newParameterInfo.Mandatory = $true
+                        }
+                                                
+                        $parameterQueue.Enqueue([Ordered]@{$param.Name=$newParameterInfo})                                                
+                    }                    
                 }
             }
             
@@ -438,7 +530,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
             $allBeginBlocks += $begin
         }
 
-        if ($InputObject -is [scriptblock] -and -not $process) {
+        if ($InputObject -is [scriptblock] -and -not $PSBoundParameters['Process']) {
             $process = $InputObject
         }
 
