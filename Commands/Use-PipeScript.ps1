@@ -128,8 +128,18 @@
                             $ast.Extent.StartColumnNumber -eq $myInv.OffsetInLine -and 
                             $ast -is [Management.Automation.Language.CommandAst]
                     },$true))
+                } else {
+                    $lineScriptBlock = try { [ScriptBlock]::create($callstackPeek.InvocationInfo.Line) } catch { $null }
+                    $lineScriptBlock.Ast.FindAll({
+                        param($ast) 
+                        $ast.Extent.StartLineNumber -eq $myInv.ScriptLineNumber -and
+                        $ast.Extent.StartColumnNumber -eq $myInv.OffsetInLine -and 
+                        $ast -is [Management.Automation.Language.CommandAst]
+                    },$true)
                 }
-                $commandAst | & $converter
+                if ($CommandAst) {
+                    $commandAst | & $converter
+                }
             }
 
         $accumulatedInput = [Collections.Queue]::new()
