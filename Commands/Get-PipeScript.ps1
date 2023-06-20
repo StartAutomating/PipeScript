@@ -1,1195 +1,794 @@
-#region Piecemeal [ 0.4.1 ] : Easy Extensible Plugins for PowerShell
-# Install-Module Piecemeal -Scope CurrentUser 
-# Import-Module Piecemeal -Force 
-# Install-Piecemeal -ExtensionNoun 'PipeScript' -ExtensionPattern '\.psx\.ps1{0,1}$','\.ps1{0,1}\.(?<ext>[^.]+$)','\.ps1{0,1}$','^PipeScript.' -ExtensionTypeName 'PipeScript' -OutputPath '/home/runner/work/PipeScript/PipeScript/Commands/Get-PipeScript.ps1'
-function Get-PipeScript
-{
+function Get-PipeScript {
     <#
-    .Synopsis
-        Gets Extensions
-    .Description
-        Gets Extensions.
-
-        PipeScript can be found in:
-
-        * Any module that includes -PipeScriptModuleName in it's tags.
-        * The directory specified in -PipeScriptPath
-        * Commands that meet the naming criteria
-    .Example
+    .SYNOPSIS
+        Gets PipeScript.
+    .DESCRIPTION        
+        Gets PipeScript and it's extended commands.
+        Because 'Get' is the default verb in PowerShell,
+        Get-PipeScript also allows you to run other commands in noun-oriented syntax.
+    .EXAMPLE
         Get-PipeScript
+    .EXAMPLE
+        Get-PipeScript -PipeScriptType Transpiler
+    .EXAMPLE
+        Get-PipeScript -PipeScriptType Template -PipeScriptPath Template
+    .EXAMPLE
+        PipeScript Invoke { "hello world"}
+    .EXAMPLE
+        { partial function f { } }  | PipeScript Import -PassThru
     #>
-    [OutputType('Extension')]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSReviewUnusedParameter", "", Justification="PSScriptAnalyzer cannot handle nested scoping")]
-    [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSAvoidAssignmentToAutomaticVariable", "", Justification="Desired for scenario")]
+    [CmdletBinding(PositionalBinding=$false)]
     param(
-    # If provided, will look beneath a specific path for extensions.
+    # The path containing pipescript files.
+    # If this parameter is provided, only PipeScripts in this path will be outputted.
     [Parameter(ValueFromPipelineByPropertyName)]
-    [Alias('Fullname')]
+    [Alias('Fullname','FilePath','Source')]
     [string]
     $PipeScriptPath,
-
-    # If set, will clear caches of extensions, forcing a refresh.
-    [switch]
-    $Force,
-
-    # If provided, will get PipeScript that extend a given command
+    # One or more PipeScript Command Types.    
     [Parameter(ValueFromPipelineByPropertyName)]
-    [Alias('ThatExtends', 'For')]
+    [ValidateSet('AutomaticVariable','Template','Analyzers','PostProcessor','PreProcessor','Protocol','Aspect','Transpiler','BuildScript','Partial','Interface','Sentence','PipeScriptNoun','Optimizer')]
     [string[]]
-    $CommandName,
-
-    <#
-    
-    The name of an extension.
-    By default, this will match any extension command whose name, displayname, or aliases exactly match the name.
-
-    If the extension has an Alias with a regular expression literal (```'/Expression/'```) then the -PipeScriptName will be valid if that regular expression matches.
-    #>
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [ValidateNotNullOrEmpty()]
-    [string[]]
-    $PipeScriptName,
-    
-    <#
-
-    If provided, will treat -PipeScriptName as a wildcard.
-    This will return any extension whose name, displayname, or aliases are like the -PipeScriptName.
-
-    If the extension has an Alias with a regular expression literal (```'/Expression/'```) then the -PipeScriptName will be valid if that regular expression matches.
-    #>
-    [Parameter(ValueFromPipelineByPropertyName)]
+    $PipeScriptType,
+    # Any positional arguments that are not directly bound.
+    # This parameter primarily exists to allow Get-PipeScript to pass it down to other commands.
+    [Parameter(ValueFromRemainingArguments)]
+    [Alias('Args')]
+    $Argument,
+    # The InputObject.
+    # This parameter primarily exists to allow Get-PipeScript to pass it down to other commands.
+    [Parameter(ValueFromPipeline)]
+    [Alias('Input','In')]    
+    $InputObject,
+    # If set, will force a refresh of the loaded Pipescripts.
     [switch]
-    $Like,
-
-    <#
-    
-    If provided, will treat -PipeScriptName as a regular expression.
-    This will return any extension whose name, displayname, or aliases match the -PipeScriptName.
-    
-    If the extension has an Alias with a regular expression literal (```'/Expression/'```) then the -PipeScriptName will be valid if that regular expression matches.
-    #>
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [switch]
-    $Match,
-
-    # If set, will return the dynamic parameters object of all the PipeScript for a given command.
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [switch]
-    $DynamicParameter,
-
-    # If set, will return if the extension could run.
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [Alias('CanRun')]
-    [switch]
-    $CouldRun,
-
-    # If set, will return if the extension could accept this input from the pipeline.
-    [Alias('CanPipe')]
-    [PSObject]
-    $CouldPipe,
-
-    # If set, will run the extension.  If -Stream is passed, results will be directly returned.
-    # By default, extension results are wrapped in a return object.
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [switch]
-    $Run,
-
-    # If set, will stream output from running the extension.
-    # By default, extension results are wrapped in a return object.
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [switch]
-    $Stream,
-
-    # If set, will return the dynamic parameters of all PipeScript for a given command, using the provided DynamicParameterSetName.
-    # Implies -DynamicParameter.
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [string]
-    $DynamicParameterSetName,
-
-
-    # If provided, will return the dynamic parameters of all PipeScript for a given command, with all positional parameters offset.
-    # Implies -DynamicParameter.
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [int]
-    $DynamicParameterPositionOffset = 0,
-
-    # If set, will return the dynamic parameters of all PipeScript for a given command, with all mandatory parameters marked as optional.
-    # Implies -DynamicParameter.  Does not actually prevent the parameter from being Mandatory on the Extension.
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [Alias('NoMandatoryDynamicParameters')]
-    [switch]
-    $NoMandatoryDynamicParameter,
-
-    # If set, will require a [Runtime.CompilerServices.Extension()] attribute to be considered an extension.
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [switch]
-    $RequirePipeScriptAttribute,
-
-    # If set, will validate this input against [ValidateScript], [ValidatePattern], [ValidateSet], and [ValidateRange] attributes found on an extension.
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [PSObject]
-    $ValidateInput,
-
-    # If set, will validate this input against all [ValidateScript], [ValidatePattern], [ValidateSet], and [ValidateRange] attributes found on an extension.
-    # By default, if any validation attribute returned true, the extension is considered validated.
-    [switch]
-    $AllValid,
-
-    # The name of the parameter set.  This is used by -CouldRun and -Run to enforce a single specific parameter set.
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [string]
-    $ParameterSetName,
-
-    # The parameters to the extension.  Only used when determining if the extension -CouldRun.
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [Collections.IDictionary]
-    [Alias('Parameters','ExtensionParameter','ExtensionParameters')]
-    $Parameter = [Ordered]@{},
-
-    # If set, will output a steppable pipeline for the extension.
-    # Steppable pipelines allow you to control how begin, process, and end are executed in an extension.
-    # This allows for the execution of more than one extension at a time.
-    [switch]
-    $SteppablePipeline,
-
-    # If set, will output the help for the extensions
-    [switch]
-    $Help
+    $Force
     )
-
-    begin {
-        $PipeScriptPattern = '\.psx\.ps1{0,1}$','\.ps1{0,1}\.(?<ext>[^.]+$)','\.ps1{0,1}$','^PipeScript.'
-        $PipeScriptTypeName = 'PipeScript'
-        #region Define Inner Functions
-        function WhereExtends {
-            param(
-            [Parameter(Position=0)]
-            [string[]]
-            $Command,
-
-            [Parameter(ValueFromPipeline)]
-            [PSObject]
-            $ExtensionCommand
-            )
-
-            process {
-                if ($PipeScriptName) {
-                    $ExtensionCommandAliases = @($ExtensionCommand.Attributes.AliasNames)
-                    $ExtensionCommandAliasRegexes = @($ExtensionCommandAliases -match '^/' -match '/$')
-                    if ($ExtensionCommandAliasRegexes) {
-                        $ExtensionCommandAliases = @($ExtensionCommandAliases -notmatch '^/' -match '/$')
-                    }
-                    :CheckExtensionName do {
-                        foreach ($exn in $PipeScriptName) {
-                            if ($like) {
-                                if (($extensionCommand -like $exn) -or
-                                    ($extensionCommand.DisplayName -like $exn) -or
-                                    ($ExtensionCommandAliases -like $exn)) { break CheckExtensionName }
-                            }
-                            elseif ($match) {
-                                if (($ExtensionCommand -match $exn) -or
-                                    ($extensionCommand.DisplayName -match $exn) -or
-                                    ($ExtensionCommandAliases -match $exn)) { break CheckExtensionName }
-                            }
-                            elseif (($ExtensionCommand -eq $exn) -or
-                                ($ExtensionCommand.DisplayName -eq $exn) -or
-                                ($ExtensionCommandAliases -eq $exn)) { break CheckExtensionName }
-                            elseif ($ExtensionCommandAliasRegexes) {
-                                foreach ($extensionAliasRegex in $ExtensionCommandAliasRegexes) {                            
-                                    $extensionAliasRegex = [Regex]::New($extensionAliasRegex -replace '^/' -replace '/$', 'IgnoreCase,IgnorePatternWhitespace')
-                                    if ($extensionAliasRegex -and $extensionAliasRegex.IsMatch($exn)) {
-                                        break CheckExtensionName
-                                    }
-                                }
-                            }
-                        }
-                        
-
-                        return
-                    } while ($false)
-                }
-                if ($Command -and $ExtensionCommand.Extends -contains $command) {
-                    $commandExtended = $ext
-                    return $ExtensionCommand
-                }
-                elseif (-not $command) {
-                    return $ExtensionCommand
-                }
-            }
-        }
-        function ConvertToExtension($toExtension) {
+    dynamicParam {
+             
+       
+$myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
+             $myCallStack[-1])
+         if ($MyCaller) {
+                $myInv = $MyInvocation
+                $MyCaller.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
+                    param($ast) 
+                        $ast.Extent.StartLineNumber -eq $myInv.ScriptLineNumber -and
+                        $ast.Extent.StartColumnNumber -eq $myInv.OffsetInLine -and 
+                        $ast -is [Management.Automation.Language.CommandAst]
+                },$true)
+            })
+ $myModule = Get-Module PipeScript
+        $myInv    = $MyInvocation
+        
+        # Fun PowerShell fact:  'Get' is the default verb.
+        # So when someone uses a noun-centric form of PipeScript, this command will be called.
+        if ($MyInvocation.InvocationName -eq 'PipeScript') {
+            # In this way, we can 'trick' the command a bit.
+            $myCmdAst  = $myCommandAst
+            if (-not $myCmdAst) { return }
+            $FirstWord, $secondWord, $restOfLine = $myCmdAst.CommandElements                
             
-            process {
-                
-            $in = if ($toExtension) {
-                $toExtension
-            } else { $_ }
-                 
-            $extCmd =
-                if ($in -is [Management.Automation.CommandInfo]) {
-                    $in
-                }
-                elseif ($in -is [IO.FileInfo]) {
-                    if ($in.LastWriteTime -gt $script:PipeScriptsFileTimes[$in.Fullname]) {
-                        $script:PipeScriptsFileTimes[$in.Fullname] = $in.LastWriteTime
-                        $script:PipeScriptsFromFiles[$in.Fullname] = 
-                            $ExecutionContext.SessionState.InvokeCommand.GetCommand($in.fullname, 'ExternalScript,Application')
-                        $script:PipeScriptsFromFiles[$in.Fullname]
-                    } elseif ($script:PipeScriptsFromFiles[$in.Fullname])  {
-                        return $script:PipeScriptsFromFiles[$in.Fullname]
-                    }                    
-                }
-                else {
-                    $ExecutionContext.SessionState.InvokeCommand.GetCommand($in, 'Alias,Function,ExternalScript,Application')
-                }
-
-            $extMethods    = $extCmd.PSObject.Methods
-            $extProperties = $extCmd.PSObject.Properties
-
-            #region .GetExtendedCommands
-            if (-not $extMethods['GetExtendedCommands']) {
-                $extMethods.Add([psscriptmethod]::new('GetExtendedCommands', {
-                param([Management.Automation.CommandInfo[]]$CommandList)
-                $extendedCommandNames = @(
-                    foreach ($attr in $this.ScriptBlock.Attributes) {
-                        if ($attr -isnot [Management.Automation.CmdletAttribute]) { continue }
-                        (
-                            ($attr.VerbName -replace '\s') + '-' + ($attr.NounName -replace '\s')
-                        ) -replace '^\-' -replace '\-$'                        
-                    }
-                )
-                if (-not $extendedCommandNames) {
-                    $this.PSObject.Properties.Add([psnoteproperty]::new('.Extends', @()), $true)
-                    $this.PSObject.Properties.Add([psnoteproperty]::new('.ExtensionCommands', @()), $true)                    
-                    return    
-                }
-                if (-not $CommandList) {
-                    $commandList = $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function,Alias,Cmdlet', $true)
-                }
-                $extends = @{}
-                :nextCommand foreach ($loadedCmd in $commandList) {
-                    foreach ($extensionCommandName in $extendedCommandNames) {
-                        if ($extensionCommandName -and $loadedCmd.Name -match $extensionCommandName) {
-                            $loadedCmd
-                            $extends[$loadedCmd.Name] = $loadedCmd
-                            continue nextCommand
-                        }
-                    }
-                }
-
-                if (-not $extends.Count) {
-                    $extends = $null
-                }
-                $this.PSObject.Properties.Add([psnoteproperty]::new('.Extends', @($extends.Keys)), $true)
-                $this.PSObject.Properties.Add([psnoteproperty]::new('.ExtensionCommands', @($extends.Values)), $true)                
-                }), $true)
-            }
-            #endregion .GetExtendedCommands
-
-            #region .Extends
-            if (-not $extProperties['Extends']) {
-                $extProperties.Add([psscriptproperty]::new('Extends', {
-                    if (-not $this.'.Extends') {
-                        $this.GetExtendedCommands(
-                            $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function,Alias,Cmdlet', $true)
+            
+            # If the second word is a verb and the first is a noun
+            if ($myModule.ExportedCommands["$SecondWord-$FirstWord"] -and # and we export the command
+                $myModule.ExportedCommands["$SecondWord-$FirstWord"] -ne $myInv.MyCommand # (and it's not this command)
+            ) {
+                # Then we could do something, like:             
+                $myModule.ExportedCommands["$SecondWord-$FirstWord"] |
+                    # Aspect.DynamicParameter
+                    & { 
+                        <#
+                        .SYNOPSIS
+                            Dynamic Parameter Aspect
+                        .DESCRIPTION
+                            The Dynamic Parameter Aspect is used to add dynamic parameters, well, dynamically.
+                            It can create dynamic parameters from one or more input objects or scripts.
+                        .EXAMPLE
+                            Get-Command Get-Command | 
+                                Aspect.DynamicParameter
+                        .EXAMPLE
+                            Get-Command Get-Process | 
+                                Aspect.DynamicParameter -IncludeParameter Name # Select -Expand Keys | Should -Be Name
+                        #>
+                        [Alias('Aspect.DynamicParameters')]
+                        param(
+                        # The InputObject.
+                        # This can be anything, but will be ignored unless it is a `[ScriptBlock]` or `[Management.Automation.CommandInfo]`.    
+                        [Parameter(ValueFromPipeline)]
+                        $InputObject,
+                        # The name of the parameter set the dynamic parameters will be placed into.    
+                        [string]
+                        $ParameterSetName,
+                        # The positional offset.  If this is provided, all positional parameters will be shifted by this number.
+                        # For example, if -PositionOffset is 1, the first parameter would become the second parameter (and so on)
+                        [int]
+                        $PositionOffset,
+                        # If set, will make all dynamic parameters non-mandatory.
+                        [switch]
+                        $NoMandatory,
+                        # If provided, will check that dynamic parameters are valid for a given command.
+                        # If the [Management.Automation.CmdletAttribute]
+                        [string[]]
+                        $commandList,
+                        # If provided, will include only these parameters from the input.
+                        [string[]]
+                        $IncludeParameter,
+                        # If provided, will exclude these parameters from the input.
+                        [string[]]
+                        $ExcludeParameter,
+                        # If provided, will make a blank parameter for every -PositionOffset.
+                        # This is so, presumably, whatever has already been provided in these positions will bind correctly.
+                        # The name of this parameter, by default, will be "ArgumentN" (for example, Argument1)
+                        [switch]
+                        $BlankParameter,
+                        # The name of the blank parameter.
+                        # If there is a -PositionOffset, this will make a blank parameter by this name for the position.    
+                        [string[]]
+                        $BlankParameterName = "Argument"
                         )
-                    }
-                    return $this.'.Extends'
-                }),$true)
-            }
-            #endregion .Extends
-
-            #region .ExtensionCommands
-            if (-not $extProperties['ExtensionCommands']) {
-                $extProperties.Add([psscriptproperty]::new('ExtensionCommands', {
-                    if (-not $this.'.ExtensionCommands') {
-                        $this.GetExtendedCommands(
-                            $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function,Alias,Cmdlet', $true)
-                        )
-                    }
-                    return $this.'.ExtensionCommands'
-                }), $true)
-            }
-            #endregion .ExtensionCommands
-
-            $inheritanceLevel = [ComponentModel.InheritanceLevel]::Inherited
-
-            #region .BlockComments
-            if(-not $extProperties['BlockComments']) {
-                $extProperties.Add([psscriptproperty]::New('BlockComments', {
-                    [Regex]::New("                   
-                    \<\# # The opening tag
-                    (?<Block> 
-                        (?:.|\s)+?(?=\z|\#>) # anything until the closing tag
-                    )
-                    \#\> # the closing tag
-                    ", 'IgnoreCase,IgnorePatternWhitespace', '00:00:01').Matches($this.ScriptBlock)
-                }), $true)
-            }
-            #endregion .BlockComments
-
-            #region .GetHelpField
-            if (-not $extMethods['GetHelpField']) {
-                $extMethods.Add([psscriptmethod]::New('GetHelpField', {
-                    param([Parameter(Mandatory)]$Field)
-                    $fieldNames = 'synopsis','description','link','example','inputs', 'outputs', 'parameter', 'notes'
-                    foreach ($block in $this.BlockComments) {                
-                        foreach ($match in [Regex]::new("
-                            \.(?<Field>$Field)                   # Field Start
-                            [\s-[\r\n]]{0,}                      # Optional Whitespace
-                            [\r\n]+                              # newline
-                            (?<Content>(?:.|\s)+?(?=
-                            (
-                                [\r\n]{0,}\s{0,}\.(?>$($fieldNames -join '|'))|
-                                \#\>|
-                                \z
-                            ))) # Anything until the next .field or end of the comment block
-                            ", 'IgnoreCase,IgnorePatternWhitespace', [Timespan]::FromSeconds(1)).Matches(
-                                $block.Value
-                            )) {                        
-                            $match.Groups["Content"].Value -replace '[\s\r\n]+$'
-                        }                    
-                    }
-                }), $true)
-            }
-            #endregion .GetHelpField
-
-            #region .InheritanceLevel
-            if (-not $extProperties['InheritanceLevel']) {
-                $extProperties.Add([PSNoteProperty]::new('InheritanceLevel', $inheritanceLevel), $true)
-            }
-            #endregion .InheritanceLevel
-
-            #region .DisplayName
-            if (-not $extProperties['DisplayName']) {
-                $extProperties.Add([PSScriptProperty]::new(
-                    'DisplayName', {
-                        if ($this.'.DisplayName') {
-                            return $this.'.DisplayName'
+                        begin {
+                            $inputQueue = [Collections.Queue]::new()
                         }
-                        if ($this.ScriptBlock.Attributes) {
-                            foreach ($attr in $this.ScriptBlock.Attributes) {
-                                if ($attr -is [ComponentModel.DisplayNameAttribute]) {
-                                    $this | Add-Member NoteProperty '.DisplayName' $attr.DisplayName -Force
-                                    return $attr.DisplayName
+                        process {
+                            $inputQueue.Enqueue($InputObject)
+                        }
+                        end {        
+                            $DynamicParameters = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
+                            if ($PositionOffset -and 
+                                ($BlankParameter -or $PSBoundParameters['BlankParameterName'])) {
+                                for ($pos =0; $pos -lt $PositionOffset; $pos++) {
+                                    $paramName = $BlankParameterName[$pos]
+                                    if (-not $paramName) {
+                                        $paramName = "$($BlankParameterName[-1])$pos"
+                                    }                
+                                    $DynamicParameters.Add($paramName, 
+                                        [Management.Automation.RuntimeDefinedParameter]::new(
+                                            $paramName,
+                                            [PSObject], 
+                                            @(
+                                                $paramAttr = [Management.Automation.ParameterAttribute]::new()
+                                                $paramAttr.Position = $pos
+                                                $paramAttr
+                                            )
+                                        )
+                                    )
                                 }
                             }
-                        }
-                        $this | Add-Member NoteProperty '.DisplayName' $this.Name
-                        return $this.Name
-                    }, {
-                        $this | Add-Member NoteProperty '.DisplayName' $args -Force
-                    }
-                ), $true)
-
-                $extProperties.Add([PSNoteProperty]::new(
-                    '.DisplayName', "$($extCmd.Name -replace $extensionFullRegex)"
-                ), $true)
-            }            
-            #endregion .DisplayName
-            
-            #region .Attributes
-            if (-not $extProperties['Attributes']) {
-                $extProperties.Add([PSScriptProperty]::new(
-                    'Attributes', {$this.ScriptBlock.Attributes}
-                ), $true)
-            }
-            #endregion .Attributes
-
-            #region .Category
-            if (-not $extProperties['Category']) {
-                $extProperties.Add([PSScriptProperty]::new(
-                    'Category', {
-                        foreach ($attr in $this.ScriptBlock.Attributes) {
-                            if ($attr -is [Reflection.AssemblyMetaDataAttribute] -and
-                                $attr.Key -eq 'Category') {
-                                $attr.Value
-                            }
-                            elseif ($attr -is [ComponentModel.CategoryAttribute]) {
-                                $attr.Category
-                            }
-                        }
-                        
-                    }
-                ), $true)
-            }
-            #endregion .Category
-
-            #region .Rank
-            if (-not $extProperties['Rank']) {
-                $extProperties.Add([PSScriptProperty]::new(
-                    'Rank', {
-                        foreach ($attr in $this.ScriptBlock.Attributes) {
-                            if ($attr -is [Reflection.AssemblyMetaDataAttribute] -and
-                                $attr.Key -in 'Order', 'Rank') {
-                                return $attr.Value -as [int]
-                            }
-                        }
-                        return 0
-                    }
-                ), $true)
-            }
-            #endregion .Rank
-            
-            #region .Metadata
-            if (-not $extProperties['Metadata']) {
-                $extProperties.Add([psscriptproperty]::new(
-                    'Metadata', {
-                        $Metadata = [Ordered]@{}
-                        foreach ($attr in $this.ScriptBlock.Attributes) {
-                            if ($attr -is [Reflection.AssemblyMetaDataAttribute]) {
-                                if ($Metadata[$attr.Key]) {
-                                    $Metadata[$attr.Key] = @($Metadata[$attr.Key]) + $attr.Value
-                                } else {
-                                    $Metadata[$attr.Key] = $attr.Value
-                                }                            
-                            }
-                        }
-                        return $Metadata
-                    }
-                ), $true)
-            }
-            #endregion .Metadata
-
-            #region .Description
-            if (-not $extProperties['Description']) {
-                $extProperties.Add([PSScriptProperty]::new(
-                    'Description', { @($this.GetHelpField("Description"))[0] -replace '^\s+' }
-                ), $true)
-            }
-            #endregion .Description
-
-            #region .Synopsis
-            if (-not $extProperties['Synopsis']) {
-            $extProperties.Add([PSScriptProperty]::new(
-                'Synopsis', { @($this.GetHelpField("Synopsis"))[0] -replace '^\s+' }), $true)
-            }
-            #endregion .Synopsis
-
-            #region .Examples
-            if (-not $extProperties['Examples']) {
-                $extProperties.Add([PSScriptProperty]::new(
-                    'Examples', { $this.GetHelpField("Example") }), $true)
-            }            
-            #endregion .Examples
-
-            #region .Links
-            if (-not $extProperties['Links']) {
-                $extProperties.Add([PSScriptProperty]::new(
-                    'Links', { $this.GetHelpField("Link") }), $true
-                )
-            }
-            #endregion .Links
-
-            #region .Validate
-            if (-not $extProperties['Validate']) {
-                $extMethods.Add([psscriptmethod]::new('Validate', {
-                    param(
-                        # input being validated
-                        [PSObject]$ValidateInput,
-                        # If set, will require all [Validate] attributes to be valid.
-                        # If not set, any input will be valid.
-                        [switch]$AllValid
-                    )
-
-                    foreach ($attr in $this.ScriptBlock.Attributes) {
-                        if ($attr -is [Management.Automation.ValidateScriptAttribute]) {
-                            try {
-                                $_ = $this = $psItem = $ValidateInput
-                                $isValidInput = . $attr.ScriptBlock
-                                if ($isValidInput -and -not $AllValid) { return $true}
-                                if (-not $isValidInput -and $AllValid) {
-                                    if ($ErrorActionPreference -eq 'ignore') {
-                                        return $false
-                                    } elseif ($AllValid) {
-                                        throw "'$ValidateInput' is not a valid value."
+                            while ($inputQueue.Count) {
+                                $InputObject = $inputQueue.Dequeue()
+                                $inputCmdMetaData = 
+                                    if ($inputObject -is [Management.Automation.CommandInfo]) {
+                                        [Management.Automation.CommandMetaData]$InputObject
                                     }
-                                }
-                            } catch {
-                                if ($AllValid) {
-                                    if ($ErrorActionPreference -eq 'ignore') {
-                                        return $false
-                                    } else {
-                                        throw
+                                    elseif ($inputObject -is [scriptblock]) {
+                                        $function:TempFunction = $InputObject
+                                        [Management.Automation.CommandMetaData]$ExecutionContext.SessionState.InvokeCommand.GetCommand('TempFunction','Function')
                                     }
-                                }
-                            }
-                        }
-                        elseif ($attr -is [Management.Automation.ValidateSetAttribute]) {
-                            if ($ValidateInput -notin $attr.ValidValues) {
-                                if ($AllValid) {
-                                    if ($ErrorActionPreference -eq 'ignore') {
-                                        return $false
-                                    } else {
-                                        throw "'$ValidateInput' is not a valid value.  Valid values are '$(@($attr.ValidValues) -join "','")'"
+                                if (-not $inputCmdMetaData) { continue } 
+                                                            
+                                :nextDynamicParameter foreach ($paramName in $inputCmdMetaData.Parameters.Keys) {
+                                    if ($ExcludeParameter) {
+                                        foreach ($exclude in $ExcludeParameter) {
+                                            if ($paramName -like $exclude) { continue nextDynamicParameter}
+                                        }
                                     }
-                                }
-                            } elseif (-not $AllValid) {
-                                return $true
-                            }
-                        }
-                        elseif ($attr -is [Management.Automation.ValidatePatternAttribute]) {
-                            $matched = [Regex]::new($attr.RegexPattern, $attr.Options, [Timespan]::FromSeconds(1)).Match("$ValidateInput")
-                            if (-not $matched.Success) {
-                                if ($allValid) {
-                                    if ($ErrorActionPreference -eq 'ignore') {
-                                        return $false
-                                    } else {
-                                        throw "'$ValidateInput' is not a valid value.  Valid values must match the pattern '$($attr.RegexPattern)'"
+                                    if ($IncludeParameter) {
+                                        $shouldInclude = 
+                                            foreach ($include in $IncludeParameter) {
+                                                if ($paramName -like $include) { $true;break}
+                                            }
+                                        if (-not $shouldInclude) { continue nextDynamicParameter }
                                     }
-                                }
-                            } elseif (-not $AllValid) {
-                                return $true
-                            }
-                        }
-                        elseif ($attr -is [Management.Automation.ValidateRangeAttribute]) {
-                            if ($null -ne $attr.MinRange -and $validateInput -lt $attr.MinRange) {
-                                if ($AllValid) {
-                                    if ($ErrorActionPreference -eq 'ignore') {
-                                        return $false
-                                    } else {
-                                        throw "'$ValidateInput' is below the minimum range [ $($attr.MinRange)-$($attr.MaxRange) ]"
-                                    }
-                                }
-                            }
-                            elseif ($null -ne $attr.MaxRange -and $validateInput -gt $attr.MaxRange) {
-                                if ($AllValid) {
-                                    if ($ErrorActionPreference -eq 'ignore') {
-                                        return $false
-                                    } else {
-                                        throw "'$ValidateInput' is above the maximum range [ $($attr.MinRange)-$($attr.MaxRange) ]"
-                                    }
-                                }
-                            }
-                            elseif (-not $AllValid) {
-                                return $true
-                            }
-                        }
-                    }
-
-                    if ($AllValid) {
-                        return $true
-                    } else {
-                        return $false
-                    }
-                }), $true)
-            }
-            #endregion .Validate
-
-            #region .HasValidation
-            if (-not $extProperties['HasValidation']) {
-                $extProperties.Add([psscriptproperty]::new('HasValidation', {
-                    foreach ($attr in $this.ScriptBlock.Attributes) {
-                        if ($attr -is [Management.Automation.ValidateScriptAttribute] -or
-                            $attr -is [Management.Automation.ValidateSetAttribute] -or 
-                            $attr -is [Management.Automation.ValidatePatternAttribute] -or 
-                            $attr -is [Management.Automation.ValidateRangeAttribute]) {
-                            return $true                        
-                        }
-                    }
-
-                    return $false
-                }), $true)
-            }            
-            #endregion .HasValidation
-
-            #region .GetDynamicParameters
-            if (-not $extMethods['GetDynamicParameters']) {
-                $extMethods.Add([PSScriptMethod]::new('GetDynamicParameters', {
-                    param(
-                    [string]
-                    $ParameterSetName,
-
-                    [int]
-                    $PositionOffset,
-
-                    [switch]
-                    $NoMandatory,
-
-                    [string[]]
-                    $commandList
-                    )
-
-                    $ExtensionDynamicParameters = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
-                    $Extension = $this
-                    $ExtensionMetadata = $Extension -as [Management.Automation.CommandMetaData]
-                    if (-not $ExtensionMetadata) { return $ExtensionDynamicParameters }
-
-                    :nextDynamicParameter foreach ($in in @(($Extension -as [Management.Automation.CommandMetaData]).Parameters.Keys)) {
-                        $attrList = [Collections.Generic.List[Attribute]]::new()
-                        $validCommandNames = @()
-                        foreach ($attr in $extension.Parameters[$in].attributes) {
-                            if ($attr -isnot [Management.Automation.ParameterAttribute]) {
-                                # we can passthru any non-parameter attributes
-                                $attrList.Add($attr)
-                                if ($attr -is [Management.Automation.CmdletAttribute] -and $commandList) {
-                                    $validCommandNames += (
-                                        ($attr.VerbName -replace '\s') + '-' + ($attr.NounName -replace '\s')
-                                    ) -replace '^\-' -replace '\-$'
-                                }
-                            } else {
-                                # but parameter attributes need to copied.
-                                $attrCopy = [Management.Automation.ParameterAttribute]::new()
-                                # (Side note: without a .Clone, copying is tedious.)
-                                foreach ($prop in $attrCopy.GetType().GetProperties('Instance,Public')) {
-                                    if (-not $prop.CanWrite) { continue }
-                                    if ($null -ne $attr.($prop.Name)) {
-                                        $attrCopy.($prop.Name) = $attr.($prop.Name)
-                                    }
-                                }
-
-                                $attrCopy.ParameterSetName =
-                                    if ($ParameterSetName) {
-                                        $ParameterSetName
-                                    }
-                                    else {
-                                        $defaultParamSetName =
-                                            foreach ($extAttr in $Extension.ScriptBlock.Attributes) {
-                                                if ($extAttr.DefaultParameterSetName) {
-                                                    $extAttr.DefaultParameterSetName
-                                                    break
+                                    $attrList = [Collections.Generic.List[Attribute]]::new()
+                                    $validCommandNames = @()
+                                    foreach ($attr in $inputCmdMetaData.Parameters[$paramName].attributes) {
+                                        if ($attr -isnot [Management.Automation.ParameterAttribute]) {
+                                            # we can passthru any non-parameter attributes
+                                            $attrList.Add($attr)
+                                            # (`[Management.Automation.CmdletAttribute]` is special, as it indicates if the parameter applies to a command)
+                                            if ($attr -is [Management.Automation.CmdletAttribute] -and $commandList) {
+                                                $validCommandNames += (
+                                                    ($attr.VerbName -replace '\s') + '-' + ($attr.NounName -replace '\s')
+                                                ) -replace '^\-' -replace '\-$'
+                                            }
+                                        } else {
+                                            # but parameter attributes need to copied.
+                                            $attrCopy = [Management.Automation.ParameterAttribute]::new()
+                                            # (Side note: without a .Clone, copying is tedious.)
+                                            foreach ($prop in $attrCopy.GetType().GetProperties('Instance,Public')) {
+                                                if (-not $prop.CanWrite) { continue }
+                                                if ($null -ne $attr.($prop.Name)) {
+                                                    $attrCopy.($prop.Name) = $attr.($prop.Name)
                                                 }
                                             }
-                                        if ($attrCopy.ParameterSetName -ne '__AllParameterSets') {
-                                            $attrCopy.ParameterSetName
+                                            $attrCopy.ParameterSetName =
+                                                if ($ParameterSetName) {
+                                                    $ParameterSetName
+                                                }
+                                                else {
+                                                    $defaultParamSetName = $inputCmdMetaData.DefaultParameterSetName
+                                                    if ($attrCopy.ParameterSetName -ne '__AllParameterSets') {
+                                                        $attrCopy.ParameterSetName
+                                                    }
+                                                    elseif ($defaultParamSetName) {
+                                                        $defaultParamSetName
+                                                    }
+                                                    elseif ($this -is [Management.Automation.FunctionInfo]) {
+                                                        $this.Name
+                                                    } elseif ($this -is [Management.Automation.ExternalScriptInfo]) {
+                                                        $this.Source
+                                                    }
+                                                }
+                                            if ($NoMandatory -and $attrCopy.Mandatory) {
+                                                $attrCopy.Mandatory = $false
+                                            }
+                                            if ($PositionOffset -and $attr.Position -ge 0) {
+                                                $attrCopy.Position += $PositionOffset
+                                            }
+                                            $attrList.Add($attrCopy)
                                         }
-                                        elseif ($defaultParamSetName) {
-                                            $defaultParamSetName
+                                    }
+                                    if ($commandList -and $validCommandNames) {
+                                        :CheckCommandValidity do {
+                                            foreach ($vc in $validCommandNames) {
+                                                if ($commandList -match $vc) { break CheckCommandValidity }
+                                            }
+                                            continue nextDynamicParameter
+                                        } while ($false)
+                                    }
+                                    
+                                    if ($DynamicParameters.ContainsKey($paramName)) {                    
+                                        $DynamicParameters[$paramName].ParameterType = [PSObject]                    
+                                        foreach ($attr in $attrList) {                        
+                                            $DynamicParameters[$paramName].Attributes.Add($attr)
                                         }
-                                        elseif ($this -is [Management.Automation.FunctionInfo]) {
-                                            $this.Name
-                                        } elseif ($this -is [Management.Automation.ExternalScriptInfo]) {
-                                            $this.Source
-                                        }
-                                    }
-
-                                if ($NoMandatory -and $attrCopy.Mandatory) {
-                                    $attrCopy.Mandatory = $false
-                                }
-
-                                if ($PositionOffset -and $attr.Position -ge 0) {
-                                    $attrCopy.Position += $PositionOffset
-                                }
-                                $attrList.Add($attrCopy)
-                            }
-                        }
-
-
-                        if ($commandList -and $validCommandNames) {
-                            :CheckCommandValidity do {
-                                foreach ($vc in $validCommandNames) {
-                                    if ($commandList -match $vc) { break CheckCommandValidity }
-                                }
-                                continue nextDynamicParameter
-                            } while ($false)
-                        }
-                        $ExtensionDynamicParameters.Add($in, [Management.Automation.RuntimeDefinedParameter]::new(
-                            $Extension.Parameters[$in].Name,
-                            $Extension.Parameters[$in].ParameterType,
-                            $attrList
-                        ))
-                    }
-
-                    $ExtensionDynamicParameters
-
-                }), $true)
-            }
-            #endregion .GetDynamicParameters
-
-
-            #region .IsParameterValid
-            if (-not $extMethods['IsParameterValid']) {
-            $extMethods.Add([PSScriptMethod]::new('IsParameterValid', {
-                param([Parameter(Mandatory)]$ParameterName, [PSObject]$Value)
-
-                if ($this.Parameters.Count -ge 0 -and 
-                    $this.Parameters[$parameterName].Attributes
-                ) {
-                    foreach ($attr in $this.Parameters[$parameterName].Attributes) {
-                        $_ = $value
-                        if ($attr -is [Management.Automation.ValidateScriptAttribute]) {
-                            $result = try { . $attr.ScriptBlock } catch { $null }
-                            if ($result -ne $true) {
-                                return $false
-                            }
-                        }
-                        elseif ($attr -is [Management.Automation.ValidatePatternAttribute] -and 
-                                (-not [Regex]::new($attr.RegexPattern, $attr.Options, '00:00:05').IsMatch($value))
-                            ) {
-                                return $false
-                            }
-                        elseif ($attr -is [Management.Automation.ValidateSetAttribute] -and 
-                                $attr.ValidValues -notcontains $value) {
-                                    return $false
-                                }
-                        elseif ($attr -is [Management.Automation.ValidateRangeAttribute] -and (
-                            ($value -gt $attr.MaxRange) -or ($value -lt $attr.MinRange)
-                        )) {
-                            return $false
-                        }
-                    }
-                }
-                return $true
-            }), $true)
-            }
-            #endregion .IsParameterValid
-            
-            #region .CouldPipe
-            if (-not $extMethods['CouldPipe']) {
-            $extMethods.Add([PSScriptMethod]::new('CouldPipe', {
-                param([PSObject]$InputObject)
-
-                :nextParameterSet foreach ($paramSet in $this.ParameterSets) {
-                    if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
-                    $params = @{}
-                    $mappedParams = [Ordered]@{} # Create a collection of mapped parameters
-                    # Walk thru each parameter of this command
-                    :nextParameter foreach ($myParam in $paramSet.Parameters) {
-                        # If the parameter is ValueFromPipeline
-                        if ($myParam.ValueFromPipeline) {
-                            $potentialPSTypeNames = @($myParam.Attributes.PSTypeName) -ne ''
-                            if ($potentialPSTypeNames)  {                                
-                                foreach ($potentialTypeName in $potentialPSTypeNames) {
-                                    if ($potentialTypeName -and $InputObject.pstypenames -contains $potentialTypeName) {
-                                        $mappedParams[$myParam.Name] = $params[$myParam.Name] = $InputObject
-                                        continue nextParameter
-                                    }
-                                }                                    
-                            }
-                            # and we have an input object
-                            elseif ($null -ne $inputObject -and
-                                (
-                                    # of the exact type
-                                    $myParam.ParameterType -eq $inputObject.GetType() -or
-                                    # (or a subclass of that type)
-                                    $inputObject.GetType().IsSubClassOf($myParam.ParameterType) -or
-                                    # (or an inteface of that type)
-                                    ($myParam.ParameterType.IsInterface -and $InputObject.GetType().GetInterface($myParam.ParameterType))
-                                )
-                            ) {
-                                # then map the parameter.
-                                $mappedParams[$myParam.Name] = $params[$myParam.Name] = $InputObject
-                            }
-                        }
-                    }
-                    # Check for parameter validity.
-                    foreach ($mappedParamName in @($mappedParams.Keys)) {
-                        if (-not $this.IsParameterValid($mappedParamName, $mappedParams[$mappedParamName])) {
-                            $mappedParams.Remove($mappedParamName)
-                        }
-                    }
-                    if ($mappedParams.Count -gt 0) {
-                        return $mappedParams
-                    }
-                }
-            }), $true)
-            }
-            #endregion .CouldPipe
-
-            #region .CouldPipeType
-            if (-not $extMethods['CouldPipeType']) {
-            $extMethods.Add([PSScriptMethod]::new('CouldPipeType', {
-                param([Type]$Type)
-
-                foreach ($paramSet in $this.ParameterSets) {
-                    if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
-                    # Walk thru each parameter of this command
-                    foreach ($myParam in $paramSet.Parameters) {
-                        # If the parameter is ValueFromPipeline
-                        if ($myParam.ValueFromPipeline -and (
-                                $myParam.ParameterType -eq $Type -or
-                                # (or a subclass of that type)
-                                $Type.IsSubClassOf($myParam.ParameterType) -or
-                                # (or an inteface of that type)
-                                ($myParam.ParameterType.IsInterface -and $Type.GetInterface($myParam.ParameterType))
-                            )
-                        ) {
-                            return $true
-                        }                        
-                    }
-                    return $false
-                }
-            }), $true)
-            }
-            #endregion .CouldPipeType
-
-            #region .CouldRun
-            if (-not $extMethods['CouldRun']) {
-            $extMethods.Add([PSScriptMethod]::new('CouldRun', {
-                param([Collections.IDictionary]$params, [string]$ParameterSetName)
-
-                :nextParameterSet foreach ($paramSet in $this.ParameterSets) {
-                    if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
-                    $mappedParams = [Ordered]@{} # Create a collection of mapped parameters
-                    $mandatories  =  # Walk thru each parameter of this command
-                        @(foreach ($myParam in $paramSet.Parameters) {
-                            if ($params.Contains($myParam.Name)) { # If this was in Params,
-                                $mappedParams[$myParam.Name] = $params[$myParam.Name] # then map it.
-                            } else {
-                                foreach ($paramAlias in $myParam.Aliases) { # Otherwise, check the aliases
-                                    if ($params.Contains($paramAlias)) { # and map it if the parameters had the alias.
-                                        $mappedParams[$myParam.Name] = $params[$paramAlias]
-                                        break
+                                    } else {
+                                        $DynamicParameters.Add($paramName, [Management.Automation.RuntimeDefinedParameter]::new(
+                                            $inputCmdMetaData.Parameters[$paramName].Name,
+                                            $inputCmdMetaData.Parameters[$paramName].ParameterType,
+                                            $attrList
+                                        ))
                                     }
                                 }
                             }
-                            if ($myParam.IsMandatory) { # If the parameter was mandatory,
-                                $myParam.Name # keep track of it.
-                            }
-                        })
-
-                    # Check for parameter validity.
-                    foreach ($mappedParamName in @($mappedParams.Keys)) {
-                        if (-not $this.IsParameterValid($mappedParamName, $mappedParams[$mappedParamName])) {
-                            $mappedParams.Remove($mappedParamName)
+                            $DynamicParameters
                         }
-                    }
-                    
-                    foreach ($mandatoryParam in $mandatories) { # Walk thru each mandatory parameter.
-                        if (-not $mappedParams.Contains($mandatoryParam)) { # If it wasn't in the parameters.
-                            continue nextParameterSet
-                        }
-                    }
-                    return $mappedParams
-                }
-                return $false
-            }), $true)
-            }
-            #endregion .CouldRun
-
-            
-            # Decorate our return (so that it can be uniquely extended)
-            if (-not $PipeScriptTypeName) {
-                $PipeScriptTypeName = 'Extension'
-            }
-            if ($extCmd.pstypenames -notcontains $PipeScriptTypeName) {            
-                $extCmd.pstypenames.insert(0,$PipeScriptTypeName)
-            }
-
-            $extCmd
+                     } -PositionOffset 1 -ExcludeParameter @($myInv.MyCommand.Parameters.Keys) -BlankParameterName Verb                                
+            }                                    
         }
-        }
-        function OutputExtension {
-            begin {
-                $allDynamicParameters = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
-            }
-            process {
-                $extCmd = $_
-
-                # When we're outputting an extension, we start off assuming that it is valid.
-                $IsValid = $true
-                if ($ValidateInput) { # If we have a particular input we want to validate
-                    try {
-                        # Check if it is valid
-                        if (-not $extCmd.Validate($ValidateInput, $AllValid)) {
-                            $IsValid = $false # and then set IsValid if it is not.
-                        }
-                    } catch {
-                        Write-Error $_    # If we encountered an exception, write it out
-                        $IsValid = $false # and set is $IsValid to false.
-                    }
-                }
-
-                
-                # If we're requesting dynamic parameters (and the extension is valid)
-                if ($IsValid -and 
-                    ($DynamicParameter -or $DynamicParameterSetName -or $DynamicParameterPositionOffset -or $NoMandatoryDynamicParameter)) {
-                    # Get what the dynamic parameters of the extension would be.
-                    $extensionParams = $extCmd.GetDynamicParameters($DynamicParameterSetName, 
-                        $DynamicParameterPositionOffset, 
-                        $NoMandatoryDynamicParameter, $CommandName)
-                    
-                    # Then, walk over each extension parameter.
-                    foreach ($kv in $extensionParams.GetEnumerator()) {
-                        # If the $CommandExtended had a built-in parameter, we cannot override it, so skip it.
-                        if ($commandExtended -and ($commandExtended -as [Management.Automation.CommandMetaData]).Parameters.$($kv.Key)) {
-                            continue
-                        }
-
-                        # If already have this dynamic parameter
-                        if ($allDynamicParameters.ContainsKey($kv.Key)) {
-
-                            # check it's type.
-                            if ($kv.Value.ParameterType -ne $allDynamicParameters[$kv.Key].ParameterType) {
-                                # If the types are different, make it a PSObject (so it could be either).
-                                Write-Verbose "Extension '$extCmd' Parameter '$($kv.Key)' Type Conflict, making type PSObject"
-                                $allDynamicParameters[$kv.Key].ParameterType = [PSObject]
-                            }
-
-
-                            foreach ($attr in $kv.Value.Attributes) {
-                                if ($allDynamicParameters[$kv.Key].Attributes.Contains($attr)) {
-                                    continue
-                                }
-                                $allDynamicParameters[$kv.Key].Attributes.Add($attr)
-                            }
-                        } else {
-                            $allDynamicParameters[$kv.Key] = $kv.Value
-                        }
-                    }
-                }
-                elseif ($IsValid -and ($CouldPipe -or $CouldRun)) {
-                    if (-not $extCmd) { return }
-
-                    $extensionParams = [Ordered]@{}
-                    $pipelineParams = @()
-                    if ($CouldPipe) {
-                        $couldPipeExt = $extCmd.CouldPipe($CouldPipe)
-                        if (-not $couldPipeExt) { return }
-                        $pipelineParams += $couldPipeExt.Keys
-                        if (-not $CouldRun) {                            
-                            $extensionParams += $couldPipeExt
-                        } else {
-                            foreach ($kv in $couldPipeExt.GetEnumerator()) {
-                                $Parameter[$kv.Key] = $kv.Value
-                            }
-                        }
-                    }
-                    if ($CouldRun) {
-                        $couldRunExt = $extCmd.CouldRun($Parameter, $ParameterSetName)
-                        if (-not $couldRunExt) { return }
-                        $extensionParams += $couldRunExt
-                    }
-                
-                    [PSCustomObject][Ordered]@{
-                        ExtensionCommand = $extCmd
-                        CommandName = $CommandName
-                        ExtensionInputObject = if ($CouldPipe) { $CouldPipe } else { $null }                        
-                        ExtensionParameter   = $extensionParams
-                        PipelineParameters   = $pipelineParams
-                    }
-                }
-                elseif ($IsValid -and $SteppablePipeline) {
-                    if (-not $extCmd) { return }
-                    if ($Parameter) {
-                        $couldRunExt = $extCmd.CouldRun($Parameter, $ParameterSetName)
-                        if (-not $couldRunExt) {
-                            $sb = {& $extCmd }
-                            $sb.GetSteppablePipeline() |
-                                Add-Member NoteProperty ExtensionCommand $extCmd -Force -PassThru |
-                                Add-Member NoteProperty ExtensionParameters $couldRunExt -Force -PassThru |
-                                Add-Member NoteProperty ExtensionScriptBlock $sb -Force -PassThru
-                        } else {
-                            $sb = {& $extCmd @couldRunExt}
-                            $sb.GetSteppablePipeline() |
-                                Add-Member NoteProperty ExtensionCommand $extCmd -Force -PassThru |
-                                Add-Member NoteProperty ExtensionParameters $couldRunExt -Force -PassThru |
-                                Add-Member NoteProperty ExtensionScriptBlock $sb -Force -PassThru
-                        }
-                    } else {
-                        $sb = {& $extCmd }
-                        $sb.GetSteppablePipeline() |
-                            Add-Member NoteProperty ExtensionCommand $extCmd -Force -PassThru |
-                            Add-Member NoteProperty ExtensionParameters @{} -Force -PassThru |
-                            Add-Member NoteProperty ExtensionScriptBlock $sb -Force -PassThru
-                    }
-                }
-                elseif ($IsValid -and $Run) {
-                    if (-not $extCmd) { return }
-                    $couldRunExt = $extCmd.CouldRun($Parameter, $ParameterSetName)
-                    if (-not $couldRunExt) { return }
-                    if ($extCmd.InheritanceLevel -eq 'InheritedReadOnly') { return }
-                    if ($Stream) {
-                        & $extCmd @couldRunExt
-                    } else {
-                        [PSCustomObject][Ordered]@{
-                            CommandName      = $CommandName
-                            ExtensionCommand = $extCmd
-                            ExtensionOutput  = & $extCmd @couldRunExt
-                            Done             = $extCmd.InheritanceLevel -eq 'NotInherited'
-                        }
-                    }
-                    return
-                }
-                elseif ($IsValid -and $Help) {
-                    $getHelpSplat = @{Full=$true}
-                    
-                    if ($extCmd -is [Management.Automation.ExternalScriptInfo]) {
-                        Get-Help $extCmd.Source @getHelpSplat
-                    } elseif ($extCmd -is [Management.Automation.FunctionInfo]) {
-                        Get-Help $extCmd @getHelpSplat
-                    }
-                }
-                elseif ($IsValid) {
-                    return $extCmd
-                }
-            }
-            end {
-                if ($DynamicParameter) {
-                    return $allDynamicParameters
-                }
-            }
-        }        
-        #endregion Define Inner Functions        
-
-        $extensionFullRegex =
-            [Regex]::New($(
-                if ($PipeScriptModule) {
-                    "\.(?>$(@(@($PipeScriptModule) + $PipeScriptModuleAlias) -join '|'))\." + "(?>$($PipeScriptPattern -join '|'))"
-                } else {
-                    "(?>$($PipeScriptPattern -join '|'))"
-                }
-            ), 'IgnoreCase,IgnorePatternWhitespace', '00:00:01')
-
-        #region Find Extensions
-        $loadedModules = @(Get-Module)
-        $myInv = $MyInvocation
-        $myModuleName = if ($PipeScriptModule) { $PipeScriptModule } else { $MyInvocation.MyCommand.Module.Name }
-        if ($myInv.MyCommand.Module -and $loadedModules -notcontains $myInv.MyCommand.Module) {
-            $loadedModules = @($myInv.MyCommand.Module) + $loadedModules
-        }
-        $getCmd    = $ExecutionContext.SessionState.InvokeCommand.GetCommand
-
-        if ($Force) {
-            $script:PipeScripts  = $null
-            $script:PipeScriptsByName    = $null
-            $script:AllCommands = @()
-        }
-        if (-not $script:PipeScripts)
-        {
-            $script:PipeScriptsFromFiles     = [Ordered]@{}
-            $script:PipeScriptsFileTimes     = [Ordered]@{}
-            $script:PipeScriptsByName        = [Ordered]@{}
-            $script:PipeScriptsByDisplayName = [Ordered]@{}
-            $script:PipeScriptsByPattern     = [Ordered]@{}
-            $script:PipeScripts =
-                @(@(
-                #region Find PipeScript in Loaded Modules
-                foreach ($loadedModule in $loadedModules) { # Walk over all modules.
-                    if ( # If the module has PrivateData keyed to this module
-                        $loadedModule.PrivateData.$myModuleName
-                    ) {
-                        # Determine the root of the module with private data.
-                        $thisModuleRoot = [IO.Path]::GetDirectoryName($loadedModule.Path)
-                        # and get the extension data
-                        $extensionData = $loadedModule.PrivateData.$myModuleName
-                        if ($extensionData -is [Hashtable]) { # If it was a hashtable
-                            foreach ($ed in $extensionData.GetEnumerator()) { # walk each key
-
-                                $extensionCmd =
-                                    if ($ed.Value -like '*.ps1') { # If the key was a .ps1 file
-                                        $getCmd.Invoke( # treat it as a relative path to the .ps1
-                                            [IO.Path]::Combine($thisModuleRoot, $ed.Value),
-                                            'ExternalScript'
-                                        )
-                                    } else { # Otherwise, treat it as the name of an exported command.
-                                        $loadedModule.ExportedCommands[$ed.Value]
-                                    }
-                                if ($extensionCmd) { # If we've found a valid extension command
-                                    ConvertToExtension $extensionCmd # return it as an extension.
-                                }
-                            }
-                        }
-                    }
-                    elseif ($loadedModule.PrivateData.PSData.Tags -contains $myModuleName -or $loadedModule.Name -eq $myModuleName) {
-                        $loadedModuleRoot = Split-Path $loadedModule.Path
-                        if ($loadedModuleRoot) {
-                            foreach ($fileInModule in Get-ChildItem -Path $loadedModuleRoot -Recurse -File -Filter *.ps1) {
-                                if ($fileInModule.Name -notmatch $extensionFullRegex) { continue }
-                                ConvertToExtension $fileInModule
-                            }
-                        }
-                    }
-                }
-                #endregion Find PipeScript in Loaded Modules
-
-                #region Find PipeScript in Loaded Commands                
-                $ExecutionContext.SessionState.InvokeCommand.GetCommands('*', 'Function,Alias',$true) -match $extensionFullRegex
-                #endregion Find PipeScript in Loaded Commands
-                ) | Select-Object -Unique | Sort-Object Rank, Name)
-
-            foreach ($extCmd in $script:PipeScripts) {
-                if (-not $script:PipeScriptsByName[$extCmd.Name]) {
-                    $script:PipeScriptsByName[$extCmd.Name] = $extCmd
-                }
-                else {
-                    $script:PipeScriptsByName[$extCmd.Name] = @($script:PipeScriptsByName[$extCmd.Name]) + $extCmd
-                }
-                if ($extCmd.DisplayName) {
-                    if (-not $script:PipeScriptsByDisplayName[$extCmd.DisplayName]) {
-                        $script:PipeScriptsByDisplayName[$extCmd.DisplayName] = $extCmd
-                    }
-                    else {
-                        $script:PipeScriptsByDisplayName[$extCmd.DisplayName] = @($script:PipeScriptsByDisplayName[$extCmd.DisplayName]) + $extCmd
-                    }   
-                }
-                $ExtensionCommandAliases = @($extCmd.Attributes.AliasNames)
-                $ExtensionCommandAliasRegexes  = @($ExtensionCommandAliases -match '^/' -match '/$')
-                $ExtensionCommandNormalAliases = @($ExtensionCommandAliases -notmatch '^/')
-                if ($ExtensionCommandAliasRegexes) {
-                    foreach ($extensionAliasRegex in $ExtensionCommandAliasRegexes) {
-                        $regex = [Regex]::New($extensionAliasRegex -replace '^/' -replace '/$', 'IgnoreCase,IgnorePatternWhitespace')
-                        if (-not $script:PipeScriptsByPattern[$regex]) {
-                            $script:PipeScriptsByPattern[$regex] = $extCmd
-                        } else {
-                            $script:PipeScriptsByPattern[$regex] = @($script:PipeScriptsByPattern[$regex]) + $extCmd
-                        }
-                    }
-                }
-                if ($ExtensionCommandNormalAliases) {
-                    foreach ($extensionAlias in $ExtensionCommandNormalAliases) {
-                        if (-not $script:PipeScriptsByName[$extensionAlias]) {
-                            $script:PipeScriptsByName[$extensionAlias] = $extCmd
-                        } else {
-                            $script:PipeScriptsByName[$extensionAlias] = @($script:PipeScriptsByName[$extensionAlias]) + $extCmd
-                        }
-                    }
-                }
-                
-            }
-        }
-        #endregion Find Extensions
     }
-
-    process {
-
-        if ($PipeScriptPath) {
-            @(foreach ($_ in Get-ChildItem -Recurse:$($PipeScriptPath -notmatch '^\.[\\/]') -Path $PipeScriptPath -File) {
-                if ($_.Name -notmatch $extensionFullRegex) { continue }
-                if ($CommandName -or $PipeScriptName) {
-                    ConvertToExtension $_ |
-                    . WhereExtends $CommandName
-                } else {
-                    ConvertToExtension $_
-                }
-            }) |
-                #region Install-Piecemeal -WhereObject
-                # This section can be updated by using Install-Piecemeal -WhereObject
-                #endregion Install-Piecemeal -WhereObject
-                Sort-Object Rank, Name |
-                OutputExtension
-                #region Install-Piecemeal -ForeachObject
-                # This section can be updated by using Install-Piecemeal -ForeachObject
-                #endregion Install-Piecemeal -ForeachObject
-        } elseif ($CommandName -or $PipeScriptName) {
-            if (-not $CommandName -and -not $like -and -not $Match) {
-                foreach ($exn in $PipeScriptName) {
-                    if ($script:PipeScriptsByName[$exn]) {
-                        $script:PipeScriptsByName[$exn] | OutputExtension
+    begin {
+        #region Declare Internal Functions and Filters
+        function SyncPipeScripts {
+                    param($Path,$Force)
+                    # If we do not have a commands at path collection, create it.
+                   
+        $ModuleExtendedCommandAspect = { 
+                                            <#
+                                            .SYNOPSIS
+                                                Returns a module's extended commands
+                                            .DESCRIPTION
+                                                Returns the commands or scripts in a module that match the module command pattern.
+                                                Each returned script will be decorated with the typename(s) that match,
+                                                so that the extended commands can be augmented by the extended types system.
+                                            .LINK
+                                                Aspect.ModuleCommandPattern
+                                            .EXAMPLE
+                                                Aspect.ModuleExtendedCommand -Module PipeScript # Should -BeOfType ([Management.Automation.CommandInfo])
+                                            #>
+                                            [Alias('Aspect.ModuleExtensionCommand')]
+                                            param(
+                                            # The name of a module, or a module info object.
+                                            [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+                                            [ValidateScript({
+                                            $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                            $thisType = $_.GetType()
+                                            $IsTypeOk =
+                                                $(@( foreach ($validType in $validTypeList) {
+                                                    if ($_ -as $validType) {
+                                                        $true;break
+                                                    }
+                                                }))
+                                            if (-not $isTypeOk) {
+                                                throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
+                                            }
+                                            return $true
+                                            })]
+                                            
+                                            $Module,
+                                            # The suffix to apply to each named capture.
+                                            # Defaults to '_Command'
+                                            [Parameter(ValueFromPipelineByPropertyName)]
+                                            [string]
+                                            $Suffix = '_Command',
+                                            # The prefix to apply to each named capture. 
+                                            [Parameter(ValueFromPipelineByPropertyName)]
+                                            [string]
+                                            $Prefix,
+                                            # The file path(s).  If provided, will look for commands within these paths.
+                                            [Parameter(ValueFromPipelineByPropertyName)]
+                                            [Alias('Fullname')]    
+                                            $FilePath,
+                                            # The base PSTypeName(s).
+                                            # If provided, any commands that match the pattern will apply these typenames, too.
+                                            [string[]]
+                                            $PSTypeName
+                                            )
+                                            process {        
+                                                if ($Module -is [string]) {
+                                                    $Module = Get-Module $Module
+                                                }
+                                                $ModuleInfo = $module
+                                                if (-not $ModuleInfo) { return }
+                                                
+                                                $CommandPattern = # Aspect.ModuleCommandPattern
+                                                                  & { 
+                                                                      <#
+                                                                      .SYNOPSIS
+                                                                          Outputs a module's command pattern
+                                                                      .DESCRIPTION
+                                                                          Outputs a regular expression that can be used to match any command pattern.
+                                                                      .EXAMPLE
+                                                                          Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
+                                                                      #>
+                                                                      param(
+                                                                      # The name of a module, or a module info object.
+                                                                      [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+                                                                      [ValidateScript({
+                                                                      $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                                      $thisType = $_.GetType()
+                                                                      $IsTypeOk =
+                                                                          $(@( foreach ($validType in $validTypeList) {
+                                                                              if ($_ -as $validType) {
+                                                                                  $true;break
+                                                                              }
+                                                                          }))
+                                                                      if (-not $isTypeOk) {
+                                                                          throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
+                                                                      }
+                                                                      return $true
+                                                                      })]
+                                                                      
+                                                                      $Module,
+                                                                      # The suffix to apply to each named capture.
+                                                                      # Defaults to '_Command'
+                                                                      [Parameter(ValueFromPipelineByPropertyName)]
+                                                                      [string]
+                                                                      $Suffix = '_Command',
+                                                                      # The prefix to apply to each named capture. 
+                                                                      [Parameter(ValueFromPipelineByPropertyName)]
+                                                                      [string]
+                                                                      $Prefix
+                                                                      )
+                                                                      process {
+                                                                          if ($Module -is [string]) {
+                                                                              $Module = Get-Module $Module
+                                                                          }
+                                                                          $ModuleInfo = $module
+                                                                          #region Search for Module Command Types
+                                                                          if (-not $ModuleInfo) { return }
+                                                                          $ModuleCommandTypes = 
+                                                                              @($ModuleInfo.PrivateData.CommandType,
+                                                                              $ModuleInfo.PrivateData.CommandTypes,
+                                                                              $ModuleInfo.PrivateData.PSData.CommandType,
+                                                                              $ModuleInfo.PrivateData.PSData.CommandType -ne $null)[0]
+                                                                          
+                                                                          if (-not $ModuleCommandTypes) { return }
+                                                                              
+                                                                          $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator()) {
+                                                                              $categoryPattern = 
+                                                                                  if ($categoryKeyValue.Value -is [string]) {
+                                                                                      $categoryKeyValue.Value
+                                                                                  } else {
+                                                                                      $categoryKeyValue.Value.Pattern
+                                                                                  }
+                                                                              if (-not $categoryPattern) { continue }
+                                                                              "(?<$Prefix$($categoryKeyValue.Key -replace '\p{P}', '_')$Suffix>$categoryPattern)"
+                                                                          }) -join ([Environment]::NewLine + '|' + [Environment]::NewLine)
+                                                                          [Regex]::new("($combinedRegex)", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
+                                                                      }
+                                                                   } $ModuleInfo -Prefix $prefix -Suffix $Suffix
+                                                if ($PSBoundParameters['FilePath']) {
+                                                    $(
+                                                            # Collect all items into an input collection
+                                                            $inputCollection = @($executionContext.SessionState.InvokeCommand.GetCommands('*','Script',$true)
+                                                       ($FilePath |
+                                                        & { process {
+                                                            $inObj = $_
+                                                            if ($inObj -is [Management.Automation.CommandInfo]) {
+                                                                $inObj
+                                                            }
+                                                            elseif ($inObj -is [IO.FileInfo] -and $inObj.Extension -eq '.ps1') {
+                                                                $ExecutionContext.SessionState.InvokeCommand.GetCommand($inObj.Fullname, 'ExternalScript')
+                                                            }
+                                                            elseif ($inObj -is [string] -or $inObj -is [Management.Automation.PathInfo]) {
+                                                                $resolvedPath = $ExecutionContext.SessionState.Path.GetResolvedPSPathFromPSPath($inObj)
+                                                                if ($resolvedPath) {
+                                                                    $pathItem = Get-item -LiteralPath $resolvedPath
+                                                                    if ($pathItem -is [IO.FileInfo] -and $pathItem.Extension -eq '.ps1') {
+                                                                        $ExecutionContext.SessionState.InvokeCommand.GetCommand($pathItem.FullName, 'ExternalScript')
+                                                                    } else {                    
+                                                                        foreach ($pathItem in @(Get-ChildItem -LiteralPath $pathItem -File -Recurse)) {
+                                                                            if ($pathItem.Extension -eq '.ps1') {
+                                                                                $ExecutionContext.SessionState.InvokeCommand.GetCommand($pathItem.FullName, 'ExternalScript')
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }            
+                                                            }
+                                                        } }
+                                                    ))
+                                                    # Walk over each item in the filtered collection
+                                                    foreach ($item in $inputCollection) {
+                                                        # we set $this, $psItem, and $_ for ease-of-use.
+                                                        $this = $_ = $psItem = $item
+                                                        
+                                                                    $cmd = $_                
+                                                                    $matched = $CommandPattern.Match("$cmd")
+                                                                    if (-not $matched.Success) { continue }
+                                                                    foreach ($group in $matched.Groups) {
+                                                                        if (-not $group.Success) { continue }
+                                                                        if ($null -ne ($group.Name -as [int])) { continue }
+                                                                        $groupName = $group.Name.Replace('_','.')
+                                                                        if ($PSTypeName) {
+                                                                            foreach ($psuedoType in $PSTypeName) {
+                                                                                if ($cmd.pstypenames -notcontains $psuedoType) {
+                                                                                    $cmd.pstypenames.insert(0, $psuedoType)        
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        if ($cmd.pstypenames -notcontains $groupName) {
+                                                                            $cmd.pstypenames.insert(0, $groupName)
+                                                                        }
+                                                                    }
+                                                                    $cmd    
+                                                                 
+                                                    }   
+                                                    )
+                                                }
+                                                else {
+                                                    $(
+                                                            # Collect all items into an input collection
+                                                            $inputCollection = @($executionContext.SessionState.InvokeCommand.GetCommands('*','Alias, Function, Cmdlet',$true))
+                                                    # Walk over each item in the filtered collection
+                                                    foreach ($item in $inputCollection) {
+                                                        # we set $this, $psItem, and $_ for ease-of-use.
+                                                        $this = $_ = $psItem = $item
+                                                        
+                                                                    $cmd = $_                
+                                                                    $matched = $CommandPattern.Match("$cmd")
+                                                                    if (-not $matched.Success) { continue }
+                                                                    foreach ($group in $matched.Groups) {
+                                                                        if (-not $group.Success) { continue }
+                                                                        if ($null -ne ($group.Name -as [int])) { continue }
+                                                                        $groupName = $group.Name -replace '_', '.'
+                                                                        if ($PSTypeName) {
+                                                                            foreach ($psuedoType in $PSTypeName) {
+                                                                                if ($cmd.pstypenames -notcontains $psuedoType) {
+                                                                                    $cmd.pstypenames.insert(0, $psuedoType)        
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        if ($cmd.pstypenames -notcontains $groupName) {
+                                                                            $cmd.pstypenames.insert(0, $groupName)
+                                                                        }
+                                                                    }
+                                                                    $cmd
+                                                                 
+                                                    }   
+                                                    )
+                                                }
+                                            }
+                                         }
+                    $CommandPatternAspect = { 
+                                                                      <#
+                                                                      .SYNOPSIS
+                                                                          Outputs a module's command pattern
+                                                                      .DESCRIPTION
+                                                                          Outputs a regular expression that can be used to match any command pattern.
+                                                                      .EXAMPLE
+                                                                          Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
+                                                                      #>
+                                                                      param(
+                                                                      # The name of a module, or a module info object.
+                                                                      [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+                                                                      [ValidateScript({
+                                                                      $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                                      $thisType = $_.GetType()
+                                                                      $IsTypeOk =
+                                                                          $(@( foreach ($validType in $validTypeList) {
+                                                                              if ($_ -as $validType) {
+                                                                                  $true;break
+                                                                              }
+                                                                          }))
+                                                                      if (-not $isTypeOk) {
+                                                                          throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
+                                                                      }
+                                                                      return $true
+                                                                      })]
+                                                                      
+                                                                      $Module,
+                                                                      # The suffix to apply to each named capture.
+                                                                      # Defaults to '_Command'
+                                                                      [Parameter(ValueFromPipelineByPropertyName)]
+                                                                      [string]
+                                                                      $Suffix = '_Command',
+                                                                      # The prefix to apply to each named capture. 
+                                                                      [Parameter(ValueFromPipelineByPropertyName)]
+                                                                      [string]
+                                                                      $Prefix
+                                                                      )
+                                                                      process {
+                                                                          if ($Module -is [string]) {
+                                                                              $Module = Get-Module $Module
+                                                                          }
+                                                                          $ModuleInfo = $module
+                                                                          #region Search for Module Command Types
+                                                                          if (-not $ModuleInfo) { return }
+                                                                          $ModuleCommandTypes = 
+                                                                              @($ModuleInfo.PrivateData.CommandType,
+                                                                              $ModuleInfo.PrivateData.CommandTypes,
+                                                                              $ModuleInfo.PrivateData.PSData.CommandType,
+                                                                              $ModuleInfo.PrivateData.PSData.CommandType -ne $null)[0]
+                                                                          
+                                                                          if (-not $ModuleCommandTypes) { return }
+                                                                              
+                                                                          $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator()) {
+                                                                              $categoryPattern = 
+                                                                                  if ($categoryKeyValue.Value -is [string]) {
+                                                                                      $categoryKeyValue.Value
+                                                                                  } else {
+                                                                                      $categoryKeyValue.Value.Pattern
+                                                                                  }
+                                                                              if (-not $categoryPattern) { continue }
+                                                                              "(?<$Prefix$($categoryKeyValue.Key -replace '\p{P}', '_')$Suffix>$categoryPattern)"
+                                                                          }) -join ([Environment]::NewLine + '|' + [Environment]::NewLine)
+                                                                          [Regex]::new("($combinedRegex)", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
+                                                                      }
+                                                                   }
+         if (-not $script:CachedCommandsAtPath) {
+                        $script:CachedCommandsAtPath = @{}
                     }
-                    if ($script:PipeScriptsByDisplayName[$exn]) {
-                        $script:PipeScriptsByDisplayName[$exn] | OutputExtension
+                    
+                    if ($Force) { # If we are using -Force,                                
+                        if ($path) { # Then check if a -Path was provided,
+                            # and clear that path's cache.
+                            $script:CachedCommandsAtPath[$path] = @()
+                        } else {
+                            # If no -Path was provided,                    
+                            $script:CachedPipeScripts = $null # clear the command cache.
+                        }                
                     }
-                    if ($script:PipeScriptsByPattern.Count) {
-                        foreach ($patternAndValue in $script:PipeScriptsByPattern.GetEnumerator()) {
-                            if ($patternAndValue.Key.IsMatch($exn)) {
-                                $patternAndValue.Value | OutputExtension
-                            }
+                    
+                    # If we have not cached all pipescripts.
+                    if (-not $script:CachedPipeScripts -and -not $Path) {                
+                        $script:CachedPipeScripts = @(
+                            # Find the extended commands for PipeScript
+                            # Aspect.ModuleExtendedCommand
+                            & $ModuleExtendedCommandAspect -Module $myModule -PSTypeName PipeScript
+                            # Determine the related modules for PipeScript.
+                            $moduleRelationships = 
+                                                   @(
+                                                   $MyModuleName, $myModule = 
+                                                       if ($myModule -is [string]) {
+                                                           $myModule, (Get-Module $myModule)
+                                                       } elseif ($myModule -is [Management.Automation.PSModuleInfo]) {
+                                                           $myModule.Name, $myModule
+                                                       } else {
+                                                           Write-Error "$myModule must be a [string] or [Management.Automation.PSModuleInfo]"    
+                                                       }
+                                                   #region Search for Module Relationships
+                                                   if ($myModule -and $MyModuleName) {
+                                                       foreach ($loadedModule in Get-Module) { # Walk over all modules.
+                                                           if ( # If the module has PrivateData keyed to this module
+                                                               $loadedModule.PrivateData.$myModuleName
+                                                           ) {
+                                                               # Determine the root of the module with private data.            
+                                                               $relationshipData = $loadedModule.PrivateData.$myModuleName
+                                                               [PSCustomObject][Ordered]@{
+                                                                   PSTypeName     = 'Module.Relationship'
+                                                                   Module        = $myModule
+                                                                   RelatedModule = $loadedModule
+                                                                   PrivateData   = $loadedModule.PrivateData.$myModuleName
+                                                               }
+                                                           }
+                                                           elseif ($loadedModule.PrivateData.PSData.Tags -contains $myModuleName) {
+                                                               [PSCustomObject][Ordered]@{
+                                                                   PSTypeName     = 'Module.Relationship'
+                                                                   Module        = $myModule
+                                                                   RelatedModule = $loadedModule
+                                                                   PrivateData   = @{}
+                                                               }
+                                                           }
+                                                       }
+                                                   }
+                                                   #endregion Search for Module Relationships
+                                                   )
+                                                   
+                            $relatedPaths = @(foreach ($relationship in $moduleRelationships) {
+                                $relationship.RelatedModule.Path | Split-Path
+                            })
+                            
+                            # then find all commands within those paths.
+                            # Aspect.ModuleExtendedCommand
+                            & $ModuleExtendedCommandAspect -Module PipeScript -FilePath $relatedPaths -PSTypeName PipeScript
+                        )
+                    }
+                    if ($path -and -not $script:CachedCommandsAtPath[$path]) {
+                        $script:CachedCommandsAtPath[$path] = @(
+                            # Aspect.ModuleExtendedCommand
+                            & $ModuleExtendedCommandAspect -Module PipeScript -FilePath $path -PSTypeName PipeScript
+                        )
+                    }
+                
+        }
+        filter CheckPipeScriptType {
+                    if ($PipeScriptType) {
+                        $OneOfTheseTypes = "(?>$($PipeScriptType -join '|'))"
+                        $in = $_
+                        if (-not ($in.pstypenames -match $OneOfTheseTypes)) {
+                            return
                         }
-                        $script:PipeScriptsByDisplayName[$exn]
                     }
+                    $_
+                
+        }
+        filter unroll {
+         $_ 
+        }   
+        #endregion Declare Internal Functions and Filters
+        
+        $steppablePipeline = $null
+        if ($MyInvocation.InvocationName -eq 'PipeScript') {
+            $mySplat = [Ordered]@{} + $PSBoundParameters
+            $myCmdAst  = $myCommandAst
+            if ($myCmdAst) {
+                $FirstWord, $secondWord, $restOfLine = $myCmdAst.CommandElements
+                # If the second word is a verb and the first is a noun
+                if ($myModule.ExportedCommands["$SecondWord-$FirstWord"] -and # and we export the command
+                    $myModule.ExportedCommands["$SecondWord-$FirstWord"] -ne $myInv.MyCommand # (and it's not this command)
+                ) {
+                    # Remove the -Verb parameter,
+                    $mySplat.Remove('Verb')
+                    # get the export,
+                    $myExport = $myModule.ExportedCommands["$SecondWord-$FirstWord"]
+                    # turn positional arguments into an array,
+                    $myArgs = @(
+                        if ($mySplat.Argument) {
+                            $mySplat.Argument
+                            $mySplat.Remove('Argument')
+                        }
+                    )
+                    
+                    # create a steppable pipeline command,
+                    $steppablePipelineCmd = {& $myExport @mySplat @myArgs}
+                    # get a steppable pipeline,
+                    $steppablePipeline = $steppablePipelineCmd.GetSteppablePipeline($MyInvocation.CommandOrigin)
+                    # and start the steppable pipeline.
+                    $steppablePipeline.Begin($PSCmdlet)
                 }                
-            } else {
-                $script:PipeScripts |
-                    . WhereExtends $CommandName |
-                    OutputExtension
+            }            
+        }
+        
+        # If there was no steppable pipeline
+        if (-not $steppablePipeline -and 
+            $Argument -and # and we had arguments
+            $(
+                $argPattern = "(?>$($argument -join '|'))" -as [Regex]
+                $validArgs = $myInv.MyCommand.Parameters['PipeScriptType'].Attributes.ValidValues -match $argPattern # that could be types                
+                $validArgs
+            )
+        ) {
+            # imply the -PipeScriptType parameter positionally.
+            $PipeScriptType = $validArgs
+        }
+    }
+    process {
+        $myInv = $MyInvocation
+        if ($steppablePipeline) {
+            $steppablePipeline.Process($_)
+            return
+        }
+        # If the invocation name is PipeScript (but we have no steppable pipeline or spaced in the name)
+        if ($myInv.InvocationName -eq 'PipeScript' -and $myInv.Line -notmatch 'PipeScript\s[\S]+') {
+            # return the module
+            return $myModule
+        }
+        
+        if ($inputObject -and $InputObject -is [Management.Automation.CommandInfo]) {
+            $commandPattern = # Aspect.ModuleCommandPattern
+                              & { 
+                                  <#
+                                  .SYNOPSIS
+                                      Outputs a module's command pattern
+                                  .DESCRIPTION
+                                      Outputs a regular expression that can be used to match any command pattern.
+                                  .EXAMPLE
+                                      Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
+                                  #>
+                                  param(
+                                  # The name of a module, or a module info object.
+                                  [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+                                  [ValidateScript({
+                                  $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                  $thisType = $_.GetType()
+                                  $IsTypeOk =
+                                      $(@( foreach ($validType in $validTypeList) {
+                                          if ($_ -as $validType) {
+                                              $true;break
+                                          }
+                                      }))
+                                  if (-not $isTypeOk) {
+                                      throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
+                                  }
+                                  return $true
+                                  })]
+                                  
+                                  $Module,
+                                  # The suffix to apply to each named capture.
+                                  # Defaults to '_Command'
+                                  [Parameter(ValueFromPipelineByPropertyName)]
+                                  [string]
+                                  $Suffix = '_Command',
+                                  # The prefix to apply to each named capture. 
+                                  [Parameter(ValueFromPipelineByPropertyName)]
+                                  [string]
+                                  $Prefix
+                                  )
+                                  process {
+                                      if ($Module -is [string]) {
+                                          $Module = Get-Module $Module
+                                      }
+                                      $ModuleInfo = $module
+                                      #region Search for Module Command Types
+                                      if (-not $ModuleInfo) { return }
+                                      $ModuleCommandTypes = 
+                                          @($ModuleInfo.PrivateData.CommandType,
+                                          $ModuleInfo.PrivateData.CommandTypes,
+                                          $ModuleInfo.PrivateData.PSData.CommandType,
+                                          $ModuleInfo.PrivateData.PSData.CommandType -ne $null)[0]
+                                      
+                                      if (-not $ModuleCommandTypes) { return }
+                                          
+                                      $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator()) {
+                                          $categoryPattern = 
+                                              if ($categoryKeyValue.Value -is [string]) {
+                                                  $categoryKeyValue.Value
+                                              } else {
+                                                  $categoryKeyValue.Value.Pattern
+                                              }
+                                          if (-not $categoryPattern) { continue }
+                                          "(?<$Prefix$($categoryKeyValue.Key -replace '\p{P}', '_')$Suffix>$categoryPattern)"
+                                      }) -join ([Environment]::NewLine + '|' + [Environment]::NewLine)
+                                      [Regex]::new("($combinedRegex)", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
+                                  }
+                               } -Module PipeScript
+            $matched = $CommandPattern.Match($InputObject)
+            if ($matched.Success) {
+                foreach ($group in $matched.Groups) {
+                    if (-not $group.Success) { continue }
+                    if ($null -ne ($group.Name -as [int])) { continue }
+                    $groupName = $group.Name -replace '_', '.'
+                    if ($InputObject.pstypenames -notcontains $groupName) {
+                        $InputObject.pstypenames.insert(0, $groupName)
+                    }                    
+                }
+                $InputObject
             }
-            
-        } else {
-            $script:PipeScripts | 
-                OutputExtension
+        }    
+        elseif ($PipeScriptPath) {
+            SyncPipeScripts -Force:$Force -Path $PipeScriptPath
+            $script:CachedCommandsAtPath[$PipeScriptPath] | unroll | CheckPipeScriptType
+        } else {            
+            SyncPipeScripts -Force:$Force
+            $script:CachedPipeScripts | unroll | CheckPipeScriptType
+        }
+    }
+    end {
+        if ($steppablePipeline) {
+            $steppablePipeline.End()
         }
     }
 }
-#endregion Piecemeal [ 0.4.1 ] : Easy Extensible Plugins for PowerShell
 
