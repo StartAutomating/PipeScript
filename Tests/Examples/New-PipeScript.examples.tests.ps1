@@ -21,7 +21,11 @@ HTTP Accept indicates what content types the web request will accept as a respon
         }}
     }
     it 'New-PipeScript Example 4' {
-        New-PipeScript -FunctionName New-TableControl -Parameter [Management.Automation.TableControl].GetProperties() -WeaklyTyped
+        New-PipeScript -FunctionName New-TableControl -Parameter (
+            [Management.Automation.TableControl].GetProperties()
+        ) -Process {
+            New-Object Management.Automation.TableControl -Property $psBoundParameters
+        }
     }
 }
 
