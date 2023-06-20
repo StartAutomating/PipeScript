@@ -16,10 +16,19 @@
         |AST Type                 |Description                            |
         |-------------------------|---------------------------------------|
         |AttributeAST             |Runs Attributes                        |
-        |TypeConstraintAST        |Runs Type Constraints                  |
-        |InvokeMemberExpressionAst|Runs Member Invocation Expressions     |
+        |TypeConstraintAST        |Runs Type Constraints                  |        
+    .LINK
+        Use-PipeScript
     .LINK
         Update-PipeScript
+    .EXAMPLE
+        # PipeScript is a superset of PowerShell.
+        # So a hello world in PipeScript is the same as a "Hello World" in PowerShell:
+
+        Invoke-PipeScript { "hello world" } # Should -Be "Hello World"
+    .EXAMPLE
+        # Invoke-PipeScript will invoke a command, ScriptBlock, file, or AST element as PipeScript.
+        Invoke-PipeScript { all functions } # Should -BeOfType ([Management.Automation.FunctionInfo])
     #>
     [CmdletBinding(PositionalBinding=$false)]
     [Alias('ips', '.>')]
@@ -38,7 +47,7 @@
         if ($PotentialCommand -is [string])      { return $true }
         if ($PotentialCommand -is [Management.Automation.CommandInfo]) { return $true }
         if ($PotentialCommand.GetType().Namespace -eq 'System.Management.Automation.Language' -and
-            $PotentialCommand.GetType().Name -in 'AttributeAST', 'TypeConstraintAst','TypeExpressionAST','InvokeMemberExpressionAst') {
+            $PotentialCommand.GetType().Name -in 'AttributeAST', 'TypeConstraintAst','TypeExpressionAST') {
             return $true
         }
 
