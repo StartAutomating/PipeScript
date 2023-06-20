@@ -81,18 +81,18 @@ Valid Values:
 
 * AutomaticVariable
 * Template
-* Analyzers
-* PostProcessor
+* Interface
+* BuildScript
 * PreProcessor
-* Protocol
+* Analyzers
+* PipeScriptNoun
+* Sentence
+* Optimizer
 * Aspect
 * Transpiler
-* BuildScript
+* PostProcessor
+* Protocol
 * Partial
-* Interface
-* Sentence
-* PipeScriptNoun
-* Optimizer
 
 
 
