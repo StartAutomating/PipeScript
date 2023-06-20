@@ -48,6 +48,11 @@ New-PipeScript -Parameter @{"bar"=@{
 }}
 ```
 
+#### EXAMPLE 4
+```PowerShell
+New-PipeScript -FunctionName New-TableControl -Parameter [Management.Automation.TableControl].GetProperties() -WeaklyTyped
+```
+
 
 
 ---
