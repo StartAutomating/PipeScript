@@ -24,7 +24,11 @@ HTTP Accept indicates what content types the web request will accept as a respon
             Type = "string"
         }}
     .EXAMPLE
-        New-PipeScript -FunctionName New-TableControl -Parameter [Management.Automation.TableControl].GetProperties() -WeaklyTyped
+        New-PipeScript -FunctionName New-TableControl -Parameter (
+            [Management.Automation.TableControl].GetProperties()
+        ) -Process {
+            New-Object Management.Automation.TableControl -Property $psBoundParameters
+        }
     #>
     [Alias('New-ScriptBlock')]
     [CmdletBinding(PositionalBinding=$false)]
@@ -108,6 +112,14 @@ HTTP Accept indicates what content types the web request will accept as a respon
     # The name of the function to create.
     [string]
     $FunctionName,
+
+    # The verb of the function to create.  This implies a -FunctionName.
+    [string]
+    $Verb,
+
+    # The noun of the function to create.  This implies a -FunctionName.
+    [string]
+    $Noun,
 
     # The type or namespace the function to create.  This will be ignored if -FunctionName is not passed.
     # If the function type is not function or filter, it will be treated as a function namespace.
@@ -678,6 +690,13 @@ HTTP Accept indicates what content types the web request will accept as a respon
             $parameterScriptBlocks += [ScriptBlock]::Create($newParamBlock)
             # join them with the new parameter block.
             $newParamBlock = $parameterScriptBlocks | Join-PipeScript -IncludeBlockType param
+        }
+
+        # If we did not provide a function name,
+        if ((-not $FunctionName) -and 
+            $verb -and $noun # and we provided a verb and a noun
+        ) {
+            $FunctionName = "$Verb-$Noun" # set the function name.
         }
         
         # If we provided a -FunctionName, we'll be declaring a function.
