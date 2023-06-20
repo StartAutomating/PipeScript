@@ -27,7 +27,7 @@ function Get-PipeScript {
     $PipeScriptPath,
     # One or more PipeScript Command Types.    
     [Parameter(ValueFromPipelineByPropertyName)]
-    [ValidateSet('AutomaticVariable','Template','Analyzers','PostProcessor','PreProcessor','Protocol','Aspect','Transpiler','BuildScript','Partial','Interface','Sentence','PipeScriptNoun','Optimizer')]
+    [ValidateSet('AutomaticVariable','Template','Interface','BuildScript','PreProcessor','Analyzers','PipeScriptNoun','Sentence','Optimizer','Aspect','Transpiler','PostProcessor','Protocol','Partial')]
     [string[]]
     $PipeScriptType,
     # Any positional arguments that are not directly bound.
