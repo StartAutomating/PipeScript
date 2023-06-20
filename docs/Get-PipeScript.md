@@ -80,19 +80,19 @@ One or more PipeScript Command Types.
 Valid Values:
 
 * AutomaticVariable
-* Template
-* Interface
-* BuildScript
 * PreProcessor
-* Analyzers
-* PipeScriptNoun
-* Sentence
-* Optimizer
-* Aspect
-* Transpiler
 * PostProcessor
+* Interface
+* Sentence
+* BuildScript
 * Protocol
+* Aspect
+* PipeScriptNoun
 * Partial
+* Transpiler
+* Analyzers
+* Template
+* Optimizer
 
 
 
