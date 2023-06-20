@@ -2043,6 +2043,9 @@ if (-not $this.'.DisplayName') {
     }
     if ($script:PipeScriptModuleCommandPattern) {
         $displayName = $this.Name -replace $script:PipeScriptModuleCommandPattern
+        if (-not $displayName) {
+            $displayName = $this.Name
+        }
         Add-Member NoteProperty '.DisplayName' -InputObject $this -Value $displayName -Force
     }
 }
@@ -2051,6 +2054,19 @@ $this.'.DisplayName'
 
 
                     </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets display names.
+.DESCRIPTION
+    Sets the display name of a PipeScript command.
+#&gt;
+param(
+[string]
+$DisplayName
+)
+Add-Member NoteProperty '.DisplayName' -InputObject $this -Value $DisplayName -Force
+                    </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>DisplayName.ps</Name>
@@ -2067,6 +2083,9 @@ if (-not $this.'.DisplayName') {
     }
     if ($script:PipeScriptModuleCommandPattern) {
         $displayName = $this.Name -replace $script:PipeScriptModuleCommandPattern
+        if (-not $displayName) {
+            $displayName = $this.Name
+        }
         Add-Member NoteProperty '.DisplayName' -InputObject $this -Value $displayName -Force
     }
 }
