@@ -4,17 +4,25 @@ function New-PipeScript {
         Creates new PipeScript.
     .Description
         Creates new PipeScript and PowerShell ScriptBlocks.
+        
+        This allow you to create scripts dynamically.
     .EXAMPLE
-        New-PipeScript -Parameter @{a='b'}
+        # Without any parameters, this will make an empty script block
+        New-PipeScript # Should -BeOfType([ScriptBlock]) 
     .EXAMPLE
-        New-PipeScript -Parameter ([Net.HttpWebRequest].GetProperties()) -ParameterHelp @{
-            Accept='
-HTTP Accept.
-HTTP Accept indicates what content types the web request will accept as a response.
-'
-        }
+        # We can use -AutoParameter to automatically populate parameters:
+        New-PipeScript -ScriptBlock { $x + $y} -AutoParameter
     .EXAMPLE
-        New-PipeScript -Parameter @{"bar"=@{
+        # We can use -AutoParameter and -AutoParameterType to automatically make all parameters a specific type:
+        New-PipeScript -ScriptBlock { $x, $y } -AutoParameter -AutoParameterType double
+    .EXAMPLE
+        # We can provide a -FunctionName to make a function.
+        # New-PipeScript transpiles the scripts it generates, so this will also declare the function.
+        New-PipeScript -ScriptBlock { Get-Random -Min 1 -Max 20 } -FunctionName ANumberBetweenOneAndTwenty
+        ANumberBetweenOneAndTwenty # Should -BeLessThan 21
+    .EXAMPLE
+        # We can provide parameters as a dictionary.                
+        New-PipeScript -Parameter @{"foo"=@{
             Name = "foo"
             Help = 'Foobar'
             Attributes = "Mandatory","ValueFromPipelineByPropertyName"
@@ -22,17 +30,60 @@ HTTP Accept indicates what content types the web request will accept as a respon
             Type = "string"
         }}
     .EXAMPLE
+        # We can provide parameters from .NET reflection.
+        # We can provide additional parameter help with -ParameterHelp
+        New-PipeScript -Parameter ([Net.HttpWebRequest].GetProperties()) -ParameterHelp @{
+            Accept='
+HTTP Accept.
+HTTP Accept indicates what content types the web request will accept as a response.
+'
+        }
+    .EXAMPLE
+        # If a .NET type has XML Documentation, this can generate parameter help.
         New-PipeScript -FunctionName New-TableControl -Parameter (
             [Management.Automation.TableControl].GetProperties()
         ) -Process {
             New-Object Management.Automation.TableControl -Property $psBoundParameters
-        }
+        } -Synopsis 'Creates a table control'
+        Get-Help New-TableControl -Parameter *
+    .EXAMPLE        
+        $CreatedCommands = 
+            [Management.Automation.TableControl],
+                [Management.Automation.TableControlColumnHeader],
+                [Management.Automation.TableControlRow],
+                [Management.Automation.TableControlColumn],
+                [Management.Automation.DisplayEntry] |
+                    New-PipeScript -Noun { $_.Name } -Verb New -Alias {
+                        "Get-$($_.Name)", "Set-$($_.Name)"
+                    } -Synopsis {
+                        "Creates, Changes, or Gets $($_.Name)"
+                    }
+        
+        New-TableControl -Headers @(
+            New-TableControlColumnHeader -Label "First" -Alignment Left -Width 10
+            New-TableControlColumnHeader -Label "Second" -Alignment Center -Width 20
+            New-TableControlColumnHeader -Label "Third" -Alignment Right -Width 20
+        ) -Rows @(
+            New-TableControlRow -Columns @(
+                New-TableControlColumn -DisplayEntry (
+                    New-DisplayEntry First Property
+                )
+                New-TableControlColumn -DisplayEntry (
+                    New-DisplayEntry Second Property
+                )
+                New-TableControlColumn -DisplayEntry (
+                    New-DisplayEntry Third Property
+                )
+            )
+        )            
     #>
     [Alias('New-ScriptBlock')]
     [CmdletBinding(PositionalBinding=$false)]
     param(
     # An input object.  
-    # This can be anything, but will override certain parameters if it is a ScriptBlock.
+    # This can be anything, and in a few special cases, this can become the script.
+    # If the InputObject is a `[ScriptBlock]`, this will be treated as if it was the -Process parameter.
+    # If the InputObject is a `[Type]`, this will create a script to work with that type.
     [Parameter(ValueFromPipeline)]
     $InputObject,
     # Defines one or more parameters for a ScriptBlock.
@@ -134,12 +185,15 @@ HTTP Accept indicates what content types the web request will accept as a respon
     [switch]
     $WeaklyTyped,
     # The name of the function to create.
+    [Parameter(ValueFromPipelineByPropertyName)]
     [string]
     $FunctionName,
     # The verb of the function to create.  This implies a -FunctionName.
+    [Parameter(ValueFromPipelineByPropertyName)]
     [string]
     $Verb,
     # The noun of the function to create.  This implies a -FunctionName.
+    [Parameter(ValueFromPipelineByPropertyName)]
     [string]
     $Noun,
     # The type or namespace the function to create.  This will be ignored if -FunctionName is not passed.
@@ -167,6 +221,11 @@ HTTP Accept indicates what content types the web request will accept as a respon
     # A list of attributes to declare on the scriptblock.
     [string[]]
     $Attribute,
+    # A list of potential aliases for the command.
+    [Parameter(ValueFromPipelineByPropertyName)]
+    [Alias('Aliases')]
+    [string[]]
+    $Alias,
     # If set, will not transpile the created code.
     [switch]
     $NoTranspile,
@@ -220,8 +279,12 @@ HTTP Accept indicates what content types the web request will accept as a respon
                     }
                 
         }
+        # Default 'NoEnd' to false.
+        # We'll check this at the beginning of the end to make sure we need to run the code in the end block.
+        $NoEnd = $false
     }
     process {
+        $myParameters = [Ordered]@{} + $psBoundParameters
         # If the input was a dictionary
         if ($InputObject -is [Collections.IDictionary]) {
             # make it a custom object.
@@ -249,7 +312,85 @@ HTTP Accept indicates what content types the web request will accept as a respon
         }
         # If the inputobject is a [Type]
         if ($InputObject -is [Type]) {
-                
+            if (-not $myParameters['Parameter']) {
+                $myParameters['Parameter'] = $parameter = @(
+                    $InputObject.GetProperties()
+                    @{
+                        "InputObject"= @{
+                            Name="InputObject"
+                            Attribute='ValueFromPipeline'
+                            Type=$InputObject
+                        }
+                        "ArgumentList" = @{
+                            Name="ArgumentList"
+                            Attribute="ValueFromRemainingArguments"
+                            Type=[PSObject[]]
+                        }
+                        "PassThru" = @{
+                            Name = 'PassThru'
+                            Type=[switch]
+                        }
+                    }
+                )
+            }
+            # If we didn't supply any script, make one.
+            if (-not ($myParameters['Process'] -or 
+                $myParameters['Begin'] -or 
+                $myParameters['End'] -or 
+                $myParameters['DynamicParameter']
+            )) {                
+                $myParameters['Attribute'] = '[CmdletBinding(PositionalBinding=$false)]'
+                $begin   = $myParameters['Begin'] = [scriptblock]::create(
+                    "`$FunctionBaseType = [$($InputObject.FullName -replace '^\.System')]"
+                )
+                $Process = $myParameters['Process'] = {
+                    $invocationName = $MyInvocation.InvocationName
+                    if ($invocationName -match '^(?>New|Add)') {
+                        if ($FunctionBaseType::new.OverloadDefinitions -like '*()') {
+                            $InputObject = $FunctionBaseType::new()
+                        } elseif ($ArgumentList) {
+                            $InputObject = $FunctionBaseType::new.Invoke($ArgumentList)
+                        }
+                        $invocationName = 'Set'
+                        $PassThru = $true
+                    }
+                    switch -regex ($invocationName) {
+                        "^Set" {
+                            # If we're setting,
+                            foreach ($in in $InputObject) {                                
+                                foreach ($paramName in ([Management.Automation.CommandMetaData]$MyInvocation.MyCommand).Parameters.Keys) {
+                                    # change any property on that object
+                                    if (
+                                        $paramName -ne 'InputObject' -and 
+                                        $myParameters.Contains($paramName) -and 
+                                        $in.GetType().GetProperty($paramName)
+                                    ) {
+                                        $in.$paramName = $myParameters[$paramName]
+                                    }
+                                }
+                                if ($PassThru) {
+                                    $in
+                                }
+                            }                            
+                        }
+                        default { 
+                            foreach ($variable in Get-Variable) {
+                                if ($variable.Value -is $FunctionBaseType) {
+                                    $variable.Value
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            # Here's a slight rub:
+            # We'd like to be able to pipe multiple types in.
+            # If that's the case, we want to return/declare multiple functions
+            # So by calling ourselves recursively here, we can do that without moving all of the code from the end block
+            $myParameters.Remove('InputObject')
+            New-PipeScript @myParameters
+            $noEnd = $true
+            return
         }
         if ($Synopsis) {
             if (-not $Description) { $Description = $Synopsis }
@@ -279,6 +420,9 @@ HTTP Accept indicates what content types the web request will accept as a respon
             $allHeaders += $helpHeader
         }
         
+        if ($Alias) {
+            $allHeaders += "[Alias('$($alias -replace "'","''" -join "','")')]"
+        }
         if ($Attribute) {
             $allHeaders += $Attribute
         }
@@ -288,8 +432,14 @@ HTTP Accept indicates what content types the web request will accept as a respon
             # (that is, a parameter can imply the existence of other parameters)
             # So, instead of going thru a normal list, we're putting everything into a queue
             $parameterQueue = [Collections.Queue]::new(@($parameter))
-            while ($parameterQueue.Count) {
-                $param = $parameterQueue.Dequeue()
+            $parameterList  = [Collections.Generic.List[PSObject]]::new()
+            foreach ($param in $parameter) {
+                $null = $parameterList.Add($param)    
+            }            
+            
+            while ($parameterList.Count) {
+                $param = $parameterList[0]
+                $parameterList.RemoveAt(0)
                 # this will end up populating an [Ordered] dictionary, $parametersToCreate.
                 # However, for ease of use, -Parameter can be very flexible.
                 # The -Parameter can be a dictionary of parameters.
@@ -359,16 +509,38 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             $Bindings = @(
                                 $parameterMetadata | oneOfTheseProperties Binding DefaultBinding DefaultBindingProperty
                             )
+                            $AmbientValue = @(
+                                $parameterMetadata | oneOfTheseProperties AmbientValue CoerceValue
+                            )
+                            $parameterMetadataProperties = @(
+                                $parameterMetadata | oneOfTheseProperties Metadata ReflectionMetadata ParameterMetadata
+                            )
                             
-                            $aliasAttribute = @(foreach ($alias in $aliases) {
-                                $alias -replace "'","''"                            
+                            $aliasAttribute = @(foreach ($aka in $aliases) {
+                                $aka -replace "'","''"                            
                             }) -join "','"
                             if ($aliasAttribute) {
                                 $aliasAttribute = "[Alias('$aliasAttribute')]"
                             }
                             if ($Bindings) {
                                 foreach ($bindingProperty in $Bindings) {
-                                    "[ComponentModel.DefaultBindingProperty('$bindingProperty')]"
+                                    $attrs += "[ComponentModel.DefaultBindingProperty('$bindingProperty')]"
+                                }
+                            }
+                            if ($parameterMetadataProperties) {
+                                foreach ($pmdProp in $parameterMetadataProperties) {
+                                    if ($pmdProp -is [Collections.IDictionary]) {
+                                        foreach ($mdKv in $pmdProp.GetEnumerator()) {
+                                            $attrs += "[Reflection.AssemblyMetadata('$($mdKv.Key)', '$($mdKv.Value -replace "',''")')]"
+                                        }
+                                    }
+                                }
+                            }
+                            if ($AmbientValue) {
+                                foreach ($ambient in $AmbientValue) {
+                                    if ($ambient -is [scriptblock]) {
+                                        $attrs += "[ComponentModel.AmbientValue({$ambient})]"
+                                    }
                                 }
                             }
                                                        
@@ -553,7 +725,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                         }
                         $propertiesToParameters[$NewParamName] = $NewParameterInfo                        
                     }
-                    $parameterQueue.Enqueue($propertiesToParameters)
+                    $parameterList.Insert(0,$propertiesToParameters)
                 }
                 elseif ($Param -is [PSObject]) {
                     $paramIsReference = $param.'$ref'
@@ -564,7 +736,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             $ptr = $ptr.$op
                         }
                         if ($ptr) {
-                            $parameterQueue.Enqueue($ptr)
+                            $parameterList.Insert(0,$ptr)
                         }
                         continue
                     }
@@ -581,7 +753,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             $newParameterInfo.Mandatory = $true
                         }
                                                 
-                        $parameterQueue.Enqueue([Ordered]@{$param.Name=$newParameterInfo})                                                
+                        $parameterList.Insert(0, [Ordered]@{$param.Name=$newParameterInfo})
                     }                    
                 }
             }
@@ -599,7 +771,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
         if ($Begin) {
             $allBeginBlocks += $begin
         }
-        if ($InputObject -is [scriptblock] -and -not $PSBoundParameters['Process']) {
+        if ($InputObject -is [scriptblock] -and -not $myParameters['Process']) {
             $process = $InputObject
         }
         # process,
@@ -658,6 +830,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
         }
     }
     end {
+        if ($NoEnd) { return }
         # Take all of the accumulated parameters and create a parameter block
         $newParamBlock =
             "param(" + [Environment]::newLine +
@@ -690,7 +863,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                 "$functionType function $functionName {"
                 # (which means we have to transpile).
                 $NoTranspile = $false
-            }
+            }        
         # Create the script block by combining together the provided parts.
         $ScriptToBe = "$(if ($functionDeclaration) { "$functionDeclaration"})
 $($allHeaders -join [Environment]::Newline)
