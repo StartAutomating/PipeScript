@@ -50,7 +50,11 @@ New-PipeScript -Parameter @{"bar"=@{
 
 #### EXAMPLE 4
 ```PowerShell
-New-PipeScript -FunctionName New-TableControl -Parameter [Management.Automation.TableControl].GetProperties() -WeaklyTyped
+New-PipeScript -FunctionName New-TableControl -Parameter (
+    [Management.Automation.TableControl].GetProperties()
+) -Process {
+    New-Object Management.Automation.TableControl -Property $psBoundParameters
+}
 ```
 
 
@@ -252,6 +256,36 @@ The name of the function to create.
 
 
 
+#### **Verb**
+
+The verb of the function to create.  This implies a -FunctionName.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |named   |false        |
+
+
+
+#### **Noun**
+
+The noun of the function to create.  This implies a -FunctionName.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[String]`|false   |named   |false        |
+
+
+
 #### **FunctionType**
 
 The type or namespace the function to create.  This will be ignored if -FunctionName is not passed.
@@ -382,5 +416,5 @@ It will take a slash based path to a component or property and use that as it's 
 
 ### Syntax
 ```PowerShell
-New-PipeScript [-InputObject <Object>] [-Parameter <Object>] [-DynamicParameter <ScriptBlock>] [-Begin <ScriptBlock>] [-Process <ScriptBlock>] [-End <ScriptBlock>] [-Header <String>] [-AutoParameter] [-AutoParameterType <Type>] [-ParameterHelp <IDictionary>] [-WeaklyTyped] [-FunctionName <String>] [-FunctionType <String>] [-Description <String>] [-Synopsis <String>] [-Example <String[]>] [-Link <String[]>] [-Attribute <String[]>] [-NoTranspile] [-ReferenceObject <Object>] [<CommonParameters>]
+New-PipeScript [-InputObject <Object>] [-Parameter <Object>] [-DynamicParameter <ScriptBlock>] [-Begin <ScriptBlock>] [-Process <ScriptBlock>] [-End <ScriptBlock>] [-Header <String>] [-AutoParameter] [-AutoParameterType <Type>] [-ParameterHelp <IDictionary>] [-WeaklyTyped] [-FunctionName <String>] [-Verb <String>] [-Noun <String>] [-FunctionType <String>] [-Description <String>] [-Synopsis <String>] [-Example <String[]>] [-Link <String[]>] [-Attribute <String[]>] [-NoTranspile] [-ReferenceObject <Object>] [<CommonParameters>]
 ```
