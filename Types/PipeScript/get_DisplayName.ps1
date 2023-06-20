@@ -76,6 +76,9 @@ if (-not $this.'.DisplayName') {
     }
     if ($script:PipeScriptModuleCommandPattern) {
         $displayName = $this.Name -replace $script:PipeScriptModuleCommandPattern
+        if (-not $displayName) {
+            $displayName = $this.Name
+        }
         Add-Member NoteProperty '.DisplayName' -InputObject $this -Value $displayName -Force
     }
 }
