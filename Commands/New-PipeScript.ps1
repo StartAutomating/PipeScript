@@ -21,6 +21,8 @@ HTTP Accept indicates what content types the web request will accept as a respon
             Aliases = "fubar"
             Type = "string"
         }}
+    .EXAMPLE
+        New-PipeScript -FunctionName New-TableControl -Parameter [Management.Automation.TableControl].GetProperties() -WeaklyTyped
     #>
     [Alias('New-ScriptBlock')]
     [CmdletBinding(PositionalBinding=$false)]
@@ -209,23 +211,35 @@ HTTP Accept indicates what content types the web request will accept as a respon
                 
         }
     }
-    process {        
+    process {
+        # If the input was a dictionary
         if ($InputObject -is [Collections.IDictionary]) {
-            $InputObject = [PSCustomObject]$InputObject
+            # make it a custom object.
+            $InputObject = [PSCustomObject]$InputObject            
             $myCmd = $MyInvocation.MyCommand
+            # Since we're too late to do a `[ValueFromPipelineByPropertyName]` binding to the parameters,
+            # do it ourselves by walking over each parameter.
             :nextParameter foreach ($param in $myCmd.Parameters.Values) {
-                if ($null -ne $inputObject.($param.Name)) {
+                if ($null -ne $inputObject.($param.Name)) { # If the -InputObject contains a parameter name
+                    # bind it by setting the variable
                     $ExecutionContext.SessionState.PSVariable.Set($param.Name, $inputObject.($param.Name))
                 }
                 else {
+                    # Otherwise, check each of the aliases for this parameter
                     foreach ($paramAlias in $param.Aliases) {
+                        # and if the -InputObject has that alias
                         if ($null -ne $inputObject.$paramAlias) {
+                            # bind it by setting the variable.
                             $ExecutionContext.SessionState.PSVariable.Set($param.Name, $inputObject.$paramAlias)
                             continue nextParameter
                         }                           
                     }
                 }
-            }            
+            }
+        }
+        # If the inputobject is a [Type]
+        if ($InputObject -is [Type]) {
+                
         }
         if ($Synopsis) {
             if (-not $Description) { $Description = $Synopsis }
@@ -386,7 +400,30 @@ HTTP Accept indicates what content types the web request will accept as a respon
                                         "[PSObject[]]"
                                     }
                                     else {
-                                        "[$($parameterType.FullName -replace '^System\.')]"                                        
+                                        if ($WeaklyTyped) {
+                                            if ($parameterType.GetInterface -and 
+                                                $parameterType.GetInterface([Collections.IDictionary])) {
+                                                "[Collections.IDictionary]"
+                                            }                                            
+                                            elseif ($parameterType.GetInterface -and 
+                                                $parameterType.GetInterface([Collections.IList])) {
+                                                "[PSObject[]]"
+                                            }
+                                            else {
+                                                "[PSObject]"
+                                            }
+                                        } else {
+                                            if ($parameterType.IsGenericType -and
+                                                $parameterType.GetInterface -and 
+                                                $parameterType.GetInterface(([Collections.IList])) -and
+                                                $parameterType.GenericTypeArguments.Count -eq 1
+                                            ) {
+                                                "[$($parameterType.GenericTypeArguments[0].Fullname -replace '^System\.')[]]"
+                                            } else {
+                                                "[$($parameterType.FullName -replace '^System\.')]"
+                                            }
+                                            
+                                        }
                                     }                                    
                                 }
                                 elseif ($parameterType) {
@@ -436,6 +473,31 @@ HTTP Accept indicates what content types the web request will accept as a respon
                     $Param -is [Reflection.MethodInfo] -or
                     $Param -as [Reflection.MethodInfo[]]
                 ) {
+                    # Find an XML documentation file for the type, if available
+                    if (-not $Script:FoundXmlDocsForAssembly) {
+                        $Script:FoundXmlDocsForAssembly = @{}
+                    }
+                    
+                    if (-not $Script:FoundXmlDocsForType) {
+                        $Script:FoundXmlDocsForType = @{}
+                    }
+                    $declaringType = $param.DeclaringType
+                    $declaringAssembly = $param.DeclaringType.Assembly
+                    if (-not $Script:FoundXmlDocsForAssembly[$declaringAssembly]) {
+                        $likelyXmlLocation = $declaringAssembly.Location -replace '\.dll$', '.xml'
+                        if (Test-Path $likelyXmlLocation) {
+                            $Script:FoundXmlDocsForAssembly[$declaringAssembly] = [IO.File]::ReadAllText($likelyXmlLocation) -as [xml]
+                        }
+                    }
+                    if ($Script:FoundXmlDocsForAssembly[$declaringAssembly] -and 
+                        -not $Script:FoundXmlDocsForType[$declaringType]) {
+                        $Script:FoundXmlDocsForType[$declaringType] =
+                            foreach ($node in $Script:FoundXmlDocsForAssembly[$declaringAssembly].SelectNodes("//member")) {
+                                if ($node.Name -like "*$($declaringType.FullName)*") {
+                                    $node
+                                }
+                            }
+                    }
                     # check to see if it's a method
                     if ($Param -is [Reflection.MethodInfo] -or
                         $Param -as [Reflection.MethodInfo[]]) {
@@ -443,7 +505,9 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             $methodInfo.GetParameters() # if so, reflect the method's parameters
                         })
                     }
-                    # Walk over each parameter
+                    
+                    # Walk over each parameter and turn it into a dictionary of dictionaries
+                    $propertiesToParameters = [Ordered]@{}
                     foreach ($prop in $Param) {
                         # If it is a property info that cannot be written, skip.
                         if ($prop -is [Reflection.PropertyInfo] -and -not $prop.CanWrite) { continue }
@@ -456,32 +520,30 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             } else {
                                 [PSObject]
                             }
-                        $ParametersToCreate[$prop.Name] =
-                            @(
-                                if ($parameterHelp -and $parameterHelp[$prop.Name]) {
-                                    $parameterHelp[$prop.Name] | embedParameterHelp
-                                }
-                                $parameterAttribute = "[Parameter(ValueFromPipelineByPropertyName)]"
-                                $parameterAttribute
-                                if ($paramType -eq [boolean]) {
-                                    "[switch]"
-                                } elseif ($WeaklyTyped) {
-                                    if ($paramType.GetInterface([Collections.IDictionary])) {
-                                        "[Collections.IDictionary]"
-                                    }
-                                    elseif ($paramType.GetInterface([Collections.IList])) {
-                                        "[PSObject[]]"
-                                    }
-                                    else {
-                                        "[PSObject]"
-                                    }
-                                }
-                                else {
-                                    "[$($paramType -replace '^System\.')]"
-                                }
-                                '$' + $prop.Name
-                            ) -ne ''
+                        $NewParamName = $prop.Name
+                        $NewParameterInfo = [Ordered]@{
+                            Name = $NewParamName
+                            Attribute = @('ValueFromPipelineByPropertyName')
+                            ParameterType = $paramType
+                        }
+                        if ($ParameterHelp -and $ParameterHelp[$prop.Name]) {
+                            $NewParameterInfo.Help = $ParameterHelp[$prop.Name]
+                        } elseif ($Script:FoundXmlDocsForType[$declaringType]) {
+                            $lookingForString = @("$prop" -split ' ')[-1]
+                            $foundXmlDocsForProp = foreach ($docXmlNode in $Script:FoundXmlDocsForType[$declaringType]) {
+                                if ($docXmlNode.Name.EndsWith($lookingForString)) {
+                                    $docXmlNode
+                                    break
+                                } 
+                            }
+                            if ($foundXmlDocsForProp -and $foundXmlDocsForProp.Summary -is [string]) {
+                                $NewParameterInfo.Help = $foundXmlDocsForProp.Summary
+                                $null = $null
+                            }
+                        }
+                        $propertiesToParameters[$NewParamName] = $NewParameterInfo                        
                     }
+                    $parameterQueue.Enqueue($propertiesToParameters)
                 }
                 elseif ($Param -is [PSObject]) {
                     $paramIsReference = $param.'$ref'
