@@ -2235,6 +2235,63 @@ else {
     </Members>
   </Type>
   <Type>
+    <Name>Protocol.Command</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>CommandParameter</Name>
+        <GetScriptBlock>
+                        foreach ($param in $this.Parameters.GetEnumerator()) {
+    if ($param.Value.ParameterType -eq [Management.Automation.Language.CommandAST]) {
+        return $param.Value
+    }
+}
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>CommandParameterName</Name>
+        <GetScriptBlock>
+                        foreach ($param in $this.Parameters.GetEnumerator()) {
+    if ($param.Value.ParameterType -eq [Management.Automation.Language.CommandAST]) {
+        return $param.Value.Name
+    }
+}
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>URLParameter</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets a Protocol's URL parameter
+.DESCRIPTION
+    Gets a Protocol Command's URL parameter.
+#&gt;
+foreach ($param in $this.Parameters.GetEnumerator()) {
+    if ($param.Value.ParameterType -eq [uri]) {
+        return $param.Value
+    }
+}
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>URLParameterName</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets a Protocol's URL parameter
+.DESCRIPTION
+    Gets a Protocol Command's URL parameter.
+#&gt;
+foreach ($param in $this.Parameters.GetEnumerator()) {
+    if ($param.Value.ParameterType -eq [uri]) {
+        return $param.Value.Name
+    }
+}
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
     <Name>System.Management.Automation.ScriptBlock</Name>
     <Members>
       <ScriptMethod>
