@@ -36,17 +36,18 @@ Get-PipeScript -PipeScriptType Transpiler
 
 #### EXAMPLE 3
 ```PowerShell
-Get-PipeScript -PipeScriptType Template -PipeScriptPath Template
+Get-PipeScript -PipeScriptType Template -PipeScriptPath $pwd
 ```
 
 #### EXAMPLE 4
 ```PowerShell
-PipeScript Invoke { "hello world"}
+PipeScript Invoke { "hello world" } # Should -Be 'Hello World'
 ```
 
 #### EXAMPLE 5
 ```PowerShell
-{ partial function f { } }  | PipeScript Import -PassThru
+{ partial function f { } }  |
+    PipeScript Import -PassThru # Should -BeOfType ([Management.Automation.PSModuleInfo])
 ```
 
 
