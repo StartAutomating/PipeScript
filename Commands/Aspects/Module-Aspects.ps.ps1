@@ -35,7 +35,7 @@ Aspect function ModuleCommandType {
         
         return if -not $ModuleCommandTypes
             
-        foreach ($commandType in @($ModuleCommandTypes.GetEnumerator())) {
+        foreach ($commandType in @($ModuleCommandTypes.GetEnumerator() | Sort-Object Key)) {
             if ($commandType.Value -is [Collections.IDictionary]) {
                 if (-not $commandType.Value.Name) {
                     $commandType.Value["Name"] = $commandType.Key
@@ -97,7 +97,7 @@ Aspect function ModuleCommandPattern {
         
         return if -not $ModuleCommandTypes
             
-        $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator()) {
+        $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator() | Sort-Object Key) {
             $categoryPattern = 
                 if ($categoryKeyValue.Value -is [string]) {
                     $categoryKeyValue.Value

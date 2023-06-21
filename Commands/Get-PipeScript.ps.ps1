@@ -31,7 +31,7 @@ function Get-PipeScript
     # One or more PipeScript Command Types.    
     [Parameter(ValueFromPipelineByPropertyName)]
     [ValidValues(Values={
-        (Get-Module PipeScript).PrivateData.CommandTypes.Keys
+        (Get-Module PipeScript).PrivateData.CommandTypes.Keys | Sort-Object
     })]
     [string[]]
     $PipeScriptType,
