@@ -27,7 +27,7 @@ function Get-PipeScript {
     $PipeScriptPath,
     # One or more PipeScript Command Types.    
     [Parameter(ValueFromPipelineByPropertyName)]
-    [ValidateSet('Analyzers','PostProcessor','Optimizer','Transpiler','PreProcessor','Protocol','Partial','Interface','BuildScript','AutomaticVariable','Aspect','PipeScriptNoun','Template','Sentence')]
+    [ValidateSet('Analyzers','Aspect','AutomaticVariable','BuildScript','Interface','Optimizer','Partial','PipeScriptNoun','PostProcessor','PreProcessor','Protocol','Sentence','Template','Transpiler')]
     [string[]]
     $PipeScriptType,
     # Any positional arguments that are not directly bound.
@@ -376,7 +376,7 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                                                                           
                                                                           if (-not $ModuleCommandTypes) { return }
                                                                               
-                                                                          $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator()) {
+                                                                          $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator() | Sort-Object Key) {
                                                                               $categoryPattern = 
                                                                                   if ($categoryKeyValue.Value -is [string]) {
                                                                                       $categoryKeyValue.Value
@@ -534,7 +534,7 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                                                                           
                                                                           if (-not $ModuleCommandTypes) { return }
                                                                               
-                                                                          $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator()) {
+                                                                          $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator() | Sort-Object Key) {
                                                                               $categoryPattern = 
                                                                                   if ($categoryKeyValue.Value -is [string]) {
                                                                                       $categoryKeyValue.Value
@@ -751,7 +751,7 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                                       
                                       if (-not $ModuleCommandTypes) { return }
                                           
-                                      $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator()) {
+                                      $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator() | Sort-Object Key) {
                                           $categoryPattern = 
                                               if ($categoryKeyValue.Value -is [string]) {
                                                   $categoryKeyValue.Value
