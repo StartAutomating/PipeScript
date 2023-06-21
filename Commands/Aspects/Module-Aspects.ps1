@@ -47,7 +47,7 @@ function Aspect.ModuleCommandType {
         
         if (-not $ModuleCommandTypes) { return }
             
-        foreach ($commandType in @($ModuleCommandTypes.GetEnumerator())) {
+        foreach ($commandType in @($ModuleCommandTypes.GetEnumerator() | Sort-Object Key)) {
             if ($commandType.Value -is [Collections.IDictionary]) {
                 if (-not $commandType.Value.Name) {
                     $commandType.Value["Name"] = $commandType.Key
@@ -119,7 +119,7 @@ function Aspect.ModuleCommandPattern {
         
         if (-not $ModuleCommandTypes) { return }
             
-        $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator()) {
+        $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator() | Sort-Object Key) {
             $categoryPattern = 
                 if ($categoryKeyValue.Value -is [string]) {
                     $categoryKeyValue.Value
@@ -247,7 +247,7 @@ function Aspect.ModuleExtendedCommand {
                                   
                                   if (-not $ModuleCommandTypes) { return }
                                       
-                                  $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator()) {
+                                  $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator() | Sort-Object Key) {
                                       $categoryPattern = 
                                           if ($categoryKeyValue.Value -is [string]) {
                                               $categoryKeyValue.Value
