@@ -76,7 +76,6 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                 } elseif ($matches) {
                     $matches.w1, $matches.w2
                 }
-                            
             # If the second word is a verb and the first is a noun
             if ($myModule.ExportedCommands["$SecondWord-$FirstWord"] -and # and we export the command
                 $myModule.ExportedCommands["$SecondWord-$FirstWord"] -ne $myInv.MyCommand # (and it's not this command)
