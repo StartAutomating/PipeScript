@@ -67,10 +67,16 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
         if ($MyInvocation.InvocationName -eq 'PipeScript') {
             # In this way, we can 'trick' the command a bit.
             $myCmdAst  = $myCommandAst
-            if (-not $myCmdAst) { return }
-            $FirstWord, $secondWord, $restOfLine = $myCmdAst.CommandElements                
             
-            
+            if (-not ($myCmdAst -or $MyInvocation.Line -match '(?<w1>PipeScript)\s(?<w2>\S+)')) { return }
+                
+            $FirstWord, $secondWord, $restOfLine = 
+                if ($myCmdAst.CommandElements) {
+                    $myCmdAst.CommandElements
+                } elseif ($matches) {
+                    $matches.w1, $matches.w2
+                }
+                            
             # If the second word is a verb and the first is a noun
             if ($myModule.ExportedCommands["$SecondWord-$FirstWord"] -and # and we export the command
                 $myModule.ExportedCommands["$SecondWord-$FirstWord"] -ne $myInv.MyCommand # (and it's not this command)
@@ -644,8 +650,15 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
         if ($MyInvocation.InvocationName -eq 'PipeScript') {
             $mySplat = [Ordered]@{} + $PSBoundParameters
             $myCmdAst  = $myCommandAst
-            if ($myCmdAst) {
-                $FirstWord, $secondWord, $restOfLine = $myCmdAst.CommandElements
+            if ($myCmdAst -or $MyInvocation.Line -match '(?<w1>PipeScript)\s(?<w2>\S+)') {
+                
+                $FirstWord, $secondWord, $restOfLine = 
+                    if ($myCmdAst.CommandElements) {
+                        $myCmdAst.CommandElements
+                    } elseif ($matches) {
+                        $matches.w1, $matches.w2
+                    }
+                
                 # If the second word is a verb and the first is a noun
                 if ($myModule.ExportedCommands["$SecondWord-$FirstWord"] -and # and we export the command
                     $myModule.ExportedCommands["$SecondWord-$FirstWord"] -ne $myInv.MyCommand # (and it's not this command)
