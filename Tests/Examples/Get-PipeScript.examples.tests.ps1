@@ -7,13 +7,14 @@ describe 'Get-PipeScript' {
         Get-PipeScript -PipeScriptType Transpiler
     }
     it 'Get-PipeScript Example 3' {
-        Get-PipeScript -PipeScriptType Template -PipeScriptPath Template
+        Get-PipeScript -PipeScriptType Template -PipeScriptPath $pwd
     }
     it 'Get-PipeScript Example 4' {
-        PipeScript Invoke { "hello world"}
+        PipeScript Invoke { "hello world" } |  Should -Be 'Hello World'
     }
     it 'Get-PipeScript Example 5' {
-        { partial function f { } }  | PipeScript Import -PassThru
+        { partial function f { } }  |
+            PipeScript Import -PassThru |  Should -BeOfType ([Management.Automation.PSModuleInfo])
     }
     it 'Get-PipeScript Example 6' {
                             Get-Command Get-Command | 
