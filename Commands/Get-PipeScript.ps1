@@ -11,11 +11,12 @@ function Get-PipeScript {
     .EXAMPLE
         Get-PipeScript -PipeScriptType Transpiler
     .EXAMPLE
-        Get-PipeScript -PipeScriptType Template -PipeScriptPath Template
+        Get-PipeScript -PipeScriptType Template -PipeScriptPath $pwd
     .EXAMPLE
-        PipeScript Invoke { "hello world"}
+        PipeScript Invoke { "hello world" } # Should -Be 'Hello World'
     .EXAMPLE
-        { partial function f { } }  | PipeScript Import -PassThru
+        { partial function f { } }  |
+            PipeScript Import -PassThru # Should -BeOfType ([Management.Automation.PSModuleInfo])
     #>
     [CmdletBinding(PositionalBinding=$false)]
     param(
