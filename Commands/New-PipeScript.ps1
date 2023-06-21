@@ -567,9 +567,13 @@ HTTP Accept indicates what content types the web request will accept as a respon
                                 }
                                 if ($aliasAttribute) {
                                     $aliasAttribute
-                                }                                
-                                if ($parameterType -as [type]) {
-                                    $parameterType = $parameterType -as [type]
+                                }
+                                if ($ParameterOtherAttributes) {
+                                    $ParameterOtherAttributes
+                                }
+                                $PsuedoType = $parameterType | psuedoTypeToRealType
+                                if ($PsuedoType) {
+                                    $parameterType = $PsuedoType
                                     switch ($parameterType) {
                                         [bool] { [switch]}
                                         [array] { [PSObject[]] }
@@ -609,17 +613,9 @@ HTTP Accept indicates what content types the web request will accept as a respon
                                     }                                    
                                 }
                                 elseif ($parameterType) {
-                                    $PsuedoTypeName = $parameterType | psuedoTypeToRealType
-                                    if ($PsuedoTypeName) {
-                                        $PsuedoTypeName
-                                    } else {
-                                        "[PSTypeName('$($parameterType -replace '^System\.')')]"
-                                    }                                    
+                                    "[PSTypeName('$($parameterType -replace '^System\.')')]"                                                                        
                                 }
-                                
-                                if ($ParameterOtherAttributes) {
-                                    $ParameterOtherAttributes
-                                }
+                                                                
                                 '$' + ($parameterName -replace '^$')
                             ) -join [Environment]::newLine
                         }
