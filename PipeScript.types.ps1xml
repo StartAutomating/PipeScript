@@ -2027,7 +2027,7 @@ if (-not $this.'.DisplayName') {
                                                          
                                                          if (-not $ModuleCommandTypes) { return }
                                                              
-                                                         $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator()) {
+                                                         $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator() | Sort-Object Key) {
                                                              $categoryPattern = 
                                                                  if ($categoryKeyValue.Value -is [string]) {
                                                                      $categoryKeyValue.Value
