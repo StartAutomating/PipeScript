@@ -330,13 +330,13 @@ function Aspect.ModuleExtendedCommand {
                             }
                         }
                     }
-                } }))
+                } } -IncludeApplications))
             # Walk over each item in the filtered collection
             foreach ($item in $inputCollection) {
                 # we set $this, $psItem, and $_ for ease-of-use.
                 $this = $_ = $psItem = $item
                 
-                            $cmd = $_                
+                            $cmd = $_
                             $matched = $CommandPattern.Match("$cmd")
                             if (-not $matched.Success) { continue }
                             $NamedGroupMatch = $false
