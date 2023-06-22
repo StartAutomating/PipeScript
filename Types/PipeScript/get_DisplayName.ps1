@@ -60,6 +60,11 @@ if (-not $this.'.DisplayName') {
                                                          
                                                          if (-not $ModuleCommandTypes) { return }
                                                              
+                                                         # With some clever understanding of Regular expressions, we can make match any/all of our potential command types.
+                                                         # Essentially: Regular Expressions can look ahead (matching without changing the position), and be optional.
+                                                         # So we can say "any/all" by making a series of optional lookaheads.
+                                                         
+                                                         # We'll go thru each pattern in order
                                                          $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator() | Sort-Object Key) {
                                                              $categoryPattern = 
                                                                  if ($categoryKeyValue.Value -is [string]) {
@@ -67,10 +72,16 @@ if (-not $this.'.DisplayName') {
                                                                  } else {
                                                                      $categoryKeyValue.Value.Pattern
                                                                  }
-                                                             if (-not $categoryPattern) { continue }
-                                                             "(?<$Prefix$($categoryKeyValue.Key -replace '\p{P}', '_')$Suffix>$categoryPattern)"
-                                                         }) -join ([Environment]::NewLine + '|' + [Environment]::NewLine)
-                                                         [Regex]::new("($combinedRegex)", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
+                                                             # ( and skip anyone that does not have a pattern)
+                                                             if (-not $categoryPattern) { continue } 
+                                                             '(?=' + # Start a lookahead
+                                                                 '.{0,}' + # match any or no characters
+                                                                 # followed by the command pattern
+                                                                 "(?<$Prefix$($categoryKeyValue.Key -replace '\p{P}', '_')$Suffix>$categoryPattern)" +
+                                                                 ')?' # made optional                            
+                                                         }) -join [Environment]::NewLine
+                                                         # Now that we've combined the whole thing, make it a Regex and output it.        
+                                                         [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                                                      }
                                                   } -Module PipeScript   
     }
