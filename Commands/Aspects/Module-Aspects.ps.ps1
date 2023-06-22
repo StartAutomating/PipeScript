@@ -97,6 +97,11 @@ Aspect function ModuleCommandPattern {
         
         return if -not $ModuleCommandTypes
             
+        # With some clever understanding of Regular expressions, we can make match any/all of our potential command types.
+        # Essentially: Regular Expressions can look ahead (matching without changing the position), and be optional.
+        # So we can say "any/all" by making a series of optional lookaheads.
+        
+        # We'll go thru each pattern in order
         $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator() | Sort-Object Key) {
             $categoryPattern = 
                 if ($categoryKeyValue.Value -is [string]) {
@@ -104,11 +109,18 @@ Aspect function ModuleCommandPattern {
                 } else {
                     $categoryKeyValue.Value.Pattern
                 }
-            if (-not $categoryPattern) { continue }
+            # ( and skip anyone that does not have a pattern)
+            continue if -not $categoryPattern
 
-            "(?<$Prefix$($categoryKeyValue.Key -replace '\p{P}', '_')$Suffix>$categoryPattern)"
-        }) -join ([Environment]::NewLine + '|' + [Environment]::NewLine)
-        [Regex]::new("($combinedRegex)", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
+            '(?=' + # Start a lookahead
+                '.{0,}' + # match any or no characters
+                # followed by the command pattern
+                "(?<$Prefix$($categoryKeyValue.Key -replace '\p{P}', '_')$Suffix>$categoryPattern)" +
+                ')?' # made optional                            
+        }) -join [Environment]::NewLine
+
+        # Now that we've combined the whole thing, make it a Regex and output it.        
+        [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
     }
 }
 
@@ -170,9 +182,11 @@ Aspect function ModuleExtendedCommand {
                 $cmd = $_                
                 $matched = $CommandPattern.Match("$cmd")
                 if (-not $matched.Success) { continue }
+                $NamedGroupMatch = $false
                 foreach ($group in $matched.Groups) {
                     if (-not $group.Success) { continue }
                     if ($null -ne ($group.Name -as [int])) { continue }
+                    $NamedGroupMatch = $true
                     $groupName = $group.Name.Replace('_','.')
                     if ($PSTypeName) {
                         foreach ($psuedoType in $PSTypeName) {
@@ -185,7 +199,9 @@ Aspect function ModuleExtendedCommand {
                         $cmd.pstypenames.insert(0, $groupName)
                     }
                 }
-                $cmd    
+                if ($NamedGroupMatch) {
+                    $cmd
+                } 
             }
         }
         else {
@@ -193,9 +209,11 @@ Aspect function ModuleExtendedCommand {
                 $cmd = $_                
                 $matched = $CommandPattern.Match("$cmd")
                 if (-not $matched.Success) { continue }
+                $NamedGroupMatch = $false
                 foreach ($group in $matched.Groups) {
                     if (-not $group.Success) { continue }
                     if ($null -ne ($group.Name -as [int])) { continue }
+                    $NamedGroupMatch = $true
                     $groupName = $group.Name -replace '_', '.'
                     if ($PSTypeName) {
                         foreach ($psuedoType in $PSTypeName) {
@@ -208,7 +226,10 @@ Aspect function ModuleExtendedCommand {
                         $cmd.pstypenames.insert(0, $groupName)
                     }
                 }
-                $cmd
+                if ($NamedGroupMatch) {
+                    $cmd
+                }
+                
             }
         }
     }
