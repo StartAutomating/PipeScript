@@ -25,12 +25,12 @@ function Export-Pipescript {
         $filesToBuild = 
             @(if (-not $InputPath) {
                 Get-PipeScript -PipeScriptPath $pwd |
-                    Where-Object PipeScriptType -In Template, BuildScript |
+                    Where-Object PipeScriptType -Match '(?>Template|BuildScript)' |
                     Sort-Object PipeScriptType, Source
             } else {
                 foreach ($inPath in $InputPath) {
                     Get-PipeScript -PipeScriptPath $inPath |
-                        Where-Object PipeScriptType -In Template, BuildScript |
+                        Where-Object PipeScriptType -Match '(?>Template|BuildScript)' |
                         Sort-Object PipeScriptType, Source
                 }
             })
