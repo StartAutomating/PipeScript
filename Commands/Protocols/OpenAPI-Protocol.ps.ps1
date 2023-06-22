@@ -826,9 +826,6 @@ $(New-PipeScript @newPipeScriptSplat)
 }")
     } else {
         New-PipeScript @newPipeScriptSplat
-    }
-    elseif ($PSCmdlet.ParameterSetName -eq 'Interactive') {
-        New-PipeScript @newPipeScriptSplat
-    }
+    }    
 }
 }
