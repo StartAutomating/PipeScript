@@ -178,8 +178,8 @@ Aspect function ModuleExtendedCommand {
         $CommandPattern = ModuleCommandPattern $ModuleInfo -Prefix $prefix -Suffix $Suffix
 
         if ($PSBoundParameters['FilePath']) {
-            all scripts in $FilePath foreach {
-                $cmd = $_                
+            all scripts applications in $FilePath foreach {
+                $cmd = $_
                 $matched = $CommandPattern.Match("$cmd")
                 if (-not $matched.Success) { continue }
                 $NamedGroupMatch = $false
