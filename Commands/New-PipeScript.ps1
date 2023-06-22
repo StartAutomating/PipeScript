@@ -494,6 +494,8 @@ HTTP Accept indicates what content types the web request will accept as a respon
                         }
                         elseif ($EachParameter.Value -is [Collections.IDictionary] -or 
                             $EachParameter.Value -is [PSObject]) {
+                            # This is the "easy" way to specify a lot of advanced properties:
+                            # A hashtable of hashtables/PSObjects, where the keys are made as convenient and exhaustive as possible:
                             $parameterMetadata = $EachParameter.Value
                             $parameterName = $EachParameter.Key
                             if ($parameterMetadata.Name) {
@@ -502,18 +504,32 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             
                             $parameterAttributeParts = @()
                             $ParameterOtherAttributes = @()
+                            # Attributes can be in .Attribute/.Attributes
                             $attrs = @($parameterMetadata | oneOfTheseProperties Attribute Attributes)
+                            # Aliases can be in .Alias/.Aliases
                             [string[]]$aliases = @($parameterMetadata | oneOfTheseProperties Alias Aliases)
+                            # Help can be in .Help/.Description/.Synopsis/.Summary
                             [string]$parameterHelpText = 
                                 $parameterMetadata | oneOfTheseProperties Help Description Synopsis Summary
+                            # Bindings can be in .Binding/.Bindings/.DefaultBinding/.DefaultBindingProperty.
                             $Bindings = @(
-                                $parameterMetadata | oneOfTheseProperties Binding DefaultBinding DefaultBindingProperty
+                                $parameterMetadata | oneOfTheseProperties Binding Bindings DefaultBinding DefaultBindingProperty
                             )
+                            # Ambient values can be in .AmbientValue/.CoerceValue                            
                             $AmbientValue = @(
                                 $parameterMetadata | oneOfTheseProperties AmbientValue CoerceValue
                             )
+                            # Metadata can be in .Metadata/.ReflectionMetadata/.ParameterMetadata
                             $parameterMetadataProperties = @(
                                 $parameterMetadata | oneOfTheseProperties Metadata ReflectionMetadata ParameterMetadata
+                            )
+                            # Valid Values can be found in .ValidValue/.ValidValues/.ValidateSet
+                            $parameterValidValues = @(
+                                $parameterMetadata | oneOfTheseProperties ValidValue ValidValues ValidateSet
+                            )
+                            # Default values can be found in .DefaultValue/.Default
+                            $parameterDefaultValue = @(
+                                $parameterMetadata | oneOfTheseProperties DefaultValue Default
                             )
                             
                             $aliasAttribute = @(foreach ($aka in $aliases) {
@@ -522,11 +538,15 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             if ($aliasAttribute) {
                                 $aliasAttribute = "[Alias('$aliasAttribute')]"
                             }
+                            if ($parameterValidValues) {
+                                $attrs += "[ValidateSet('$($parameterValidValues -replace "'","''" -join "','")')]"    
+                            }
                             if ($Bindings) {
                                 foreach ($bindingProperty in $Bindings) {
                                     $attrs += "[ComponentModel.DefaultBindingProperty('$bindingProperty')]"
                                 }
                             }
+                            
                             if ($parameterMetadataProperties) {
                                 foreach ($pmdProp in $parameterMetadataProperties) {
                                     if ($pmdProp -is [Collections.IDictionary]) {
@@ -616,7 +636,23 @@ HTTP Accept indicates what content types the web request will accept as a respon
                                     "[PSTypeName('$($parameterType -replace '^System\.')')]"                                                                        
                                 }
                                                                 
-                                '$' + ($parameterName -replace '^$')
+                                '$' + ($parameterName -replace '^$') + $(
+                                    if ($parameterDefaultValue) {                                        
+                                        if ($parameterDefaultValue -is [scriptblock]) {
+                                            if ($parameterType -eq [scriptblock]) {
+                                                "= {$ParameterDefaultValue}"
+                                            } else {
+                                                "= `$($ParameterDefaultValue)"
+                                            }                                            
+                                        } elseif ($parameterDefaultValue -is [string]) {
+                                            "= `$('$($parameterDefaultValue -replace "'","''")')"
+                                        } elseif ($parameterDefaultValue -is [bool] -or $parameterDefaultValue -is [switch]) {
+                                            "= `$$($parameterDefaultValue -as [bool])"
+                                        } else {
+                                            "= `$($($parameterDefaultValue))"
+                                        }
+                                    }
+                                )
                             ) -join [Environment]::newLine
                         }
                     }
