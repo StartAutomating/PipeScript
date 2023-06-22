@@ -48,6 +48,13 @@ param(
 $CommandAst
 )
 
+begin {
+    $protocolFunctionPattern = 
+        '(?>PipeScript\p{P})?(?>[^\p{P}]+\p{P}Protocol|Protocol\p{P}[^\p{P}]+)'
+    
+    $protocolCommands = Get-PipeScript -PipeScriptType Protocol        
+}
+
 process {
     $myCmd = $MyInvocation.MyCommand
     [string]$CommandMethod = ''
@@ -69,20 +76,13 @@ process {
             $commandName -replace '\*(?=[:/])','0.0.0.0' -replace '\$(.+)\:','$1__' -replace '\$','__' -as [uri]
         }
 
-    if (-not $commandUri) {        
-        $PSCmdlet.WriteError(
-            [Management.Automation.ErrorRecord]::new(                
-                [exception]::new("Could not convert '$commandName' to a [uri]"),
-                'CommandName.Not.Uri',
-                'SyntaxError',
-                $CommandAst
-            )
-        )        
+    # If we could not make the Command a URI, return.
+    if (-not $commandUri) {
         return
     }
 
     $commandAstSplat = @{
-        CommandAST = $commandAst        
+        CommandAST = $commandAst
     }
     
     if ($commandMethod) {
@@ -92,16 +92,34 @@ process {
     $foundTranspiler = 
         @(Get-Transpiler -CouldPipe $commandUri -ValidateInput $CommandAst -CouldRun -Parameter $commandAstSplat)
 
+    if (-not $foundTranspiler -and $protocolCommands) {
+        foreach ($protocolCmd in $protocolCommands) {
+            if ($protocolCmd.Validate($CommandAst)) {
+                $foundTranspiler = $protocolCmd
+                break
+            }
+        }
+    }
+
     if (-not $foundTranspiler -and -not $CommandMethod) {
-        Write-Error "Could not find a transpiler for $commandAst"
+        # Write-Error "Could not find a transpiler for $commandAst"
         return
     }
 
     foreach ($found in $foundTranspiler) {
-        $params = $found.ExtensionParameter
-        if ("$($found.ExtensionCommand.ScriptBlock)" -eq "$($myCmd.ScriptBlock)") { continue }
-        $transpilerOutput = & $found.ExtensionCommand @params
-        
-        if ($transpilerOutput) { $transpilerOutput; break }
+        if ($found -is [Management.Automation.CommandInfo]) {
+            $uParam = $found.UrlParameterName
+            $cmdParam = $found.CommandParameterName
+            if ($uParam -and $cmdParam) {
+                $protocolSplat = [Ordered]@{$uParam=$commandUri;$cmdParam=$CommandAst}
+                & $found @protocolSplat
+            }
+        } else {
+            $params = $found.ExtensionParameter
+            if ("$($found.ExtensionCommand.ScriptBlock)" -eq "$($myCmd.ScriptBlock)") { continue }
+            $transpilerOutput = & $found.ExtensionCommand @params
+            
+            if ($transpilerOutput) { $transpilerOutput; break }
+        }        
     }    
 }
