@@ -7,14 +7,19 @@ function Get-PipeScript {
         Because 'Get' is the default verb in PowerShell,
         Get-PipeScript also allows you to run other commands in noun-oriented syntax.
     .EXAMPLE
+        # Get every specialized PipeScript command
         Get-PipeScript
     .EXAMPLE
+        # Get all transpilers
         Get-PipeScript -PipeScriptType Transpiler
     .EXAMPLE
+        # Get all template files within the current directory.
         Get-PipeScript -PipeScriptType Template -PipeScriptPath $pwd
     .EXAMPLE
+        # You can use `noun verb` to call any core PipeScript command.
         PipeScript Invoke { "hello world" } # Should -Be 'Hello World'
     .EXAMPLE
+        # You can still use the object pipeline with `noun verb`
         { partial function f { } }  |
             PipeScript Import -PassThru # Should -BeOfType ([Management.Automation.PSModuleInfo])
     #>
