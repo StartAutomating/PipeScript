@@ -409,33 +409,52 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                                                 if ($PSBoundParameters['FilePath']) {
                                                     $(
                                                             # Collect all items into an input collection
-                                                            $inputCollection = @($executionContext.SessionState.InvokeCommand.GetCommands('*','Script',$true)
-                                                       ($FilePath |
-                                                        & { process {
+                                                            $inputCollection = @(($FilePath |& {
+                                                            param([switch]$IncludeApplications)
+                                                            process {
                                                             $inObj = $_
+                                                            # Since we're looking for commands, pass them thru directly
                                                             if ($inObj -is [Management.Automation.CommandInfo]) {
                                                                 $inObj
                                                             }
+                                                            # If the input object is ps1 fileinfo 
                                                             elseif ($inObj -is [IO.FileInfo] -and $inObj.Extension -eq '.ps1') {
+                                                                # get that exact command.
                                                                 $ExecutionContext.SessionState.InvokeCommand.GetCommand($inObj.Fullname, 'ExternalScript')
                                                             }
+                                                            # If the input is a string or path        
+                                                            elseif ($pathItem -is [IO.FileInfo] -and $IncludeApplications) {
+                                                                $ExecutionContext.SessionState.InvokeCommand.GetCommand($pathItem.FullName, 'Application')
+                                                            }
                                                             elseif ($inObj -is [string] -or $inObj -is [Management.Automation.PathInfo]) {
-                                                                $resolvedPath = $ExecutionContext.SessionState.Path.GetResolvedPSPathFromPSPath($inObj)
-                                                                if ($resolvedPath) {
+                                                                # resolve it
+                                                                foreach ($resolvedPath in $ExecutionContext.SessionState.Path.GetResolvedPSPathFromPSPath("$inObj")) {
+                                                                    # and get the literal item
                                                                     $pathItem = Get-item -LiteralPath $resolvedPath
+                                                                    # if it is a .ps1 fileinfo
                                                                     if ($pathItem -is [IO.FileInfo] -and $pathItem.Extension -eq '.ps1') {
+                                                                        # get that exact command
                                                                         $ExecutionContext.SessionState.InvokeCommand.GetCommand($pathItem.FullName, 'ExternalScript')
-                                                                    } else {                    
+                                                                    } 
+                                                                    elseif ($pathItem -is [IO.FileInfo] -and $IncludeApplications) {
+                                                                        $ExecutionContext.SessionState.InvokeCommand.GetCommand($pathItem.FullName, 'Application')
+                                                                    }
+                                                                    elseif ($pathItem -is [IO.DirectoryInfo]) {
+                                                                        # Otherwise, get all files beneath the path
                                                                         foreach ($pathItem in @(Get-ChildItem -LiteralPath $pathItem -File -Recurse)) {
+                                                                            # that are .ps1
                                                                             if ($pathItem.Extension -eq '.ps1') {
+                                                                                # and return them directly.
                                                                                 $ExecutionContext.SessionState.InvokeCommand.GetCommand($pathItem.FullName, 'ExternalScript')
+                                                                            }
+                                                                            elseif ($IncludeApplications) {
+                                                                                $ExecutionContext.SessionState.InvokeCommand.GetCommand($pathItem.FullName, 'Application')
                                                                             }
                                                                         }
                                                                     }
-                                                                }            
+                                                                }
                                                             }
-                                                        } }
-                                                    ))
+                                                        } }))
                                                     # Walk over each item in the filtered collection
                                                     foreach ($item in $inputCollection) {
                                                         # we set $this, $psItem, and $_ for ease-of-use.
