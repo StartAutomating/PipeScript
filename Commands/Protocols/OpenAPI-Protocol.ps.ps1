@@ -67,7 +67,8 @@ Protocol function OpenAPI {
     $CommandAst,
 
     # The ScriptBlock.
-    # This is provided when OpenAPI
+    # This is provided when transpiling the protocol as an attribute.
+    # Providing a value here will run this script's contents, rather than a default implementation.
     [Parameter(Mandatory,ParameterSetName='ScriptBlock',ValueFromPipeline)]
     [scriptblock]
     $ScriptBlock = {},
