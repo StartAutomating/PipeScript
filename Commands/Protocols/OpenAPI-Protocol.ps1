@@ -35,7 +35,7 @@ function Protocol.OpenAPI {
             Use-PipeScript
         & $TranspiledOpenAPI # Should -BeOfType ([ScriptBlock])
     #>
-    [Alias('OpenAPI','Swagger','OpenAPI.psx.ps1')]
+    [Alias('OpenAPI','Swagger')]
     [ValidateScript({
         $commandAst = $_
         if ($commandAst -isnot [Management.Automation.Language.CommandAst]) { return $false }
