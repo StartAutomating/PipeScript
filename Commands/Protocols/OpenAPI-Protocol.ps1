@@ -753,8 +753,7 @@ $(New-PipeScript @newPipeScriptSplat)
 }")
     } else {
         New-PipeScript @newPipeScriptSplat
-    }
-    
+    }    
 }
 }
 
