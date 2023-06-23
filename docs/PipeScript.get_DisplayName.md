@@ -1,5 +1,5 @@
-PipeScript.get_DisplayName()
-----------------------------
+PipeScript.get_DisplayName.ps()
+-------------------------------
 
 
 
@@ -19,3 +19,4 @@ Gets the display name of a PipeScript command.
 
 
 ---
+
