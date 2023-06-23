@@ -104,6 +104,13 @@ function Export-Pipescript {
                 if ($buildOutput -is [IO.FileInfo]) {
                     $TotalOutputFileLength += $buildOutput.Length
                 }
+                elseif ($buildOutput -as [IO.FileInfo[]]) {
+                    foreach ($_ in $buildOutput) {
+                        if ($_.Length) {
+                            $TotalOutputFileLength += $_.Length
+                        }
+                    }
+                }
 
                 if ($env:GITHUB_WORKSPACE) {
                     $FileBuildEnded = [DateTime]::now
