@@ -1,5 +1,5 @@
 
-function protocol.JSONSchema {
+function Protocol.JSONSchema {
     <#
     .SYNOPSIS
         JSON Schema protocol

@@ -1,4 +1,4 @@
-protocol function JSONSchema {
+Protocol function JSONSchema {
     <#
     .SYNOPSIS
         JSON Schema protocol
