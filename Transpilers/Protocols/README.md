@@ -13,11 +13,10 @@ To be considered a protocol transpiler, a transpiler must:
 3. Be valid, given a ```[Management.Automation.Language.CommandAST]```
 
 
-|DisplayName                                       |Synopsis                                           |
-|--------------------------------------------------|---------------------------------------------------|
-|[Http.Protocol](Http.Protocol.psx.ps1)            |[http protocol](Http.Protocol.psx.ps1)             |
-|[JSONSchema.Protocol](JSONSchema.Protocol.psx.ps1)|[json schema protocol](JSONSchema.Protocol.psx.ps1)|
-|[UDP.Protocol](UDP.Protocol.psx.ps1)              |[udp protocol](UDP.Protocol.psx.ps1)               |
+|DisplayName                           |Synopsis                              |
+|--------------------------------------|--------------------------------------|
+|[Http.Protocol](Http.Protocol.psx.ps1)|[http protocol](Http.Protocol.psx.ps1)|
+|[UDP.Protocol](UDP.Protocol.psx.ps1)  |[udp protocol](UDP.Protocol.psx.ps1)  |
 
 
 
@@ -88,23 +87,6 @@ To be considered a protocol transpiler, a transpiler must:
     http://text-processing.com/api/sentiment/ -Method POST -ContentType 'application/x-www-form-urlencoded' -Body "text=amazing!" |
         Select-Object -ExpandProperty Probability -Property Label
 }
-~~~
-
-## JSONSchema.Protocol Example 1
-
-
-~~~PowerShell
-    jsonschema https://aka.ms/terminal-profiles-schema#/$defs/Profile
-~~~
-
-## JSONSchema.Protocol Example 2
-
-
-~~~PowerShell
-    {
-        [JSONSchema(SchemaURI='https://aka.ms/terminal-profiles-schema#/$defs/Profile')]
-        param()
-    }.Transpile()
 ~~~
 
 ## UDP.Protocol Example 1
