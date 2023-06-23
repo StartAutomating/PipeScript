@@ -38,31 +38,18 @@ PipeScript.PostProcess function InitializeAutomaticVariables {
     )
 
     begin {
-        $AutomaticVariablePattern = [Regex]::new('
-        (?>
-        (?:PipeScript\p{P})?
-        (?>
-            Automatic|
-            Magic
-        )\p{P}Variable\p{P}
-        )
-        ','IgnoreCase,IgnorePatternWhitespace')
+        
         # First, let's find all commands that automatic or magic variables.
         # Let's find all possible commands by wildcards (Automatic?Variable* or Magic?Variable*)
-        $allAutomaticVariableCommands = @(
-            $ExecutionContext.SessionState.InvokeCommand.GetCommands('*Variable*','Function,Alias,Cmdlet', $true) -match $AutomaticVariablePattern        
-        )
+        $allAutomaticVariableCommands = @(Get-PipeScript -PipeScriptType AutomaticVariable)
         # Then, let's create a lookup table by the name of the automatic variable
         $allAutomaticVariables = [Ordered]@{}
         
-        foreach ($automaticVariableCommand in $allAutomaticVariableCommands) {
-            # The automatic variable name is 
-            $AutomaticVariableName = 
-                # the magic|automatic followed by punctuation followed by variable followed by punctuation.
-                $automaticVariableCommand -replace '(?>Magic|Automatic)\p{P}Variable\p{P}' -replace '^(?>PowerShell|PipeScript)' -replace
-                    '^\p{P}' -replace '\p{P}$' 
-            $allAutomaticVariables[$AutomaticVariableName] =
-                $automaticVariableCommand
+        foreach ($automaticVariableCommand in $allAutomaticVariableCommands) {            
+            if ($automaticVariableCommand.VariableName) {
+                $allAutomaticVariables[$automaticVariableCommand.VariableName] =
+                    $automaticVariableCommand
+            }
         }
         
         # Declare a quick filter to get the definition of the automatic variable
