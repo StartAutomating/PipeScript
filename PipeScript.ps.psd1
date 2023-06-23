@@ -33,7 +33,7 @@
                     Aspect\p{P}          # Followed by Aspect and punctuation.
                 '  
             }
-            'Analyzers' = @{
+            'Analyzer' = @{
                 Description = 'Analyzation Commands'
                 Pattern     = '
                     (?>PipeScript\p{P})?   # (optionally) PipeScript+Punctuation
@@ -47,6 +47,7 @@
                     (?>PipeScript\p{P})? # (optionally) PipeScript+Punctuation
                     (?>Automatic|Magic)  # automatic or magic
                     \p{P}?Variable\p{P}  # Optional Punctation + Variable + Punctuation
+                    (?=[^\p{P}]+$)       # Followed by anything but punctuation.
                 '
             }
 
@@ -92,8 +93,12 @@
                     '
                 }
               
-            'Template'     =
-                '\.ps1{0,1}\.(?<ext>[^\.]+$)'
+            'Template'     = 
+                @{
+                    Description = 'Templates let you write other languages with PipeScript.'
+                    Pattern = '\.ps1{0,1}\.(?<ext>[^\.]+$)'
+                }
+                
 
             'PreProcessor' = @{
                 Description = 'Preprocessing Commands'
