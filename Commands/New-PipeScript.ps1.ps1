@@ -693,6 +693,18 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             $Param
                         }
                 }
+                elseif ($param -is [Management.Automation.CommandInfo] -or
+                    $param -is [Management.Automation.CommandMetaData]) {
+                    if ($param -isnot [Management.Automation.CommandMetaData]) {
+                        $param = $param -as [Management.Automation.CommandMetaData]
+                    }
+                    if ($param) {
+                        $parameterScriptBlocks +=
+                            [scriptblock]::Create(("param(" +
+                            ([Management.Automation.ProxyCommand]::GetParamBlock($param) -replace '\$\{(?<N>\w+)\}','$$${N}') +
+                            ")"))
+                    }
+                }
                 # If the -Parameter was provided via reflection
                 elseif ($Param -is [Reflection.PropertyInfo] -or
                     $Param -as [Reflection.PropertyInfo[]] -or
