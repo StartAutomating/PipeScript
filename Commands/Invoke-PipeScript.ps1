@@ -526,6 +526,9 @@
                 $realCommandExists = $ExecutionContext.SessionState.InvokeCommand.GetCommand(($transpilerStepName -replace '_','-'), 'All')
                 $realCommandExists
             )) {
+                if ($positionalArguments) {
+                    $ArgumentList += $positionalArguments
+                }
                 if ($inputObject) {
                     $canPipe = foreach ($param in $realCommandExists.Parameters.Values) {
                         if ($param.Attributes.ValueFromPipeline -and $inputObject -is $param.ParameterType) {
