@@ -125,21 +125,16 @@ $processScriptOutput = { process {
 
 
 if (-not $UserName) { $UserName = $env:GITHUB_ACTOR }
-if (-not $UserEmail) { 
-    $GitHubUserEmail = 
-        if ($env:GITHUB_TOKEN) {
-            Invoke-RestMethod -uri "https://api.github.com/user/emails" -Headers @{
-                Authorization = "token $env:GITHUB_TOKEN"
-            } |
-                Select-Object -First 1 -ExpandProperty email
-        } else {''}
+
+if (-not $UserEmail) {
     $UserEmail = 
-    if ($GitHubUserEmail) {
-        $GitHubUserEmail
-    } else {
-        "$UserName@github.com"
-    }    
+        if ($GitHubUserEmail) {
+            $GitHubUserEmail
+        } else {
+            "$UserName@github.com"
+        }    
 }
+
 git config --global user.email $UserEmail
 git config --global user.name  $UserName
 
@@ -185,13 +180,24 @@ if ($pipeScriptBuildErrors) {
 
 $BuildPipeScriptEnd = [DateTime]::Now
 $BuildPipeScriptTook = $BuildPipeScriptEnd - $BuildPipeScriptStart
-"::notice:: Build-PipeScript ran in $($BuildPipeScriptTook.TotalSeconds) seconds" | Out-Host
-"::group::$($buildOutputFiles.Length) files built in $($BuildPipeScriptTook.TotalSeconds) seconds" |
+
+[long]$TotalFileLength = 0
+$buildFilePaths = @(
+    foreach ($buildOutputFile in $buildOutputFiles) {
+        if ($buildOutputFile.FullName) {
+            $buildOutputFile.FullName
+            if ($buildOutputFile.Length) {
+                $TotalFileLength+=$buildOutputFile.Length
+            }
+        }        
+    }
+)
+
+"::notice:: $($buildOutputFiles.Length) files built ( $([Math]::Round($TotalFileLength/1kb, 2))kb ) in $($BuildPipeScriptTook.TotalSeconds) seconds" | Out-Host
+"::group:: Output Files" |
     Out-Host
 
-@(
-    $buildOutputFiles | Select-Object -ExpandProperty Fullname
-) -join [Environment]::newLine | Out-Host
+$buildFilePaths -join [Environment]::newLine | Out-Host
 
 "::endgroup::" | Out-Host
 if ($CommitMessage -or $anyFilesChanged) {
