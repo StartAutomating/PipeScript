@@ -85,7 +85,7 @@ One or more PipeScript Command Types.
 
 Valid Values:
 
-* Analyzers
+* Analyzer
 * Aspect
 * AutomaticVariable
 * BuildScript
