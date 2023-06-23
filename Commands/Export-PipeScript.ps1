@@ -48,6 +48,9 @@ function Export-Pipescript {
         if ($env:GITHUB_WORKSPACE) {
             "::group::Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" | Out-Host                
         }
+        # Keep track of how much is input and output.
+        [long]$TotalInputFileLength  = 0 
+        [long]$TotalOutputFileLength = 0 
         foreach ($buildFile in $filesToBuild) {
             
             $ThisBuildStartedAt = [DateTime]::Now                
@@ -57,10 +60,10 @@ function Export-Pipescript {
                 $FilesToBuildCount * 100 / $filesToBuildTotal 
             ) -id $filesToBuildID
             
+            if (-not $buildFile.Source) { continue }
             if ($alreadyBuilt[$buildFile.Source]) { continue }
-
-
-
+            $buildFileInfo = $buildFile.Source -as [IO.FileInfo]
+            $TotalInputFileLength += $buildFileInfo.Length
 
             $buildFileTemplate = $buildFile.Template
             if ($buildFileTemplate -and $buildFile.PipeScriptType -ne 'Template') {
@@ -98,7 +101,11 @@ function Export-Pipescript {
 
             if ($buildOutput) {
                 
-                if ($env:GITHUB_WORKSPACE) {                    
+                if ($buildOutput -is [IO.FileInfo]) {
+                    $TotalOutputFileLength += $buildOutput.Length
+                }
+
+                if ($env:GITHUB_WORKSPACE) {
                     $FileBuildEnded = [DateTime]::now
                     "$($buildFile.Source)", "$('=' * $buildFile.Source.Length)", "Output:" -join [Environment]::newLine | Out-Host
                     if ($buildOutput -is [Management.Automation.ErrorRecord]) {
@@ -147,7 +154,13 @@ function Export-Pipescript {
         $BuildTime = [DateTime]::Now - $buildStarted
         if ($env:GITHUB_WORKSPACE) {
             "$filesToBuildTotal in $($BuildTime)" | Out-Host
-            "::endgroup::Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal] : $($buildFile.Source)" | Out-Host                
+            "::endgroup::Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal] : $($buildFile.Source)" | Out-Host
+            if ($TotalInputFileLength) {
+                "$([Math]::Round($TotalInputFileLength / 1kb)) kb input"
+                "$([Math]::Round($TotalOutputFileLength / 1kb)) kb output",
+                "PipeScript Factor: X$([Math]::round([double]$TotalOutputFileLength/[double]$TotalInputFileLength,4))"
+            }
+            
         }
         
         Write-Progress "Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" "Finished In $($BuildTime) " -Completed -id $filesToBuildID
