@@ -226,6 +226,9 @@ HTTP Accept indicates what content types the web request will accept as a respon
     [Alias('Aliases')]
     [string[]]
     $Alias,
+    # If set, will try not to create mandatory parameters.
+    [switch]
+    $NoMandatory,
     # If set, will not transpile the created code.
     [switch]
     $NoTranspile,
@@ -573,7 +576,8 @@ HTTP Accept indicates what content types the web request will accept as a respon
                             }
                             if (
                                 ($parameterMetadata.Mandatory -or $parameterMetadata.required) -and 
-                                ($parameterAttributeParts -notmatch 'Mandatory')) {
+                                ($parameterAttributeParts -notmatch 'Mandatory') -and 
+                                -not $NoMandatory) {
                                 $parameterAttributeParts = @('Mandatory') + $parameterAttributeParts
                             }
                             $parameterType = $parameterMetadata | oneOfTheseProperties Type ParameterType                            
@@ -685,9 +689,14 @@ HTTP Accept indicates what content types the web request will accept as a respon
                         $param = $param -as [Management.Automation.CommandMetaData]
                     }
                     if ($param) {
+                        $proxyParamBlock = [Management.Automation.ProxyCommand]::GetParamBlock($param)
+                        $proxyParamBlock = $proxyParamBlock -replace '\$\{(?<N>\w+)\}','$$${N}'
+                        if ($NoMandatory) {
+                            $proxyParamBlock = $proxyParamBlock -replace 'Mandatory=\$true', 'Mandatory=$$false'
+                        }
                         $parameterScriptBlocks +=
                             [scriptblock]::Create(("param(" +
-                            ([Management.Automation.ProxyCommand]::GetParamBlock($param) -replace '\$\{(?<N>\w+)\}','$$${N}') +
+                            $proxyParamBlock +
                             ")"))
                     }
                 }
@@ -793,7 +802,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                         if ($param.schema.type) {
                             $newParameterInfo.ParameterType = $param.schema.type | psuedoTypeToRealType
                         }
-                        if ($param.required -or $param.Mandatory) {
+                        if (($param.required -or $param.Mandatory) -and -not $NoMandatory) {
                             $newParameterInfo.Mandatory = $true
                         }
                                                 
