@@ -200,129 +200,107 @@ begin {
             # Convert the property into a parameter name
             $parameterName = $property.Name | getSchemaParameterName
             
-            # Collect the parameter attributes
-            $parameterAttributes = @(
-                # The description comes first, as inline help
-                $propertyDescription = $property.value.description
-                if ($propertyDescription -match '\n') {
-                    "    <#"
-                    "    " + $($propertyDescription -split '(?>\r\n|\n)' -join ([Environment]::NewLine + (' ' * 4))
-                    )                
-                    "    #>"
+            $newParameterInfo = [Ordered]@{
+                Name=$parameterName;
+                Attributes=@()
+                Binding = $property.Name
+            }
+            
+            if ($property.value.description) {
+                $newParameterInfo.Description = $property.value.Description
+            }
+
+            if (-not $NoMandatory -and 
+                (($property.value.required) -or ($RequiredParameter -contains $property.Name))
+            ) {
+                $newParameterInfo.Mandatory = $true
+            }
+
+            $propertyTypeInfo =                 
+                if ($property.value.'$ref') {
+                    # If there was a reference, try to resolve it
+                    $referencedType = $schemaObject | resolveSchemaDefinition $property.value.'$ref'
+                    if ($referencedType) {
+                        $referencedType
+                    }
                 } else {
-                    "# $propertyDescription"
-                }
-                "[Parameter($(
-                    if (-not $NoMandatory -and 
-                        (($property.value.required) -or ($RequiredParameter -contains $property.Name))
-                    ) { "Mandatory,"}
-                )ValueFromPipelineByPropertyName)]"
-
-                # Followed by the defaultBindingProperty (the name of the JSON property)
-                "[ComponentModel.DefaultBindingProperty('$($property.Name)')]"
-                
-
-                # Keep track of if null was allowed and try to resolve the type
-                $nullAllowed = $false
-                $propertyTypeInfo =                 
-                    if ($property.value.'$ref') {
-                        # If there was a reference, try to resolve it
-                        $referencedType = $schemaObject | resolveSchemaDefinition $property.value.'$ref'
-                        if ($referencedType) {
-                            $referencedType
-                        }
+                    # If there is not a oneOf, return the value
+                    if (-not $property.value.'oneOf') {
+                        $property.value
                     } else {
-                        # If there is not a oneOf, return the value
-                        if (-not $property.value.'oneOf') {
-                            $property.value
-                        } else {
-                            # If there is oneOf, see if it's an optional null
-                            $notNullOneOf = 
-                                @(foreach ($oneOf in $property.value.oneOf) {
-                                    if ($oneOf.type -eq 'null') { 
-                                        $nullAllowed = $true
-                                        continue                                    
-                                    }
-                                    $oneOf
-                                })
-                            if ($notNullOneOf.Count -eq 1) {
-                                $notNullOneOf = $notNullOneOf[0]
-                                if ($notNullOneOf.'$ref') {
-                                    $referencedType = $schemaObject | resolveSchemaDefinition $notNullOneOf.'$ref'
-                                    if ($referencedType) {
-                                        $referencedType
-                                    }
-                                } else {
-                                    $notNullOneOf
+                        # If there is oneOf, see if it's an optional null
+                        $notNullOneOf = 
+                            @(foreach ($oneOf in $property.value.oneOf) {
+                                if ($oneOf.type -eq 'null') { 
+                                    $nullAllowed = $true
+                                    continue                                    
+                                }
+                                $oneOf
+                            })
+                        if ($notNullOneOf.Count -eq 1) {
+                            $notNullOneOf = $notNullOneOf[0]
+                            if ($notNullOneOf.'$ref') {
+                                $referencedType = $schemaObject | resolveSchemaDefinition $notNullOneOf.'$ref'
+                                if ($referencedType) {
+                                    $referencedType
                                 }
                             } else {
-                                "[PSObject]"
+                                $notNullOneOf
                             }
-                        }
-                    }
-                
-                
-                # If there was a single type with an enum
-                if ($propertyTypeInfo.enum) {
-                    $validSet = @() + $propertyTypeInfo.enum
-                    if ($nullAllowed) {
-                        $validSet += ''
-                    }
-
-                    # create a validateset.
-                    "[ValidateSet('$($validSet -join "','")')]"
-                }
-                # If there was a validation pattern
-                elseif ($propertyTypeInfo.pattern) 
-                {
-                    $validPattern = $propertyTypeInfo.pattern
-                    if ($nullAllowed) {
-                        $validPattern = "(?>^\s{0}$|$validPattern)"
-                    }
-                    $validPattern = $validPattern.Replace("'", "''")
-                    # declare a regex.
-                    "[ValidatePattern('$validPattern')]"
-                }
-                elseif ($null -ne $propertyTypeInfo.minimum -and $null -ne $propertyTypeInfo.maximum) {
-                    "[ValidateRange($($propertyTypeInfo.minimum),$($propertyTypeInfo.maximum))]"
-                }
-                # If there was a property type            
-                if ($propertyTypeInfo.type) { 
-                    # limit the input               
-                    switch ($propertyTypeInfo.type) {
-                        "string" {
-                            "[string]"
-                        }
-                        "integer" {
-                            "[int]"
-                        }
-                        "number" {
-                            "[double]"
-                        }
-                        "boolean" {
-                            "[switch]"
-                        }
-                        "array" {
-                            "[PSObject[]]"
-                        }
-                        "object" {
-                            "[PSObject]"
+                        } else {
+                            $notNullOneOf | 
+                                Sort-Object { if ($_ -is [Collections.IDictionary]) { $_.Count } else { @($_.psobject.properties).length}} -Descending |
+                                Select-Object -First 1
                         }
                     }
                 }
 
-                # We also create an alias indicating the type of parameter it is.
-                $restfulAliasName = switch ($RestParameterType) {
-                    'Query' { "?$($property.Name)"  }
-                    'Body' {  ".$($property.Name)"  }
-                    'Path' {  "/$($property.Name)"  }
-                    'Header' { "^$($property.Name)" }
+            # If there was a single type with an enum
+            if ($propertyTypeInfo.enum) {
+                                    
+                $validSet = @() + $propertyTypeInfo.enum
+                if ($nullAllowed) {
+                    $validSet += ''
                 }
-                "[Alias('$restfulAliasName')]"
-            )
+                $newParameterInfo.ValidValues = $validSet                    
+            }
+            elseif ($propertyTypeInfo.pattern) 
+            {
+                $validPattern = $propertyTypeInfo.pattern
+                if ($nullAllowed) {
+                    $validPattern = "(?>^\s{0}$|$validPattern)"
+                }
+                $validPattern = $validPattern.Replace("'", "''")
+                # declare a regex.
+                $newParameterInfo.Attributes += "[ValidatePattern('$validPattern')]"
+            }
+            elseif ($null -ne $propertyTypeInfo.minimum -and $null -ne $propertyTypeInfo.maximum) {
+                $newParameterInfo.Attributes += "[ValidateRange($($propertyTypeInfo.minimum),$($propertyTypeInfo.maximum))]"
+            }
+            # If there was a property type            
+            if ($propertyTypeInfo.type) { 
+                $newParameterInfo.type = $propertyTypeInfo.type
+            }
+            # We also create an alias indicating the type of parameter it is.
+            $restfulAliasName = switch ($RestParameterType) {
+                'Query' { "?$($property.Name)"  }
+                'Body' {  ".$($property.Name)"  }
+                'Path' {  "/$($property.Name)"  }
+                'Header' { "^$($property.Name)" }
+            }
+
+            if ($property.Value.default) {
+                $newParameterInfo.Default = $property.Value.default
+            } elseif ($propertyTypeInfo.default) {
+                $newParameterInfo.Default = $propertyTypeInfo.default
+            }
+
+            $newParameterInfo.Alias = $restfulAliasName 
 
             $parameterAttributes += "`$$parameterName"
-            $newPipeScriptParameters[$parameterName] = $parameterAttributes        
+            
+            # $parameterList.insert(0, [Ordered]@{$parameterName=$newParameterInfo})
+            $newPipeScriptParameters[$parameterName] = $newParameterInfo            
         }
         $newPipeScriptParameters
     }
