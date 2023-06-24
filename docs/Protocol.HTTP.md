@@ -14,7 +14,7 @@ http protocol
 
 ### Description
 
-Converts an http[s] protocol command to PowerShell.
+Converts an http(s) protocol commands to PowerShell.
 
 
 
