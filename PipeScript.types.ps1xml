@@ -429,7 +429,7 @@ foreach ($potentialTemplatePath in $potentialTemplatePaths ) {
 .NOTES
     Each potential command can be thought of as a simple sentence with (mostly) natural syntax
     
-    command &lt;parametername&gt; ...&lt;parameterargument&gt; (etc)     
+    command &lt;parametername&gt; ...&lt;parameterargument&gt; (etc)
         
     either more natural or PowerShell syntax should be allowed, for example:
 
@@ -467,8 +467,17 @@ $SpecificCommands = @()
 # If so, what are their names?
 $specificCommandNames = @()
 
+# We want to start after the first element by default
+$startingElementIndex = 1
+
 for ($argIndex =0 ; $argIndex -lt $args.Count; $argIndex++) {
-    $arg = $args[$argIndex]    
+    $arg = $args[$argIndex]
+    # If the argument was an int and greater than one
+    if ($arg -is [int] -and $arg -gt 1) {
+        $startingElementIndex =  $arg # start parsing that many words in (#479).
+        continue
+    }
+    
     $commandInfos = $arg -as [Management.Automation.CommandInfo[]]
     if ($commandInfos) {
         foreach ($cmdInfo in $commandInfos) {
@@ -611,7 +620,7 @@ $potentialCommandIndex = -1
     $clauses = @()
 
     # Walk over each command element in a for loop (we may adjust the index when we match)
-    for ($commandElementIndex = 1 ;$commandElementIndex -lt $commandElements.Count; $commandElementIndex++) {
+    for ($commandElementIndex = $startingElementIndex ;$commandElementIndex -lt $commandElements.Count; $commandElementIndex++) {
         $commandElement = $CommandElements[$commandElementIndex]
         # by default, we assume we haven't found a parameter.
         $parameterFound  = $false
