@@ -4,7 +4,7 @@ function Protocol.HTTP {
     .SYNOPSIS
         http protocol
     .DESCRIPTION
-        Converts an http[s] protocol command to PowerShell.
+        Converts an http(s) protocol commands to PowerShell.
     .EXAMPLE
         .> {
             https://api.github.com/repos/StartAutomating/PipeScript
