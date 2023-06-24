@@ -32,10 +32,10 @@
         }) | Sort-Object Stars -Descending
     }
 .EXAMPLE
-.> {
-    http://text-processing.com/api/sentiment/ -Method POST -ContentType 'application/x-www-form-urlencoded' -Body "text=amazing!" |
-        Select-Object -ExpandProperty Probability -Property Label
-}
+    .> {
+        http://text-processing.com/api/sentiment/ -Method POST -ContentType 'application/x-www-form-urlencoded' -Body "text=amazing!" |
+            Select-Object -ExpandProperty Probability -Property Label
+    }
 #>
 [ValidateScript({
     $commandAst = $_
@@ -58,15 +58,16 @@
 })]
 param(
 # The URI.
-[Parameter(Mandatory,ValueFromPipeline)]
+[Parameter(Mandatory,ValueFromPipeline,ParameterSetName='Protocol')]
 [uri]
 $CommandUri,
 
 # The Command's Abstract Syntax Tree
-[Parameter(Mandatory)]
+[Parameter(Mandatory,ParameterSetName='Protocol')]
 [Management.Automation.Language.CommandAST]
 $CommandAst,
 
+# The HTTP method.  By default, get.
 [string]
 $Method = 'GET'
 )
