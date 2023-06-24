@@ -30,7 +30,7 @@ The order the parameters is declared takes precedence over Position attributes.
 ### Notes
 Each potential command can be thought of as a simple sentence with (mostly) natural syntax
 
-command <parametername> ...<parameterargument> (etc)     
+command <parametername> ...<parameterargument> (etc)
     
 either more natural or PowerShell syntax should be allowed, for example:
 
