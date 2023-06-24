@@ -540,6 +540,10 @@ HTTP Accept indicates what content types the web request will accept as a respon
                                 $parameterMetadata | oneOfTheseProperties ValidValue ValidValues ValidateSet
                             )
 
+                            $parameterValidPattern = @(
+                                $parameterMetadata | oneOfTheseProperties ValidatePattern Pattern Regex
+                            )
+
                             # Default values can be found in .DefaultValue/.Default
                             $parameterDefaultValue = @(
                                 $parameterMetadata | oneOfTheseProperties DefaultValue Default
@@ -554,6 +558,10 @@ HTTP Accept indicates what content types the web request will accept as a respon
 
                             if ($parameterValidValues) {
                                 $attrs += "[ValidateSet('$($parameterValidValues -replace "'","''" -join "','")')]"    
+                            }
+
+                            if ($parameterValidPattern) {
+                                $attrs += "[ValidatePattern('$($parameterValidPattern -replace "'","''")')]"    
                             }
 
                             if ($Bindings) {
@@ -667,8 +675,6 @@ HTTP Accept indicates what content types the web request will accept as a respon
                                             "= `$('$($parameterDefaultValue -replace "'","''")')"
                                         } elseif ($parameterDefaultValue -is [bool] -or $parameterDefaultValue -is [switch]) {
                                             "= `$$($parameterDefaultValue -as [bool])"
-                                        } else {
-                                            "= `$($($parameterDefaultValue))"
                                         }
                                     }
                                 )
