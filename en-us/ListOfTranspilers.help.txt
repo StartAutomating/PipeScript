@@ -37,7 +37,6 @@ These are all of the transpilers currently included in PipeScript:
 |[Help](Transpilers/Help.psx.ps1)                                                           |Help Transpiler                                   |
 |[HLSL.Template](Transpilers/Templates/HLSL.Template.psx.ps1)                               |HLSL Template Transpiler.                         |
 |[HTML.Template](Transpilers/Templates/HTML.Template.psx.ps1)                               |HTML PipeScript Transpiler.                       |
-|[Http.Protocol](Transpilers/Protocols/Http.Protocol.psx.ps1)                               |http protocol                                     |
 |[Include](Transpilers/Include.psx.ps1)                                                     |Includes Files                                    |
 |[Inherit](Transpilers/Inherit.psx.ps1)                                                     |Inherits a Command                                |
 |[Java.Template](Transpilers/Templates/Java.Template.psx.ps1)                               |Java Template Transpiler.                         |
