@@ -108,13 +108,12 @@ function Protocol.HTTP {
         if ($PSCmdlet.ParameterSetName -eq 'Protocol') {
             $commandArguments  = @() + $CommandAst.ArgumentList
             $commandParameters = [Ordered]@{} + $CommandAst.Parameter
-
             $offset = 1
             if ($Method -and $CommandAst -match "^$Method") {
                 $offset = 2
             }
             # we will parse our input as a sentence.
-            $mySentence = $commandAst.AsSentence($MyInvocation.MyCommand, $offset)
+            $mySentence = $commandAst.AsSentence($MyInvocation.MyCommand,$offset)
             # Walk thru all mapped parameters in the sentence
             $myParams = [Ordered]@{} + $PSBoundParameters
             foreach ($paramName in $mySentence.Parameters.Keys) {
