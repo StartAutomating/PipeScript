@@ -453,6 +453,21 @@ A list of potential aliases for the command.
 
 
 
+#### **NoMandatory**
+
+If set, will try not to create mandatory parameters.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
+
+
 #### **NoTranspile**
 
 If set, will not transpile the created code.
@@ -492,5 +507,5 @@ It will take a slash based path to a component or property and use that as it's 
 
 ### Syntax
 ```PowerShell
-New-PipeScript [-InputObject <Object>] [-Parameter <Object>] [-DynamicParameter <ScriptBlock>] [-Begin <ScriptBlock>] [-Process <ScriptBlock>] [-End <ScriptBlock>] [-Header <String>] [-AutoParameter] [-AutoParameterType <Type>] [-ParameterHelp <IDictionary>] [-WeaklyTyped] [-FunctionName <String>] [-Verb <String>] [-Noun <String>] [-FunctionType <String>] [-Description <String>] [-Synopsis <String>] [-Example <String[]>] [-Link <String[]>] [-Attribute <String[]>] [-Alias <String[]>] [-NoTranspile] [-ReferenceObject <Object>] [<CommonParameters>]
+New-PipeScript [-InputObject <Object>] [-Parameter <Object>] [-DynamicParameter <ScriptBlock>] [-Begin <ScriptBlock>] [-Process <ScriptBlock>] [-End <ScriptBlock>] [-Header <String>] [-AutoParameter] [-AutoParameterType <Type>] [-ParameterHelp <IDictionary>] [-WeaklyTyped] [-FunctionName <String>] [-Verb <String>] [-Noun <String>] [-FunctionType <String>] [-Description <String>] [-Synopsis <String>] [-Example <String[]>] [-Link <String[]>] [-Attribute <String[]>] [-Alias <String[]>] [-NoMandatory] [-NoTranspile] [-ReferenceObject <Object>] [<CommonParameters>]
 ```
