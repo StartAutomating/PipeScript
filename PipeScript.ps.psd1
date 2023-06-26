@@ -54,7 +54,7 @@
             'BuildScript'    = @{
                 Description = 'A file that will be run at build time.'
                 Pattern = '(?<=(?>^|\.))build\.ps1$'
-            }
+            }            
             'PipeScriptNoun' = @{
                 Description = 'Commands with the noun PipeScript'
                 Pattern = '[^\-]+\-PipeScript$'
@@ -71,7 +71,11 @@
                             
             'Protocol'   = @{
                 Description = 'Protocol Commands'
-                Pattern = '(?>PipeScript\p{P})?(?>Protocol\p{P}|\p{P}Protocol)'
+                Pattern = '
+                    (?>PipeScript\p{P})?         # Optional PipeScript + Punctuation
+                    (?>Protocol\p{P})            # Protocol + Punctuation
+                    (?=[^\p{P}]+$)               # Followed by anything but punctuation.
+                '
             }
                 
             'Sentence'   = @{
