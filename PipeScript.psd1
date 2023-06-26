@@ -10,7 +10,7 @@
     CompanyName       = 'Start-Automating'
     Copyright         = '2022 Start-Automating'
     Author            = 'James Brundage'
-    FunctionsToExport = 'Export-Pipescript','Get-PipeScript','Get-Transpiler','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript','PipeScript.Automatic.Variable.IsPipedTo','PipeScript.Automatic.Variable.IsPipedFrom','PipeScript.Automatic.Variable.MyCallstack','PipeScript.Automatic.Variable.MySelf','PipeScript.Automatic.Variable.MyParameters','PipeScript.Automatic.Variable.MyCaller','PipeScript.Automatic.Variable.MyCommandAst','PipeScript.Optimizer.ConsolidateAspects','Protocol.HTTP','Protocol.JSONSchema','Protocol.OpenAPI','Aspect.DynamicParameter','Aspect.ModuleCommandType','Aspect.ModuleCommandPattern','Aspect.ModuleExtendedCommand','PipeScript.PostProcess.InitializeAutomaticVariables','PipeScript.PostProcess.PartialFunction'
+    FunctionsToExport = 'Export-Pipescript','Get-PipeScript','Get-Transpiler','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript','PipeScript.Automatic.Variable.IsPipedTo','PipeScript.Automatic.Variable.IsPipedFrom','PipeScript.Automatic.Variable.MyCallstack','PipeScript.Automatic.Variable.MySelf','PipeScript.Automatic.Variable.MyParameters','PipeScript.Automatic.Variable.MyCaller','PipeScript.Automatic.Variable.MyCommandAst','PipeScript.Optimizer.ConsolidateAspects','Protocol.HTTP','Protocol.JSONSchema','Protocol.OpenAPI','Protocol.UDP','Aspect.DynamicParameter','Aspect.ModuleCommandType','Aspect.ModuleCommandPattern','Aspect.ModuleExtendedCommand','PipeScript.PostProcess.InitializeAutomaticVariables','PipeScript.PostProcess.PartialFunction'
     PrivateData = @{
         CommandTypes = @{
             'Aspect' = @{
@@ -41,7 +41,7 @@
             'BuildScript'    = @{
                 Description = 'A file that will be run at build time.'
                 Pattern = '(?<=(?>^|\.))build\.ps1$'
-            }
+            }            
             'PipeScriptNoun' = @{
                 Description = 'Commands with the noun PipeScript'
                 Pattern = '[^\-]+\-PipeScript$'
@@ -58,7 +58,11 @@
                             
             'Protocol'   = @{
                 Description = 'Protocol Commands'
-                Pattern = '(?>PipeScript\p{P})?(?>Protocol\p{P}|\p{P}Protocol)'
+                Pattern = '
+                    (?>PipeScript\p{P})?         # Optional PipeScript + Punctuation
+                    (?>Protocol\p{P})            # Protocol + Punctuation
+                    (?=[^\p{P}]+$)               # Followed by anything but punctuation.
+                '
             }
                 
             'Sentence'   = @{
