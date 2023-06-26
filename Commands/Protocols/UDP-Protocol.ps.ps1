@@ -1,3 +1,4 @@
+Protocol function UDP {
 <#
 .SYNOPSIS
     udp protocol
@@ -8,22 +9,20 @@
 .EXAMPLE
     udp:// -Host [ipaddress]::broadcast -port 911 -Send "It's an emergency!"
 .EXAMPLE
-    {send udp:// -Host [ipaddress]::broadcast -Port 911 "It's an emergency!"}.Transpile()
+    {send udp:// -Host [ipaddress]::broadcast -Port 911 "It's an emergency!"} | Use-PipeScript
 .EXAMPLE
-    Invoke-PipeScript { receive udp://*:911 } 
+    Invoke-PipeScript { watch udp://*:911 } 
 
     Invoke-PipeScript { send udp:// -Host [ipaddress]::broadcast -Port 911 "It's an emergency!" }
 
-    Invoke-PipeScript { receive udp://*:911 -Keep } 
+    Invoke-PipeScript { receive udp://*:911 } 
 #>
-using namespace System.Management.Automation.Language
-
 [ValidateScript({
     $commandAst = $_    
-    if ($commandAst -isnot [CommandAst]) { return $false }
+    if ($commandAst -isnot [Management.Automation.Language.CommandAst]) { return $false }
     if ($commandAst.CommandElements[0..1] -match '^udp://' -ne $null) {
         if ($commandAst.CommandElements[0] -notmatch '^udp://') {
-            if ($commandAst.CommandElements[0].value -notin 'send', 'receive') {
+            if ($commandAst.CommandElements[0].value -notin 'send', 'receive', 'watch') {
                 return $false
             }
         }        
@@ -32,48 +31,93 @@ using namespace System.Management.Automation.Language
 
     return $false
 })]
+[Alias('UDP','UDP://')]
 param(
 # The URI.
-[Parameter(Mandatory,ValueFromPipeline)]
+[Parameter(Mandatory,ValueFromPipeline,ParameterSetName='Protocol',Position=0)]
+[Parameter(ValueFromPipeline,ParameterSetName='Interactive',Position=0)]
+[Parameter(Mandatory,ParameterSetName='ScriptBlock',Position=0)]
 [uri]
 $CommandUri,
 
+[ValidateSet('Send','Receive','Watch')]
+[Parameter(Position=1)]
+[string]
+$Method,
+
 # The Command's Abstract Syntax Tree
-[Parameter(Mandatory)]
+[Parameter(Mandatory,ParameterSetName='Protocol')]
 [Management.Automation.Language.CommandAST]
-$CommandAst
+$CommandAst,
+
+# If the UDP protocol is used as an attribute, this will be the existing script block.
+[Parameter(Mandatory,ParameterSetName='ScriptBlock')]
+[ScriptBlock]
+$ScriptBlock = {},
+
+$Send,
+
+$Receive,
+
+$Watch,
+
+[Alias('Host')]
+[string]
+$HostName,
+
+[int]
+$Port,
+
+[Parameter(ValueFromRemainingArguments)]
+[PSObject[]]
+$ArgumentList
 )
 
 process {
-    $commandParameters = [Ordered]@{} + $CommandAst.Parameter
-    $commandArguments  = @() + $CommandAst.ArgumentList
-    
-    $methodName  = ''
-    $commandName = 
-        if ($CommandAst.CommandElements[0].Value -match '://') {
-            $CommandAst.CommandElements[0].Value
-        } elseif ($commandArguments.Length -ge 1 -and 
-            $commandArguments[0] -is [string] -and 
-            $commandArguments[0]  -match '://') {
-            $methodName       = $CommandAst.CommandElements[0].Value
-            $commandArguments[0]
-            $commandArguments = $commandArguments[1..$($commandArguments.Count)]
+    $commandParameters = 
+        if ($PSCmdlet.ParameterSetName -eq 'Protocol') {
+            [Ordered]@{} + $CommandAst.Parameter
         }
+        else {
+            [Ordered]@{} + $PSBoundParameters
+        }
+        
+    $commandArguments  = 
+        if ($PSCmdlet.ParameterSetName -eq 'Protocol') {
+            @() + $CommandAst.ArgumentList
+        }
+        else {
+            @() + $args
+        }
+
+    if (-not $CommandUri.Scheme) {
+        $commandUri = [uri]"udp://$($commandUri.OriginalString -replace '://')"
+    }
+        
+    $methodName  = $Method    
 
     $udpIP, $udpPort = $null, $null
     $constructorArgs = 
-        @(if ($CommandUri.Host) {
+        
+        @(
+        if ($CommandUri.Host) {
             $udpIP = $commandUri.Host
             $commandUri.Host
             if ($commandUri.Port) {
                 $udpPort = $CommandUri.Port
                 $commandUri.Port
             }
-        } elseif ($commandParameters.Port -and -not $commandParameters.Host) {
+        } 
+        elseif ($commandParameters.Port -and -not ($commandParameters.Host -or $commandParameters.HostName)) {
             $udpPort = $commandParameters.Port
             $commandParameters.Port
-        } elseif ($commandParameters.Host -and $commandParameters.Port) {
-            $udpIP   = $commandParameters.Host
+        } 
+        elseif (($commandParameters.Host -or $commandParameters.HostName) -and $commandParameters.Port) {
+            $udpIP   = if ($commandParameters.Host) {
+                $commandParameters.Host
+            } else {
+                $commandParameters.HostName
+            }
             $udpIP
             $udpPort = $commandParameters.Port 
             $udpPort 
@@ -88,6 +132,8 @@ process {
         $udpIP = "'$($udpIP -replace "'", "''")'"
     }
 
+    $UdpOperationScript = 
+
     # If the method name is send or -Send was provided
     if ($methodName -eq 'send' -or $commandParameters.Send) {
         # ensure we have both and IP and a port
@@ -97,8 +143,10 @@ process {
         }
 
         # If we don't have a -Send parameter, try to bind positionally.
-        if (-not $commandParameters.Send -and $commandArguments[0]) {
+        if (-not $commandParameters.Send -and $commandArguments -and $commandArguments[0]) {
             $commandParameters.Send = $commandArguments[0]
+        } elseif (-not $commandParameters.Send -and $argumentList -and $ArgumentList[0]) {
+            $commandParameters.Send = $ArgumentList[0]
         }
 
         # If we still don't have a -Send parameter, error out.
@@ -114,6 +162,9 @@ process {
             } elseif ($commandParameters.Send -is [string]) {
                 "[text.Encoding]::utf8.GetBytes('$($commandParameters.Send -replace "'","''")')"
             }
+            elseif ($commandParameters.Send -as [byte[]]) {
+                "[Convert]::FromBase64String('$([Convert]::ToBase64String($commandParameters.Send))')"
+            }
             else {
                 $commandParameters.Send
             }
@@ -125,29 +176,28 @@ process {
 ").Transpile()        
     }
     # If the method name is receive or -Receive was passed, we'll want to receive results
-    elseif ($methodName -eq 'Receive' -or $commandParameters.Receive) 
+    elseif ($methodName -eq 'Watch' -or $commandParameters.Watch) 
     {
         # If -Receive was not passed, try to bind it positionally.
-        if (-not $commandParameters.Receive) {
-            $commandParameters.Receive = $commandArguments[0]
+        if (-not $commandParameters.Watch) {
+            $commandParameters.Watch = $commandArguments[0]
         }
 
-        # If -Receive was passed and was not a [ScriptBlock], error out.
-        if ($commandParameters.Receive -and $commandParameters.Receive -isnot [ScriptBlock]) {
-            Write-Error "UDP -Receive must be a [ScriptBlock]"
-            return
+        # If -Watch was passed and was not a [ScriptBlock], unset it.
+        if ($commandParameters.Watch -and $commandParameters.Watch -isnot [ScriptBlock]) {
+            $commandParameters.Watch = $null            
         }
 
-        # If -Receive was not provided, default it to creating an event.
-        if (-not $commandParameters.Receive) {
-            $commandParameters.Receive = {    
+        # If -Watch was not provided, default it to creating an event.
+        if (-not $commandParameters.Watch) {
+            $commandParameters.Watch = {    
     New-Event "$udpEventName" -MessageData $datagram
             }
         }
         
         # If we do not have an IP and port, we cannot receive.
         if (-not $udpIP -or -not $udpPort) {
-            Write-Error "Must provide both IP and port to receive"
+            Write-Error "Must provide both IP and port to Watch"
             return
         }
 
@@ -171,9 +221,13 @@ try {
 }
 :udpReceive while (`$udpClientBound) {
     `$datagram = `$udpClient.Receive([ref]`$udpEndpoint)
-    & {
-        $($commandParameters.Receive)
+    `$watchOutput = & {
+        $($commandParameters.Watch)
     } `$datagram
+
+    if (`$watchOutput -isnot [Management.Automation.PSEvent]) {
+        New-Event -SourceIdentifier `$udpEventName -MessageData `$watchOutput
+    }
 }
 `$udpClient.Close()
 "@).Transpile()
@@ -192,14 +246,12 @@ try {
     $jobScript
 }
 `$JobExists = Get-Job | Where-Object Name -eq `$JobName
-if (-not (`$JobExists)) {
+if ((-not `$JobExists) -or (`$jobExists.State -ne 'Running')) {
     $(
         if (-not $CommandAst.IsAssigned) {
             '$null = '
         }
     )$($jobCommand + '-Name "$jobName" -ScriptBlock $jobScript')
-} else {
-    `$JobExists | Receive-Job$(if ($commandParameters.Keep) { ' -Keep'})
 }
 "@)
 
@@ -210,7 +262,36 @@ if (-not (`$JobExists)) {
             $outputScript
         }        
     }
+    elseif ($methodName -eq 'Receive' -or $commandParameters.Receive) {
+        $jobName = "${udpIP}:${udpPort}" -replace "['`"]"
+        $eventName = "udp://${udpIP}:${udpPort}" -replace "['`"]"        
+        [scriptblock]::Create("
+`$(
+`$udpEvents = 
+    @(Get-Event -SourceIdentifier '$eventName' -ErrorAction Ignore)
+[Array]::Reverse(`$udpEvents)
+`$udpEvents
+)
+")
+        
+    }
     else {
         [scriptblock]::Create($constructUdp).Transpile()
+    }
+    
+    switch ($PSCmdlet.ParameterSetName) {
+        Protocol {
+            $UdpOperationScript
+        }
+        ScriptBlock {
+            # join the existing script with the schema information
+            Join-PipeScript -ScriptBlock $ScriptBlock, $UdpOperationScript
+        }
+        Interactive {
+            . $UdpOperationScript
+        }
     }    
+}
+
+
 }
