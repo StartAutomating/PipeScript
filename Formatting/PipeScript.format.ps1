@@ -12,6 +12,4 @@ Write-FormatView -TypeName PipeScript -Property Name, Parameters -VirtualPropert
     Extends = {
         $_.Extends -join [Environment]::NewLine
     }
-} -Wrap -ColorProperty @{
-    "DisplayName" = {"Success"}
-} -Name Parameters
+} -Wrap -Name Parameters
