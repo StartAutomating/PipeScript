@@ -5,7 +5,8 @@ describe 'Protocol.UDP' {
     {udp://127.0.0.1:8568} | Use-PipeScript
     }
     it 'Protocol.UDP Example 2' {
-    udp:// -Host [ipaddress]::broadcast -port 911 -Send "It's an emergency!"
+    # Creates the code to broadast a message.
+    {udp:// -Host [ipaddress]::broadcast -port 911 -Send "It's an emergency!"} | Use-PipeScript
     }
     it 'Protocol.UDP Example 3' {
     {send udp:// -Host [ipaddress]::broadcast -Port 911 "It's an emergency!"} | Use-PipeScript
