@@ -1607,38 +1607,6 @@ $this.'.Root'
     </Members>
   </Type>
   <Type>
-    <Name>Interface.Command</Name>
-    <Members>
-      <ScriptProperty>
-        <Name>Implementation</Name>
-        <GetScriptBlock>
-                        $allCommands = $ExecutionContext.SessionState.InvokeCommand.GetCommand('*', 'Function,Alias,Cmdlet')
-$allCommands
-
-
-                    </GetScriptBlock>
-      </ScriptProperty>
-      <ScriptProperty>
-        <Name>Properties</Name>
-        <GetScriptBlock>
-                        $thisCommandMetadata = $this -as [Management.Automation.CommandMetaData]
-
-
-,@(foreach ($paramName in $thisCommandMetadata.Parameters.Keys) {
-    $thisParameter = $thisCommandMetadata.Parameters[$paramName]
-    $parameterSets = @($thisParameter.Attributes.ParameterSetName)
-    # If the parameter set is for a method, continue
-    if ($parameterSets -match '\(\)') { continue }    
-    [PSCustomObject][Ordered]@{
-        PropertyName = $paramName
-        PropertyType = $thisParameter.ParameterType
-    }
-})
-                    </GetScriptBlock>
-      </ScriptProperty>
-    </Members>
-  </Type>
-  <Type>
     <Name>System.Management.Automation.Language.ParamBlockAst</Name>
     <Members>
       <ScriptProperty>
@@ -2254,25 +2222,6 @@ elseif ($TranspilerWarnings) {
                     </Script>
       </ScriptMethod>
       <ScriptProperty>
-        <Name>Statements</Name>
-        <GetScriptBlock>
-                        
-$offsetFound = @{}     
-@($this.Ast.FindAll({
-    param($ast)
-    if ($ast -is [Management.Automation.Language.StatementAst]) {
-        if (-not $offsetFound[$ast.Extent.StartOffset]) {
-            $offsetFound[$ast.Extent.StartOffset] = $true
-            return $true
-        }        
-    }
-    
-}, $false))
-
-
-                    </GetScriptBlock>
-      </ScriptProperty>
-      <ScriptProperty>
         <Name>Transpilers</Name>
         <GetScriptBlock>
                         $this.Ast.Transpilers
@@ -2394,8 +2343,7 @@ $requirement = $this
       <ScriptProperty>
         <Name>ArgumentList</Name>
         <GetScriptBlock>
-                        
-if (-not $this.TypeName.IsGeneric) { return @() }
+                        if (-not $this.TypeName.IsGeneric) { return @() }
 @(foreach ($typeName in $this.TypeName.GenericArguments ) {
     if ($TypeName.IsGeneric) { continue }
     if (-not $TypeName.IsArray) {
@@ -2409,18 +2357,7 @@ if (-not $this.TypeName.IsGeneric) { return @() }
         <Name>Parameter</Name>
         <GetScriptBlock>
                         
-&lt;#
-.SYNOPSIS
-    Gets parameters to a type constraint
-.DESCRIPTION
-    Gets the parameters from a type constraint.
 
-    This will treat any generic type specifiers as potential parameters.
-.EXAMPLE
-    {
-        [a[b[c]]]'d'
-    }.Ast.EndBlock.Statements 
-#&gt;
 function TypeConstraintToArguments (
     [Parameter(ValueFromPipeline)]
     $TypeName
@@ -2607,19 +2544,11 @@ foreach ($parent in $this.GetLineage()) {
         $y = 2
         $x + $y
     }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.Left.GetVariableType()
-    # Should -Be ([int])
 .EXAMPLE
     {
         $x = Get-Process        
         $x + $y
     }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.Left.GetVariableType()
-    # Should -Be ([Diagnostics.Process])
-.EXAMPLE
-    {
-        $x = [type].name
-        $x        
-    }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.GetVariableType()
-
 #&gt;
 if ($this.VariablePath.userPath -eq 'psBoundParmeters') {
     return [Management.Automation.PSBoundParametersDictionary]    
@@ -2661,7 +2590,7 @@ $isMultiAssignment =$closestAssignment.Left -is [Management.Automation.Language.
 
 # If the left side is not multiple assignment, but the right side is an array
 if (-not $isMultiAssignment -and 
-    $closestAssignment.Right.Expression -is [Management.Automation.Language.ArrayExpressionAst]) {
+    $closestAssignment.Right.Expression -is [Management.Automation.ArrayExpressionAst]) {
     # then the object is an array.
     return [Object[]]
 }
@@ -2685,24 +2614,7 @@ if ($closestAssignment.Right.Expression -is [Management.Automation.Language.Conv
     }       
 }
 
-if ($closestAssignment.Right.Expression -is [Management.Automation.Language.MemberExpressionAst]) {
-    $invokeMemberExpr = $closestAssignment.Right.Expression
-    $memberName = $invokeMemberExpr.Member.ToString()
-    if ($invokeMemberExpr.Expression.TypeName) {
-        $invokeType = $invokeMemberExpr.Expression.TypeName.GetReflectionType()            
-        if ($invokeType) {
-            $potentialTypes = @(
-            foreach ($invokeableMember in $invokeType.GetMember($memberName, "Public, IgnoreCase,$(if ($invokeMemberExpr.Static) { 'Static'} else { 'Instance'})")) {
-                if ($invokeableMember.PropertyType) {
-                    $invokeableMember.PropertyType
-                } elseif ($invokeableMember.ReturnType) {
-                    $invokeableMember.ReturnType
-                }
-            })
-            return $potentialTypes | Select-Object -Unique
-        }
-    }            
-}
+
 
 
 # The right side could be a pipeline
