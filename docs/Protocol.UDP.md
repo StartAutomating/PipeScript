@@ -30,7 +30,8 @@ Converts a UDP protocol command to PowerShell
 
 #### EXAMPLE 2
 ```PowerShell
-udp:// -Host [ipaddress]::broadcast -port 911 -Send "It's an emergency!"
+# Creates the code to broadast a message.
+{udp:// -Host [ipaddress]::broadcast -port 911 -Send "It's an emergency!"} | Use-PipeScript
 ```
 
 #### EXAMPLE 3
