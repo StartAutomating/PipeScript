@@ -92,7 +92,6 @@ Valid Values:
 * Interface
 * Optimizer
 * Partial
-* PipeScript
 * PipeScriptNoun
 * PostProcessor
 * PreProcessor
