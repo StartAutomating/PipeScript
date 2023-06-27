@@ -217,8 +217,8 @@ Aspect function ModuleExtensionCommand {
 
         return if -not $ModuleInfo
         
-        $ModuleCommandPattern = ModuleCommandPattern $ModuleInfo -Prefix $prefix -Suffix $Suffix
-        $ModuleCommandTypes   = ModuleExtensionType $ModuleInfo
+        $ModuleCommandPattern = Aspect.ModuleExtensionPattern $ModuleInfo -Prefix $prefix -Suffix $Suffix
+        $ModuleCommandTypes   = Aspect.ModuleExtensionType $ModuleInfo
         
         $commands    =
             @(
