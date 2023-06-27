@@ -286,9 +286,9 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                                             .LINK
                                                 Aspect.ModuleCommandPattern
                                             .EXAMPLE
-                                                Aspect.ModuleExtendedCommand -Module PipeScript # Should -BeOfType ([Management.Automation.CommandInfo])
+                                                Aspect.ModuleExtensionCommand -Module PipeScript # Should -BeOfType ([Management.Automation.CommandInfo])
                                             #>
-                                            [Alias('Aspect.ModuleExtensionCommand')]
+                                            [Alias('Aspect.ModuleExtendedCommand')]
                                             param(
                                             # The name of a module, or a module info object.
                                             [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
@@ -308,6 +308,12 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                                             })]
                                             
                                             $Module,
+                                            
+                                            # A list of commands.
+                                            # If this is provided, each command that is a valid extension will be returned.
+                                            [Parameter(ValueFromPipelineByPropertyName)]
+                                            [Management.Automation.CommandInfo[]]
+                                            $Commands,
                                             # The suffix to apply to each named capture.
                                             # Defaults to '_Command'
                                             [Parameter(ValueFromPipelineByPropertyName)]
@@ -321,6 +327,10 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                                             [Parameter(ValueFromPipelineByPropertyName)]
                                             [Alias('Fullname')]    
                                             $FilePath,
+                                            # The PowerShell command type.  If this is provided, will only get commands of this type.
+                                            [Parameter(ValueFromPipelineByPropertyName)]
+                                            [Management.Automation.CommandTypes]
+                                            $CommandType,
                                             # The base PSTypeName(s).
                                             # If provided, any commands that match the pattern will apply these typenames, too.
                                             [string[]]
@@ -333,281 +343,496 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                                                 $ModuleInfo = $module
                                                 if (-not $ModuleInfo) { return }
                                                 
-                                                $CommandPattern = # Aspect.ModuleCommandPattern
-                                                                  & { 
-                                                                      <#
-                                                                      .SYNOPSIS
-                                                                          Outputs a module's command pattern
-                                                                      .DESCRIPTION
-                                                                          Outputs a regular expression that can be used to match any command pattern.
-                                                                      .EXAMPLE
-                                                                          Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
-                                                                      #>
-                                                                      param(
-                                                                      # The name of a module, or a module info object.
-                                                                      [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
-                                                                      [ValidateScript({
-                                                                      $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
-                                                                      $thisType = $_.GetType()
-                                                                      $IsTypeOk =
-                                                                          $(@( foreach ($validType in $validTypeList) {
-                                                                              if ($_ -as $validType) {
-                                                                                  $true;break
-                                                                              }
-                                                                          }))
-                                                                      if (-not $isTypeOk) {
-                                                                          throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
-                                                                      }
-                                                                      return $true
-                                                                      })]
-                                                                      
-                                                                      $Module,
-                                                                      # The suffix to apply to each named capture.
-                                                                      # Defaults to '_Command'
-                                                                      [Parameter(ValueFromPipelineByPropertyName)]
-                                                                      [string]
-                                                                      $Suffix = '_Command',
-                                                                      # The prefix to apply to each named capture. 
-                                                                      [Parameter(ValueFromPipelineByPropertyName)]
-                                                                      [string]
-                                                                      $Prefix
-                                                                      )
-                                                                      process {
-                                                                          if ($Module -is [string]) {
-                                                                              $Module = Get-Module $Module
-                                                                          }
-                                                                          $ModuleInfo = $module
-                                                                          #region Search for Module Command Types
-                                                                          if (-not $ModuleInfo) { return }
-                                                                          $ModuleCommandTypes = 
-                                                                              @($ModuleInfo.PrivateData.CommandType,
-                                                                              $ModuleInfo.PrivateData.CommandTypes,
-                                                                              $ModuleInfo.PrivateData.PSData.CommandType,
-                                                                              $ModuleInfo.PrivateData.PSData.CommandType -ne $null)[0]
-                                                                          
-                                                                          if (-not $ModuleCommandTypes) { return }
-                                                                              
-                                                                          # With some clever understanding of Regular expressions, we can make match any/all of our potential command types.
-                                                                          # Essentially: Regular Expressions can look ahead (matching without changing the position), and be optional.
-                                                                          # So we can say "any/all" by making a series of optional lookaheads.
-                                                                          
-                                                                          # We'll go thru each pattern in order
-                                                                          $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator() | Sort-Object Key) {
-                                                                              $categoryPattern = 
-                                                                                  if ($categoryKeyValue.Value -is [string]) {
-                                                                                      $categoryKeyValue.Value
-                                                                                  } else {
-                                                                                      $categoryKeyValue.Value.Pattern
-                                                                                  }
-                                                                              # ( and skip anyone that does not have a pattern)
-                                                                              if (-not $categoryPattern) { continue } 
-                                                                              '(?=' + # Start a lookahead
-                                                                                  '.{0,}' + # match any or no characters
-                                                                                  # followed by the command pattern
-                                                                                  "(?<$Prefix$($categoryKeyValue.Key -replace '\p{P}', '_')$Suffix>$categoryPattern)" +
-                                                                                  ')?' # made optional                            
-                                                                          }) -join [Environment]::NewLine
-                                                                          # Now that we've combined the whole thing, make it a Regex and output it.        
-                                                                          [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
-                                                                      }
-                                                                   } $ModuleInfo -Prefix $prefix -Suffix $Suffix
-                                                if ($PSBoundParameters['FilePath']) {
-                                                    $(
-                                                            # Collect all items into an input collection
-                                                            $inputCollection = @(($FilePath |& {
-                                                            param([switch]$IncludeApplications)
-                                                            process {
-                                                            $inObj = $_
-                                                            # Since we're looking for commands, pass them thru directly
-                                                            if ($inObj -is [Management.Automation.CommandInfo]) {
-                                                                $inObj
-                                                            }
-                                                            # If the input object is ps1 fileinfo 
-                                                            elseif ($inObj -is [IO.FileInfo] -and $inObj.Extension -eq '.ps1') {
-                                                                # get that exact command.
-                                                                $ExecutionContext.SessionState.InvokeCommand.GetCommand($inObj.Fullname, 'ExternalScript')
-                                                            }
-                                                            # If the input is a string or path        
-                                                            elseif ($pathItem -is [IO.FileInfo] -and $IncludeApplications) {
-                                                                $ExecutionContext.SessionState.InvokeCommand.GetCommand($pathItem.FullName, 'Application')
-                                                            }
-                                                            elseif ($inObj -is [string] -or $inObj -is [Management.Automation.PathInfo]) {
-                                                                # resolve it
-                                                                foreach ($resolvedPath in $ExecutionContext.SessionState.Path.GetResolvedPSPathFromPSPath("$inObj")) {
-                                                                    # and get the literal item
-                                                                    $pathItem = Get-item -LiteralPath $resolvedPath
-                                                                    # if it is a .ps1 fileinfo
-                                                                    if ($pathItem -is [IO.FileInfo] -and $pathItem.Extension -eq '.ps1') {
-                                                                        # get that exact command
-                                                                        $ExecutionContext.SessionState.InvokeCommand.GetCommand($pathItem.FullName, 'ExternalScript')
-                                                                    } 
-                                                                    elseif ($pathItem -is [IO.FileInfo] -and $IncludeApplications) {
-                                                                        $ExecutionContext.SessionState.InvokeCommand.GetCommand($pathItem.FullName, 'Application')
-                                                                    }
-                                                                    elseif ($pathItem -is [IO.DirectoryInfo]) {
-                                                                        # Otherwise, get all files beneath the path
-                                                                        foreach ($pathItem in @(Get-ChildItem -LiteralPath $pathItem -File -Recurse)) {
-                                                                            # that are .ps1
-                                                                            if ($pathItem.Extension -eq '.ps1') {
-                                                                                # and return them directly.
-                                                                                $ExecutionContext.SessionState.InvokeCommand.GetCommand($pathItem.FullName, 'ExternalScript')
+                                                $ModuleCommandPattern = # Aspect.ModuleExtensionPattern
+                                                                        & { 
+                                                                            <#
+                                                                            .SYNOPSIS
+                                                                                Outputs a module's extension pattern
+                                                                            .DESCRIPTION
+                                                                                Outputs a regular expression that will match any possible pattern.
+                                                                            .EXAMPLE
+                                                                                Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
+                                                                            #>
+                                                                            [Alias('Aspect.ModuleCommandPattern')]
+                                                                            param(
+                                                                            # The name of a module, or a module info object.
+                                                                            [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+                                                                            [ValidateScript({
+                                                                            $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                                            $thisType = $_.GetType()
+                                                                            $IsTypeOk =
+                                                                                $(@( foreach ($validType in $validTypeList) {
+                                                                                    if ($_ -as $validType) {
+                                                                                        $true;break
+                                                                                    }
+                                                                                }))
+                                                                            if (-not $isTypeOk) {
+                                                                                throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
                                                                             }
-                                                                            elseif ($IncludeApplications) {
-                                                                                $ExecutionContext.SessionState.InvokeCommand.GetCommand($pathItem.FullName, 'Application')
+                                                                            return $true
+                                                                            })]
+                                                                            
+                                                                            $Module,
+                                                                            # The suffix to apply to each named capture.
+                                                                            # Defaults to '_Command'
+                                                                            [Parameter(ValueFromPipelineByPropertyName)]
+                                                                            [string]
+                                                                            $Suffix = '_Command',
+                                                                            # The prefix to apply to each named capture. 
+                                                                            [Parameter(ValueFromPipelineByPropertyName)]
+                                                                            [string]
+                                                                            $Prefix
+                                                                            )
+                                                                            process {
+                                                                                if ($Module -is [string]) {
+                                                                                    $Module = Get-Module $Module
+                                                                                }
+                                                                                $ModuleInfo = $module
+                                                                                #region Search for Module Extension Types
+                                                                                if (-not $ModuleInfo) { return }
+                                                                                $ModuleExtensionTypes = # Aspect.ModuleExtensionTypes
+                                                                                                        & { 
+                                                                                                            <#
+                                                                                                            .SYNOPSIS
+                                                                                                                Outputs a module's extension types
+                                                                                                            .DESCRIPTION
+                                                                                                                Outputs the extension types defined in a module's manifest.
+                                                                                                            .EXAMPLE
+                                                                                                                # Outputs a PSObject with information about extension command types.
+                                                                                                                
+                                                                                                                # The two primary pieces of information are the `.Name` and `.Pattern`.
+                                                                                                                Aspect.ModuleExtensionType -Module PipeScript # Should -BeOfType ([PSObject])
+                                                                                                            #>
+                                                                                                            [Alias('Aspect.ModuleCommandTypes','Aspect.ModuleCommandType','Aspect.ModuleExtensionTypes')]
+                                                                                                            param(
+                                                                                                            # The name of a module, or a module info object.
+                                                                                                            [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+                                                                                                            [ValidateScript({
+                                                                                                            $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                                                                            $thisType = $_.GetType()
+                                                                                                            $IsTypeOk =
+                                                                                                                $(@( foreach ($validType in $validTypeList) {
+                                                                                                                    if ($_ -as $validType) {
+                                                                                                                        $true;break
+                                                                                                                    }
+                                                                                                                }))
+                                                                                                            if (-not $isTypeOk) {
+                                                                                                                throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
+                                                                                                            }
+                                                                                                            return $true
+                                                                                                            })]
+                                                                                                            
+                                                                                                            $Module
+                                                                                                            )
+                                                                                                            begin {
+                                                                                                                $ExtensionCollectionNames = 
+                                                                                                                    "Extension", "Command", "Cmdlet", "Function", "Alias", "Script", "Application", "File","Configuration"
+                                                                                                                $ExtensionCollectionNames = @($ExtensionCollectionNames -replace '.+$','${0}Type') + @($ExtensionCollectionNames -replace '.+$','${0}Types')
+                                                                                                            }
+                                                                                                            process {
+                                                                                                                #region Resolve Module Info
+                                                                                                                if ($Module -is [string]) {
+                                                                                                                    $Module = Get-Module $Module
+                                                                                                                }
+                                                                                                                $ModuleInfo = $module                
+                                                                                                                if (-not $ModuleInfo) { return }
+                                                                                                                #endregion Resolve Module Info
+                                                                                                                #region Check Cache and Hopefully Return
+                                                                                                                if (-not $script:ModuleExtensionTypeCache) {
+                                                                                                                    $script:ModuleExtensionTypeCache = @{}
+                                                                                                                }
+                                                                                                                
+                                                                                                                if ($script:ModuleExtensionTypeCache[$ModuleInfo]) {
+                                                                                                                    return $script:ModuleExtensionTypeCache[$ModuleInfo]
+                                                                                                                }
+                                                                                                                #endregion Check Cache and Hopefully Return
+                                                                                                                #region Find Extension Types
+                                                                                                                $modulePrivateData  = $ModuleInfo.PrivateData
+                                                                                                                $SortedExtensionTypes = [Ordered]@{}
+                                                                                                                foreach ($TypeOfExtensionCollection in $ExtensionCollectionNames) {
+                                                                                                                    $moduleExtensionTypes = 
+                                                                                                                        if ($modulePrivateData.$TypeOfExtensionCollection) {
+                                                                                                                            $modulePrivateData.$TypeOfExtensionCollection
+                                                                                                                        } elseif ($modulePrivateData.PSData.$TypeOfExtensionCollection) {
+                                                                                                                            $modulePrivateData.PSData.$TypeOfExtensionCollection
+                                                                                                                        } else {
+                                                                                                                            $null
+                                                                                                                        }
+                                                                                                                    if (-not $moduleExtensionTypes) { continue } 
+                                                                                                                    foreach ($commandType in @($ModuleExtensionTypes.GetEnumerator() | Sort-Object Key)) {
+                                                                                                                        if ($commandType.Value -is [Collections.IDictionary]) {
+                                                                                                                            if (-not $commandType.Value.Name) {
+                                                                                                                                $commandType.Value["Name"] = $commandType.Key
+                                                                                                                            }
+                                                                                                                            if (-not $commandType.Value.PSTypeName) {
+                                                                                                                                $commandType.Value["PSTypeName"] = "$($module.Name).ExtensionCommandType"
+                                                                                                                            }
+                                                                                                                            $SortedExtensionTypes[$commandType.Name] = $commandType.Value
+                                                                                                                        } else {
+                                                                                                                            $SortedExtensionTypes[$commandType.Name] = [Ordered]@{
+                                                                                                                                PSTypeName = "$($module.Name).ExtensionCommandType"
+                                                                                                                                Name    = $commandType.Key
+                                                                                                                                Pattern = $commandType.Value
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                        if ($TypeOfExtensionCollection -notmatch '(?>Extension|Command|Cmdlet)') {
+                                                                                                                            $SortedExtensionTypes[$commandType.Name].CommandType = $TypeOfExtensionCollection -replace 'Type(?:s)?$'
+                                                                                                                        } elseif ($TypeOfExtensionCollection -match 'Cmdlet') {
+                                                                                                                            $SortedExtensionTypes[$commandType.Name].CommandType = "(?>Alias|Function|Filter|Cmdlet)"
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                }
+                                                                                                                
+                                                                                                                $SortedExtensionTypes.PSTypeName="$($Module.Name).ExtensionCommandTypes"
+                                                                                                                
+                                                                                                                [PSCustomObject]$SortedExtensionTypes
+                                                                                                                #endregion Find Extension Types
+                                                                                                            }    
+                                                                                                         } -Module $moduleInfo
+                                                                                
+                                                                                if (-not $ModuleExtensionTypes) { return }
+                                                                                    
+                                                                                # With some clever understanding of Regular expressions, we can make match any/all of our potential command types.
+                                                                                # Essentially: Regular Expressions can look ahead (matching without changing the position), and be optional.
+                                                                                # So we can say "any/all" by making a series of optional lookaheads.
+                                                                                
+                                                                                # We'll go thru each pattern in order
+                                                                                $combinedRegex = @(foreach ($categoryExtensionTypeInfo in @($ModuleExtensionTypes.psobject.properties)) {
+                                                                                    $categoryPattern = $categoryExtensionTypeInfo.Value.Pattern                
+                                                                                    # ( and skip anyone that does not have a pattern)
+                                                                                    if (-not $categoryPattern) { continue } 
+                                                                                    '(?=' + # Start a lookahead
+                                                                                        '.{0,}' + # match any or no characters
+                                                                                        # followed by the command pattern
+                                                                                        "(?<$Prefix$($categoryExtensionTypeInfo.Name -replace '\p{P}', '_')$Suffix>$categoryPattern)" +
+                                                                                        ')?' # made optional                            
+                                                                                }) -join [Environment]::NewLine
+                                                                                # Now that we've combined the whole thing, make it a Regex and output it.        
+                                                                                [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                                                                             }
-                                                                        }
-                                                                    }
+                                                                         } $ModuleInfo -Prefix $prefix -Suffix $Suffix
+                                                $ModuleCommandTypes   = # Aspect.ModuleExtensionType
+                                                                        & { 
+                                                                            <#
+                                                                            .SYNOPSIS
+                                                                                Outputs a module's extension types
+                                                                            .DESCRIPTION
+                                                                                Outputs the extension types defined in a module's manifest.
+                                                                            .EXAMPLE
+                                                                                # Outputs a PSObject with information about extension command types.
+                                                                                
+                                                                                # The two primary pieces of information are the `.Name` and `.Pattern`.
+                                                                                Aspect.ModuleExtensionType -Module PipeScript # Should -BeOfType ([PSObject])
+                                                                            #>
+                                                                            [Alias('Aspect.ModuleCommandTypes','Aspect.ModuleCommandType','Aspect.ModuleExtensionTypes')]
+                                                                            param(
+                                                                            # The name of a module, or a module info object.
+                                                                            [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+                                                                            [ValidateScript({
+                                                                            $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                                            $thisType = $_.GetType()
+                                                                            $IsTypeOk =
+                                                                                $(@( foreach ($validType in $validTypeList) {
+                                                                                    if ($_ -as $validType) {
+                                                                                        $true;break
+                                                                                    }
+                                                                                }))
+                                                                            if (-not $isTypeOk) {
+                                                                                throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
+                                                                            }
+                                                                            return $true
+                                                                            })]
+                                                                            
+                                                                            $Module
+                                                                            )
+                                                                            begin {
+                                                                                $ExtensionCollectionNames = 
+                                                                                    "Extension", "Command", "Cmdlet", "Function", "Alias", "Script", "Application", "File","Configuration"
+                                                                                $ExtensionCollectionNames = @($ExtensionCollectionNames -replace '.+$','${0}Type') + @($ExtensionCollectionNames -replace '.+$','${0}Types')
+                                                                            }
+                                                                            process {
+                                                                                #region Resolve Module Info
+                                                                                if ($Module -is [string]) {
+                                                                                    $Module = Get-Module $Module
+                                                                                }
+                                                                                $ModuleInfo = $module                
+                                                                                if (-not $ModuleInfo) { return }
+                                                                                #endregion Resolve Module Info
+                                                                                #region Check Cache and Hopefully Return
+                                                                                if (-not $script:ModuleExtensionTypeCache) {
+                                                                                    $script:ModuleExtensionTypeCache = @{}
+                                                                                }
+                                                                                
+                                                                                if ($script:ModuleExtensionTypeCache[$ModuleInfo]) {
+                                                                                    return $script:ModuleExtensionTypeCache[$ModuleInfo]
+                                                                                }
+                                                                                #endregion Check Cache and Hopefully Return
+                                                                                #region Find Extension Types
+                                                                                $modulePrivateData  = $ModuleInfo.PrivateData
+                                                                                $SortedExtensionTypes = [Ordered]@{}
+                                                                                foreach ($TypeOfExtensionCollection in $ExtensionCollectionNames) {
+                                                                                    $moduleExtensionTypes = 
+                                                                                        if ($modulePrivateData.$TypeOfExtensionCollection) {
+                                                                                            $modulePrivateData.$TypeOfExtensionCollection
+                                                                                        } elseif ($modulePrivateData.PSData.$TypeOfExtensionCollection) {
+                                                                                            $modulePrivateData.PSData.$TypeOfExtensionCollection
+                                                                                        } else {
+                                                                                            $null
+                                                                                        }
+                                                                                    if (-not $moduleExtensionTypes) { continue } 
+                                                                                    foreach ($commandType in @($ModuleExtensionTypes.GetEnumerator() | Sort-Object Key)) {
+                                                                                        if ($commandType.Value -is [Collections.IDictionary]) {
+                                                                                            if (-not $commandType.Value.Name) {
+                                                                                                $commandType.Value["Name"] = $commandType.Key
+                                                                                            }
+                                                                                            if (-not $commandType.Value.PSTypeName) {
+                                                                                                $commandType.Value["PSTypeName"] = "$($module.Name).ExtensionCommandType"
+                                                                                            }
+                                                                                            $SortedExtensionTypes[$commandType.Name] = $commandType.Value
+                                                                                        } else {
+                                                                                            $SortedExtensionTypes[$commandType.Name] = [Ordered]@{
+                                                                                                PSTypeName = "$($module.Name).ExtensionCommandType"
+                                                                                                Name    = $commandType.Key
+                                                                                                Pattern = $commandType.Value
+                                                                                            }
+                                                                                        }
+                                                                                        if ($TypeOfExtensionCollection -notmatch '(?>Extension|Command|Cmdlet)') {
+                                                                                            $SortedExtensionTypes[$commandType.Name].CommandType = $TypeOfExtensionCollection -replace 'Type(?:s)?$'
+                                                                                        } elseif ($TypeOfExtensionCollection -match 'Cmdlet') {
+                                                                                            $SortedExtensionTypes[$commandType.Name].CommandType = "(?>Alias|Function|Filter|Cmdlet)"
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                                
+                                                                                $SortedExtensionTypes.PSTypeName="$($Module.Name).ExtensionCommandTypes"
+                                                                                
+                                                                                [PSCustomObject]$SortedExtensionTypes
+                                                                                #endregion Find Extension Types
+                                                                            }    
+                                                                         } $ModuleInfo
+                                                
+                                                $commands    =
+                                                    @(
+                                                    if ($PSBoundParameters['Commands']) {
+                                                        $commands
+                                                    }
+                                                    if ($PSBoundParameters['FilePath']) {
+                                                        if (-not $commandType) {
+                                                            $commandType = 'Application,ExternalScript'
+                                                        }
+                                                        foreach ($file in Get-ChildItem -File -Path $PSBoundParameters['FilePath'] -Recurse) {
+                                                            $ExecutionContext.SessionState.InvokeCommand.GetCommand($file.FullName, $commandType)
+                                                        }
+                                                    } else {
+                                                        if (-not $CommandType) {
+                                                            $commandType = 'Function,Alias,Filter,Cmdlet'
+                                                        }
+                                                        $ExecutionContext.SessionState.InvokeCommand.GetCommands('*', $commandType, $true)
+                                                    })
+                                                :nextCommand foreach ($cmd in $commands) {            
+                                                    $matched = $ModuleCommandPattern.Match("$cmd")
+                                                    if (-not $matched.Success) { continue }
+                                                    $NamedGroupMatch = $false
+                                                    :nextCommandType foreach ($group in $matched.Groups) {
+                                                        if (-not $group.Success) { continue }
+                                                        if ($null -ne ($group.Name -as [int])) { continue }                
+                                                        $CommandTypeName     = $group.Name.Replace('_','.')
+                                                        $ThisCommandsType    = $ModuleCommandTypes.($group.Name -replace "^$prefix" -replace "$suffix$")
+                                                        if ($ThisCommandsType) {
+                                                            $ThisTypeFilter = @($ThisCommandsType.CommandType,$ThisCommandsType.CommandTypes -ne $null)[0]
+                                                            if ($ThisTypeFilter -and ($cmd.CommandType -notmatch $ThisTypeFilter)) {
+                                                                continue nextCommandType
+                                                            }
+                                                            $ThisExcludeFilter = @($ThisCommandsType.ExcludeCommandType,$ThisCommandsType.ExcludeCommandTypes -ne $null)[0]
+                                                            if ($ThisExcludeFilter -and ($cmd.CommandType -match $ThisExcludeFilter)) {
+                                                                continue nextCommandType
+                                                            }
+                                                        }
+                                                        $NamedGroupMatch     = $true
+                                                        if ($PSTypeName) {
+                                                            foreach ($psuedoType in $PSTypeName) {
+                                                                if ($cmd.pstypenames -notcontains $psuedoType) {
+                                                                    $cmd.pstypenames.insert(0, $psuedoType)        
                                                                 }
                                                             }
-                                                        } } -IncludeApplications))
-                                                    # Walk over each item in the filtered collection
-                                                    foreach ($item in $inputCollection) {
-                                                        # we set $this, $psItem, and $_ for ease-of-use.
-                                                        $this = $_ = $psItem = $item
-                                                        
-                                                                    $cmd = $_
-                                                                    $matched = $CommandPattern.Match("$cmd")
-                                                                    if (-not $matched.Success) { continue }
-                                                                    $NamedGroupMatch = $false
-                                                                    foreach ($group in $matched.Groups) {
-                                                                        if (-not $group.Success) { continue }
-                                                                        if ($null -ne ($group.Name -as [int])) { continue }
-                                                                        $NamedGroupMatch = $true
-                                                                        $groupName = $group.Name.Replace('_','.')
-                                                                        if ($PSTypeName) {
-                                                                            foreach ($psuedoType in $PSTypeName) {
-                                                                                if ($cmd.pstypenames -notcontains $psuedoType) {
-                                                                                    $cmd.pstypenames.insert(0, $psuedoType)        
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                        if ($cmd.pstypenames -notcontains $groupName) {
-                                                                            $cmd.pstypenames.insert(0, $groupName)
-                                                                        }
-                                                                    }
-                                                                    if ($NamedGroupMatch) {
-                                                                        $cmd
-                                                                    } 
-                                                                 
-                                                    }   
-                                                    )
-                                                }
-                                                else {
-                                                    $(
-                                                            # Collect all items into an input collection
-                                                            $inputCollection = @($executionContext.SessionState.InvokeCommand.GetCommands('*','Alias, Function, Cmdlet',$true))
-                                                    # Walk over each item in the filtered collection
-                                                    foreach ($item in $inputCollection) {
-                                                        # we set $this, $psItem, and $_ for ease-of-use.
-                                                        $this = $_ = $psItem = $item
-                                                        
-                                                                    $cmd = $_                
-                                                                    $matched = $CommandPattern.Match("$cmd")
-                                                                    if (-not $matched.Success) { continue }
-                                                                    $NamedGroupMatch = $false
-                                                                    foreach ($group in $matched.Groups) {
-                                                                        if (-not $group.Success) { continue }
-                                                                        if ($null -ne ($group.Name -as [int])) { continue }
-                                                                        $NamedGroupMatch = $true
-                                                                        $groupName = $group.Name -replace '_', '.'
-                                                                        if ($PSTypeName) {
-                                                                            foreach ($psuedoType in $PSTypeName) {
-                                                                                if ($cmd.pstypenames -notcontains $psuedoType) {
-                                                                                    $cmd.pstypenames.insert(0, $psuedoType)        
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                        if ($cmd.pstypenames -notcontains $groupName) {
-                                                                            $cmd.pstypenames.insert(0, $groupName)
-                                                                        }
-                                                                    }
-                                                                    if ($NamedGroupMatch) {
-                                                                        $cmd
-                                                                    }
-                                                                    
-                                                                 
-                                                    }   
-                                                    )
+                                                        }
+                                                        if ($cmd.pstypenames -notcontains $CommandTypeName) {
+                                                            $cmd.pstypenames.insert(0, $CommandTypeName)
+                                                        }
+                                                    }
+                                                    if ($NamedGroupMatch) {
+                                                        $cmd
+                                                    }
                                                 }
                                             }
                                          }
-                    $CommandPatternAspect = { 
-                                                                      <#
-                                                                      .SYNOPSIS
-                                                                          Outputs a module's command pattern
-                                                                      .DESCRIPTION
-                                                                          Outputs a regular expression that can be used to match any command pattern.
-                                                                      .EXAMPLE
-                                                                          Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
-                                                                      #>
-                                                                      param(
-                                                                      # The name of a module, or a module info object.
-                                                                      [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
-                                                                      [ValidateScript({
-                                                                      $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
-                                                                      $thisType = $_.GetType()
-                                                                      $IsTypeOk =
-                                                                          $(@( foreach ($validType in $validTypeList) {
-                                                                              if ($_ -as $validType) {
-                                                                                  $true;break
-                                                                              }
-                                                                          }))
-                                                                      if (-not $isTypeOk) {
-                                                                          throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
-                                                                      }
-                                                                      return $true
-                                                                      })]
-                                                                      
-                                                                      $Module,
-                                                                      # The suffix to apply to each named capture.
-                                                                      # Defaults to '_Command'
-                                                                      [Parameter(ValueFromPipelineByPropertyName)]
-                                                                      [string]
-                                                                      $Suffix = '_Command',
-                                                                      # The prefix to apply to each named capture. 
-                                                                      [Parameter(ValueFromPipelineByPropertyName)]
-                                                                      [string]
-                                                                      $Prefix
-                                                                      )
-                                                                      process {
-                                                                          if ($Module -is [string]) {
-                                                                              $Module = Get-Module $Module
-                                                                          }
-                                                                          $ModuleInfo = $module
-                                                                          #region Search for Module Command Types
-                                                                          if (-not $ModuleInfo) { return }
-                                                                          $ModuleCommandTypes = 
-                                                                              @($ModuleInfo.PrivateData.CommandType,
-                                                                              $ModuleInfo.PrivateData.CommandTypes,
-                                                                              $ModuleInfo.PrivateData.PSData.CommandType,
-                                                                              $ModuleInfo.PrivateData.PSData.CommandType -ne $null)[0]
-                                                                          
-                                                                          if (-not $ModuleCommandTypes) { return }
-                                                                              
-                                                                          # With some clever understanding of Regular expressions, we can make match any/all of our potential command types.
-                                                                          # Essentially: Regular Expressions can look ahead (matching without changing the position), and be optional.
-                                                                          # So we can say "any/all" by making a series of optional lookaheads.
-                                                                          
-                                                                          # We'll go thru each pattern in order
-                                                                          $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator() | Sort-Object Key) {
-                                                                              $categoryPattern = 
-                                                                                  if ($categoryKeyValue.Value -is [string]) {
-                                                                                      $categoryKeyValue.Value
-                                                                                  } else {
-                                                                                      $categoryKeyValue.Value.Pattern
-                                                                                  }
-                                                                              # ( and skip anyone that does not have a pattern)
-                                                                              if (-not $categoryPattern) { continue } 
-                                                                              '(?=' + # Start a lookahead
-                                                                                  '.{0,}' + # match any or no characters
-                                                                                  # followed by the command pattern
-                                                                                  "(?<$Prefix$($categoryKeyValue.Key -replace '\p{P}', '_')$Suffix>$categoryPattern)" +
-                                                                                  ')?' # made optional                            
-                                                                          }) -join [Environment]::NewLine
-                                                                          # Now that we've combined the whole thing, make it a Regex and output it.        
-                                                                          [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
-                                                                      }
-                                                                   }
+                    $ModuleCommandPatternAspect = { 
+                                                                            <#
+                                                                            .SYNOPSIS
+                                                                                Outputs a module's extension pattern
+                                                                            .DESCRIPTION
+                                                                                Outputs a regular expression that will match any possible pattern.
+                                                                            .EXAMPLE
+                                                                                Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
+                                                                            #>
+                                                                            [Alias('Aspect.ModuleCommandPattern')]
+                                                                            param(
+                                                                            # The name of a module, or a module info object.
+                                                                            [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+                                                                            [ValidateScript({
+                                                                            $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                                            $thisType = $_.GetType()
+                                                                            $IsTypeOk =
+                                                                                $(@( foreach ($validType in $validTypeList) {
+                                                                                    if ($_ -as $validType) {
+                                                                                        $true;break
+                                                                                    }
+                                                                                }))
+                                                                            if (-not $isTypeOk) {
+                                                                                throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
+                                                                            }
+                                                                            return $true
+                                                                            })]
+                                                                            
+                                                                            $Module,
+                                                                            # The suffix to apply to each named capture.
+                                                                            # Defaults to '_Command'
+                                                                            [Parameter(ValueFromPipelineByPropertyName)]
+                                                                            [string]
+                                                                            $Suffix = '_Command',
+                                                                            # The prefix to apply to each named capture. 
+                                                                            [Parameter(ValueFromPipelineByPropertyName)]
+                                                                            [string]
+                                                                            $Prefix
+                                                                            )
+                                                                            process {
+                                                                                if ($Module -is [string]) {
+                                                                                    $Module = Get-Module $Module
+                                                                                }
+                                                                                $ModuleInfo = $module
+                                                                                #region Search for Module Extension Types
+                                                                                if (-not $ModuleInfo) { return }
+                                                                                $ModuleExtensionTypes = # Aspect.ModuleExtensionTypes
+                                                                                                        & { 
+                                                                                                            <#
+                                                                                                            .SYNOPSIS
+                                                                                                                Outputs a module's extension types
+                                                                                                            .DESCRIPTION
+                                                                                                                Outputs the extension types defined in a module's manifest.
+                                                                                                            .EXAMPLE
+                                                                                                                # Outputs a PSObject with information about extension command types.
+                                                                                                                
+                                                                                                                # The two primary pieces of information are the `.Name` and `.Pattern`.
+                                                                                                                Aspect.ModuleExtensionType -Module PipeScript # Should -BeOfType ([PSObject])
+                                                                                                            #>
+                                                                                                            [Alias('Aspect.ModuleCommandTypes','Aspect.ModuleCommandType','Aspect.ModuleExtensionTypes')]
+                                                                                                            param(
+                                                                                                            # The name of a module, or a module info object.
+                                                                                                            [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+                                                                                                            [ValidateScript({
+                                                                                                            $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                                                                            $thisType = $_.GetType()
+                                                                                                            $IsTypeOk =
+                                                                                                                $(@( foreach ($validType in $validTypeList) {
+                                                                                                                    if ($_ -as $validType) {
+                                                                                                                        $true;break
+                                                                                                                    }
+                                                                                                                }))
+                                                                                                            if (-not $isTypeOk) {
+                                                                                                                throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
+                                                                                                            }
+                                                                                                            return $true
+                                                                                                            })]
+                                                                                                            
+                                                                                                            $Module
+                                                                                                            )
+                                                                                                            begin {
+                                                                                                                $ExtensionCollectionNames = 
+                                                                                                                    "Extension", "Command", "Cmdlet", "Function", "Alias", "Script", "Application", "File","Configuration"
+                                                                                                                $ExtensionCollectionNames = @($ExtensionCollectionNames -replace '.+$','${0}Type') + @($ExtensionCollectionNames -replace '.+$','${0}Types')
+                                                                                                            }
+                                                                                                            process {
+                                                                                                                #region Resolve Module Info
+                                                                                                                if ($Module -is [string]) {
+                                                                                                                    $Module = Get-Module $Module
+                                                                                                                }
+                                                                                                                $ModuleInfo = $module                
+                                                                                                                if (-not $ModuleInfo) { return }
+                                                                                                                #endregion Resolve Module Info
+                                                                                                                #region Check Cache and Hopefully Return
+                                                                                                                if (-not $script:ModuleExtensionTypeCache) {
+                                                                                                                    $script:ModuleExtensionTypeCache = @{}
+                                                                                                                }
+                                                                                                                
+                                                                                                                if ($script:ModuleExtensionTypeCache[$ModuleInfo]) {
+                                                                                                                    return $script:ModuleExtensionTypeCache[$ModuleInfo]
+                                                                                                                }
+                                                                                                                #endregion Check Cache and Hopefully Return
+                                                                                                                #region Find Extension Types
+                                                                                                                $modulePrivateData  = $ModuleInfo.PrivateData
+                                                                                                                $SortedExtensionTypes = [Ordered]@{}
+                                                                                                                foreach ($TypeOfExtensionCollection in $ExtensionCollectionNames) {
+                                                                                                                    $moduleExtensionTypes = 
+                                                                                                                        if ($modulePrivateData.$TypeOfExtensionCollection) {
+                                                                                                                            $modulePrivateData.$TypeOfExtensionCollection
+                                                                                                                        } elseif ($modulePrivateData.PSData.$TypeOfExtensionCollection) {
+                                                                                                                            $modulePrivateData.PSData.$TypeOfExtensionCollection
+                                                                                                                        } else {
+                                                                                                                            $null
+                                                                                                                        }
+                                                                                                                    if (-not $moduleExtensionTypes) { continue } 
+                                                                                                                    foreach ($commandType in @($ModuleExtensionTypes.GetEnumerator() | Sort-Object Key)) {
+                                                                                                                        if ($commandType.Value -is [Collections.IDictionary]) {
+                                                                                                                            if (-not $commandType.Value.Name) {
+                                                                                                                                $commandType.Value["Name"] = $commandType.Key
+                                                                                                                            }
+                                                                                                                            if (-not $commandType.Value.PSTypeName) {
+                                                                                                                                $commandType.Value["PSTypeName"] = "$($module.Name).ExtensionCommandType"
+                                                                                                                            }
+                                                                                                                            $SortedExtensionTypes[$commandType.Name] = $commandType.Value
+                                                                                                                        } else {
+                                                                                                                            $SortedExtensionTypes[$commandType.Name] = [Ordered]@{
+                                                                                                                                PSTypeName = "$($module.Name).ExtensionCommandType"
+                                                                                                                                Name    = $commandType.Key
+                                                                                                                                Pattern = $commandType.Value
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                        if ($TypeOfExtensionCollection -notmatch '(?>Extension|Command|Cmdlet)') {
+                                                                                                                            $SortedExtensionTypes[$commandType.Name].CommandType = $TypeOfExtensionCollection -replace 'Type(?:s)?$'
+                                                                                                                        } elseif ($TypeOfExtensionCollection -match 'Cmdlet') {
+                                                                                                                            $SortedExtensionTypes[$commandType.Name].CommandType = "(?>Alias|Function|Filter|Cmdlet)"
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                }
+                                                                                                                
+                                                                                                                $SortedExtensionTypes.PSTypeName="$($Module.Name).ExtensionCommandTypes"
+                                                                                                                
+                                                                                                                [PSCustomObject]$SortedExtensionTypes
+                                                                                                                #endregion Find Extension Types
+                                                                                                            }    
+                                                                                                         } -Module $moduleInfo
+                                                                                
+                                                                                if (-not $ModuleExtensionTypes) { return }
+                                                                                    
+                                                                                # With some clever understanding of Regular expressions, we can make match any/all of our potential command types.
+                                                                                # Essentially: Regular Expressions can look ahead (matching without changing the position), and be optional.
+                                                                                # So we can say "any/all" by making a series of optional lookaheads.
+                                                                                
+                                                                                # We'll go thru each pattern in order
+                                                                                $combinedRegex = @(foreach ($categoryExtensionTypeInfo in @($ModuleExtensionTypes.psobject.properties)) {
+                                                                                    $categoryPattern = $categoryExtensionTypeInfo.Value.Pattern                
+                                                                                    # ( and skip anyone that does not have a pattern)
+                                                                                    if (-not $categoryPattern) { continue } 
+                                                                                    '(?=' + # Start a lookahead
+                                                                                        '.{0,}' + # match any or no characters
+                                                                                        # followed by the command pattern
+                                                                                        "(?<$Prefix$($categoryExtensionTypeInfo.Name -replace '\p{P}', '_')$Suffix>$categoryPattern)" +
+                                                                                        ')?' # made optional                            
+                                                                                }) -join [Environment]::NewLine
+                                                                                # Now that we've combined the whole thing, make it a Regex and output it.        
+                                                                                [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
+                                                                            }
+                                                                         }
          if (-not $script:CachedCommandsAtPath) {
                         $script:CachedCommandsAtPath = @{}
                     }
@@ -769,12 +994,13 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                               & { 
                                   <#
                                   .SYNOPSIS
-                                      Outputs a module's command pattern
+                                      Outputs a module's extension pattern
                                   .DESCRIPTION
-                                      Outputs a regular expression that can be used to match any command pattern.
+                                      Outputs a regular expression that will match any possible pattern.
                                   .EXAMPLE
                                       Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
                                   #>
+                                  [Alias('Aspect.ModuleCommandPattern')]
                                   param(
                                   # The name of a module, or a module info object.
                                   [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
@@ -809,34 +1035,123 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                                           $Module = Get-Module $Module
                                       }
                                       $ModuleInfo = $module
-                                      #region Search for Module Command Types
+                                      #region Search for Module Extension Types
                                       if (-not $ModuleInfo) { return }
-                                      $ModuleCommandTypes = 
-                                          @($ModuleInfo.PrivateData.CommandType,
-                                          $ModuleInfo.PrivateData.CommandTypes,
-                                          $ModuleInfo.PrivateData.PSData.CommandType,
-                                          $ModuleInfo.PrivateData.PSData.CommandType -ne $null)[0]
+                                      $ModuleExtensionTypes = # Aspect.ModuleExtensionTypes
+                                                              & { 
+                                                                  <#
+                                                                  .SYNOPSIS
+                                                                      Outputs a module's extension types
+                                                                  .DESCRIPTION
+                                                                      Outputs the extension types defined in a module's manifest.
+                                                                  .EXAMPLE
+                                                                      # Outputs a PSObject with information about extension command types.
+                                                                      
+                                                                      # The two primary pieces of information are the `.Name` and `.Pattern`.
+                                                                      Aspect.ModuleExtensionType -Module PipeScript # Should -BeOfType ([PSObject])
+                                                                  #>
+                                                                  [Alias('Aspect.ModuleCommandTypes','Aspect.ModuleCommandType','Aspect.ModuleExtensionTypes')]
+                                                                  param(
+                                                                  # The name of a module, or a module info object.
+                                                                  [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+                                                                  [ValidateScript({
+                                                                  $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                                  $thisType = $_.GetType()
+                                                                  $IsTypeOk =
+                                                                      $(@( foreach ($validType in $validTypeList) {
+                                                                          if ($_ -as $validType) {
+                                                                              $true;break
+                                                                          }
+                                                                      }))
+                                                                  if (-not $isTypeOk) {
+                                                                      throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
+                                                                  }
+                                                                  return $true
+                                                                  })]
+                                                                  
+                                                                  $Module
+                                                                  )
+                                                                  begin {
+                                                                      $ExtensionCollectionNames = 
+                                                                          "Extension", "Command", "Cmdlet", "Function", "Alias", "Script", "Application", "File","Configuration"
+                                                                      $ExtensionCollectionNames = @($ExtensionCollectionNames -replace '.+$','${0}Type') + @($ExtensionCollectionNames -replace '.+$','${0}Types')
+                                                                  }
+                                                                  process {
+                                                                      #region Resolve Module Info
+                                                                      if ($Module -is [string]) {
+                                                                          $Module = Get-Module $Module
+                                                                      }
+                                                                      $ModuleInfo = $module                
+                                                                      if (-not $ModuleInfo) { return }
+                                                                      #endregion Resolve Module Info
+                                                                      #region Check Cache and Hopefully Return
+                                                                      if (-not $script:ModuleExtensionTypeCache) {
+                                                                          $script:ModuleExtensionTypeCache = @{}
+                                                                      }
+                                                                      
+                                                                      if ($script:ModuleExtensionTypeCache[$ModuleInfo]) {
+                                                                          return $script:ModuleExtensionTypeCache[$ModuleInfo]
+                                                                      }
+                                                                      #endregion Check Cache and Hopefully Return
+                                                                      #region Find Extension Types
+                                                                      $modulePrivateData  = $ModuleInfo.PrivateData
+                                                                      $SortedExtensionTypes = [Ordered]@{}
+                                                                      foreach ($TypeOfExtensionCollection in $ExtensionCollectionNames) {
+                                                                          $moduleExtensionTypes = 
+                                                                              if ($modulePrivateData.$TypeOfExtensionCollection) {
+                                                                                  $modulePrivateData.$TypeOfExtensionCollection
+                                                                              } elseif ($modulePrivateData.PSData.$TypeOfExtensionCollection) {
+                                                                                  $modulePrivateData.PSData.$TypeOfExtensionCollection
+                                                                              } else {
+                                                                                  $null
+                                                                              }
+                                                                          if (-not $moduleExtensionTypes) { continue } 
+                                                                          foreach ($commandType in @($ModuleExtensionTypes.GetEnumerator() | Sort-Object Key)) {
+                                                                              if ($commandType.Value -is [Collections.IDictionary]) {
+                                                                                  if (-not $commandType.Value.Name) {
+                                                                                      $commandType.Value["Name"] = $commandType.Key
+                                                                                  }
+                                                                                  if (-not $commandType.Value.PSTypeName) {
+                                                                                      $commandType.Value["PSTypeName"] = "$($module.Name).ExtensionCommandType"
+                                                                                  }
+                                                                                  $SortedExtensionTypes[$commandType.Name] = $commandType.Value
+                                                                              } else {
+                                                                                  $SortedExtensionTypes[$commandType.Name] = [Ordered]@{
+                                                                                      PSTypeName = "$($module.Name).ExtensionCommandType"
+                                                                                      Name    = $commandType.Key
+                                                                                      Pattern = $commandType.Value
+                                                                                  }
+                                                                              }
+                                                                              if ($TypeOfExtensionCollection -notmatch '(?>Extension|Command|Cmdlet)') {
+                                                                                  $SortedExtensionTypes[$commandType.Name].CommandType = $TypeOfExtensionCollection -replace 'Type(?:s)?$'
+                                                                              } elseif ($TypeOfExtensionCollection -match 'Cmdlet') {
+                                                                                  $SortedExtensionTypes[$commandType.Name].CommandType = "(?>Alias|Function|Filter|Cmdlet)"
+                                                                              }
+                                                                          }
+                                                                      }
+                                                                      
+                                                                      $SortedExtensionTypes.PSTypeName="$($Module.Name).ExtensionCommandTypes"
+                                                                      
+                                                                      [PSCustomObject]$SortedExtensionTypes
+                                                                      #endregion Find Extension Types
+                                                                  }    
+                                                               } -Module $moduleInfo
                                       
-                                      if (-not $ModuleCommandTypes) { return }
+                                      if (-not $ModuleExtensionTypes) { return }
                                           
                                       # With some clever understanding of Regular expressions, we can make match any/all of our potential command types.
                                       # Essentially: Regular Expressions can look ahead (matching without changing the position), and be optional.
                                       # So we can say "any/all" by making a series of optional lookaheads.
                                       
                                       # We'll go thru each pattern in order
-                                      $combinedRegex = @(foreach ($categoryKeyValue in $ModuleCommandTypes.GetEnumerator() | Sort-Object Key) {
-                                          $categoryPattern = 
-                                              if ($categoryKeyValue.Value -is [string]) {
-                                                  $categoryKeyValue.Value
-                                              } else {
-                                                  $categoryKeyValue.Value.Pattern
-                                              }
+                                      $combinedRegex = @(foreach ($categoryExtensionTypeInfo in @($ModuleExtensionTypes.psobject.properties)) {
+                                          $categoryPattern = $categoryExtensionTypeInfo.Value.Pattern                
                                           # ( and skip anyone that does not have a pattern)
                                           if (-not $categoryPattern) { continue } 
                                           '(?=' + # Start a lookahead
                                               '.{0,}' + # match any or no characters
                                               # followed by the command pattern
-                                              "(?<$Prefix$($categoryKeyValue.Key -replace '\p{P}', '_')$Suffix>$categoryPattern)" +
+                                              "(?<$Prefix$($categoryExtensionTypeInfo.Name -replace '\p{P}', '_')$Suffix>$categoryPattern)" +
                                               ')?' # made optional                            
                                       }) -join [Environment]::NewLine
                                       # Now that we've combined the whole thing, make it a Regex and output it.        
