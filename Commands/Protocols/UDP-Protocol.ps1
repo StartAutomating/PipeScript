@@ -6,15 +6,19 @@ function Protocol.UDP {
 .DESCRIPTION
     Converts a UDP protocol command to PowerShell
 .EXAMPLE
-    udp://127.0.0.1:8568  # Creates a UDP Client
+    # Creates the code to create a UDP Client
+    {udp://127.0.0.1:8568} | Use-PipeScript  
 .EXAMPLE
     udp:// -Host [ipaddress]::broadcast -port 911 -Send "It's an emergency!"
 .EXAMPLE
     {send udp:// -Host [ipaddress]::broadcast -Port 911 "It's an emergency!"} | Use-PipeScript
 .EXAMPLE
-    Invoke-PipeScript { watch udp://*:911 } 
-    Invoke-PipeScript { send udp:// -Host [ipaddress]::broadcast -Port 911 "It's an emergency!" }
-    Invoke-PipeScript { receive udp://*:911 } 
+    Use-PipeScript {
+        watch udp://*:911
+    
+        send udp:// -Host [ipaddress]::broadcast -Port 911 "It's an emergency!"
+        receive udp://*:911
+    }    
 #>
 [ValidateScript({
     $commandAst = $_    
