@@ -338,7 +338,7 @@ function Aspect.ModuleExtensionCommand {
         $ModuleInfo = $module
         if (-not $ModuleInfo) { return }
         
-        $ModuleCommandPattern = # Aspect.ModuleCommandPattern
+        $ModuleCommandPattern = # Aspect.ModuleExtensionPattern
                                 & { 
                                     <#
                                     .SYNOPSIS
