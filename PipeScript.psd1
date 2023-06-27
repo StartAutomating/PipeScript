@@ -41,6 +41,20 @@
                     Optimiz[^\p{P}]+\p{P} # Optimiz + Many NotPunctuation + Punctuation
                 '
             }
+
+            'Protocol'   = @{
+                Description = 'Protocol Commands'
+                Pattern = '
+                    (?>PipeScript\p{P})?         # Optional PipeScript + Punctuation
+                    (?>Protocol\p{P})            # Protocol + Punctuation
+                    (?=[^\p{P}]+$)               # Followed by anything but punctuation.
+                '
+            }
+
+            'PipeScriptNoun' = @{
+                Description = 'Commands with the noun PipeScript'
+                Pattern = '[^\-]+\-PipeScript$'
+            }
         }
         ScriptTypes = @{
             'BuildScript'    = @{
@@ -55,7 +69,7 @@
                     (?>PipeScript\p{P})? # (optionally) PipeScript+Punctuation
                     Aspect\p{P}          # Followed by Aspect and punctuation.
                 '
-                ExcludeCommandType = '(?>Application|Script|Cmdlet)'  
+                ExcludeCommandType = '(?>Application|Script|Cmdlet)'
             }
             'Analyzer' = @{
                 Description = 'Analyzation Commands'
@@ -75,24 +89,10 @@
                 '
                 CommandType = '(?>Function|Alias)'
             }
-
-                        
-            'PipeScriptNoun' = @{
-                Description = 'Commands with the noun PipeScript'
-                Pattern = '[^\-]+\-PipeScript$'
-            }
+                                    
             'Interface'  = @{
                 Description = 'An Interface Command'
                 Pattern = '(?>PipeScript\p{P})?Interface\p{P}'
-            }
-                            
-            'Protocol'   = @{
-                Description = 'Protocol Commands'
-                Pattern = '
-                    (?>PipeScript\p{P})?         # Optional PipeScript + Punctuation
-                    (?>Protocol\p{P})            # Protocol + Punctuation
-                    (?=[^\p{P}]+$)               # Followed by anything but punctuation.
-                '
             }
                 
             'Sentence'   = @{
