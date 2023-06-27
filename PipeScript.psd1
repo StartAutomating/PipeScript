@@ -12,13 +12,50 @@
     Author            = 'James Brundage'
     FunctionsToExport = 'Export-Pipescript','Get-PipeScript','Get-Transpiler','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript','PipeScript.Automatic.Variable.IsPipedTo','PipeScript.Automatic.Variable.IsPipedFrom','PipeScript.Automatic.Variable.MyCallstack','PipeScript.Automatic.Variable.MySelf','PipeScript.Automatic.Variable.MyParameters','PipeScript.Automatic.Variable.MyCaller','PipeScript.Automatic.Variable.MyCommandAst','PipeScript.Optimizer.ConsolidateAspects','Protocol.HTTP','Protocol.JSONSchema','Protocol.OpenAPI','Protocol.UDP','Aspect.DynamicParameter','Aspect.ModuleExtensionType','Aspect.ModuleExtensionPattern','Aspect.ModuleExtensionCommand','PipeScript.PostProcess.InitializeAutomaticVariables','PipeScript.PostProcess.PartialFunction'
     PrivateData = @{
+        FunctionTypes = @{
+            'Partial' = @{
+                Description = 'A partial function.'
+                Pattern = '(?>PipeScript\p{P})?Partial\p{P}'
+            }
+
+            'PreProcessor' = @{
+                Description = 'Preprocessing Commands'
+                Pattern     = '
+                    (?>PipeScript\p{P})?  # (optionally) PipeScript+Punctuation
+                    PreProc[^\p{P}]+\p{P} # Preproc + Many NotPunctuation + Punctuation
+                '
+            }
+
+            'PostProcessor' = @{
+                Description = 'PostProcessing Commands'
+                Pattern     = '
+                    (?>PipeScript\p{P})?  # (optionally) PipeScript+Punctuation
+                    PostProc[^\p{P}]+\p{P} # Postproc + Many NotPunctuation + Punctuation
+                '
+            }
+
+            'Optimizer' = @{
+                Description = 'Optimization Commands'
+                Pattern     = '
+                    (?>PipeScript\p{P})?  # (optionally) PipeScript+Punctuation
+                    Optimiz[^\p{P}]+\p{P} # Optimiz + Many NotPunctuation + Punctuation
+                '
+            }
+        }
+        ScriptTypes = @{
+            'BuildScript'    = @{
+                Description = 'A file that will be run at build time.'
+                Pattern = '(?<=(?>^|\.))build\.ps1$'
+            }
+        }
         CommandTypes = @{
             'Aspect' = @{
                 Description = 'An aspect of code.'
                 Pattern = '                    
                     (?>PipeScript\p{P})? # (optionally) PipeScript+Punctuation
                     Aspect\p{P}          # Followed by Aspect and punctuation.
-                '  
+                '
+                ExcludeCommandType = '(?>Application|Script|Cmdlet)'  
             }
             'Analyzer' = @{
                 Description = 'Analyzation Commands'
@@ -36,12 +73,10 @@
                     \p{P}?Variable\p{P}  # Optional Punctation + Variable + Punctuation
                     (?=[^\p{P}]+$)       # Followed by anything but punctuation.
                 '
+                CommandType = '(?>Function|Alias)'
             }
 
-            'BuildScript'    = @{
-                Description = 'A file that will be run at build time.'
-                Pattern = '(?<=(?>^|\.))build\.ps1$'
-            }            
+                        
             'PipeScriptNoun' = @{
                 Description = 'Commands with the noun PipeScript'
                 Pattern = '[^\-]+\-PipeScript$'
@@ -49,11 +84,6 @@
             'Interface'  = @{
                 Description = 'An Interface Command'
                 Pattern = '(?>PipeScript\p{P})?Interface\p{P}'
-            }
-
-            'Partial' = @{
-                Description = 'A partial function.'
-                Pattern = '(?>PipeScript\p{P})?Partial\p{P}'
             }
                             
             'Protocol'   = @{
@@ -88,43 +118,7 @@
                 @{
                     Description = 'Templates let you write other languages with PipeScript.'
                     Pattern = '\.ps1{0,1}\.(?<ext>[^\.]+$)'
-                }
-                
-
-            'PreProcessor' = @{
-                Description = 'Preprocessing Commands'
-                Pattern     = '
-                    (?>PipeScript\p{P})?  # (optionally) PipeScript+Punctuation
-                    PreProc[^\p{P}]+\p{P} # Preproc + Many NotPunctuation + Punctuation
-                '
-            }
-
-            'PostProcessor' = @{
-                Description = 'PostProcessing Commands'
-                Pattern     = '
-                    (?>PipeScript\p{P})?  # (optionally) PipeScript+Punctuation
-                    PostProc[^\p{P}]+\p{P} # Postproc + Many NotPunctuation + Punctuation
-                '
-            }
-
-            'Optimizer' = @{
-                Description = 'Optimization Commands'
-                Pattern     = '
-                    (?>PipeScript\p{P})?  # (optionally) PipeScript+Punctuation
-                    Optimiz[^\p{P}]+\p{P} # Optimiz + Many NotPunctuation + Punctuation
-                '
-            }
-        }
-        FileTypes = @{            
-            PipeScript = @{
-                Pattern = '\.psx\.ps1{0,1}$',
-                    '\.ps1{0,1}\.(?<ext>[^.]+$)',
-                    '\.ps1{0,1}$'
-                Description = @'
-PipeScript files.
-'@
-                IsBuildFile = $true
-            }
+                }                        
         }
         PSData = @{
             ProjectURI = 'https://github.com/StartAutomating/PipeScript'
