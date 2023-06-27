@@ -30,16 +30,40 @@ describe 'Get-PipeScript' {
                                 Aspect.DynamicParameter -IncludeParameter Name | Select -Expand Keys |  Should -Be Name
     }
     it 'Get-PipeScript Example 8' {
-                                                Aspect.ModuleExtendedCommand -Module PipeScript |  Should -BeOfType ([Management.Automation.CommandInfo])
+                                                Aspect.ModuleExtensionCommand -Module PipeScript |  Should -BeOfType ([Management.Automation.CommandInfo])
     }
     it 'Get-PipeScript Example 9' {
-                                                                          Aspect.ModuleCommandPattern -Module PipeScript |  Should -BeOfType ([Regex])
+                                                                                Aspect.ModuleCommandPattern -Module PipeScript |  Should -BeOfType ([Regex])
     }
     it 'Get-PipeScript Example 10' {
-                                                                          Aspect.ModuleCommandPattern -Module PipeScript |  Should -BeOfType ([Regex])
+                                                                                                                # Outputs a PSObject with information about extension command types.
+                                                                                                                
+                                                                                                                # The two primary pieces of information are the `.Name` and `.Pattern`.
+                                                                                                                Aspect.ModuleExtensionType -Module PipeScript |  Should -BeOfType ([PSObject])
     }
     it 'Get-PipeScript Example 11' {
+                                                                                # Outputs a PSObject with information about extension command types.
+                                                                                
+                                                                                # The two primary pieces of information are the `.Name` and `.Pattern`.
+                                                                                Aspect.ModuleExtensionType -Module PipeScript |  Should -BeOfType ([PSObject])
+    }
+    it 'Get-PipeScript Example 12' {
+                                                                                Aspect.ModuleCommandPattern -Module PipeScript |  Should -BeOfType ([Regex])
+    }
+    it 'Get-PipeScript Example 13' {
+                                                                                                                # Outputs a PSObject with information about extension command types.
+                                                                                                                
+                                                                                                                # The two primary pieces of information are the `.Name` and `.Pattern`.
+                                                                                                                Aspect.ModuleExtensionType -Module PipeScript |  Should -BeOfType ([PSObject])
+    }
+    it 'Get-PipeScript Example 14' {
                                       Aspect.ModuleCommandPattern -Module PipeScript |  Should -BeOfType ([Regex])
+    }
+    it 'Get-PipeScript Example 15' {
+                                                                      # Outputs a PSObject with information about extension command types.
+                                                                      
+                                                                      # The two primary pieces of information are the `.Name` and `.Pattern`.
+                                                                      Aspect.ModuleExtensionType -Module PipeScript |  Should -BeOfType ([PSObject])
     }
 }
 
