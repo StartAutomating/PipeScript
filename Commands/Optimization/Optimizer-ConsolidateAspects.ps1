@@ -41,9 +41,16 @@ function PipeScript.Optimizer.ConsolidateAspects {
         }
         # Find all ScriptBlockExpressions
         $script:FoundFunctionExtent = $null
+        # If we are in a function, we can consolidate inner functions.
+        $script:CurrentFunctionExtent =
+            if ($psCmdlet.ParameterSetName -eq 'FunctionDefinition') {
+                $FunctionDefinitionAst
+            } else {
+                $null
+            }
         $allExpressions = @($ScriptBlock | Search-PipeScript -AstCondition {
             param($ast)
-            if ($ast -is [Management.Automation.Language.FunctionDefinitionAst]) {
+            if ($ast -is [Management.Automation.Language.FunctionDefinitionAst] -and -not $script:CurrentFunctionExtent) {
                 $script:FoundFunctionExtent = $ast.Extent
             }
             if ($ast -isnot [Management.Automation.Language.ScriptBlockExpressionAst]) { return $false }            
