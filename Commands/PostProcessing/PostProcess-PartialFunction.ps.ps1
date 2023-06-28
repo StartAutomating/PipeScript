@@ -73,14 +73,15 @@ PipeScript.PostProcess function PartialFunction {
         
         $originalDefinition = [ScriptBlock]::Create(($functionDefinitionAst.Body.Extent -replace '^{' -replace '}$'))
         # If there were any partial commands,
-        $joinedScriptBlock = @(                
-            $originalDefinition # we join them with the transpiled code.
+
+        # join them all together first, and skip the help block.
+        $partialsToJoin = @(
             $alreadyIncluded = [Ordered]@{} # Keep track of what we've included.
             foreach ($partialCommand in $partialCommands) { # and go over each partial command                                        
                 if ($alreadyIncluded["$partialCommand"]) { continue }
                 # and get it's ScriptBlock
                 if ($partialCommand.ScriptBlock) {
-                    $partialCommand.ScriptBLock
+                    $partialCommand.ScriptBlock
                 } elseif ($partialCommand.ResolvedCommand) {
                     # (if it's an Alias, keep resolving until we can't resolve anymore).
                     $resolvedAlias = $partialCommand.ResolvedCommand
@@ -94,6 +95,13 @@ PipeScript.PostProcess function PartialFunction {
                 # Then mark the command as included, just in case.
                 $alreadyIncluded["$partialCommand"] = $true
             }
+        )
+
+        $joinedPartials = $partialsToJoin | Join-PipeScript -ExcludeBlockType help
+
+        $joinedScriptBlock = @(                
+            $originalDefinition # we join them with the transpiled code.
+            $joinedPartials
         ) | # Take all of the combined input and pipe in into Join-PipeScript
             Join-PipeScript -Transpile
 
