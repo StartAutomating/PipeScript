@@ -1,9 +1,9 @@
 Protocol function UDP {
 <#
 .SYNOPSIS
-    udp protocol
+    UDP protocol
 .DESCRIPTION
-    Converts a UDP protocol command to PowerShell
+    Converts a UDP protocol command to PowerShell.
 .EXAMPLE
     # Creates the code to create a UDP Client
     {udp://127.0.0.1:8568} | Use-PipeScript  
@@ -59,19 +59,27 @@ $CommandAst,
 [ScriptBlock]
 $ScriptBlock = {},
 
+# The script or message sent via UDP.
 $Send,
 
+# If set, will receive result events.
+[switch]
 $Receive,
 
+# A ScriptBlock used to watch the UDP socket. 
+[scriptblock]
 $Watch,
 
+# The host name.  This can be provided via parameter if it is not present in the URI.
 [Alias('Host')]
 [string]
 $HostName,
 
+# The port.  This can be provided via parameter if it is not present in the URI.
 [int]
 $Port,
 
+# Any remaining arguments.
 [Parameter(ValueFromRemainingArguments)]
 [PSObject[]]
 $ArgumentList
@@ -179,10 +187,10 @@ process {
 `$bytesSent = `$udpClient.Send(`$datagram, `$datagram.Length)
 ").Transpile()        
     }
-    # If the method name is receive or -Receive was passed, we'll want to receive results
+    # If the method name is Watch or -Watch was passed, we'll want to watch for results
     elseif ($methodName -eq 'Watch' -or $commandParameters.Watch) 
     {
-        # If -Receive was not passed, try to bind it positionally.
+        # If -Watch was not passed, try to bind it positionally.
         if (-not $commandParameters.Watch) {
             $commandParameters.Watch = $commandArguments[0]
         }
@@ -199,7 +207,7 @@ process {
             }
         }
         
-        # If we do not have an IP and port, we cannot receive.
+        # If we do not have an IP and port, we cannot watch.
         if (-not $udpIP -or -not $udpPort) {
             Write-Error "Must provide both IP and port to Watch"
             return
