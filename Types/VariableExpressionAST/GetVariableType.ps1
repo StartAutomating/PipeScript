@@ -13,11 +13,19 @@
         $y = 2
         $x + $y
     }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.Left.GetVariableType()
+    # Should -Be ([int])
 .EXAMPLE
     {
         $x = Get-Process        
         $x + $y
     }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.Left.GetVariableType()
+    # Should -Be ([Diagnostics.Process])
+.EXAMPLE
+    {
+        $x = [type].name
+        $x        
+    }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.GetVariableType()
+
 #>
 if ($this.VariablePath.userPath -eq 'psBoundParmeters') {
     return [Management.Automation.PSBoundParametersDictionary]    
@@ -59,7 +67,7 @@ $isMultiAssignment =$closestAssignment.Left -is [Management.Automation.Language.
 
 # If the left side is not multiple assignment, but the right side is an array
 if (-not $isMultiAssignment -and 
-    $closestAssignment.Right.Expression -is [Management.Automation.ArrayExpressionAst]) {
+    $closestAssignment.Right.Expression -is [Management.Automation.Language.ArrayExpressionAst]) {
     # then the object is an array.
     return [Object[]]
 }
@@ -83,7 +91,24 @@ if ($closestAssignment.Right.Expression -is [Management.Automation.Language.Conv
     }       
 }
 
-
+if ($closestAssignment.Right.Expression -is [Management.Automation.Language.MemberExpressionAst]) {
+    $invokeMemberExpr = $closestAssignment.Right.Expression
+    $memberName = $invokeMemberExpr.Member.ToString()
+    if ($invokeMemberExpr.Expression.TypeName) {
+        $invokeType = $invokeMemberExpr.Expression.TypeName.GetReflectionType()            
+        if ($invokeType) {
+            $potentialTypes = @(
+            foreach ($invokeableMember in $invokeType.GetMember($memberName, "Public, IgnoreCase,$(if ($invokeMemberExpr.Static) { 'Static'} else { 'Instance'})")) {
+                if ($invokeableMember.PropertyType) {
+                    $invokeableMember.PropertyType
+                } elseif ($invokeableMember.ReturnType) {
+                    $invokeableMember.ReturnType
+                }
+            })
+            return $potentialTypes | Select-Object -Unique
+        }
+    }            
+}
 
 
 # The right side could be a pipeline
