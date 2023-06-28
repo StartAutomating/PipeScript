@@ -218,20 +218,12 @@ function Get-PipeScript
         }
         
         if ($inputObject -and $InputObject -is [Management.Automation.CommandInfo]) {
-            $commandPattern = aspect.ModuleCommandpattern -Module PipeScript
-            $matched = $CommandPattern.Match($InputObject)
-            if ($matched.Success) {
-                foreach ($group in $matched.Groups) {
-                    if (-not $group.Success) { continue }
-                    if ($null -ne ($group.Name -as [int])) { continue }
-                    $groupName = $group.Name -replace '_', '.'
-                    if ($InputObject.pstypenames -notcontains $groupName) {
-                        $InputObject.pstypenames.insert(0, $groupName)
-                    }                    
-                }
-                $InputObject
-            }
-        }    
+            Aspect.ModuleExtensionCommand -Module PipeScript -Commands $inputObject
+        }
+        elseif ($InputObject -and $InputObject -is [IO.FileInfo]) {
+            $inputObjectCommand = $ExecutionContext.SessionState.InvokeCommand.GetCommand($InputObject.FullName, 'ExternalScript,Application')
+            Aspect.ModuleExtensionCommand -Module PipeScript -Commands $inputObjectCommand
+        }
         elseif ($PipeScriptPath) {
             SyncPipeScripts -Force:$Force -Path $PipeScriptPath
             $script:CachedCommandsAtPath[$PipeScriptPath] | unroll | CheckPipeScriptType
