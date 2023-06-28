@@ -2,7 +2,7 @@
 function Protocol.HTTP {
     <#
     .SYNOPSIS
-        http protocol
+        HTTP protocol
     .DESCRIPTION
         Converts an http(s) protocol commands to PowerShell.
     .EXAMPLE
@@ -179,9 +179,9 @@ function Protocol.HTTP {
                 
                 $newScript = 
                 if ($partsToJoin.Count -gt 1) {
-                    "$Invoker ($($PartsToJoin -join ',') -join '') "
+                    "$Invoker ($($PartsToJoin -join ',') -join '')$(if ($method) {" -Method '$Method'"})"
                 } else {
-                    "$Invoker $PartsToJoin "
+                    "$Invoker $PartsToJoin$(if ($method) {" -Method '$Method'"})"
                 }
             $newScript += @(
                 foreach ($argument in $commandArguments) {
