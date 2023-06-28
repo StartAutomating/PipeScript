@@ -1,3 +1,11 @@
+<#
+.SYNOPSIS
+    Ensures Examples Work
+.DESCRIPTION
+    Ensures Examples work by turning each example into a test.
+
+    Including a comment followed by 'should' will turn specific lines of the test into Pester should statements.
+#>
 param(
 $ModuleName = 'PipeScript'
 )
