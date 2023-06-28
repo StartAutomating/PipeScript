@@ -549,11 +549,11 @@
             elseif ($script:TypeAcceleratorsList -notcontains $transpilerStepName -and $transpilerStepName -notin 'Ordered') {
                 $psCmdlet.WriteError(
                     [Management.Automation.ErrorRecord]::new(
-                        [exception]::new("Unable to find a transpiler for [$TranspilerStepName]"),
+                        [exception]::new("Could not find a Transpiler or Type for [$TranspilerStepName]"),
                         'Transpiler.Not.Found',
                         'ParserError',
                         $command
-                    )
+                    )                    
                 )
 
                 return
@@ -620,7 +620,7 @@
                     & $foundTranspiler @ArgumentList @Parameter
                 }
             } else {
-                Write-Error "Could not find Transpiler '$TranspilerStepName'"
+                Write-Error "Could not find a Transpiler or Type for [$TranspilerStepName]" -Category ParserError -ErrorId 'Transpiler.Not.Found'
                 return
             }
         }

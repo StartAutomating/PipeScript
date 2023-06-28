@@ -136,7 +136,7 @@ process {
         } elseif ($foundTranspiler -and $currentInput -is [string]) {
             Invoke-PipeScript -CommandInfo $foundTranspiler.ExtensionCommand -ArgumentList @(@($currentInput) + $arglist) -Parameter $parameters
         } elseif ($script:TypeAcceleratorsList -notcontains $transpilerStepName -and $transpilerStepName -notin 'Ordered') {
-            Write-Error "Unable to find a transpiler for [$TranspilerStepName]"
+            Write-Error "Could not find a Transpiler or Type for [$TranspilerStepName]" -Category ParserError -ErrorId 'Transpiler.Not.Found'
         }
     } else {
         if ($currentInput -isnot [string]) {
