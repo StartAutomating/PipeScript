@@ -5,7 +5,7 @@ Protocol.HTTP
 
 
 ### Synopsis
-http protocol
+HTTP protocol
 
 
 
