@@ -85,7 +85,8 @@ Aspect function ModuleExtensionType {
         
         $SortedExtensionTypes.PSTypeName="$($Module.Name).ExtensionCommandTypes"
         
-        [PSCustomObject]$SortedExtensionTypes
+        $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
+        $script:ModuleExtensionTypeCache[$ModuleInfo]
         #endregion Find Extension Types
 
     }    
@@ -225,7 +226,7 @@ Aspect function ModuleExtensionCommand {
             if ($PSBoundParameters['Commands']) {
                 $commands
             }
-            if ($PSBoundParameters['FilePath']) {
+            elseif ($PSBoundParameters['FilePath']) {
                 if (-not $commandType) {
                     $commandType = 'Application,ExternalScript'
                 }
