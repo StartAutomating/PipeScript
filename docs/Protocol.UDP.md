@@ -5,7 +5,7 @@ Protocol.UDP
 
 
 ### Synopsis
-udp protocol
+UDP protocol
 
 
 
@@ -14,7 +14,7 @@ udp protocol
 
 ### Description
 
-Converts a UDP protocol command to PowerShell
+Converts a UDP protocol command to PowerShell.
 
 
 
@@ -119,6 +119,10 @@ If the UDP protocol is used as an attribute, this will be the existing script bl
 
 #### **Send**
 
+The script or message sent via UDP.
+
+
+
 
 
 
@@ -130,27 +134,39 @@ If the UDP protocol is used as an attribute, this will be the existing script bl
 
 #### **Receive**
 
+If set, will receive result events.
+
+
+
 
 
 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
-|`[Object]`|false   |named   |false        |
+|`[Switch]`|false   |named   |false        |
 
 
 
 #### **Watch**
 
+A ScriptBlock used to watch the UDP socket.
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Object]`|false   |named   |false        |
+
+
+
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[ScriptBlock]`|false   |named   |false        |
 
 
 
 #### **HostName**
+
+The host name.  This can be provided via parameter if it is not present in the URI.
+
+
 
 
 
@@ -163,6 +179,10 @@ If the UDP protocol is used as an attribute, this will be the existing script bl
 
 #### **Port**
 
+The port.  This can be provided via parameter if it is not present in the URI.
+
+
+
 
 
 
@@ -173,6 +193,10 @@ If the UDP protocol is used as an attribute, this will be the existing script bl
 
 
 #### **ArgumentList**
+
+Any remaining arguments.
+
+
 
 
 
@@ -190,11 +214,11 @@ If the UDP protocol is used as an attribute, this will be the existing script bl
 
 ### Syntax
 ```PowerShell
-Protocol.UDP [-CommandUri] <Uri> [[-Method] <String>] -ScriptBlock <ScriptBlock> [-Send <Object>] [-Receive <Object>] [-Watch <Object>] [-HostName <String>] [-Port <Int32>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
+Protocol.UDP [-CommandUri] <Uri> [[-Method] <String>] -ScriptBlock <ScriptBlock> [-Send <Object>] [-Receive] [-Watch <ScriptBlock>] [-HostName <String>] [-Port <Int32>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
 ```PowerShell
-Protocol.UDP [[-CommandUri] <Uri>] [[-Method] <String>] [-Send <Object>] [-Receive <Object>] [-Watch <Object>] [-HostName <String>] [-Port <Int32>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
+Protocol.UDP [[-CommandUri] <Uri>] [[-Method] <String>] [-Send <Object>] [-Receive] [-Watch <ScriptBlock>] [-HostName <String>] [-Port <Int32>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
 ```PowerShell
-Protocol.UDP [-CommandUri] <Uri> [[-Method] <String>] -CommandAst <CommandAst> [-Send <Object>] [-Receive <Object>] [-Watch <Object>] [-HostName <String>] [-Port <Int32>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
+Protocol.UDP [-CommandUri] <Uri> [[-Method] <String>] -CommandAst <CommandAst> [-Send <Object>] [-Receive] [-Watch <ScriptBlock>] [-HostName <String>] [-Port <Int32>] [-ArgumentList <PSObject[]>] [<CommonParameters>]
 ```
