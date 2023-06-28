@@ -6,7 +6,7 @@ A PostProcessing command will be passed the script or function and will return a
 
 ~~~PipeScript{    
     [PSCustomObject]@{
-        Table = Get-PipeScript -PipeScriptType PostProcessing |
+        Table = Get-PipeScript -PipeScriptType PostProcessor |
             Select-Object Name, Synopsis, @{
                 Name='Link'
                 Expression = { "/docs/$($_.Name).md" }
