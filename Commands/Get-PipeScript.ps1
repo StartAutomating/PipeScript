@@ -485,7 +485,8 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                                                                                                                 
                                                                                                                 $SortedExtensionTypes.PSTypeName="$($Module.Name).ExtensionCommandTypes"
                                                                                                                 
-                                                                                                                [PSCustomObject]$SortedExtensionTypes
+                                                                                                                $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
+                                                                                                                $script:ModuleExtensionTypeCache[$ModuleInfo]
                                                                                                                 #endregion Find Extension Types
                                                                                                             }    
                                                                                                          } -Module $moduleInfo
@@ -606,7 +607,8 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                                                                                 
                                                                                 $SortedExtensionTypes.PSTypeName="$($Module.Name).ExtensionCommandTypes"
                                                                                 
-                                                                                [PSCustomObject]$SortedExtensionTypes
+                                                                                $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
+                                                                                $script:ModuleExtensionTypeCache[$ModuleInfo]
                                                                                 #endregion Find Extension Types
                                                                             }    
                                                                          } $ModuleInfo
@@ -616,7 +618,7 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                                                     if ($PSBoundParameters['Commands']) {
                                                         $commands
                                                     }
-                                                    if ($PSBoundParameters['FilePath']) {
+                                                    elseif ($PSBoundParameters['FilePath']) {
                                                         if (-not $commandType) {
                                                             $commandType = 'Application,ExternalScript'
                                                         }
@@ -807,7 +809,8 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                                                                                                                 
                                                                                                                 $SortedExtensionTypes.PSTypeName="$($Module.Name).ExtensionCommandTypes"
                                                                                                                 
-                                                                                                                [PSCustomObject]$SortedExtensionTypes
+                                                                                                                $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
+                                                                                                                $script:ModuleExtensionTypeCache[$ModuleInfo]
                                                                                                                 #endregion Find Extension Types
                                                                                                             }    
                                                                                                          } -Module $moduleInfo
@@ -1132,7 +1135,8 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                                                                       
                                                                       $SortedExtensionTypes.PSTypeName="$($Module.Name).ExtensionCommandTypes"
                                                                       
-                                                                      [PSCustomObject]$SortedExtensionTypes
+                                                                      $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
+                                                                      $script:ModuleExtensionTypeCache[$ModuleInfo]
                                                                       #endregion Find Extension Types
                                                                   }    
                                                                } -Module $moduleInfo
