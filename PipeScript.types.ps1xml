@@ -335,26 +335,6 @@ $decamelCase = [Regex]::new('(?&lt;=[a-z])(?=[A-Z])')
     </Members>
   </Type>
   <Type>
-    <Name>Automatic.Variable.Command</Name>
-    <Members>
-      <ScriptProperty>
-        <Name>VariableName</Name>
-        <GetScriptBlock>
-                        &lt;#
-.SYNOPSIS
-    Gets the automatic variable name
-.DESCRIPTION
-    Gets the name of an automatic variable that is defined in an Automatic?Variable* command.
-#&gt;
-$this -replace '(?&gt;Magic|Automatic)\p{P}Variable\p{P}' -replace 
-    '^(?&gt;PowerShell|PipeScript)' -replace
-    '^\p{P}' -replace '\p{P}$'
-
-                    </GetScriptBlock>
-      </ScriptProperty>
-    </Members>
-  </Type>
-  <Type>
     <Name>AutomaticVariable.Command</Name>
     <Members>
       <ScriptProperty>
