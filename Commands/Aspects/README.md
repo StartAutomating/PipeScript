@@ -60,48 +60,11 @@ All of the current aspect examples are listed below:
         Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
 ~~~
 
-##  Example 2
-
-
-~~~PowerShell
-                                        # Outputs a PSObject with information about extension command types.
-                                        
-                                        # The two primary pieces of information are the `.Name` and `.Pattern`.
-                                        Aspect.ModuleExtensionType -Module PipeScript # Should -BeOfType ([PSObject])
-~~~
-
 ##  Example 1
 
 
 ~~~PowerShell
         Aspect.ModuleExtensionCommand -Module PipeScript # Should -BeOfType ([Management.Automation.CommandInfo])
-~~~
-
-##  Example 2
-
-
-~~~PowerShell
-                                        Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
-~~~
-
-##  Example 3
-
-
-~~~PowerShell
-                                                                        # Outputs a PSObject with information about extension command types.
-                                                                        
-                                                                        # The two primary pieces of information are the `.Name` and `.Pattern`.
-                                                                        Aspect.ModuleExtensionType -Module PipeScript # Should -BeOfType ([PSObject])
-~~~
-
-##  Example 4
-
-
-~~~PowerShell
-                                        # Outputs a PSObject with information about extension command types.
-                                        
-                                        # The two primary pieces of information are the `.Name` and `.Pattern`.
-                                        Aspect.ModuleExtensionType -Module PipeScript # Should -BeOfType ([PSObject])
 ~~~
 
 
