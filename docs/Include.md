@@ -44,6 +44,13 @@ Includes Files or Functions into a Script.
 } | .>PipeScript
 ```
 
+#### EXAMPLE 4
+```PowerShell
+{
+    [Include('https://pssvg.start-automating.com/Examples/PowerShellChevron.svg')]$PSChevron
+} | .>PipeScript
+```
+
 
 
 ---
@@ -59,9 +66,9 @@ The File Path to Include
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[String]`|true    |1       |false        |
+|Type      |Required|Position|PipelineInput|Aliases                 |
+|----------|--------|--------|-------------|------------------------|
+|`[String]`|false   |1       |false        |FullName<br/>Uri<br/>Url|
 
 
 
@@ -112,6 +119,12 @@ The exclusion pattern to use.
 
 #### **VariableAst**
 
+The variable that include will be applied to.
+If including files with wildcards, this will be the base path.
+Otherwise, this variable will be assigned to the included value.
+
+
+
 
 
 
@@ -122,6 +135,11 @@ The exclusion pattern to use.
 
 
 #### **CommandAst**
+
+The CommandAST.
+This is provided by the transpiler when include is used as a keyword.
+
+
 
 
 
@@ -139,8 +157,8 @@ The exclusion pattern to use.
 
 ### Syntax
 ```PowerShell
-Include [-FilePath] <String> [-AsByte] [-Passthru] [-Exclude <String[]>] -VariableAst <VariableExpressionAst> [<CommonParameters>]
+Include [[-FilePath] <String>] [-AsByte] [-Passthru] [-Exclude <String[]>] -CommandAst <CommandAst> [<CommonParameters>]
 ```
 ```PowerShell
-Include [-FilePath] <String> [-AsByte] [-Passthru] [-Exclude <String[]>] -CommandAst <CommandAst> [<CommonParameters>]
+Include [-FilePath] <String> [-AsByte] [-Passthru] [-Exclude <String[]>] -VariableAst <VariableExpressionAst> [<CommonParameters>]
 ```
