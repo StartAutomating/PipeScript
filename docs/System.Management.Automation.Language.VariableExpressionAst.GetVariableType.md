@@ -31,6 +31,7 @@ This looks for the closest assignment statement and uses this to determine what 
     $y = 2
     $x + $y
 }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.Left.GetVariableType()
+# Should -Be ([int])
 ```
 
 #### EXAMPLE 2
@@ -39,6 +40,15 @@ This looks for the closest assignment statement and uses this to determine what 
     $x = Get-Process        
     $x + $y
 }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.Left.GetVariableType()
+# Should -Be ([Diagnostics.Process])
+```
+
+#### EXAMPLE 3
+```PowerShell
+{
+    $x = [type].name
+    $x        
+}.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.GetVariableType()
 ```
 
 
