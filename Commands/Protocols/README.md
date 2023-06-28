@@ -13,7 +13,7 @@ Any command where :// appears in it's first two elements will be considered a po
 
 |Name                                               |Synopsis                                            |
 |---------------------------------------------------|----------------------------------------------------|
-|[Protocol.HTTP](/docs/Protocol.HTTP.md)            |[http protocol](/docs/Protocol.HTTP.md)             |
+|[Protocol.HTTP](/docs/Protocol.HTTP.md)            |[HTTP protocol](/docs/Protocol.HTTP.md)             |
 |[Protocol.JSONSchema](/docs/Protocol.JSONSchema.md)|[JSON Schema protocol](/docs/Protocol.JSONSchema.md)|
 |[Protocol.OpenAPI](/docs/Protocol.OpenAPI.md)      |[OpenAPI protocol](/docs/Protocol.OpenAPI.md)       |
 |[Protocol.UDP](/docs/Protocol.UDP.md)              |[udp protocol](/docs/Protocol.UDP.md)               |
