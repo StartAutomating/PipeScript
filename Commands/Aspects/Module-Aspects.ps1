@@ -93,7 +93,8 @@ function Aspect.ModuleExtensionType {
         
         $SortedExtensionTypes.PSTypeName="$($Module.Name).ExtensionCommandTypes"
         
-        [PSCustomObject]$SortedExtensionTypes
+        $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
+        $script:ModuleExtensionTypeCache[$ModuleInfo]
         #endregion Find Extension Types
     }    
 }
@@ -241,7 +242,8 @@ function Aspect.ModuleExtensionPattern {
                                         
                                         $SortedExtensionTypes.PSTypeName="$($Module.Name).ExtensionCommandTypes"
                                         
-                                        [PSCustomObject]$SortedExtensionTypes
+                                        $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
+                                        $script:ModuleExtensionTypeCache[$ModuleInfo]
                                         #endregion Find Extension Types
                                     }    
                                  } -Module $moduleInfo
@@ -480,7 +482,8 @@ function Aspect.ModuleExtensionCommand {
                                                                         
                                                                         $SortedExtensionTypes.PSTypeName="$($Module.Name).ExtensionCommandTypes"
                                                                         
-                                                                        [PSCustomObject]$SortedExtensionTypes
+                                                                        $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
+                                                                        $script:ModuleExtensionTypeCache[$ModuleInfo]
                                                                         #endregion Find Extension Types
                                                                     }    
                                                                  } -Module $moduleInfo
@@ -601,7 +604,8 @@ function Aspect.ModuleExtensionCommand {
                                         
                                         $SortedExtensionTypes.PSTypeName="$($Module.Name).ExtensionCommandTypes"
                                         
-                                        [PSCustomObject]$SortedExtensionTypes
+                                        $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
+                                        $script:ModuleExtensionTypeCache[$ModuleInfo]
                                         #endregion Find Extension Types
                                     }    
                                  } $ModuleInfo
@@ -611,7 +615,7 @@ function Aspect.ModuleExtensionCommand {
             if ($PSBoundParameters['Commands']) {
                 $commands
             }
-            if ($PSBoundParameters['FilePath']) {
+            elseif ($PSBoundParameters['FilePath']) {
                 if (-not $commandType) {
                     $commandType = 'Application,ExternalScript'
                 }
