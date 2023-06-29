@@ -18,6 +18,32 @@ function Export-Pipescript {
     $InputPath
     )
 
+    begin {
+        function AutoRequiresSimple {
+            param(
+            [Management.Automation.CommandInfo]
+            $CommandInfo
+            )
+
+            process {
+                if (-not $CommandInfo.ScriptBlock) { return }
+                $simpleRequirements = 
+                    foreach ($requiredModule in $CommandInfo.ScriptBlock.Ast.ScriptRequirements.RequiredModules) {
+                        if ($requiredModule.Name -and 
+                            (-not $requiredModule.MaximumVersion) -and
+                            (-not $requiredModule.RequiredVersion)
+                        ) {
+                            $requiredModule.Name
+                        }
+                    }
+
+                if ($simpleRequirements) {
+                    Invoke-PipeScript "require latest $($simpleRequirements)"
+                }                
+            }
+        }
+    }
+
     process {
         if ($env:GITHUB_WORKSPACE) {
             "::group::Discovering files", "from: $InputPath" | Out-Host
@@ -53,8 +79,7 @@ function Export-Pipescript {
         [long]$TotalOutputFileLength = 0 
         foreach ($buildFile in $filesToBuild) {
             
-            $ThisBuildStartedAt = [DateTime]::Now                
-
+            $ThisBuildStartedAt = [DateTime]::Now
             Write-Progress "Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" "$($buildFile.Source) " -PercentComplete $(
                 $FilesToBuildCount++
                 $FilesToBuildCount * 100 / $filesToBuildTotal 
@@ -67,6 +92,7 @@ function Export-Pipescript {
 
             $buildFileTemplate = $buildFile.Template
             if ($buildFileTemplate -and $buildFile.PipeScriptType -ne 'Template') {
+                AutoRequiresSimple -CommandInfo $buildFileTemplate
                 try {
                     Invoke-PipeScript $buildFileTemplate.Source
                 } catch {
@@ -85,7 +111,7 @@ function Export-Pipescript {
             $EventsFromThisBuild = Get-Event |
                 Where-Object TimeGenerated -gt $ThisBuildStartedAt |
                 Where-Object SourceIdentifier -Like '*PipeScript*'
-            
+            AutoRequiresSimple -CommandInfo $buildFile
             $FileBuildStarted = [datetime]::now
             $buildOutput = 
                 try {
