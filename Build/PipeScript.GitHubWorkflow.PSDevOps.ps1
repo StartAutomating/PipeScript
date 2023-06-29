@@ -1,4 +1,4 @@
-#requires -Module PSDevOps
+#requires -Module PSDevOps,GitPub
 Import-BuildStep -ModuleName PipeScript
 Push-Location ($PSScriptRoot | Split-Path)
 New-GitHubWorkflow -Name "Analyze, Test, Tag, and Publish" -On Push,
@@ -7,4 +7,7 @@ New-GitHubWorkflow -Name "Analyze, Test, Tag, and Publish" -On Push,
     TestPowerShellOnLinux, 
     TagReleaseAndPublish, 
     BuildPipeScript -OutputPath .\.github\workflows\TestAndPublish.yml
+
+New-GitHubWorkflow -On Demand -Job RunGitPub -Name GitPub -OutputPath .\.github\workflows\GitPub.yml
+
 Pop-Location
