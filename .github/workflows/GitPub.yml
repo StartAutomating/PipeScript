@@ -1,7 +1,6 @@
 
-name: OnIssueChanged
+name: GitPub
 on: 
-  issues: 
   workflow_dispatch: 
 jobs: 
   RunGitPub: 

@@ -12,13 +12,15 @@
 .NOTES
     Each potential command can be thought of as a simple sentence with (mostly) natural syntax
     
-    command <parametername> ...<parameterargument> (etc)     
+    command <parametername> ...<parameterargument> (etc)
         
     either more natural or PowerShell syntax should be allowed, for example:
 
+    ~~~PowerShell
     all functions can Quack {
         "quack"
     }
+    ~~~
 
     would map to the command all and the parameters -Function and -Can (with the arguments Quack and {"quack"})
 
@@ -37,18 +39,36 @@
 #>
 param()
 
-# Because we want to have flexible open-ended arguments here, we do not hard-code any arguments.
+# Because we want to have flexible open-ended arguments here, we do not hard-code any arguments:
 # we parse them.
+
+# We're trying to determine:
+# Was it right to left?
 $IsRightToLeft   = $false
+# Are there specific commands it might be?
 $SpecificCommands = @()
+# If so, what are their names?
 $specificCommandNames = @()
+
+# We want to start after the first element by default
+$startingElementIndex = 1
+
 for ($argIndex =0 ; $argIndex -lt $args.Count; $argIndex++) {
-    $arg = $args[$argIndex]    
-    if ($arg -is [Management.Automation.CommandInfo]) {
-        $SpecificCommands += $arg
-        $specificCommandNames += $arg.Name
+    $arg = $args[$argIndex]
+    # If the argument was an int and greater than one
+    if ($arg -is [int] -and $arg -gt 1) {
+        $startingElementIndex =  $arg # start parsing that many words in (#479).
         continue
     }
+    
+    $commandInfos = $arg -as [Management.Automation.CommandInfo[]]
+    if ($commandInfos) {
+        foreach ($cmdInfo in $commandInfos) {
+            $SpecificCommands += $cmdInfo
+            $specificCommandNames += $cmdInfo.Name
+        }        
+        continue
+    }    
     if ($arg -match '^[-/]{0,2}(?:Is)?RightToLeft$') {
         # If -RightToLeft was passed
         $IsRightToLeft = $true
@@ -153,9 +173,21 @@ if (-not $Script:SentenceWordCache) {
 }
 
 $potentialCommandIndex = -1
-foreach ($potentialCommand in $potentialCommands) {
+
+:nextPotentialCommand foreach ($potentialCommand in $potentialCommands) {
     $potentialCommandIndex++
     $commandName = $potentialCommandName = $potentialCommandNames[$potentialCommandIndex]
+
+    # To save time, generate a map of all potential bareword aliases for this command.
+    $potentialCommandBarewordMap = [Ordered]@{}
+    foreach ($parameterInfo in $potentialCommand.Parameters.Values) {
+        $potentialCommandBarewordMap[$parameterInfo.Name] = $parameterInfo
+        if ($parameterInfo.Aliases) {
+            foreach ($aliasName in $parameterInfo.Aliases) {
+                $potentialCommandBarewordMap[$aliasName] = $parameterInfo
+            }
+        }
+    }
 
     # Cache the potential parameters
     $potentialParameters = $potentialCommand.Parameters
@@ -171,7 +203,7 @@ foreach ($potentialCommand in $potentialCommands) {
     $clauses = @()
 
     # Walk over each command element in a for loop (we may adjust the index when we match)
-    for ($commandElementIndex = 1 ;$commandElementIndex -lt $commandElements.Count; $commandElementIndex++) {
+    for ($commandElementIndex = $startingElementIndex ;$commandElementIndex -lt $commandElements.Count; $commandElementIndex++) {
         $commandElement = $CommandElements[$commandElementIndex]
         # by default, we assume we haven't found a parameter.
         $parameterFound  = $false
@@ -202,6 +234,7 @@ foreach ($potentialCommand in $potentialCommands) {
             $currentParameter = $commandParameter.ParameterName
             
             $currentClause = @($currentParameter)
+            $currentClauseValues = @()
             # We need to get the parameter metadata as well.
             $currentParameterMetadata = 
                 # If it was the real name of a parameter, this is easy
@@ -232,15 +265,17 @@ foreach ($potentialCommand in $potentialCommands) {
                 }
                 # and move onto the next element.                
                 $clauses += [PSCustomObject][Ordered]@{
-                    PSTypeName    = 'PipeScript.Sentence.Clause'
-                    Name          = if ($currentParameter) { $currentParameter} else { '' }
-                    ParameterName = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
-                    Words         = $currentClause
+                    PSTypeName      = 'PipeScript.Sentence.Clause'
+                    Name            = if ($currentParameter) { $currentParameter} else { '' }
+                    ParameterName   = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+                    Words           = $currentClause
+                    ParameterValues = @($commandParameter.Argument)
                 }
                 $currentParameter = ''
                 $currentParameterMetadata = $null
                 
                 $currentClause = @()
+                $currentClauseValues = @()
                 continue
             }
             # Since we have found a parameter, we advance the index.
@@ -253,89 +288,70 @@ foreach ($potentialCommand in $potentialCommands) {
             # However, we also want to allow --parameters and /parameters,
             $potentialParameterName = $barewordSequenece[0]
             # therefore, we will compare against the potential name without leading dashes or slashes.
-            
-            $potentialBarewordList  =@(
-                for (
-                    $barewordSequenceIndex = $barewordSequenece.Length; 
-                    $barewordSequenceIndex -ge 0;
-                    $barewordSequenceIndex--
-                ) {
-                    $barewordSequenece[0..$barewordSequenceIndex] -join ' ' -replace '^[-/]{0,}'
+            $parameterFound = $false
+
+            :MappedBareword for (
+                $barewordSequenceIndex = $barewordSequenece.Length - 1; 
+                $barewordSequenceIndex -ge 0;
+                $barewordSequenceIndex--
+            ) {
+                $combinedBareword = $barewordSequenece[0..$barewordSequenceIndex] -replace '^[-/]{0,}' -join ' '
+                if (-not $potentialCommandBarewordMap[$combinedBareword]) {
+                    continue
                 }
-            )
-            
-            $dashAndSlashlessName   = $potentialParameterName -replace '^[-/]{0,}'
 
-            # If no parameter was found but a parameter has ValueFromRemainingArguments, we will map to that.                        
-            $valueFromRemainingArgumentsParameter = $null
-
-            # Walk over each potential parameter in the command
-            foreach ($potentialParameter in $potentialParameters.Values) {
-                $parameterFound = $(
-                    # otherwise, we have to check each alias.
-                    :nextAlias foreach ($potentialAlias in $potentialParameter.Aliases) {
-                        if ($potentialBarewordList -contains $potentialAlias) {
-                            $potentialParameterName = $potentialAlias
-                            $true
-                            break
-                        }                            
-                    }
-                    
-                    # If the parameter name matches,
-                    if ($potentialBarewordList -contains $potentialParameter.Name) {
-                        $true # we've found it,
-                    } else {
-                        
-                    }    
-                )
-
-                # If we found the parameter
-                if ($parameterFound) {
-                    if ($currentClause) {
-                        $clauses += [PSCustomObject][Ordered]@{
-                            PSTypeName    = 'PipeScript.Sentence.Clause'
-                            Name          = if ($currentParameter) { $currentParameter} else { '' }
-                            ParameterName = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
-                            Words         = $currentClause
-                        }                         
-                    }
-
-                    # keep track of of it and advance the index.
-                    $currentParameter = $potentialParameterName                    
-                    $currentParameterMetadata = $potentialParameter                    
-                    
-                    if ($currentParameter -match '\s') {
-                        $barewordCount = @($currentParameter -split '\s').Length
-                        $currentClause = @($commandElements[$commandElementIndex..($commandElementIndex + $barewordCount - 1)])
-                        $commandElementIndex += $barewordCount                        
-                    } else {
-                        $commandElementIndex++
-                        $currentClause = @($commandElement)
-                    }
-                    
-                    break
+                # If we are already in a clause
+                if ($currentClause) {
+                    # output the existing clause
+                    $clauses += [PSCustomObject][Ordered]@{
+                        PSTypeName      = 'PipeScript.Sentence.Clause'
+                        Name            = if ($currentParameter) { $currentParameter} else { '' }
+                        ParameterName   = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+                        Words           = $currentClause
+                        ParameterValues = $currentClauseValues
+                    }                         
                 }
-                else {
+
+                # keep track of of it and advance the index.
+                $currentParameter = $combinedBareword
+                $currentParameterMetadata = $potentialCommandBarewordMap[$combinedBareword]                
+                
+                
+                $currentClause = @($commandElements[$commandElementIndex..($commandElementIndex + $barewordSequenceIndex)])
+                $currentClauseValues = @()
+                $commandElementIndex = $commandElementIndex +$barewordSequenceIndex + 1
+
+                $parameterFound = $true
+                break MappedBareword
+            }
+
+            
+            
+            
+            if (-not $parameterFound) {
+                foreach ($potentialParameter in $potentialCommand.Parameters.Values) {
                     # If we did not, check the parameter for .ValueFromRemainingArguments
                     foreach ($attr in $potentialParameter.Attributes) {
                         if ($attr.ValueFromRemainingArguments) {
                             $valueFromRemainingArgumentsParameter = $potentialParameter
                             break
                         }
-                    }                    
+                    }
                 }
-            }
+            }            
+            
         }
 
         # If we have our current parameter, but it is a switch,
         if ($currentParameter -and $currentParameterMetadata.ParameterType -eq [switch]) {        
-            $mappedParameters[$currentParameter] = $true # set it             
+            $mappedParameters[$currentParameter] = $true # set it.
             if ($currentClause) {                
                 $clauses += [PSCustomObject][Ordered]@{
-                    PSTypeName    = 'PipeScript.Sentence.Clause'
-                    Name          = if ($currentParameter) { $currentParameter} else { '' }
-                    ParameterName = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
-                    Words         = $currentClause
+                    PSTypeName      = 'PipeScript.Sentence.Clause'
+                    Name            = if ($currentParameter) { $currentParameter} else { '' }
+                    ParameterName   = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+                    Words           = $currentClause
+                    ParameterValues = $currentClauseValues
                 }                                     
             }
             $currentParameter = '' # and clear the current parameter.
@@ -354,6 +370,7 @@ foreach ($potentialCommand in $potentialCommands) {
                     Name          = if ($currentParameter) { $currentParameter} else { '' }
                     ParameterName = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
                     Words         = $currentClause
+                    ParameterValues = $currentClauseValues
                 }
                 $currentParameter = $null
                 $currentParameterMetadata = $null
@@ -372,6 +389,7 @@ foreach ($potentialCommand in $potentialCommands) {
             $currentParameter = $valueFromRemainingArgumentsParameter.Name
             $currentParameterMetadata = $valueFromRemainingArgumentsParameter            
             $currentClause = @()
+            $currentClauseValues = @()
         }
 
         $commandElementValue =
@@ -397,23 +415,24 @@ foreach ($potentialCommand in $potentialCommands) {
                     $commandElementValue
                 }
             $currentClause += $commandElement
+            $currentClauseValues = @(@($currentClauseValues) -ne $null) + $commandElementValue
         } else {
             # otherwise add the command element to our unbound parameters.
             $unboundParameters += $commandElementValue                
             $currentClause += $commandElement
+            $currentClauseValues = @(@($currentClauseValues) -ne $null) + $commandElementValue
         }
     }
 
     if ($currentClause) {
         $clauses += [PSCustomObject][Ordered]@{
-            PSTypeName    = 'PipeScript.Sentence.Clause'
-            Name          = if ($currentParameter) { $currentParameter} else { '' }
-            ParameterName = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
-            Words         = $currentClause
+            PSTypeName       = 'PipeScript.Sentence.Clause'
+            Name             = if ($currentParameter) { $currentParameter} else { '' }
+            ParameterName    = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+            Words            = $currentClause
+            ParameterValues  = $currentClauseValues
         }                        
     }
-
-    
 
     if ($potentialCommand -isnot [Management.Automation.ApplicationInfo] -and 
         @($mappedParameters.Keys) -match '^[-/]') {

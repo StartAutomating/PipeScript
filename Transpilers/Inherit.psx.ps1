@@ -165,9 +165,16 @@ process {
 
     # Prepare parameters for Join-ScriptBlock
     $joinSplat = @{}
-    foreach ($key in 'IncludeBlockType', 'ExcludeBlockType','IncludeParameter', 'ExcludeParameter') {
+    foreach ($key in 'IncludeBlockType', 'ExcludeBlockType') {
         if ($PSBoundParameters[$key]) {
             $joinSplat[$key] = $PSBoundParameters[$key]
+        }    
+    }
+
+    $joinInheritedSplat = @{}
+    foreach ($key in 'IncludeParameter', 'ExcludeParameter') {
+        if ($PSBoundParameters[$key]) {
+            $joinInheritedSplat[$key] = $PSBoundParameters[$key]
         }    
     }
 
@@ -310,7 +317,7 @@ dynamicParam {
     # Now we include the resolved script
     if ($Abstract -or $Dynamic) {
         # If we're using -Abstract or -Dynamic, we will strip out a few blocks first. 
-        $excludeFromInherited = 'begin','process', 'end'
+        $excludeFromInherited = 'begin','process', 'end', 'header','help'
         if ($Dynamic) { 
             if (-not $Abstract) {
                 $excludeFromInherited = 'param'
@@ -318,10 +325,9 @@ dynamicParam {
                 $excludeFromInherited += 'param'
             }
         }
-        $resolvedScriptBlock | Join-PipeScript -ExcludeBlockType $excludeFromInherited
-    } else {
-        # otherwise, we embed the script as-is.
-        $resolvedScriptBlock
+        $resolvedScriptBlock | Join-PipeScript -ExcludeBlockType $excludeFromInherited @joinInheritedSplat
+    } else {        
+        
     }
 ), $(
     if ($Dynamic) {        

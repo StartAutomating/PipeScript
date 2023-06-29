@@ -1,3 +1,5 @@
+## Protocols in PipeScript
+
 ```https://api.github.com/repos/StartAutomating/PipeScript/issues``` is a valid command.
 
 So is ```get https://api.github.com/repos/StartAutomating/PipeScript/issues```.
@@ -6,29 +8,29 @@ So is ```MyCustomProtocol:// -Parameter value```.
 
 PipeScript supports transpiling protocols.
 
-To be considered a protocol transpiler, a transpiler must:
+Any command where :// appears in it's first two elements will be considered a potential protocol.
 
-1. Accept a ```[uri]``` from the pipeline
-2. Have a parameter -CommandAST ```[Management.Automation.Language.CommandAST]``` 
-3. Be valid, given a ```[Management.Automation.Language.CommandAST]```
-
-~~~PipeScript{
+~~~PipeScript{    
     [PSCustomObject]@{
-        Table = Get-Transpiler -TranspilerPath $pwd |
-            Select-Object DisplayName, Synopsis, @{
+        Table = Get-PipeScript -PipeScriptType Protocol |
+            Select-Object Name, Synopsis, @{
                 Name='Link'
-                Expression = { $_.Name }
+                Expression = { "/docs/$($_.Name).md" }
             }
-    }}
+    }
+}
 ~~~
 
+## Protocol Examples
+
+All of the current protocol examples are listed below:
 
 ~~~PipeScript{
-    @(foreach ($transpiler in Get-Transpiler -TranspilerPath $pwd) {
-        $examples = @($transpiler.Examples)
+    @(foreach ($protocolCommand in Get-PipeScript -PipeScriptType Protocol) {
+        $examples = @($protocolCommand.Examples)
         if (-not $examples) { continue }
         for ($exampleNumber = 1; $exampleNumber -le $examples.Length; $exampleNumber++) {
-            @("## $($transpiler.DisplayName) Example $($exampleNumber)", 
+            @("## $($protocolCommand.DisplayName) Example $($exampleNumber)", 
                 [Environment]::Newline,
                 "~~~PowerShell",                
                 $examples[$exampleNumber - 1],                

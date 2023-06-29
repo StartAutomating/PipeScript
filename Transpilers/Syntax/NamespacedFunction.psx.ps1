@@ -77,7 +77,13 @@
     if ($cmdAst.CommandElements[-1] -isnot [Management.Automation.Language.ScriptBlockExpressionAst]) {
         return $false
     }
-    return $true
+
+    # Attempt to resolve the command
+    if (-not $global:AllCommands) {
+        $global:AllCommands = $executionContext.SessionState.InvokeCommand.GetCommands('*','Alias,Function,Cmdlet', $true)
+    }
+    $potentialCmdName = "$($cmdAst.CommandElements[0])"
+    return -not ($global:AllCommands.Name -eq $potentialCmdName)    
 })]
 param(
 # The CommandAST that will be transformed.    

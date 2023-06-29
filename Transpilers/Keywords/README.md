@@ -36,7 +36,7 @@ This directory contains the implementations of PipeScript language keywords.
 ~~~PowerShell
     function mallard([switch]$Quack) { $Quack }
     Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Unique
-    . {all functions that quack are ducks}.Transpile()
+    all functions that quack are ducks
     Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Unique
 ~~~
 

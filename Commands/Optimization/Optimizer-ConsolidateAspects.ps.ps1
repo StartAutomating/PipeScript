@@ -23,14 +23,61 @@ PipeScript.Optimizer function ConsolidateAspects {
         } | .>PipeScript
     #>
     param(
-    [vfp(Mandatory)]
+    # The ScriptBlock.  All aspects used more than once within this ScriptBlock will be consolidated.
+    [vfp(Mandatory,ParameterSetName='ScriptBlock')]
     [scriptblock]
-    $ScriptBlock
+    $ScriptBlock,
+
+    # The Function Definition.  All aspects used more than once within this Function Definition will be consolidated.
+    [vfp(Mandatory,ParameterSetName='FunctionDefinition')]
+    [Management.Automation.Language.FunctionDefinitionAst]
+    $FunctionDefinitionAst
     )
 
+    begin {
+        $findAspectComment = [Regex]::new('# aspect\p{P}(?<n>\S+)', 'IgnoreCase,RightToLeft', '00:00:01')
+    }
+
     process {
+        if ($psCmdlet.ParameterSetName -eq 'FunctionDefinition') {
+            $ScriptBlock = [scriptblock]::Create($FunctionDefinitionAst.Body -replace '^\{' -replace '\}$')
+        }
+
         # Find all ScriptBlockExpressions
-        $allExpressions = @($ScriptBlock | Search-PipeScript -AstType ScriptBlockExpression)
+        $script:FoundFunctionExtent = $null
+        # If we are in a function, we can consolidate inner functions.
+        $script:CurrentFunctionExtent =
+            if ($psCmdlet.ParameterSetName -eq 'FunctionDefinition') {
+                $FunctionDefinitionAst
+            } else {
+                $null
+            }
+        $allExpressions = @($ScriptBlock | Search-PipeScript -AstCondition {
+            param($ast)
+            if ($ast -is [Management.Automation.Language.FunctionDefinitionAst] -and -not $script:CurrentFunctionExtent) {
+                $script:FoundFunctionExtent = $ast.Extent
+            }
+            if ($ast -isnot [Management.Automation.Language.ScriptBlockExpressionAst]) { return $false }            
+            
+            if ($script:FoundFunctionExtent -and 
+                ($ast.Extent.StartOffset -ge $script:FoundFunctionExtent.StartOffset) -and 
+                ($ast.Extent.EndOffset -lt $script:FoundFunctionExtent.EndOffset)) {
+                return $false
+            }
+            if ($ast.Parent -is [Management.Automation.Language.AttributeAst]) { 
+                return $false
+            }
+            
+            if ($ast.Parent -is [Management.Automation.Language.AssignmentStatementAst]) { 
+                return $false
+            }
+
+            if ($ast.Parent -is [Management.Automation.Language.CommandAst] -and 
+                $ast.Parent.CommandElements[0] -ne $ast) { 
+                return $false
+            }
+            return $true
+        } -Recurse)
 
         $scriptBlockExpressions = [Ordered]@{}
         
@@ -40,17 +87,19 @@ PipeScript.Optimizer function ConsolidateAspects {
                 continue
             }
             # and bucket the rest
-            $matchingAst = $expression.Result
+            $matchingAst = $expression.Result -replace '\s'
+            
             if (-not $scriptBlockExpressions["$matchingAst"]) {
-                $scriptBlockExpressions["$matchingAst"]  = @($matchingAst)
+                $scriptBlockExpressions["$matchingAst"]  = @($expression.Result)
             } else {
-                $scriptBlockExpressions["$matchingAst"]  += @($matchingAst)
+                $scriptBlockExpressions["$matchingAst"]  += @($expression.Result)
             }
         }
 
 
         # Any bucket 
         $consolidations = [Ordered]@{}
+        $consolidatedScriptBlocks = [Ordered]@{}
         foreach ($k in $scriptBlockExpressions.Keys) {
             # with 2 or more values
             if ($scriptBlockExpressions[$k].Length -lt 2) {
@@ -58,7 +107,7 @@ PipeScript.Optimizer function ConsolidateAspects {
             }
             # is fair game for consolidation
             # (if it's not itself
-            if ("$k" -eq "$ScriptBlock") {
+            if ("$k" -eq ("$ScriptBlock" -replace '\s')) {
                 continue
             }
             # or blank)
@@ -93,17 +142,13 @@ PipeScript.Optimizer function ConsolidateAspects {
                             }
                         }) -join '_'
                     }
-                    elseif (
+                    elseif (                        
                         # Otherwise, if the previous comment line is "aspect.Name"
-                        $(
-                        $foundCommentLine = [Regex]::new('^\s{0,}#\saspect\p{P}(?<n>\S+)', "Multiline,RightToLeft").Match(
-                            $greatGrandParent.Parent.Extent.ToString(), $grandParent.Extent.StartOffset - $greatGrandParent.Parent.Extent.StartOffset
-                        )                        
-                        $foundCommentLine.Success
-                        )
+                        $greatGrandParent.Parent -and                         
+                        "$($greatGrandParent.Parent)".Substring(0,  $greatGrandParent.Extent.StartOffset - $greatGrandParent.Parent.Extent.StartOffset) -match $findAspectComment
                     ) {
                         # it's the aspect name.
-                        $foundCommentLine.Groups["n"].Value
+                        $matches.n
                     }
                     else {
                         # Otherwise, we don't know what we'd call it (and cannot consolidate)
@@ -111,29 +156,55 @@ PipeScript.Optimizer function ConsolidateAspects {
                     }
                 })
 
-            $uniquePotentialNames = $potentialNames | Select-Object -Unique
-            if ($uniquePotentialNames -and
-                $uniquePotentialNames -isnot [Object[]]) {
-                $consolidations[$k] = $uniquePotentialNames
+            $uniquePotentialNames = @{}
+            foreach ($potentialName in $potentialNames) {
+                $uniquePotentialNames[$potentialName] = $potentialName
+            }                         
+            if ($uniquePotentialNames.Count -eq 1) {
+                $determinedAspectName = "$(@($uniquePotentialNames.Keys))Aspect"
+                $consolidatedScriptBlocks[$determinedAspectName] = $scriptBlockExpressions[$k][0]
+                foreach ($scriptExpression in $scriptBlockExpressions[$k]) {
+                    $consolidations[$scriptExpression] = $determinedAspectName
+                }
             }
         }
 
         # Turn each of the consolidations into a regex replacement
-        $regexReplacements = [Ordered]@{}
+        $astReplacement = [Ordered]@{}
         # and a bunch of content to prepend.
-        $prepend  = [scriptblock]::Create("$(@(
-            foreach ($consolidate in $consolidations.GetEnumerator()) {
-                $k = [regex]::Escape($consolidate.Key)
-                $regexReplacements[$k] = '$' + $($consolidate.Value -replace '^\$' + ([Environment]::NewLine))
-                "`$$($consolidate.Value) = $($consolidate.Key)"
-            }
-        ) -join [Environment]::NewLine)")
-
-        if ($consolidations.Count) {
-            Update-PipeScript -RegexReplacement $regexReplacements -ScriptBlock $ScriptBlock -Prepend $prepend
+        foreach ($consolidate in $consolidations.GetEnumerator()) {            
+            $astReplacement[$consolidate.Key] = [ScriptBlock]::Create('$' + $($consolidate.Value -replace '^\$' + ([Environment]::NewLine)))
         }
-        else {
-            $ScriptBlock
+        
+        $prepend  = if ($consolidatedScriptBlocks) {
+            [scriptblock]::Create("$(@(
+                foreach ($consolidate in $consolidatedScriptBlocks.GetEnumerator()) {                                
+                    "`$$($consolidate.Key) = $($consolidatedScriptBlocks[$consolidate.Key])"                
+                }
+            ) -join [Environment]::NewLine)")
+        }
+
+        $updatedScriptBlock = 
+            if ($astReplacement.Count -gt 1) {
+                Update-PipeScript -AstReplacement $astReplacement -ScriptBlock $ScriptBlock -Prepend $prepend
+            }
+            else {
+                $ScriptBlock
+            }
+
+        switch ($psCmdlet.ParameterSetName) {
+            ScriptBlock {
+                $updatedScriptBlock
+            }
+            FunctionDefinition {
+                [scriptblock]::Create(
+                    @(
+                        "$(if ($FunctionDefinitionAst.IsFilter) { "filter"} else { "function"}) $($FunctionDefinitionAst.Name) {"
+                        $UpdatedScriptBlock
+                        "}"
+                    ) -join [Environment]::NewLine
+                ).Ast.EndBlock.Statements[0]
+            }
         }
     }
 }

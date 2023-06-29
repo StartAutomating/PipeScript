@@ -8,6 +8,7 @@ These are all of the transpilers currently included in PipeScript:
 |[Aliases](Transpilers/Parameters/Aliases.psx.ps1)                                          |Dynamically Defines Aliases                       |
 |[All](Transpilers/Keywords/All.psx.ps1)                                                    |all keyword                                       |
 |[Arduino.Template](Transpilers/Templates/Arduino.Template.psx.ps1)                         |Arduino Template Transpiler.                      |
+|[ArrowOperator](Transpilers/Syntax/ArrowOperator.psx.ps1)                                  |Arrow Operator                                    |
 |[Assert](Transpilers/Keywords/Assert.psx.ps1)                                              |Assert keyword                                    |
 |[ATOM.Template](Transpilers/Templates/ATOM.Template.psx.ps1)                               |ATOM Template Transpiler.                         |
 |[Await](Transpilers/Keywords/Await.psx.ps1)                                                |awaits asynchronous operations                    |
@@ -36,13 +37,11 @@ These are all of the transpilers currently included in PipeScript:
 |[Help](Transpilers/Help.psx.ps1)                                                           |Help Transpiler                                   |
 |[HLSL.Template](Transpilers/Templates/HLSL.Template.psx.ps1)                               |HLSL Template Transpiler.                         |
 |[HTML.Template](Transpilers/Templates/HTML.Template.psx.ps1)                               |HTML PipeScript Transpiler.                       |
-|[Http.Protocol](Transpilers/Protocols/Http.Protocol.psx.ps1)                               |http protocol                                     |
 |[Include](Transpilers/Include.psx.ps1)                                                     |Includes Files                                    |
 |[Inherit](Transpilers/Inherit.psx.ps1)                                                     |Inherits a Command                                |
 |[Java.Template](Transpilers/Templates/Java.Template.psx.ps1)                               |Java Template Transpiler.                         |
 |[JavaScript.Template](Transpilers/Templates/JavaScript.Template.psx.ps1)                   |JavaScript Template Transpiler.                   |
 |[Json.Template](Transpilers/Templates/Json.Template.psx.ps1)                               |JSON PipeScript Transpiler.                       |
-|[JSONSchema.Protocol](Transpilers/Protocols/JSONSchema.Protocol.psx.ps1)                   |json schema protocol                              |
 |[Kotlin.Template](Transpilers/Templates/Kotlin.Template.psx.ps1)                           |Kotlin Template Transpiler.                       |
 |[Kusto.Template](Transpilers/Templates/Kusto.Template.psx.ps1)                             |Kusto Template Transpiler.                        |
 |[Latex.Template](Transpilers/Templates/Latex.Template.psx.ps1)                             |Latex Template Transpiler.                        |
@@ -89,16 +88,17 @@ These are all of the transpilers currently included in PipeScript:
 |[TCL.Template](Transpilers/Templates/TCL.Template.psx.ps1)                                 |TCL/TK Template Transpiler.                       |
 |[TOML.Template](Transpilers/Templates/TOML.Template.psx.ps1)                               |TOML Template Transpiler.                         |
 |[TypeScript.Template](Transpilers/Templates/TypeScript.Template.psx.ps1)                   |TypeScript Template Transpiler.                   |
-|[UDP.Protocol](Transpilers/Protocols/UDP.Protocol.psx.ps1)                                 |udp protocol                                      |
 |[Until](Transpilers/Keywords/Until.psx.ps1)                                                |until keyword                                     |
 |[ValidateExtension](Transpilers/Parameters/ValidateExtension.psx.ps1)                      |Validates Extensions                              |
 |[ValidatePlatform](Transpilers/Parameters/ValidatePlatform.psx.ps1)                        |Validates the Platform                            |
 |[ValidatePropertyName](Transpilers/Parameters/ValidatePropertyName.psx.ps1)                |Validates Property Names                          |
 |[ValidateScriptBlock](Transpilers/Parameters/ValidateScriptBlock.psx.ps1)                  |Validates Script Blocks                           |
 |[ValidateTypes](Transpilers/Parameters/ValidateTypes.psx.ps1)                              |Validates if an object is one or more types.      |
+|[ValidValues](Transpilers/Parameters/ValidValues.psx.ps1)                                  |Dynamically Defines ValidateSet attributes        |
 |[VBN](Transpilers/Parameters/VBN.psx.ps1)                                                  |ValueFromPiplineByPropertyName Shorthand          |
 |[VFP](Transpilers/Parameters/VFP.psx.ps1)                                                  |ValueFromPipline Shorthand                        |
 |[WebAssembly.Template](Transpilers/Templates/WebAssembly.Template.psx.ps1)                 |WebAssembly Template Transpiler.                  |
+|[WhereMethod](Transpilers/Syntax/WhereMethod.psx.ps1)                                      |Where Method                                      |
 |[XAML.Template](Transpilers/Templates/XAML.Template.psx.ps1)                               |XAML Template Transpiler.                         |
 |[XML.Template](Transpilers/Templates/XML.Template.psx.ps1)                                 |XML Template Transpiler.                          |
 |[YAML.Template](Transpilers/Templates/YAML.Template.psx.ps1)                               |Yaml Template Transpiler.                         |

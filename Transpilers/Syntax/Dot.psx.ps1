@@ -4,9 +4,7 @@
 .DESCRIPTION
     Dot Notation simplifies multiple operations on one or more objects.
 
-    Any command named . (followed by a letter) will be treated as the name of a method or property.
-
-    .Name will be considered the name of a property or method
+    Any command named . (followed by a letter) will be treated as the name of a method or property.    
 
     If it is followed by parenthesis, these will be treated as method arguments.
 
@@ -45,10 +43,8 @@
 [ValidateScript({
     $commandAst = $_
     $DotChainPattern = '^\.\p{L}'
-    if ($commandAst.CommandElements[0].Value -match '^\.\p{L}') {
-        return $true
-    }
-    return $false
+    if (-not $commandAst.CommandElements) { return $false }
+    $commandAst.CommandElements[0].Value -match $DotChainPattern
 })]
 param(
 [Parameter(Mandatory,ParameterSetName='Command',ValueFromPipeline)]

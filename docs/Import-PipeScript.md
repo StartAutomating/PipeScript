@@ -35,7 +35,7 @@ Import-PipeScript -ScriptBlock {
 #### EXAMPLE 2
 ```PowerShell
 Import-PipeScript -ScriptBlock {
-    partial function f() {
+    partial function f {
         "This will be added to any function named f."
     }
 }

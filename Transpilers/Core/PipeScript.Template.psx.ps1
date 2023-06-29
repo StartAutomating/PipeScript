@@ -557,7 +557,15 @@ $replacePattern
 
         # Now, we run the replacer.  
         # This should run each inline script and replace the text.
-        return $ReplacePattern.Replace($fileText, $ReplacementEvaluator)                
+        $replacement = 
+            try {
+            $ReplacePattern.Replace($fileText, $ReplacementEvaluator)
+            } catch {
+                $ex = $_
+                Write-Error -ErrorRecord $ex
+                # $PSCmdlet.WriteError($ex)
+            }
+        return $replacement
     }
 }
 

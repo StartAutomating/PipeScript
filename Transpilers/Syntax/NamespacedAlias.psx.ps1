@@ -22,8 +22,16 @@
     # The second element must be 'alias'.
     if ($cmdAst.CommandElements[1].Value -ne 'alias') {
         return $false
-    }    
-    return $true
+    }
+    
+    # Attempt to resolve the command
+    $potentialCmdName = $cmdAst.CommandElements[0]
+    # Attempt to resolve the command
+    if (-not $global:AllCommands) {
+        $global:AllCommands = $executionContext.SessionState.InvokeCommand.GetCommands('*','Alias,Function,Cmdlet', $true)
+    }
+    $potentialCmdName = "$($cmdAst.CommandElements[0])"
+    return -not ($global:AllCommands.Name -eq $potentialCmdName)    
 })]
 param(
 # The CommandAST that will be transformed.
@@ -45,11 +53,12 @@ process {
     # If the pattern was `<>`, make the separator `<`.
     elseif ($namespaceSeparator -eq '<>') { $namespaceSeparator = '<' }
 
-    $namespace = $namespace -replace "$namespaceSeparatorPattern$"
+    $namespace = $namespace -replace "$namespaceSeparatorPattern$"    
 
     $locationsEmbed = '"' + $($locations -replace '"','`"' -join '","') + '"'
 
-    [ScriptBlock]::Create("
+    $scriptBlockToCreate = 
+    "
 `$aliasNamespace = '$($namespace -replace "'","''")'
 `$aliasNamespaceSeparator = '$namespaceSeparator'
 `$aliasesToCreate = [Ordered]@{}
@@ -62,12 +71,14 @@ foreach (`$aliasNamespacePattern in $locationsEmbed) {
             $aliasesToCreate[$aliasName] = $commandsToAlias            
         }
     }
-
-    if (Test-Path $aliasNamespacePattern) {
+    elseif (Test-Path $aliasNamespacePattern) {
         foreach ($fileToAlias in (Get-ChildItem -Path $aliasNamespacePattern)) {
             $aliasName = $aliasNamespace, $fileToAlias.Name -join $aliasNamespaceSeparator
             $aliasesToCreate[$aliasName] = $fileToAlias.FullName            
         }
+    }
+    else {
+        $aliasNamespace += $aliasNamespaceSeparator + $aliasNamespacePattern + $aliasNamespaceSeparator
     }
 } + "
 }
@@ -80,7 +91,9 @@ foreach ($toCreateAlias in $aliasesToCreate.GetEnumerator()) {
     }
     Set-Alias $aliasName $commandToAlias
 }
-})
+}
+
+[ScriptBlock]::Create($scriptBlockToCreate)
     
 
     

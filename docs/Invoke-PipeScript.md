@@ -28,7 +28,6 @@ Invoke-PipeScript can also use a number of Abstract Syntax Tree elements as comm
 |-------------------------|---------------------------------------|
 |AttributeAST             |Runs Attributes                        |
 |TypeConstraintAST        |Runs Type Constraints                  |
-|InvokeMemberExpressionAst|Runs Member Invocation Expressions     |
 
 
 
@@ -36,9 +35,31 @@ Invoke-PipeScript can also use a number of Abstract Syntax Tree elements as comm
 
 
 ### Related Links
+* [Use-PipeScript](Use-PipeScript.md)
+
+
+
 * [Update-PipeScript](Update-PipeScript.md)
 
 
+
+
+
+---
+
+
+### Examples
+#### EXAMPLE 1
+```PowerShell
+# PipeScript is a superset of PowerShell.
+# So a hello world in PipeScript is the same as a "Hello World" in PowerShell:
+```
+Invoke-PipeScript { "hello world" } # Should -Be "Hello World"
+#### EXAMPLE 2
+```PowerShell
+# Invoke-PipeScript will invoke a command, ScriptBlock, file, or AST element as PipeScript.
+Invoke-PipeScript { all functions } # Should -BeOfType ([Management.Automation.FunctionInfo])
+```
 
 
 

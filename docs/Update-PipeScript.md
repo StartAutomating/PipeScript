@@ -220,6 +220,40 @@ A dictionary of items to insert before an AST element.
 
 
 
+#### **InsertBlockStart**
+
+A dictionary of items to insert at the start of another item's AST block.
+The key should be an AST element.
+The nearest block start will be the point that the item is inserted.
+
+
+
+
+
+
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |12      |false        |
+
+
+
+#### **InsertBlockEnd**
+
+A dictionary of items to insert at the start of another item's AST block.
+The key should be an AST element.
+The nearest block end will be the point that the item is inserted.
+
+
+
+
+
+
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |13      |false        |
+
+
+
 #### **TextInsertion**
 
 A dictionary of text insertions.
@@ -233,7 +267,7 @@ The value is the insertion.
 
 |Type           |Required|Position|PipelineInput|
 |---------------|--------|--------|-------------|
-|`[IDictionary]`|false   |12      |false        |
+|`[IDictionary]`|false   |14      |false        |
 
 
 
@@ -249,7 +283,7 @@ This works similarly to -RegexReplacement.
 
 |Type           |Required|Position|PipelineInput|Aliases        |
 |---------------|--------|--------|-------------|---------------|
-|`[IDictionary]`|false   |13      |false        |RegexInsertions|
+|`[IDictionary]`|false   |15      |false        |RegexInsertions|
 
 
 
@@ -264,7 +298,7 @@ A collection of variables to rename.
 
 |Type           |Required|Position|PipelineInput|Aliases        |
 |---------------|--------|--------|-------------|---------------|
-|`[IDictionary]`|false   |14      |false        |RenameParameter|
+|`[IDictionary]`|false   |16      |false        |RenameParameter|
 
 
 
@@ -281,7 +315,7 @@ Appended Text will be added to the end.
 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
-|`[Object]`|false   |15      |false        |
+|`[Object]`|false   |17      |false        |
 
 
 
@@ -298,7 +332,7 @@ Prepended text will be added at the start.
 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
-|`[Object]`|false   |16      |false        |
+|`[Object]`|false   |18      |false        |
 
 
 
@@ -324,5 +358,5 @@ If set, will transpile the updated script block.
 
 ### Syntax
 ```PowerShell
-Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-RegexReplacement] <IDictionary>] [[-RegionReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-InsertBefore] <IDictionary>] [[-InsertAfter] <IDictionary>] [[-InsertAfterAST] <IDictionary>] [[-InsertBeforeAst] <IDictionary>] [[-TextInsertion] <IDictionary>] [[-RegexInsertion] <IDictionary>] [[-RenameVariable] <IDictionary>] [[-Append] <Object>] [[-Prepend] <Object>] [-Transpile] [<CommonParameters>]
+Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-RegexReplacement] <IDictionary>] [[-RegionReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-InsertBefore] <IDictionary>] [[-InsertAfter] <IDictionary>] [[-InsertAfterAST] <IDictionary>] [[-InsertBeforeAst] <IDictionary>] [[-InsertBlockStart] <IDictionary>] [[-InsertBlockEnd] <IDictionary>] [[-TextInsertion] <IDictionary>] [[-RegexInsertion] <IDictionary>] [[-RenameVariable] <IDictionary>] [[-Append] <Object>] [[-Prepend] <Object>] [-Transpile] [<CommonParameters>]
 ```

@@ -5,12 +5,14 @@ This directory and it's subdirectories contain syntax changes that enable common
 |--------------------------------------------------------|------------------------------------------------------------------|
 |[NamespacedAlias](NamespacedAlias.psx.ps1)              |[Declares a namespaced alias](NamespacedAlias.psx.ps1)            |
 |[NamespacedFunction](NamespacedFunction.psx.ps1)        |[Namespaced functions](NamespacedFunction.psx.ps1)                |
+|[ArrowOperator](ArrowOperator.psx.ps1)                  |[Arrow Operator](ArrowOperator.psx.ps1)                           |
 |[ConditionalKeyword](ConditionalKeyword.psx.ps1)        |[Conditional Keyword Expansion](ConditionalKeyword.psx.ps1)       |
 |[Dot](Dot.psx.ps1)                                      |[Dot Notation](Dot.psx.ps1)                                       |
 |[EqualityComparison](EqualityComparison.psx.ps1)        |[Allows equality comparison.](EqualityComparison.psx.ps1)         |
 |[EqualityTypeComparison](EqualityTypeComparison.psx.ps1)|[Allows equality type comparison.](EqualityTypeComparison.psx.ps1)|
 |[PipedAssignment](PipedAssignment.psx.ps1)              |[Piped Assignment Transpiler](PipedAssignment.psx.ps1)            |
 |[RegexLiteral](RegexLiteral.psx.ps1)                    |[Regex Literal Transpiler](RegexLiteral.psx.ps1)                  |
+|[WhereMethod](WhereMethod.psx.ps1)                      |[Where Method](WhereMethod.psx.ps1)                               |
 
 
 
@@ -86,6 +88,37 @@ This directory and it's subdirectories contain syntax changes that enable common
             
         }
     }.Transpile()
+~~~
+
+## ArrowOperator Example 1
+
+
+~~~PowerShell
+    $allTypes = 
+        Invoke-PipeScript {
+            [AppDomain]::CurrentDomain.GetAssemblies() => $_.GetTypes()
+        }
+
+    $allTypes.Count # Should -BeGreaterThan 1kb
+    $allTypes # Should -BeOfType ([Type])
+~~~
+
+## ArrowOperator Example 2
+
+
+~~~PowerShell
+    Invoke-PipeScript {
+        Get-Process -ID $PID => ($Name, $Id, $StartTime) => { "$Name [$ID] $StartTime"}
+    } # Should -Match "$pid"
+~~~
+
+## ArrowOperator Example 3
+
+
+~~~PowerShell
+    Invoke-PipeScript {
+        func => ($Name, $Id) { $Name, $Id}
+    } # Should -BeOfType ([ScriptBlock])
 ~~~
 
 ## ConditionalKeyword Example 1
@@ -394,5 +427,12 @@ $($Keywords -join '|') # followed by keywords
 $($Keywords -join '|') # followed by keywords
 [\s\p{P}]{0,1}         # followed by whitespace or punctuation
 "@, 'IgnorePatternWhitespace,IgnoreCase')
+~~~
+
+## WhereMethod Example 1
+
+
+~~~PowerShell
+    { Get-PipeScript | ? CouldPipeType([ScriptBlock]) } | Use-PipeScript
 ~~~
 

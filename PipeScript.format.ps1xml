@@ -1864,8 +1864,32 @@ $BackgroundColor
       <TableControl>
         <TableHeaders>
           <TableColumnHeader>
-            <Label>DisplayName</Label>
           </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <Wrap />
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Synopsis</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>Parameters</Name>
+      <ViewSelectedBy>
+        <TypeName>PipeScript</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
           <TableColumnHeader>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -1876,7 +1900,9 @@ $BackgroundColor
           <TableRowEntry>
             <Wrap />
             <TableColumnItems>
-              <!-- {ConditionalColor:"&quot;Success&quot;"}-->
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
               <TableColumnItem>
                 <ScriptBlock>$moduleName = 'PipeScript'
 
@@ -1905,32 +1931,11 @@ $BackgroundColor
             } while ($false)
             
         
-
-                $__ = $_
-                $ci = . {"Success"}
-                $_ = $__
-                if ($ci -is [string]) {
-                    $ci = &amp; ${PipeScript_Format-RichText} -NoClear -ForegroundColor $ci
-                } else {                    
-                    $ci = &amp; ${PipeScript_Format-RichText} -NoClear @ci
-                }
-                $output = . {$_.'DisplayName'}
-                @($ci; $output; &amp; ${PipeScript_Format-RichText}) -join ""
-                </ScriptBlock>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>Synopsis</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <ScriptBlock>        
+        
         @(foreach ($kv in ([Management.Automation.CommandMetaData]$_).Parameters.GetEnumerator()) {
             @(
-            . ${PipeScript_setOutputStyle} -ForegroundColor Verbose 
-            "[$($kv.Value.ParameterType)]"
-            . ${PipeScript_clearOutputStyle}
-            . ${PipeScript_setOutputStyle} -ForegroundColor Warning
-            "`$$($kv.Key)"
-            . ${PipeScript_clearOutputStyle}
+                &amp; ${PipeScript_Format-RichText} -ForegroundColor Verbose -InputObject "[$($kv.Value.ParameterType)]"
+                &amp; ${PipeScript_Format-RichText} -ForegroundColor Warning -InputObject "`$$($kv.Key)"            
             ) -join ''
         }) -join [Environment]::NewLine
     </ScriptBlock>

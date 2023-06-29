@@ -10,7 +10,7 @@ function Join-PipeScript
     .EXAMPLE
         {param([string]$x)},
         {param([string]$y)} | 
-            Join-PipeScript
+            Join-PipeScript # Should -BeLike '*param(*$x,*$y*)*'
     .EXAMPLE
         {
             begin {

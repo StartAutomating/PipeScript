@@ -1,3 +1,80 @@
+## PipeScript 0.2.6:
+
+* PipeScript can now be sponsored! (please show your support) (#488)
+
+* PipeScript now has several formalized command types (#452)
+  * Aspects
+    * DynamicParameters (#462)
+    * ModuleExtensionType (#460)
+    * ModuleExtensionPattern (#460)
+    * ModuleExtensionCommand (#460)  
+  * Automatic Variables (Fixes #426)
+    * $MySelf
+    * $MyParameters
+    * $MyCallstack
+    * $MyCaller 
+    * $MyCommandAst (#434)
+    * $IsPipedTo (#430)
+    * $IsPipedFrom (#431)
+  * PostProcessing/Optimization now applies to Functions (#432)
+    * Partial functions are now a PostProcessor (#449)
+  * Protocol Functions
+     * Made HTTP, UDP, and JSON Schema Protocols into functions (#474)
+     * Added OpenAPI Protocol (#457)
+* Core Command Improvements
+  * Get-PipeScript is now built with PipeScript (#463)
+  * Export-PipeScript
+    * Is _much_ more transparent in GitHub Workflow (#438)
+    * Now lists all files built, time to build each, transpilers used, and PipeScript factor.
+    * Auto Installs simple #requires in build files (#491)
+  * Update-PipeScript uses AST Based Offsets (#439)
+  * New-PipeScript
+    * Making Description/Synopis ValueFromPipelineByPropertyName (#453)
+    * Adding -InputObject parameter.
+    * Making -Parameter _much_ more open-ended (#454)
+    * Improving Reflection Support (#467)
+    * Allowing -Parameter as `[CommandInfo]`/`[CommandMetaData]` (#477)
+    * Supporting DefaultValue/ValidValue (Fixes #473)
+    * Adding -Verb/-Noun (#468)
+  * Invoke-PipeScript
+    * Improving Positional Attribute Parameters (Fixes #70)
+    * Clarifying 'Transpiler Not Found' Messages (#484)  
+
+* Sentence Parsing Support
+  * Improving Mutliword alias support (#444)
+  * Adding Clause.ParameterValues (#445)
+  * Allowing N words to be skipped (#479)
+
+* 'All' Improvements
+  * Expanding Syntax for 'All' (#436)
+  * Compacting generating code (#440)
+  * Adding Greater Than / Less Than aliases (#446)
+  * Enabling 'should' (#448)
+  * 'all applications in $path' (#475)  
+
+* New Transpilers:
+  * ValidValues (#451)
+  * Adding WhereMethod (#465)
+  * Adding ArrowOperator/ Lambdas ! (#464)
+
+* Extended Type Improvements
+  * VariableExpressionAst.GetVariableType - Enabling InvokeMemberExpression (#490)
+  * CommandInfo.BlockComments - Resolving aliases (#487)
+  * CommandInfo.GetHelpField - Skipping additional script blocks (Fixes #486)
+
+* Minor Fixes:
+  * Requires is now Quieter (#433)
+  * Appending Unmapped Locations to Alias Namespace (Fixes #427)  
+  * Fixing Examples in New-PipeScript (thanks @ninmonkey !)  
+  * Namespaced Alias/Function - Not Transpiling if command found (#455)  
+  * Automatically Testing Examples (greatly expanded test coverage) (#461)
+  * Templates now report errors more accurately (#489)
+  * Inherit - Fixing Abstract/Dynamic Inheritance (#480)
+  * Include - Allowing Including URLs (#481)
+  * Partial Functions will not join their headers (#483)
+
+---
+
 ## PipeScript 0.2.5:
 
 * Added Support for Aspects (#401)

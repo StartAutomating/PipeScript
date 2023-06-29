@@ -9,6 +9,18 @@
         [include[a.ps1]]
     } | .>PipeScript
 #>
+[ValidateScript({
+    $validating = $_
+    if (-not $validating.TypeName) { return $false }
+    $IsRealType = $TypeExpressionAst.TypeName.GetReflectionType()
+    if ($IsRealType) { return $false }
+    
+    if ($TypeExpressionAst.TypeName.TypeName) {
+        return $TypeExpressionAst.TypeName.TypeName.Name -ne 'ordered'
+    } else {
+        return $TypeExpressionAst.TypeName.Name -ne 'ordered'
+    }    
+})]
 param(
 # The attributed expression
 [Parameter(Mandatory,ParameterSetName='AttributedExpressionAst',ValueFromPipeline)]
@@ -90,6 +102,6 @@ process {
     } elseif ($foundTranspiler -and $currentInput -is [string]) {
         Invoke-PipeScript -CommandInfo $foundTranspiler -ArgumentList $arglist -Parameter $parameters
     } elseif ($script:TypeAcceleratorsList -notcontains $transpilerStepName -and $transpilerStepName -notin 'Ordered') {
-        Write-Error "Unable to find a transpiler for [$TranspilerStepName]"
+        Write-Error "Could not find a Transpiler or Type for [$TranspilerStepName]" -Category ParserError -ErrorId 'Transpiler.Not.Found'
     }    
 }

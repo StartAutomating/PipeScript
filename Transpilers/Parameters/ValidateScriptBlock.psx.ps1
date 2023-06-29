@@ -35,6 +35,16 @@
     } | .>PipeScript
 #>
 [CmdletBinding(DefaultParameterSetName='Parameter')]
+[ValidateScript({
+    $val = $_
+    if (
+        ($val.Parent -is [Management.Automation.Language.AttributedExpressionAst]) -and 
+        ($val.Parent.Attribute.TypeName.Name -in 'ValidateScriptBlock')
+    ) {
+        return $true
+    }
+    return $false
+})]
 param(
 # If set, will validate that ScriptBlock is "safe".
 # This will attempt to recreate the Script Block as a datalanguage block and execute it.

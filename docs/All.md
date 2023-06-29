@@ -36,7 +36,7 @@ all that glitters
 ```PowerShell
 function mallard([switch]$Quack) { $Quack }
 Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Unique
-. {all functions that quack are ducks}.Transpile()
+all functions that quack are ducks
 Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Unique
 ```
 
@@ -61,6 +61,21 @@ Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Uniq
 
 
 ### Parameters
+#### **InputObject**
+
+The input to be searched.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput        |Aliases                     |
+|----------|--------|--------|---------------------|----------------------------|
+|`[Object]`|false   |1       |true (ByPropertyName)|In<br/>Of<br/>The<br/>Object|
+
+
+
 #### **Functions**
 
 If set, include all functions in the input.
@@ -181,48 +196,72 @@ If set, will include all of the variables, aliases, functions, and scripts in th
 
 
 
-#### **InputObject**
-
-The input to be searched.
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput        |Aliases                     |
-|----------|--------|--------|---------------------|----------------------------|
-|`[Object]`|false   |1       |true (ByPropertyName)|In<br/>Of<br/>The<br/>Object|
-
-
-
 #### **Where**
 
-An optional condition
+A condition.
+
+If the condition is a ScriptBlock, it will act similar to Where-Object.
+
+If the condition is not a script block, the conditional will be inferred by the word choice.
+
+For example:
+~~~PowerShell
+all functions matching PipeScript
+~~~
+
+will return all functions that match the pattern 'PipeScript'
+
+Or:
+
+~~~PowerShell
+all in 1..100 greater than 50
+~~~
+
+will return all numbers in 1..100 that are greater than 50.
+
+Often, these conditionals will be checked against multiple targets.
+
+For example:
+
+~~~PowerShell
+all cmdlets that ID
+~~~
+
+Will check all cmdlets to see if:
+* they are named "ID"
+* OR they have members named "ID"
+* OR they have parameters named "ID"
+* OR their PSTypenames contains "ID"
 
 
 
 
 
 
-|Type      |Required|Position|PipelineInput        |Aliases                                                                                        |
-|----------|--------|--------|---------------------|-----------------------------------------------------------------------------------------------|
-|`[Object]`|false   |2       |true (ByPropertyName)|That Are<br/>That Have<br/>That<br/>Condition<br/>Where-Object<br/>With a<br/>With the<br/>With|
+|Type      |Required|Position|PipelineInput        |Aliases                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|----------|--------|--------|---------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|`[Object]`|false   |2       |true (ByPropertyName)|That Are<br/>That Have<br/>That<br/>Condition<br/>Where-Object<br/>With a<br/>With the<br/>With<br/>That Match<br/>Match<br/>Matching<br/>That Matches<br/>Match Expression<br/>Match Regular Expression<br/>Match Pattern<br/>Matches Pattern<br/>That Are Like<br/>Like<br/>Like Wildcard<br/>Greater Than<br/>Greater<br/>Greater Than Or Equal<br/>GT<br/>GE<br/>Less Than<br/>Less<br/>Less Than Or Equal<br/>LT<br/>LE|
 
 
 
 #### **For**
 
-The action that will be run
+An action that will be run on every returned item.
+
+As with the -Where parameter, the word choice used for For can be impactful.
+
+In most circumstances, passing a [ScriptBlock] will work similarly to a foreach statment.
+
+When "Should" is present within the word choice, it attach that script as an expectation that can be checked later.
 
 
 
 
 
 
-|Type      |Required|Position|PipelineInput        |Aliases                                                               |
-|----------|--------|--------|---------------------|----------------------------------------------------------------------|
-|`[Object]`|false   |3       |true (ByPropertyName)|Is<br/>Are<br/>Foreach<br/>Foreach-Object<br/>Can<br/>Could<br/>Should|
+|Type      |Required|Position|PipelineInput        |Aliases                                                                                                                                                                                                        |
+|----------|--------|--------|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|`[Object]`|false   |3       |true (ByPropertyName)|Is<br/>Are<br/>Foreach<br/>Foreach-Object<br/>Can<br/>And Can<br/>Could<br/>And Could<br/>Should<br/>And Should<br/>Is A<br/>And Is A<br/>Is An<br/>And Is An<br/>Are a<br/>And Are a<br/>Are an<br/>And Are An|
 
 
 
@@ -258,7 +297,8 @@ If output should be sorted in descending order.
 
 #### **CommandAst**
 
-The Command AST
+The Command AST.
+This parameter and parameter set are present so that this command can be transpiled from source, and are unlikely to be used.
 
 
 
@@ -278,5 +318,5 @@ The Command AST
 
 ### Syntax
 ```PowerShell
-All [-Functions] [-Commands] [-Cmdlets] [-Aliases] [-Applications] [-Scripts] [-Variables] [-Things] [[-InputObject] <Object>] [[-Where] <Object>] [[-For] <Object>] [[-Sort] <Object>] [-Descending] -CommandAst <CommandAst> [<CommonParameters>]
+All [[-InputObject] <Object>] [-Functions] [-Commands] [-Cmdlets] [-Aliases] [-Applications] [-Scripts] [-Variables] [-Things] [[-Where] <Object>] [[-For] <Object>] [[-Sort] <Object>] [-Descending] -CommandAst <CommandAst> [<CommonParameters>]
 ```

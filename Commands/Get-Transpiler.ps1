@@ -1,4 +1,4 @@
-#region Piecemeal [ 0.3.10 ] : Easy Extensible Plugins for PowerShell
+#region Piecemeal [ 0.4.1 ] : Easy Extensible Plugins for PowerShell
 # Install-Module Piecemeal -Scope CurrentUser 
 # Import-Module Piecemeal -Force 
 # Install-Piecemeal -ExtensionNoun 'Transpiler' -ExtensionPattern '\.psx\.ps1$','^PipeScript\p{P}Transpiler\p{P}(?!(?>format|types|tests)\p{P})','^psx\p{P}' -ExtensionTypeName 'PipeScript.Transpiler' -OutputPath '/home/runner/work/PipeScript/PipeScript/Commands/Get-Transpiler.ps1'
@@ -612,6 +612,8 @@ function Get-Transpiler
 
                     $ExtensionDynamicParameters = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
                     $Extension = $this
+                    $ExtensionMetadata = $Extension -as [Management.Automation.CommandMetaData]
+                    if (-not $ExtensionMetadata) { return $ExtensionDynamicParameters }
 
                     :nextDynamicParameter foreach ($in in @(($Extension -as [Management.Automation.CommandMetaData]).Parameters.Keys)) {
                         $attrList = [Collections.Generic.List[Attribute]]::new()
@@ -1040,12 +1042,16 @@ function Get-Transpiler
 
         if ($Force) {
             $script:Transpilers  = $null
+            $script:TranspilersByName    = $null
             $script:AllCommands = @()
         }
         if (-not $script:Transpilers)
         {
-            $script:TranspilersFromFiles = [Ordered]@{}
-            $script:TranspilersFileTimes = [Ordered]@{}
+            $script:TranspilersFromFiles     = [Ordered]@{}
+            $script:TranspilersFileTimes     = [Ordered]@{}
+            $script:TranspilersByName        = [Ordered]@{}
+            $script:TranspilersByDisplayName = [Ordered]@{}
+            $script:TranspilersByPattern     = [Ordered]@{}
             $script:Transpilers =
                 @(@(
                 #region Find Transpiler in Loaded Modules
@@ -1091,6 +1097,46 @@ function Get-Transpiler
                 $ExecutionContext.SessionState.InvokeCommand.GetCommands('*', 'Function,Alias',$true) -match $extensionFullRegex
                 #endregion Find Transpiler in Loaded Commands
                 ) | Select-Object -Unique | Sort-Object Rank, Name)
+
+            foreach ($extCmd in $script:Transpilers) {
+                if (-not $script:TranspilersByName[$extCmd.Name]) {
+                    $script:TranspilersByName[$extCmd.Name] = $extCmd
+                }
+                else {
+                    $script:TranspilersByName[$extCmd.Name] = @($script:TranspilersByName[$extCmd.Name]) + $extCmd
+                }
+                if ($extCmd.DisplayName) {
+                    if (-not $script:TranspilersByDisplayName[$extCmd.DisplayName]) {
+                        $script:TranspilersByDisplayName[$extCmd.DisplayName] = $extCmd
+                    }
+                    else {
+                        $script:TranspilersByDisplayName[$extCmd.DisplayName] = @($script:TranspilersByDisplayName[$extCmd.DisplayName]) + $extCmd
+                    }   
+                }
+                $ExtensionCommandAliases = @($extCmd.Attributes.AliasNames)
+                $ExtensionCommandAliasRegexes  = @($ExtensionCommandAliases -match '^/' -match '/$')
+                $ExtensionCommandNormalAliases = @($ExtensionCommandAliases -notmatch '^/')
+                if ($ExtensionCommandAliasRegexes) {
+                    foreach ($extensionAliasRegex in $ExtensionCommandAliasRegexes) {
+                        $regex = [Regex]::New($extensionAliasRegex -replace '^/' -replace '/$', 'IgnoreCase,IgnorePatternWhitespace')
+                        if (-not $script:TranspilersByPattern[$regex]) {
+                            $script:TranspilersByPattern[$regex] = $extCmd
+                        } else {
+                            $script:TranspilersByPattern[$regex] = @($script:TranspilersByPattern[$regex]) + $extCmd
+                        }
+                    }
+                }
+                if ($ExtensionCommandNormalAliases) {
+                    foreach ($extensionAlias in $ExtensionCommandNormalAliases) {
+                        if (-not $script:TranspilersByName[$extensionAlias]) {
+                            $script:TranspilersByName[$extensionAlias] = $extCmd
+                        } else {
+                            $script:TranspilersByName[$extensionAlias] = @($script:TranspilersByName[$extensionAlias]) + $extCmd
+                        }
+                    }
+                }
+                
+            }
         }
         #endregion Find Extensions
     }
@@ -1098,7 +1144,7 @@ function Get-Transpiler
     process {
 
         if ($TranspilerPath) {
-            @(foreach ($_ in Get-ChildItem -Recurse -Path $TranspilerPath -File) {
+            @(foreach ($_ in Get-ChildItem -Recurse:$($TranspilerPath -notmatch '^\.[\\/]') -Path $TranspilerPath -File) {
                 if ($_.Name -notmatch $extensionFullRegex) { continue }
                 if ($CommandName -or $TranspilerName) {
                     ConvertToExtension $_ |
@@ -1116,14 +1162,34 @@ function Get-Transpiler
                 # This section can be updated by using Install-Piecemeal -ForeachObject
                 #endregion Install-Piecemeal -ForeachObject
         } elseif ($CommandName -or $TranspilerName) {
-            $script:Transpilers |
-                . WhereExtends $CommandName |                
-                OutputExtension
+            if (-not $CommandName -and -not $like -and -not $Match) {
+                foreach ($exn in $TranspilerName) {
+                    if ($script:TranspilersByName[$exn]) {
+                        $script:TranspilersByName[$exn] | OutputExtension
+                    }
+                    if ($script:TranspilersByDisplayName[$exn]) {
+                        $script:TranspilersByDisplayName[$exn] | OutputExtension
+                    }
+                    if ($script:TranspilersByPattern.Count) {
+                        foreach ($patternAndValue in $script:TranspilersByPattern.GetEnumerator()) {
+                            if ($patternAndValue.Key.IsMatch($exn)) {
+                                $patternAndValue.Value | OutputExtension
+                            }
+                        }
+                        $script:TranspilersByDisplayName[$exn]
+                    }
+                }                
+            } else {
+                $script:Transpilers |
+                    . WhereExtends $CommandName |
+                    OutputExtension
+            }
+            
         } else {
             $script:Transpilers | 
                 OutputExtension
         }
     }
 }
-#endregion Piecemeal [ 0.3.10 ] : Easy Extensible Plugins for PowerShell
+#endregion Piecemeal [ 0.4.1 ] : Easy Extensible Plugins for PowerShell
 

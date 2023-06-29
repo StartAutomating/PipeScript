@@ -1,3 +1,13 @@
+<#
+.SYNOPSIS
+    Gets the script that represents a requires statement
+.DESCRIPTION
+    Gets the a PowerShell `[ScriptBlock]` that #requires the exact same list of script requirements.
+
+    This script method exists because it provides a way to check the requirements without actually running a full script.
+.EXAMPLE
+    [ScriptBlock]::Create('#requires -Module PipeScript').Ast.ScriptRequirements.Script
+#>
 $requirement = $this
 [ScriptBlock]::create(
     @(if ($requirement.RequirementPSVersion) {

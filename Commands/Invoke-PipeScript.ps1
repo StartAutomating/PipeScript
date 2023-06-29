@@ -16,10 +16,19 @@
         |AST Type                 |Description                            |
         |-------------------------|---------------------------------------|
         |AttributeAST             |Runs Attributes                        |
-        |TypeConstraintAST        |Runs Type Constraints                  |
-        |InvokeMemberExpressionAst|Runs Member Invocation Expressions     |
+        |TypeConstraintAST        |Runs Type Constraints                  |        
+    .LINK
+        Use-PipeScript
     .LINK
         Update-PipeScript
+    .EXAMPLE
+        # PipeScript is a superset of PowerShell.
+        # So a hello world in PipeScript is the same as a "Hello World" in PowerShell:
+
+        Invoke-PipeScript { "hello world" } # Should -Be "Hello World"
+    .EXAMPLE
+        # Invoke-PipeScript will invoke a command, ScriptBlock, file, or AST element as PipeScript.
+        Invoke-PipeScript { all functions } # Should -BeOfType ([Management.Automation.FunctionInfo])
     #>
     [CmdletBinding(PositionalBinding=$false)]
     [Alias('ips', '.>')]
@@ -38,7 +47,7 @@
         if ($PotentialCommand -is [string])      { return $true }
         if ($PotentialCommand -is [Management.Automation.CommandInfo]) { return $true }
         if ($PotentialCommand.GetType().Namespace -eq 'System.Management.Automation.Language' -and
-            $PotentialCommand.GetType().Name -in 'AttributeAST', 'TypeConstraintAst','TypeExpressionAST','InvokeMemberExpressionAst') {
+            $PotentialCommand.GetType().Name -in 'AttributeAST', 'TypeConstraintAst','TypeExpressionAST') {
             return $true
         }
 
@@ -228,12 +237,26 @@
 
             # If the command was not a source generator
             if ($Command.Source -notmatch $IsSourceGenerator ) {
-                # invoke it normally.
+                # invoke it normally.                
+                $CommandStart = [DateTime]::now
                 if ($InputObject) {
                     $InputObject | & $Command @Parameter @ArgumentList
                 } else {
                     & $Command @Parameter @ArgumentList
                 }
+                $CommandEnd = [DateTime]::Now
+                $null = New-Event -SourceIdentifier 'PipeScript.Command.Completed' -MessageData ([PSCustomObject]([Ordered]@{
+                    Command = $Command
+                    Parameter = $Parameter
+                    ArgumentList = $ArgumentList
+                    InputObject = $InputObject
+                    Duration    = $CommandEnd - $CommandStart
+                    Status = $?
+                }  + $(if ($DebugPreference -notin 'silentlycontinue', 'ignore') {
+                    @{Callstack=Get-PSCallStack}
+                } else {
+                    @{}
+                })))
             }
 
             # If the command was a source generator
@@ -332,6 +355,7 @@
                             "$($TranspilerWarnings.Count) warning(s)"
                         }
                     ) -join ','
+                    
                     Write-Error $failedMessage -ErrorId Build.Failed -TargetObject (
                         [PSCustomObject][ordered]@{
                             Output     = $pipescriptOutput
@@ -402,8 +426,8 @@
             # Check that the typename is not [Ordered] (return if it is).
             if ($AttributeSyntaxTree.TypeName.Name -eq 'ordered') { return }
 
-            # Create a collection for stringified arguments.
-            $stringArguments = @()
+            # Create a collection for positional arguments.
+            $positionalArguments = @()
 
             # Get the name of the transpiler.
             $transpilerStepName  =
@@ -464,23 +488,33 @@
                             $argAst.Extent.ToString()
                         }
                 } else {
+                    $argValue = 
+                        if ($attributeArg -is [Management.Automation.Language.ScriptBlockExpressionAST]) {
+                            $argScriptBlock = [ScriptBlock]::Create($attributeArg.Extent.ToString() -replace '^\{' -replace '\}$')
+                            if ($SafeScriptBlockAttributeEvaluation) {
+                                # Which will run the [ScriptBlock] inside of a data block, thus preventing it from running commands.
+                                & ([ScriptBlock]::Create("data {$argScriptBlock}"))
+                            } else {
+                                # Otherwise, we want to run the [ScriptBlock] directly.
+                                & ([ScriptBlock]::Create("$argScriptBlock"))
+                            }
+                        } else {
+                            $attributeArg.Value
+                        }
                     # If we are a positional parameter, for the moment:
                     if ($parameter.Count) {
                         # add it to the last named parameter.
-                        $parameter[@($parameter.Keys)[-1]] = @() + $parameter[@($parameter.Keys)[-1]] + $attributeArg.Value.ToString()
+                        $parameter[@($parameter.Keys)[-1]] = @() + $parameter[@($parameter.Keys)[-1]] + $argValue
                     } else {
                         # Or add it to the list of string arguments.
-                        $stringArguments += "$($attributeArg.Value)"
-                    }
-
-                    # We _should_ get more intelligent over time here.
-                    # See [the GitHub Issue](https://github.com/StartAutomating/PipeScript/issues/70) for more details.
+                        $positionalArguments += $argValue
+                    }                    
                 }
             }
 
             # If we have found a transpiler, run it.
             if ($foundTranspiler) {
-                $ArgumentList += $stringArguments
+                $ArgumentList += $positionalArguments
                 if ($InputObject) {
                     $inputObject |
                         & $foundTranspiler @ArgumentList @Parameter
@@ -492,6 +526,9 @@
                 $realCommandExists = $ExecutionContext.SessionState.InvokeCommand.GetCommand(($transpilerStepName -replace '_','-'), 'All')
                 $realCommandExists
             )) {
+                if ($positionalArguments) {
+                    $ArgumentList += $positionalArguments
+                }
                 if ($inputObject) {
                     $canPipe = foreach ($param in $realCommandExists.Parameters.Values) {
                         if ($param.Attributes.ValueFromPipeline -and $inputObject -is $param.ParameterType) {
@@ -512,11 +549,11 @@
             elseif ($script:TypeAcceleratorsList -notcontains $transpilerStepName -and $transpilerStepName -notin 'Ordered') {
                 $psCmdlet.WriteError(
                     [Management.Automation.ErrorRecord]::new(
-                        [exception]::new("Unable to find a transpiler for [$TranspilerStepName]"),
+                        [exception]::new("Could not find a Transpiler or Type for [$TranspilerStepName]"),
                         'Transpiler.Not.Found',
                         'ParserError',
                         $command
-                    )
+                    )                    
                 )
 
                 return
@@ -583,7 +620,7 @@
                     & $foundTranspiler @ArgumentList @Parameter
                 }
             } else {
-                Write-Error "Could not find Transpiler '$TranspilerStepName'"
+                Write-Error "Could not find a Transpiler or Type for [$TranspilerStepName]" -Category ParserError -ErrorId 'Transpiler.Not.Found'
                 return
             }
         }

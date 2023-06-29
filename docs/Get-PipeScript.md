@@ -5,7 +5,7 @@ Get-PipeScript
 
 
 ### Synopsis
-Gets Extensions
+Gets PipeScript.
 
 
 
@@ -14,13 +14,9 @@ Gets Extensions
 
 ### Description
 
-Gets Extensions.
-
-PipeScript can be found in:
-
-* Any module that includes -PipeScriptModuleName in it's tags.
-* The directory specified in -PipeScriptPath
-* Commands that meet the naming criteria
+Gets PipeScript and it's extended commands.
+Because 'Get' is the default verb in PowerShell,
+Get-PipeScript also allows you to run other commands in noun-oriented syntax.
 
 
 
@@ -30,7 +26,33 @@ PipeScript can be found in:
 ### Examples
 #### EXAMPLE 1
 ```PowerShell
+# Get every specialized PipeScript command
 Get-PipeScript
+```
+
+#### EXAMPLE 2
+```PowerShell
+# Get all transpilers
+Get-PipeScript -PipeScriptType Transpiler
+```
+
+#### EXAMPLE 3
+```PowerShell
+# Get all template files within the current directory.
+Get-PipeScript -PipeScriptType Template -PipeScriptPath $pwd
+```
+
+#### EXAMPLE 4
+```PowerShell
+# You can use `noun verb` to call any core PipeScript command.
+PipeScript Invoke { "hello world" } # Should -Be 'Hello World'
+```
+
+#### EXAMPLE 5
+```PowerShell
+# You can still use the object pipeline with `noun verb`
+{ partial function f { } }  |
+    PipeScript Import -PassThru # Should -BeOfType ([Management.Automation.PSModuleInfo])
 ```
 
 
@@ -41,22 +63,89 @@ Get-PipeScript
 ### Parameters
 #### **PipeScriptPath**
 
-If provided, will look beneath a specific path for extensions.
+The path containing pipescript files.
+If this parameter is provided, only PipeScripts in this path will be outputted.
 
 
 
 
 
 
-|Type      |Required|Position|PipelineInput        |Aliases |
-|----------|--------|--------|---------------------|--------|
-|`[String]`|false   |1       |true (ByPropertyName)|Fullname|
+|Type      |Required|Position|PipelineInput        |Aliases                         |
+|----------|--------|--------|---------------------|--------------------------------|
+|`[String]`|false   |named   |true (ByPropertyName)|Fullname<br/>FilePath<br/>Source|
+
+
+
+#### **PipeScriptType**
+
+One or more PipeScript Command Types.
+
+
+
+Valid Values:
+
+* Analyzer
+* Aspect
+* AutomaticVariable
+* BuildScript
+* Interface
+* Optimizer
+* Partial
+* PipeScriptNoun
+* PostProcessor
+* PreProcessor
+* Protocol
+* Sentence
+* Template
+* Transpiler
+
+
+
+
+
+
+|Type        |Required|Position|PipelineInput        |
+|------------|--------|--------|---------------------|
+|`[String[]]`|false   |named   |true (ByPropertyName)|
+
+
+
+#### **Argument**
+
+Any positional arguments that are not directly bound.
+This parameter primarily exists to allow Get-PipeScript to pass it down to other commands.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput|Aliases|
+|----------|--------|--------|-------------|-------|
+|`[Object]`|false   |named   |false        |Args   |
+
+
+
+#### **InputObject**
+
+The InputObject.
+This parameter primarily exists to allow Get-PipeScript to pass it down to other commands.
+
+
+
+
+
+
+|Type      |Required|Position|PipelineInput |Aliases     |
+|----------|--------|--------|--------------|------------|
+|`[Object]`|false   |named   |true (ByValue)|Input<br/>In|
 
 
 
 #### **Force**
 
-If set, will clear caches of extensions, forcing a refresh.
+If set, will force a refresh of the loaded Pipescripts.
 
 
 
@@ -66,319 +155,6 @@ If set, will clear caches of extensions, forcing a refresh.
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[Switch]`|false   |named   |false        |
-
-
-
-#### **CommandName**
-
-If provided, will get PipeScript that extend a given command
-
-
-
-
-
-
-|Type        |Required|Position|PipelineInput        |Aliases            |
-|------------|--------|--------|---------------------|-------------------|
-|`[String[]]`|false   |2       |true (ByPropertyName)|ThatExtends<br/>For|
-
-
-
-#### **PipeScriptName**
-
-The name of an extension.
-By default, this will match any extension command whose name, displayname, or aliases exactly match the name.
-
-If the extension has an Alias with a regular expression literal (```'/Expression/'```) then the -PipeScriptName will be valid if that regular expression matches.
-
-
-
-
-
-
-|Type        |Required|Position|PipelineInput        |
-|------------|--------|--------|---------------------|
-|`[String[]]`|false   |3       |true (ByPropertyName)|
-
-
-
-#### **Like**
-
-If provided, will treat -PipeScriptName as a wildcard.
-This will return any extension whose name, displayname, or aliases are like the -PipeScriptName.
-
-If the extension has an Alias with a regular expression literal (```'/Expression/'```) then the -PipeScriptName will be valid if that regular expression matches.
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput        |
-|----------|--------|--------|---------------------|
-|`[Switch]`|false   |named   |true (ByPropertyName)|
-
-
-
-#### **Match**
-
-If provided, will treat -PipeScriptName as a regular expression.
-This will return any extension whose name, displayname, or aliases match the -PipeScriptName.
-
-If the extension has an Alias with a regular expression literal (```'/Expression/'```) then the -PipeScriptName will be valid if that regular expression matches.
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput        |
-|----------|--------|--------|---------------------|
-|`[Switch]`|false   |named   |true (ByPropertyName)|
-
-
-
-#### **DynamicParameter**
-
-If set, will return the dynamic parameters object of all the PipeScript for a given command.
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput        |
-|----------|--------|--------|---------------------|
-|`[Switch]`|false   |named   |true (ByPropertyName)|
-
-
-
-#### **CouldRun**
-
-If set, will return if the extension could run.
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput        |Aliases|
-|----------|--------|--------|---------------------|-------|
-|`[Switch]`|false   |named   |true (ByPropertyName)|CanRun |
-
-
-
-#### **CouldPipe**
-
-If set, will return if the extension could accept this input from the pipeline.
-
-
-
-
-
-
-|Type        |Required|Position|PipelineInput|Aliases|
-|------------|--------|--------|-------------|-------|
-|`[PSObject]`|false   |4       |false        |CanPipe|
-
-
-
-#### **Run**
-
-If set, will run the extension.  If -Stream is passed, results will be directly returned.
-By default, extension results are wrapped in a return object.
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput        |
-|----------|--------|--------|---------------------|
-|`[Switch]`|false   |named   |true (ByPropertyName)|
-
-
-
-#### **Stream**
-
-If set, will stream output from running the extension.
-By default, extension results are wrapped in a return object.
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput        |
-|----------|--------|--------|---------------------|
-|`[Switch]`|false   |named   |true (ByPropertyName)|
-
-
-
-#### **DynamicParameterSetName**
-
-If set, will return the dynamic parameters of all PipeScript for a given command, using the provided DynamicParameterSetName.
-Implies -DynamicParameter.
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput        |
-|----------|--------|--------|---------------------|
-|`[String]`|false   |5       |true (ByPropertyName)|
-
-
-
-#### **DynamicParameterPositionOffset**
-
-If provided, will return the dynamic parameters of all PipeScript for a given command, with all positional parameters offset.
-Implies -DynamicParameter.
-
-
-
-
-
-
-|Type     |Required|Position|PipelineInput        |
-|---------|--------|--------|---------------------|
-|`[Int32]`|false   |6       |true (ByPropertyName)|
-
-
-
-#### **NoMandatoryDynamicParameter**
-
-If set, will return the dynamic parameters of all PipeScript for a given command, with all mandatory parameters marked as optional.
-Implies -DynamicParameter.  Does not actually prevent the parameter from being Mandatory on the Extension.
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput        |Aliases                     |
-|----------|--------|--------|---------------------|----------------------------|
-|`[Switch]`|false   |named   |true (ByPropertyName)|NoMandatoryDynamicParameters|
-
-
-
-#### **RequirePipeScriptAttribute**
-
-If set, will require a [Runtime.CompilerServices.Extension()] attribute to be considered an extension.
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput        |
-|----------|--------|--------|---------------------|
-|`[Switch]`|false   |named   |true (ByPropertyName)|
-
-
-
-#### **ValidateInput**
-
-If set, will validate this input against [ValidateScript], [ValidatePattern], [ValidateSet], and [ValidateRange] attributes found on an extension.
-
-
-
-
-
-
-|Type        |Required|Position|PipelineInput        |
-|------------|--------|--------|---------------------|
-|`[PSObject]`|false   |7       |true (ByPropertyName)|
-
-
-
-#### **AllValid**
-
-If set, will validate this input against all [ValidateScript], [ValidatePattern], [ValidateSet], and [ValidateRange] attributes found on an extension.
-By default, if any validation attribute returned true, the extension is considered validated.
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
-
-
-
-#### **ParameterSetName**
-
-The name of the parameter set.  This is used by -CouldRun and -Run to enforce a single specific parameter set.
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput        |
-|----------|--------|--------|---------------------|
-|`[String]`|false   |8       |true (ByPropertyName)|
-
-
-
-#### **Parameter**
-
-The parameters to the extension.  Only used when determining if the extension -CouldRun.
-
-
-
-
-
-
-|Type           |Required|Position|PipelineInput        |Aliases                                                  |
-|---------------|--------|--------|---------------------|---------------------------------------------------------|
-|`[IDictionary]`|false   |9       |true (ByPropertyName)|Parameters<br/>ExtensionParameter<br/>ExtensionParameters|
-
-
-
-#### **SteppablePipeline**
-
-If set, will output a steppable pipeline for the extension.
-Steppable pipelines allow you to control how begin, process, and end are executed in an extension.
-This allows for the execution of more than one extension at a time.
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
-
-
-
-#### **Help**
-
-If set, will output the help for the extensions
-
-
-
-
-
-
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
-
-
-
-
-
----
-
-
-### Outputs
-* Extension
-
 
 
 
@@ -389,5 +165,5 @@ If set, will output the help for the extensions
 
 ### Syntax
 ```PowerShell
-Get-PipeScript [[-PipeScriptPath] <String>] [-Force] [[-CommandName] <String[]>] [[-PipeScriptName] <String[]>] [-Like] [-Match] [-DynamicParameter] [-CouldRun] [[-CouldPipe] <PSObject>] [-Run] [-Stream] [[-DynamicParameterSetName] <String>] [[-DynamicParameterPositionOffset] <Int32>] [-NoMandatoryDynamicParameter] [-RequirePipeScriptAttribute] [[-ValidateInput] <PSObject>] [-AllValid] [[-ParameterSetName] <String>] [[-Parameter] <IDictionary>] [-SteppablePipeline] [-Help] [<CommonParameters>]
+Get-PipeScript [-PipeScriptPath <String>] [-PipeScriptType <String[]>] [-Argument <Object>] [-InputObject <Object>] [-Force] [<CommonParameters>]
 ```

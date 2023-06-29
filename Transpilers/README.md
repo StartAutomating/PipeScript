@@ -144,6 +144,15 @@ This directory includes uncategorized or 'common' transpilers.
     } | .>PipeScript
 ~~~
 
+#### Include Example 4
+
+
+~~~PowerShell
+    {
+        [Include('https://pssvg.start-automating.com/Examples/PowerShellChevron.svg')]$PSChevron
+    } | .>PipeScript
+~~~
+
 #### Inherit Example 1
 
 

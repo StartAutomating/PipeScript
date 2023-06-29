@@ -23,7 +23,7 @@ $MyModule = $MyInvocation.MyCommand.ScriptBlock.Module
 $aliasList +=
     [GetExports("Alias")]$MyModule
 
-Export-ModuleMember -Function * -Alias $aliasList
+Export-ModuleMember -Function * -Alias *
 
 $global:ExecutionContext.SessionState.InvokeCommand.CommandNotFoundAction = {
     param($sender, $eventArgs)

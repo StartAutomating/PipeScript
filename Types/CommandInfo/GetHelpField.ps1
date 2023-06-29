@@ -16,4 +16,5 @@ foreach ($block in $this.BlockComments) {
         )) {                        
         $match.Groups["Content"].Value -replace '[\s\r\n]+$'
     }
+    break
 }

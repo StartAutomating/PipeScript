@@ -120,6 +120,41 @@
     [Collections.IDictionary]
     $InsertBeforeAst = [Ordered]@{},
 
+    # A dictionary of items to insert at the start of another item's AST block.
+    # The key should be an AST element.
+    # The nearest block start will be the point that the item is inserted.
+    [ValidateScript({
+        $badKeys =
+            foreach ($k in $_.Keys) {
+                if ($k -isnot [Management.Automation.Language.Ast]) {
+                    $k
+                }
+            }
+        if ($badKeys) {
+            throw "-AstReplacement contains bad keys: $badKeys"
+        }
+        return $true
+    })]
+    [Collections.IDictionary]
+    $InsertBlockStart = [Ordered]@{},
+
+    # A dictionary of items to insert at the start of another item's AST block.
+    # The key should be an AST element.
+    # The nearest block end will be the point that the item is inserted.
+    [ValidateScript({
+        $badKeys =
+            foreach ($k in $_.Keys) {
+                if ($k -isnot [Management.Automation.Language.Ast]) {
+                    $k
+                }
+            }
+        if ($badKeys) {
+            throw "-AstReplacement contains bad keys: $badKeys"
+        }
+        return $true
+    })]
+    [Collections.IDictionary]
+    $InsertBlockEnd = [Ordered]@{},
 
     # A dictionary of text insertions.
     # The key is the insertion index.
@@ -256,11 +291,11 @@
         # The next series of things can only happen if we're dealing with a ```[ScriptBlock]```
         if ($ScriptBlock) {
             $Text = "$scriptBlock"
-
+            $ScriptBlockOffset = $ScriptBlock.Ast.Extent.StartOffset
             #region Remove Parameter
             # If we're removing parameters,
             if ($RemoveParameter) {
-                $myOffset  = 0
+                
                 $index     = 0
                 # find them within the AST.
                 $paramsToRemove = $ScriptBlock.Ast.FindAll({param($ast)
@@ -274,7 +309,8 @@
 
                 # Walk over each parameter to turn it into a text replacement
                 foreach ($paramToRemove in $paramsToRemove) {
-                    # Determine where th parameter starts
+                    # Determine where the parameter starts
+                    $myOffset = [Math]::Max($paramToRemove.Extent.StartOffset - $ScriptBlockOffset - 2,0)
                     $start = $Text.IndexOf($paramToRemove.Extent.Text, $myOffset)
                     $end   = $start + $paramToRemove.Extent.Text.Length
                     if (([Collections.IList]$paramToRemove.Parent.Parameters).IndexOf($paramToRemove) -lt
@@ -283,8 +319,7 @@
                     } else {
                         $start = $text.LastIndexOf(",", $start)
                     }
-                    $TextReplacement["$start,$end"] = ''
-                    $myOffset = $end
+                    $TextReplacement["$start,$end"] = ''                    
                 }
             }
             #endregion Remove Parameter
@@ -324,7 +359,6 @@
             #region Replace AST
             # If we had any AST replacements
             if ($astReplacement.Count) {
-                $myOffset  = 0
                 $index     = 0
                 # sort them by their start.
                 $sortedReplacements = @(
@@ -336,11 +370,11 @@
                 # Then, walk over each replacement
                 foreach ($item in $sortedReplacements) {
                     # and turn it into a text range
+                    $myOffset = [Math]::Max($item.Extent.StartOffset - $ScriptBlockOffset - 2,0)
                     $start = $Text.IndexOf($item.Extent.Text, $myOffset)
                     $end   = $start + $item.Extent.Text.Length
                     # then update the text replacements.
                     $TextReplacement["$start,$end"] = $astReplacement[$item]
-                    $myOffset = $end
                 }
             }
             #endregion Replace AST
@@ -550,10 +584,74 @@
         }
         #endregion Append and Prepend
 
+        #region InsertBlockStart
+        if ($InsertBlockStart.Count) {
+            foreach ($item in @(
+                $InsertBlockStart.GetEnumerator() |
+                Sort-Object { $_.Key.Extent.StartOffset }
+            )) {
+                $astItem = $item.Key
+                while ($astItem -and $astItem -isnot [Management.Automation.Language.NamedBlockAst]) {
+                    $astItem = $astItem.Parent
+                }
+                if ($astItem -is [Management.Automation.Language.NamedBlockAst]) {
+                    $astBlockKind = if ($astItem.Unnamed) {
+                        ''
+                    } else {
+                        $astItem.BlockKind
+                    }
+                    $match = [Regex]::new("$astBlockKind\s{0,}\{\s{0,}",'IgnoreCase').Match($Text,
+                        [Math]::Max(
+                            $potentialInsertLocations[-1].Extent.StartOffset - $ScriptBlockAst.StartOffset - 5, 0
+                        )
+                    )
+                    $insertAt = 
+                        if ($match.Success) {
+                            # and use -TextInsertion at that location.
+                            $match.Index + $match.Length
+                        } else {
+                            0
+                        }
+                    
+                    if (-not $TextInsertion["$insertAt"]) {
+                        $TextInsertion["$insertAt"] = @($item.Value)
+                    } else {
+                        $TextInsertion["$insertAt"] += $item.Value
+                    }                        
+                    
+                }
+            }
+        }
+        #endregion InsertBlockStart
+        
+        #region InsertBlockEnd
+        if ($InsertBlockEnd.Count) {
+            foreach ($item in @(
+                $InsertBlockEnd.GetEnumerator() |
+                Sort-Object { $_.Key.Extent.StartOffset }
+            )) {
+                $astItem = $item.Key
+                while ($astItem -and $astItem -isnot [Management.Automation.Language.NamedBlockAst]) {
+                    $astItem = $astItem.Parent
+                }
+                if ($astItem -is [Management.Automation.Language.NamedBlockAst]) {
+                    # If we're in a named block, there _really_ should be statements.
+                    $insertPoint = $astItem.Statements[-1]
+                    if ($insertPoint) {
+                        if (-not $InsertAfterAst[$insertPoint]) {
+                            $InsertAfterAst[$insertPoint] = $item.Value
+                        } else {
+                            $InsertAfterAst[$insertPoint] = @($InsertAfterAst[$insertPoint]) + $item.Value
+                        }                         
+                    }                    
+                }
+            }
+        }
+        #endregion InsertBlockEnd
+
         #region Insert Before AST
         # If we had any AST insertions
         if ($InsertBeforeAst.Count) {
-            $myOffset  = 0
             $index     = 0
             # sort them by their start.
             foreach ($item in @(
@@ -562,6 +660,7 @@
                 Select-Object -ExpandProperty Key
             )) {
                 # and turn it into a text range
+                $myOffset = [Math]::Max($item.Extent.StartOffset - $ScriptBlockOffset - 2,0)
                 $start = $Text.IndexOf($item.Extent.Text, $myOffset)       
                 # then update the text replacements.
                 if (-not $TextInsertion["$($start - 1)"]) {
@@ -569,16 +668,13 @@
                 } else {
                     $TextInsertion["$($start - 1)"] += @($InsertBeforeAst[$item])
                 }
-                
-                $myOffset = $end
             }
         }
         #endregion Insert Before AST
 
         #region Insert After AST
         # If we had any AST insertions
-        if ($InsertAfterAst.Count) {
-            $myOffset  = 0
+        if ($InsertAfterAst.Count) {            
             $index     = 0
             # sort them by their start.
             foreach ($item in @(
@@ -587,6 +683,7 @@
                 Select-Object -ExpandProperty Key
             )) {
                 # and turn it into a text range
+                $myOffset = [Math]::Max($item.Extent.StartOffset - $ScriptBlockOffset - 2,0)
                 $start = $Text.IndexOf($item.Extent.Text, $myOffset)
                 $end   = $start + $item.Extent.Text.Length
                 # then update the text replacements.
@@ -594,9 +691,7 @@
                     $TextInsertion["$end"] = @($InsertAfterAST[$item])
                 } else {
                     $TextInsertion["$end"] += @($InsertAfterAST[$item])
-                }
-                
-                $myOffset = $end
+                }            
             }
         }
         #endregion Insert After AST

@@ -43,6 +43,15 @@ describe all {
             Should -be 'ducks'
     }
 
+    it 'Can support multiword parameter aliases' {
+        function hookbill([switch]$Quack) { $Quack }        
+        . {all functions that quack are a duck}.Transpile()
+        Get-Command hookbill | 
+            Get-Member  | 
+            Select-Object -ExpandProperty TypeName -Unique |
+            Should -be 'duck'
+    }
+
     it 'Can filter variables' {
         . {
             $numbers = 1..100
