@@ -7,7 +7,7 @@ Automatic Variables are embedded in post processing by [PostProcess.InitializeAu
 
 |VariableName                                                       |Description                                                                                                          |
 |-------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
-|[CallstackPeek](/docs/Automatic.Variable.CallstackPeek.md)         |$MyCaller (aka $CallStackPeek) contains the CallstackFrame that called this command.                                 |
+|[](/docs/Automatic.Variable.CallstackPeek.md)                      |$MyCaller (aka $CallStackPeek) contains the CallstackFrame that called this command.                                 |
 |[IsPipedFrom](/docs/PipeScript.Automatic.Variable.IsPipedFrom.md)  |$IsPipedFrom determines if the pipeline continues after this command.                                                |
 |[IsPipedTo](/docs/PipeScript.Automatic.Variable.IsPipedTo.md)      |$IsPipedTo determines if a command is being piped to.                                                                |
 |[MyCaller](/docs/PipeScript.Automatic.Variable.MyCaller.md)        |$MyCaller (aka $CallStackPeek) contains the CallstackFrame that called this command.                                 |
