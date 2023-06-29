@@ -7,8 +7,7 @@ Automatic Variables are embedded in post processing by [PostProcess.InitializeAu
 ~~~PipeScript{
     # Then, let's create a lookup table by the name of the automatic variable
     
-    $automaticVariableCommands = 
-        all @((Get-Module PipeScript).ExportedCommands.Values) where { $_ -match '(?>Automatic|Magic)\p{P}Variable\p{P}' } are an Automatic.Variable.Command
+    $automaticVariableCommands = Get-PipeScript -PipesScriptType AutomaticVariable
 
     [PSCustomObject]@{
         Table = 
