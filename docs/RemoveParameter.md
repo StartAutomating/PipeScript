@@ -32,14 +32,14 @@ Removes Parameters from a ScriptBlock
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     [RemoveParameter("x")]
     param($x, $y)
 } | .>PipeScript
 ```
-
 
 
 ---
