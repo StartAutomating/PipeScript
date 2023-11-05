@@ -22,20 +22,20 @@ Defines a variable using a value provided at build time.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     [Define(Value={Get-Random})]$RandomNumber
 }.Transpile()
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 {
     [Define(Value={$global:ThisValueExistsAtBuildTime})]$MyVariable
 }.Transpile()
 ```
-
 
 
 ---
