@@ -22,7 +22,8 @@ Imports PipeScript in a dynamic module.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Import-PipeScript -ScriptBlock {
     function gh {
@@ -31,8 +32,8 @@ Import-PipeScript -ScriptBlock {
     }
 }
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 Import-PipeScript -ScriptBlock {
     partial function f {
@@ -40,7 +41,6 @@ Import-PipeScript -ScriptBlock {
     }
 }
 ```
-
 
 
 ---
