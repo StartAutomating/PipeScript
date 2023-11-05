@@ -24,7 +24,8 @@ Namespaces are used to logically group functionality and imply standardized beha
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     abstract function Point {
@@ -32,14 +33,15 @@ Namespaces are used to logically group functionality and imply standardized beha
         [Alias('Left')]
         [vbn()]
         $X,
-```
 [Alias('Top')]
         [vbn()]
         $Y
         )
     }
 }.Transpile()
-#### EXAMPLE 2
+```
+> EXAMPLE 2
+
 ```PowerShell
 {
     interface function AccessToken {
@@ -52,8 +54,8 @@ Namespaces are used to logically group functionality and imply standardized beha
     }
 }.Transpile()
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 {
     partial function PartialExample {
@@ -61,7 +63,6 @@ Namespaces are used to logically group functionality and imply standardized beha
             1
         }
     }
-```
 partial function PartialExample* {
         process {
             2
@@ -78,6 +79,7 @@ partial function PartialExample* {
         
     }
 }.Transpile()
+```
 
 
 ---
