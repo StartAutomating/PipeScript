@@ -24,29 +24,30 @@ PipeScript's arrow operator works similarly to lambda expressions in C# or arrow
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 $allTypes = 
     Invoke-PipeScript {
         [AppDomain]::CurrentDomain.GetAssemblies() => $_.GetTypes()
     }
-```
 $allTypes.Count # Should -BeGreaterThan 1kb
 $allTypes # Should -BeOfType ([Type])
-#### EXAMPLE 2
+```
+> EXAMPLE 2
+
 ```PowerShell
 Invoke-PipeScript {
     Get-Process -ID $PID => ($Name, $Id, $StartTime) => { "$Name [$ID] $StartTime"}
 } # Should -Match "$pid"
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 Invoke-PipeScript {
     func => ($Name, $Id) { $Name, $Id}
 } # Should -BeOfType ([ScriptBlock])
 ```
-
 
 
 ---
