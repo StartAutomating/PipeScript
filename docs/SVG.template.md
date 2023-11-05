@@ -24,7 +24,8 @@ Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 $starsTemplate = Invoke-PipeScript {
     Stars.svg template '
@@ -33,8 +34,8 @@ $starsTemplate = Invoke-PipeScript {
         }-->
     '
 }
-```
 $starsTemplate.Save("$pwd\Stars.svg")
+```
 
 
 ---
