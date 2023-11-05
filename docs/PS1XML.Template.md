@@ -24,10 +24,10 @@ Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 $typesFile, $typeDefinition, $scriptMethod = Invoke-PipeScript {
-```
 types.ps1xml template '
     <Types>
         <!--{param([Alias("TypeDefinition")]$TypeDefinitions) $TypeDefinitions }-->
@@ -72,6 +72,7 @@ $typesFile.Save("Test.types.ps1xml",
             ))
     })
 )
+```
 
 
 ---
