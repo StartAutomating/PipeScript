@@ -26,7 +26,8 @@ If Write-Output or echo is used, the command will be replaced for more effecient
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Invoke-PipeScript {
     [explicit()]
@@ -35,8 +36,8 @@ Invoke-PipeScript {
     Write-Output "This Will Output"
 }
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 {
     [explicit]{
@@ -45,7 +46,6 @@ Invoke-PipeScript {
     }
 } | .>PipeScript
 ```
-
 
 
 ---
