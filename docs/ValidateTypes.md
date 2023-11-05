@@ -24,7 +24,8 @@ This allows for a single parameter to handle multiple potential types.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     param(
@@ -33,8 +34,8 @@ This allows for a single parameter to handle multiple potential types.
     )
 } | .>PipeScript
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 {"hello world"} |
     Invoke-PipeScript -ScriptBlock {
@@ -43,10 +44,11 @@ This allows for a single parameter to handle multiple potential types.
         [ValidateTypes(TypeName="ScriptBlock","string")]            
         $In
         )
-```
 $In
     }
-#### EXAMPLE 3
+```
+> EXAMPLE 3
+
 ```PowerShell
 1 | 
     Invoke-PipeScript -ScriptBlock {
@@ -55,9 +57,9 @@ $In
         [ValidateTypes(TypeName="ScriptBlock","string")]            
         $In
         )
-```
 $In
     }
+```
 
 
 ---
