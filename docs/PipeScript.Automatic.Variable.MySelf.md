@@ -23,16 +23,16 @@ A Command can & $myself to use anonymous recursion.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     $mySelf
 } | Use-PipeScript
 ```
+By using $Myself, we can write an anonymously recursive fibonacci sequence.
 
-#### EXAMPLE 2
 ```PowerShell
-# By using $Myself, we can write an anonymously recursive fibonacci sequence.
 Invoke-PipeScript {
     param([int]$n = 1)
     if ($n -lt 2) {
@@ -42,7 +42,6 @@ Invoke-PipeScript {
     }
 } -ArgumentList 10
 ```
-
 
 
 ---
