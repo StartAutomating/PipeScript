@@ -26,7 +26,8 @@ This transpiler enables equality comparison with ==.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
     $a = 1    
@@ -35,14 +36,13 @@ Invoke-PipeScript -ScriptBlock {
     }
 }
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 {
     $a == "b"
 } | .>PipeScript
 ```
-
 
 
 ---
