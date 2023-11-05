@@ -34,11 +34,11 @@ so that the extended commands can be augmented by the extended types system.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Aspect.ModuleExtensionCommand -Module PipeScript # Should -BeOfType ([Management.Automation.CommandInfo])
 ```
-
 
 
 ---
