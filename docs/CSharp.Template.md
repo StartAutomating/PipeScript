@@ -33,7 +33,8 @@ The C# Inline Transpiler will consider the following syntax to be empty:
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     $CSharpLiteral = @'
@@ -48,14 +49,15 @@ public static class Program {
 }
 }    
 '@
-```
 [OutputFile(".\HelloWorld.ps1.cs")]$CSharpLiteral
 }
 
 $AddedFile = .> .\HelloWorld.ps1.cs
 $addedType = Add-Type -TypeDefinition (Get-Content $addedFile.FullName -Raw) -PassThru
 $addedType::Main(@())
-#### EXAMPLE 2
+```
+> EXAMPLE 2
+
 ```PowerShell
 // HelloWorld.ps1.cs
 namespace TestProgram {
@@ -69,7 +71,6 @@ namespace TestProgram {
     }
 }
 ```
-
 
 
 ---
