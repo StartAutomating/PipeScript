@@ -62,7 +62,7 @@
                     (?>Protocol\p{P})            # Protocol + Punctuation
                     (?=[^\p{P}]+$)               # Followed by anything but punctuation.
                 '
-            }
+            }            
 
             'PipeScriptNoun' = @{
                 Description = 'Commands with the noun PipeScript'
@@ -111,7 +111,20 @@
             'Sentence'   = @{
                 Description = 'Sentence Commands'
                 Pattern = '(?>PipeScript\p{P})?Sentence\p{P}'
-            }              
+            }
+
+            'Compiler' = @{
+                Description = 'A Compiler'
+                Pattern = '
+                    (?>                        
+                        \.psx.ps1$|
+                        Compiler\.ps1$|
+                        \.psc.ps1$|
+                        Compile[sr]?\p{P}
+                    )
+                '
+                ExcludeCommandType = 'Application'
+            }            
                             
             'Transpiler' = 
                 @{
