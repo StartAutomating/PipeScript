@@ -26,15 +26,16 @@ When used with a variable, [Aliases] will Set-Alias on each value in the variabl
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     $aliases = "Foo", "Bar", "Baz"
     [Aliases(Command="Get-Process")]$aliases
 } | .>PipeScript
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 {
     param(
@@ -46,7 +47,6 @@ When used with a variable, [Aliases] will Set-Alias on each value in the variabl
     )
 } | .>PipeScript
 ```
-
 
 
 ---
