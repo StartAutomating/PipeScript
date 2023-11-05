@@ -32,7 +32,8 @@ A partial function is a function that will be joined with a function with a matc
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Import-PipeScript {
     partial function testPartialFunction {
@@ -43,7 +44,6 @@ Import-PipeScript {
 }
 testPartialFunction # Should -BeLike '*TestPartialFunction*'
 ```
-
 
 
 ---
