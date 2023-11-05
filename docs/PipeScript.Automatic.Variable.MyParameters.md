@@ -23,13 +23,13 @@ This leaves you more free to change it.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
     $MyParameters
 }
 ```
-
 
 
 ---
