@@ -24,11 +24,11 @@ Any Source Generator Files Discovered by PipeScript will be run, which will conv
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Export-PipeScript
 ```
-
 
 
 ---
