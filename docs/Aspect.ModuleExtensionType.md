@@ -22,12 +22,12 @@ Outputs the extension types defined in a module's manifest.
 
 
 ### Examples
-#### EXAMPLE 1
+Outputs a PSObject with information about extension command types.
+The two primary pieces of information are the `.Name` and `.Pattern`.
+
 ```PowerShell
-# Outputs a PSObject with information about extension command types.
-```
-# The two primary pieces of information are the `.Name` and `.Pattern`.
 Aspect.ModuleExtensionType -Module PipeScript # Should -BeOfType ([PSObject])
+```
 
 
 ---
