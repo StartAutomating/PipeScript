@@ -22,16 +22,16 @@ Requires will require on or more modules, variables, or types to exist.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 requires latest pipescript  # will require the latest version of pipescript
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 requires variable $pid $sid # will error, because there is no $sid
 ```
-
 
 
 ---
