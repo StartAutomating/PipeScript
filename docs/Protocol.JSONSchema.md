@@ -22,19 +22,19 @@ Converts a JSON Schema to a PowerShell Script.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 jsonschema https://aka.ms/terminal-profiles-schema#/$defs/Profile
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 {
     [JSONSchema(SchemaURI='https://aka.ms/terminal-profiles-schema#/$defs/Profile')]
     param()
 }.Transpile()
 ```
-
 
 
 ---
