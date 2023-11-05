@@ -22,31 +22,30 @@ Converts a UDP protocol command to PowerShell.
 
 
 ### Examples
-#### EXAMPLE 1
+Creates the code to create a UDP Client
+
 ```PowerShell
-# Creates the code to create a UDP Client
 {udp://127.0.0.1:8568} | Use-PipeScript
 ```
+Creates the code to broadast a message.
 
-#### EXAMPLE 2
 ```PowerShell
-# Creates the code to broadast a message.
 {udp:// -Host [ipaddress]::broadcast -port 911 -Send "It's an emergency!"} | Use-PipeScript
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 {send udp:// -Host [ipaddress]::broadcast -Port 911 "It's an emergency!"} | Use-PipeScript
 ```
+> EXAMPLE 4
 
-#### EXAMPLE 4
 ```PowerShell
 Use-PipeScript {
     watch udp://*:911
-```
 send udp:// -Host [ipaddress]::broadcast -Port 911 "It's an emergency!"
     receive udp://*:911
 }
+```
 
 
 ---
