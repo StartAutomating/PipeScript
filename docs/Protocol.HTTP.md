@@ -22,21 +22,22 @@ Converts an http(s) protocol commands to PowerShell.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     https://api.github.com/repos/StartAutomating/PipeScript
 }
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 {
     get https://api.github.com/repos/StartAutomating/PipeScript
 } | .>PipeScript
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 Invoke-PipeScript {
     $GitHubApi = 'api.github.com'
@@ -44,22 +45,22 @@ Invoke-PipeScript {
     https://$GitHubApi/users/$UserName
 }
 ```
+> EXAMPLE 4
 
-#### EXAMPLE 4
 ```PowerShell
 -ScriptBlock {
     https://$GitHubApi/users/$UserName -GitHubApi api.github.com -UserName StartAutomating
 }
 ```
+> EXAMPLE 5
 
-#### EXAMPLE 5
 ```PowerShell
 -ScriptBlock {
     https://$GitHubApi/users/$UserName -GitHubApi api.github.com -UserName StartAutomating
 }
 ```
+> EXAMPLE 6
 
-#### EXAMPLE 6
 ```PowerShell
 -ScriptBlock {
     @(foreach ($repo in https://api.github.com/users/StartAutomating/repos?per_page=100) {
@@ -67,8 +68,8 @@ Invoke-PipeScript {
     }) | Sort-Object Stars -Descending
 }
 ```
+> EXAMPLE 7
 
-#### EXAMPLE 7
 ```PowerShell
 $semanticAnalysis = 
     Invoke-PipeScript {
@@ -77,8 +78,8 @@ $semanticAnalysis =
     }
 $semanticAnalysis
 ```
+> EXAMPLE 8
 
-#### EXAMPLE 8
 ```PowerShell
 $statusHealthCheck = {
     [Https('status.dev.azure.com/_apis/status/health')]
@@ -86,7 +87,6 @@ $statusHealthCheck = {
 } | Use-PipeScript
 & $StatusHealthCheck
 ```
-
 
 
 ---
