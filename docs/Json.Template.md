@@ -33,13 +33,13 @@ Multiline comments can be preceeded or followed by 'empty' syntax, which will be
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 a.js template "
 procs = null/*{Get-Process | Select Name, ID}*/
 "
 ```
-
 
 
 ---
