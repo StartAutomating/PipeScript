@@ -34,22 +34,23 @@ The Go Transpiler will consider the following syntax to be empty:
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 $helloGo = HelloWorld.go template '
 package main
-```
 import "fmt"
 func main() {
     fmt.Println("/*{param($msg = "hello world") "`"$msg`""}*/")
 }
 '
-#### EXAMPLE 2
+```
+> EXAMPLE 2
+
 ```PowerShell
 $HelloWorld = {param([Alias('msg')]$message = "Hello world") "`"$message`""}
 $helloGo = HelloWorld.go template "
 package main
-```
 import `"fmt`"
 func main() {
     fmt.Println(`"/*{$helloWorld}*/`")
@@ -66,6 +67,7 @@ $helloGo.Save() |
             Write-Error "Go install Go"
         }
     }
+```
 
 
 ---
