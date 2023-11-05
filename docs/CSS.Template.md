@@ -33,7 +33,8 @@ The CSS Inline Transpiler will consider the following syntax to be empty:
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     $StyleSheet = @'
@@ -45,8 +46,8 @@ text-color: "#000000" /*{
 '@
     [Save(".\StyleSheet.ps1.css")]$StyleSheet
 }
-```
 .> .\StyleSheet.ps1.css
+```
 
 
 ---
