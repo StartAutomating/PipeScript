@@ -40,15 +40,16 @@ One interesting example is overriding an application
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Invoke-PipeScript {
     [inherit("Get-Command")]
     param()
 }
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 {
     [inherit("gh",Overload)]
@@ -57,24 +58,22 @@ Invoke-PipeScript {
     end { "JUST CALLED GH" }
 }.Transpile()
 ```
+Inherit Get-Transpiler abstractly and make it output the parameters passed in.
 
-#### EXAMPLE 3
 ```PowerShell
-# Inherit Get-Transpiler abstractly and make it output the parameters passed in.
 {
     [inherit("Get-Transpiler", Abstract)]
     param() process { $psBoundParameters }
 }.Transpile()
 ```
+> EXAMPLE 4
 
-#### EXAMPLE 4
 ```PowerShell
 {
     [inherit("Get-Transpiler", Dynamic, Abstract)]
     param()
 } | .>PipeScript
 ```
-
 
 
 ---
