@@ -24,37 +24,32 @@ Get-PipeScript also allows you to run other commands in noun-oriented syntax.
 
 
 ### Examples
-#### EXAMPLE 1
+Get every specialized PipeScript command
+
 ```PowerShell
-# Get every specialized PipeScript command
 Get-PipeScript
 ```
+Get all transpilers
 
-#### EXAMPLE 2
 ```PowerShell
-# Get all transpilers
 Get-PipeScript -PipeScriptType Transpiler
 ```
+Get all template files within the current directory.
 
-#### EXAMPLE 3
 ```PowerShell
-# Get all template files within the current directory.
 Get-PipeScript -PipeScriptType Template -PipeScriptPath $pwd
 ```
+You can use `noun verb` to call any core PipeScript command.
 
-#### EXAMPLE 4
 ```PowerShell
-# You can use `noun verb` to call any core PipeScript command.
 PipeScript Invoke { "hello world" } # Should -Be 'Hello World'
 ```
+You can still use the object pipeline with `noun verb`
 
-#### EXAMPLE 5
 ```PowerShell
-# You can still use the object pipeline with `noun verb`
 { partial function f { } }  |
     PipeScript Import -PassThru # Should -BeOfType ([Management.Automation.PSModuleInfo])
 ```
-
 
 
 ---
