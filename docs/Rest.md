@@ -22,7 +22,8 @@ Generates PowerShell that communicates with a REST api.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     function Get-Sentiment {
@@ -38,8 +39,8 @@ Generates PowerShell that communicates with a REST api.
     } 
 } | .>PipeScript | Set-Content .\Get-Sentiment.ps1
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 Invoke-PipeScript {
     [Rest("http://text-processing.com/api/sentiment/",
@@ -53,8 +54,8 @@ Invoke-PipeScript {
     param()
 } -Parameter @{Text='wow!'}
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 {
     [Rest("https://api.github.com/users/{username}/repos",
@@ -63,8 +64,8 @@ Invoke-PipeScript {
     param()
 } | .>PipeScript
 ```
+> EXAMPLE 4
 
-#### EXAMPLE 4
 ```PowerShell
 Invoke-PipeScript {
     [Rest("https://api.github.com/users/{username}/repos",
@@ -73,8 +74,8 @@ Invoke-PipeScript {
     param()
 } -UserName StartAutomating
 ```
+> EXAMPLE 5
 
-#### EXAMPLE 5
 ```PowerShell
 {
     [Rest("http://text-processing.com/api/sentiment/",
@@ -90,7 +91,6 @@ Invoke-PipeScript {
     param()
 } | .>PipeScript
 ```
-
 
 
 ---
