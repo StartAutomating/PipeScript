@@ -27,14 +27,14 @@ Modules can be related to each other by a few mechanisms:
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     $Module = Get-Module PipeScript
     [ModuleRelationships()]$Module
 }
 ```
-
 
 
 ---
