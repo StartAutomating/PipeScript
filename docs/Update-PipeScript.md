@@ -26,19 +26,20 @@ It can also be used interactively to transform scripts or text in a number of wa
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Update-PipeScript -ScriptBlock {
     param($x,$y)
 } -RemoveParameter x
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 Update-PipeScript -RenameVariable @{x='y'} -ScriptBlock {$x}
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 Update-PipeScript -ScriptBlock {
     #region MyRegion
@@ -47,7 +48,6 @@ Update-PipeScript -ScriptBlock {
     2
 } -RegionReplacement @{MyRegion=''}
 ```
-
 
 
 ---
