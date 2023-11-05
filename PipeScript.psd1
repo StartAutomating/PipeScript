@@ -111,7 +111,20 @@
                     )
                 '
                 ExcludeCommandType = 'Application'
-            }            
+            }
+            
+            'Parser' = @{
+                Description = 'Parsers'
+                Pattern = '
+                    (?>PipeScript\p{P})?         # Optional PipeScript + Punctuation
+                    Parse[sr]?\p{P}              # Parse or Parses or Parser + Punctuation
+                    (?>
+                        \.ps1$                   # Ending with .ps1
+                        |                        # or
+                        (?=[^\p{P}]+$)           # Followed by anything but punctuation.
+                    )                    
+                '
+            }
                             
             'Transpiler' = 
                 @{
