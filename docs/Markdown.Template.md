@@ -28,12 +28,12 @@ In Markdown, PipeScript can also be specified as the language using any two of t
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     $markdownContent = @'
 # Thinking of a Number Between 1 and 100: ```.<{Get-Random -Min 1 -Max 100}>.``` is the number
-```
 ### abc
 
 ~~~PipeScript{
@@ -52,6 +52,7 @@ In Markdown, PipeScript can also be specified as the language using any two of t
 }
 
 .> .\HelloWorld.ps1.md
+```
 
 
 ---
