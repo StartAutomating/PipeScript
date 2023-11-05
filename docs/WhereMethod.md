@@ -24,11 +24,11 @@ However, we can easily rewrite a Where-Object statement to do exactly that.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 { Get-PipeScript | ? CouldPipeType([ScriptBlock]) } | Use-PipeScript
 ```
-
 
 
 ---
