@@ -132,10 +132,10 @@
                     (?>PipeScript\p{P})?         # Optional PipeScript + Punctuation
                     Parse[sr]?\p{P}              # Parse or Parses or Parser + Punctuation
                     (?>
-                        \.ps1$                   # Ending with .ps1
+                        ps1$                     # Ending with .ps1
                         |                        # or
-                        (?=[^\p{P}]+$)           # Followed by anything but punctuation.
-                    )                    
+                        (?=[^[\p{P}-[\.]]]+$)    # Followed by anything but punctuation (except literal periods).
+                    )
                 '
             }
                             
