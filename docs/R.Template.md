@@ -40,12 +40,12 @@ Uncommented lines between these two points will be ignored
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Invoke-PipeScript {
     $rScript = '    
 # {
-```
 Uncommented lines between these two points will be ignored
 
 #  # Commented lines will become PipeScript / PowerShell.
@@ -59,6 +59,7 @@ Uncommented lines between these two points will be ignored
 }
 
 Invoke-PipeScript .\HelloWorld.ps1.r
+```
 
 
 ---
