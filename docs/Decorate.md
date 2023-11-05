@@ -23,14 +23,14 @@ By 'decorating' the object with a typename, this enables use of the extended typ
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     $v = [PSCustomObject]@{}
     [decorate('MyTypeName',Clear,PassThru)]$v
 }.Transpile()
 ```
-
 
 
 ---
