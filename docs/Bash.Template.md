@@ -32,12 +32,12 @@ PipeScript{}
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Invoke-PipeScript {
     $bashScript = @'
     echo 'hello world'
-```
 <<PipeScript{}
         "echo '$('hi','yo','sup' | Get-Random)'"
     PipeScript{}
@@ -47,6 +47,7 @@ Invoke-PipeScript {
 }
 
 Invoke-PipeScript .\HelloWorld.ps1.sh
+```
 
 
 ---
