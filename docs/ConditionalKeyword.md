@@ -33,7 +33,8 @@ The following keywords can be used conditionally:
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Invoke-PipeScript {
     $n = 1
@@ -44,8 +45,8 @@ Invoke-PipeScript {
     } while ($true)
 }
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 Import-PipeScript {
     
@@ -76,7 +77,6 @@ Import-PipeScript {
     }
 }
 ```
-
 
 
 ---
