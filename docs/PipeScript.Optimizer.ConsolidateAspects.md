@@ -22,15 +22,16 @@ Consolidates any ScriptBlockExpressions with the same content into variables.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {        
     a.txt Template 'abc'
     b.txt Template 'abc'
 } | .>PipeScript
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 {
     aspect function SayHi {
@@ -43,7 +44,6 @@ Consolidates any ScriptBlockExpressions with the same content into variables.
     }
 } | .>PipeScript
 ```
-
 
 
 ---
