@@ -22,35 +22,35 @@ Includes Files or Functions into a Script.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     [Include("Invoke-PipeScript")]$null
 } | .>PipeScript
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 {
     [Include("Invoke-PipeScript")]
     param()
 } | .>PipeScript
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 {
     [Include('*-*.ps1')]$psScriptRoot
 } | .>PipeScript
 ```
+> EXAMPLE 4
 
-#### EXAMPLE 4
 ```PowerShell
 {
     [Include('https://pssvg.start-automating.com/Examples/PowerShellChevron.svg')]$PSChevron
 } | .>PipeScript
 ```
-
 
 
 ---
