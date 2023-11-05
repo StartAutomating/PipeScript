@@ -26,7 +26,8 @@ Aspects should be small self-contained functions that solve one "aspect" of a pr
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Import-PipeScript {
     aspect function SayHi {
@@ -38,8 +39,8 @@ Import-PipeScript {
         Aspect.SayHi "hallo Welt" # or their long name
     }
 }
-```
 Greetings
+```
 
 
 ---
