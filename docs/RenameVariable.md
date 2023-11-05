@@ -32,7 +32,8 @@ Renames variables in a ScriptBlock
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     [RenameVariable(VariableRename={
@@ -44,7 +45,6 @@ Renames variables in a ScriptBlock
     param($x, $y)
 } | .>PipeScript
 ```
-
 
 
 ---
