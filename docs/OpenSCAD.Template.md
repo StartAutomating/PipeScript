@@ -31,13 +31,13 @@ The OpenSCAD Inline Transpiler will consider the following syntax to be empty:
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     $OpenScadWithInlinePipeScript = @'
 Shape = "cube" /*{'"cube"', '"sphere"', '"circle"' | Get-Random}*/;
 Size  = 1 /*{Get-Random -Min 1 -Max 100}*/ ;
-```
 if (Shape == "cube") {
 cube(Size);
 }
@@ -53,6 +53,7 @@ circle(Size);
 }
 
 .> .\RandomShapeAndSize.ps1.scad
+```
 
 
 ---
