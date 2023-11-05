@@ -22,16 +22,18 @@ The Help Transpiler allows you to write inline help without directly writing com
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     [Help(Synopsis="The Synopsis", Description="A Description")]
     param()
-```
 "This Script Has Help, Without Directly Writing Comments"
     
 } | .>PipeScript
-#### EXAMPLE 2
+```
+> EXAMPLE 2
+
 ```PowerShell
 {
     param(
@@ -40,8 +42,8 @@ The Help Transpiler allows you to write inline help without directly writing com
     )
 } | .>PipeScript
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 {
     param(
@@ -50,7 +52,6 @@ The Help Transpiler allows you to write inline help without directly writing com
     )
 } | .>PipeScript
 ```
-
 
 
 ---
