@@ -26,7 +26,8 @@ PipeScript can be embedded in a Plain Old Document block that starts with ```=be
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     $HelloWorldPerl = @'
@@ -35,11 +36,11 @@ $msg = "hello", "hi", "hey", "howdy" | Get-Random
 "print(" + '"' + $msg + '");'
 =end   PipeScript
 '@
-```
 [Save(".\HelloWorld.ps1.pl")]$HelloWorldPerl
 }
 
 .> .\HelloWorld.ps1.pl
+```
 
 
 ---
