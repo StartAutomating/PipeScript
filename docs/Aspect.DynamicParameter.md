@@ -23,18 +23,18 @@ It can create dynamic parameters from one or more input objects or scripts.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Get-Command Get-Command | 
     Aspect.DynamicParameter
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 Get-Command Get-Process | 
     Aspect.DynamicParameter -IncludeParameter Name # Select -Expand Keys | Should -Be Name
 ```
-
 
 
 ---
