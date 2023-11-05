@@ -24,30 +24,30 @@ The all keyword is a powerful way to accomplish several useful scenarios with a 
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 & {
 $glitters = @{glitters=$true}
 all that glitters
 }.Transpile()
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 function mallard([switch]$Quack) { $Quack }
 Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Unique
 all functions that quack are ducks
 Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Unique
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 . {
     $numbers = 1..100
     $null = all $numbers where { ($_ % 2) -eq 1 } are odd
     $null = all $numbers where { ($_ % 2) -eq 0 } are even
 }.Transpile()
-```
 @(
     . { all even $numbers }.Transpile()
 ).Length
@@ -55,6 +55,7 @@ Get-Command mallard | Get-Member  | Select-Object -ExpandProperty TypeName -Uniq
 @(
     . { all odd $numbers }.Transpile()
 ).Length
+```
 
 
 ---
