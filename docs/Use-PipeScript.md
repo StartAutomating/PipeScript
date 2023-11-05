@@ -33,11 +33,11 @@ This command must be used by it's smart aliases (for example ```.>PipeScript```)
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 PipeScript # Returns an unchanged ScriptBlock, because there was nothing to run.
 ```
-
 
 
 ---
