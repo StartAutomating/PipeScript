@@ -26,7 +26,8 @@ PipeScript can be included in a Python string that starts and ends with ```{}```
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
    $pythonContent = @'
@@ -39,8 +40,8 @@ print("$msg")
 '@
     [OutputFile('.\HelloWorld.ps1.py')]$PythonContent
 }
-```
 .> .\HelloWorld.ps1.py
+```
 
 
 ---
