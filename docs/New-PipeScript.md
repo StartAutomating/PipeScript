@@ -24,35 +24,31 @@ This allow you to create scripts dynamically.
 
 
 ### Examples
-#### EXAMPLE 1
+Without any parameters, this will make an empty script block
+
 ```PowerShell
-# Without any parameters, this will make an empty script block
 New-PipeScript # Should -BeOfType([ScriptBlock])
 ```
+We can use -AutoParameter to automatically populate parameters:
 
-#### EXAMPLE 2
 ```PowerShell
-# We can use -AutoParameter to automatically populate parameters:
 New-PipeScript -ScriptBlock { $x + $y} -AutoParameter
 ```
+We can use -AutoParameter and -AutoParameterType to automatically make all parameters a specific type:
 
-#### EXAMPLE 3
 ```PowerShell
-# We can use -AutoParameter and -AutoParameterType to automatically make all parameters a specific type:
 New-PipeScript -ScriptBlock { $x, $y } -AutoParameter -AutoParameterType double
 ```
+We can provide a -FunctionName to make a function.
+New-PipeScript transpiles the scripts it generates, so this will also declare the function.
 
-#### EXAMPLE 4
 ```PowerShell
-# We can provide a -FunctionName to make a function.
-# New-PipeScript transpiles the scripts it generates, so this will also declare the function.
 New-PipeScript -ScriptBlock { Get-Random -Min 1 -Max 20 } -FunctionName ANumberBetweenOneAndTwenty
 ANumberBetweenOneAndTwenty # Should -BeLessThan 21
 ```
+We can provide parameters as a dictionary.                
 
-#### EXAMPLE 5
 ```PowerShell
-# We can provide parameters as a dictionary.                
 New-PipeScript -Parameter @{"foo"=@{
     Name = "foo"
     Help = 'Foobar'
@@ -61,11 +57,10 @@ New-PipeScript -Parameter @{"foo"=@{
     Type = "string"
 }}
 ```
+We can provide parameters from .NET reflection.
+We can provide additional parameter help with -ParameterHelp
 
-#### EXAMPLE 6
 ```PowerShell
-# We can provide parameters from .NET reflection.
-# We can provide additional parameter help with -ParameterHelp
 New-PipeScript -Parameter ([Net.HttpWebRequest].GetProperties()) -ParameterHelp @{
     Accept='
 HTTP Accept.
@@ -73,10 +68,9 @@ HTTP Accept indicates what content types the web request will accept as a respon
 '
 }
 ```
+If a .NET type has XML Documentation, this can generate parameter help.
 
-#### EXAMPLE 7
 ```PowerShell
-# If a .NET type has XML Documentation, this can generate parameter help.
 New-PipeScript -FunctionName New-TableControl -Parameter (
     [Management.Automation.TableControl].GetProperties()
 ) -Process {
@@ -84,8 +78,8 @@ New-PipeScript -FunctionName New-TableControl -Parameter (
 } -Synopsis 'Creates a table control'
 Get-Help New-TableControl -Parameter *
 ```
+> EXAMPLE 8
 
-#### EXAMPLE 8
 ```PowerShell
 $CreatedCommands = 
     [Management.Automation.TableControl],
@@ -98,7 +92,6 @@ $CreatedCommands =
             } -Synopsis {
                 "Creates, Changes, or Gets $($_.Name)"
             }
-```
 New-TableControl -Headers @(
     New-TableControlColumnHeader -Label "First" -Alignment Left -Width 10
     New-TableControlColumnHeader -Label "Second" -Alignment Center -Width 20
@@ -116,6 +109,7 @@ New-TableControl -Headers @(
         )
     )
 )
+```
 
 
 ---
