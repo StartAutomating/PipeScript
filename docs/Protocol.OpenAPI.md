@@ -23,9 +23,9 @@ This protocol will generate a PowerShell script to communicate with an OpenAPI.
 
 
 ### Examples
-#### EXAMPLE 1
+We can easily create a command that talks to a single REST api described in OpenAPI.
+
 ```PowerShell
-# We can easily create a command that talks to a single REST api described in OpenAPI.
 Import-PipeScript {
     function Get-GitHubIssue
     {
@@ -36,10 +36,9 @@ Import-PipeScript {
 }
 Get-GitHubIssue -Owner StartAutomating -Repo PipeScript
 ```
+We can also make a general purpose command that talks to every endpoint in a REST api.
 
-#### EXAMPLE 2
 ```PowerShell
-# We can also make a general purpose command that talks to every endpoint in a REST api.
 Import-PipeScript {
     function GitHubApi
     {
@@ -49,20 +48,18 @@ Import-PipeScript {
 }
 GitHubApi '/zen'
 ```
+We can also use OpenAPI as a command.  Just pass a URL, and get back a script block.
 
-#### EXAMPLE 3
 ```PowerShell
-# We can also use OpenAPI as a command.  Just pass a URL, and get back a script block.
 openapi https://raw.githubusercontent.com/openai/openai-openapi/master/openapi.yaml#/models/get
 ```
+> EXAMPLE 4
 
-#### EXAMPLE 4
 ```PowerShell
 $TranspiledOpenAPI = { openapi https://raw.githubusercontent.com/openai/openai-openapi/master/openapi.yaml#/models/get } |
     Use-PipeScript
 & $TranspiledOpenAPI # Should -BeOfType ([ScriptBlock])
 ```
-
 
 
 ---
