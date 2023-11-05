@@ -22,7 +22,8 @@ Validates that an object has one or more property names.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     param(
@@ -31,8 +32,8 @@ Validates that an object has one or more property names.
     )
 } | .>PipeScript
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 [PSCustomObject]@{a='a';b='b'} |
     .> {
@@ -41,10 +42,11 @@ Validates that an object has one or more property names.
         [vfp]
         $InputObject
         )
-```
 $InputObject
     }
-#### EXAMPLE 3
+```
+> EXAMPLE 3
+
 ```PowerShell
 @{a='a'} |
     .> {
@@ -53,9 +55,9 @@ $InputObject
         [vfp]
         $InputObject
         )
-```
 $InputObject
     }
+```
 
 
 ---
