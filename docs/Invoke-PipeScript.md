@@ -49,18 +49,17 @@ Invoke-PipeScript can also use a number of Abstract Syntax Tree elements as comm
 
 
 ### Examples
-#### EXAMPLE 1
+PipeScript is a superset of PowerShell.
+So a hello world in PipeScript is the same as a "Hello World" in PowerShell:
+
 ```PowerShell
-# PipeScript is a superset of PowerShell.
-# So a hello world in PipeScript is the same as a "Hello World" in PowerShell:
-```
 Invoke-PipeScript { "hello world" } # Should -Be "Hello World"
-#### EXAMPLE 2
+```
+Invoke-PipeScript will invoke a command, ScriptBlock, file, or AST element as PipeScript.
+
 ```PowerShell
-# Invoke-PipeScript will invoke a command, ScriptBlock, file, or AST element as PipeScript.
 Invoke-PipeScript { all functions } # Should -BeOfType ([Management.Automation.FunctionInfo])
 ```
-
 
 
 ---
