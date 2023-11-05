@@ -42,7 +42,8 @@ It will run other converters as directed by the source code.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     function [explicit]ExplicitOutput {
@@ -51,8 +52,8 @@ It will run other converters as directed by the source code.
     }
 } | .>PipeScript
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 {        
     [minify]{
@@ -63,28 +64,27 @@ It will run other converters as directed by the source code.
     }
 } | .>PipeScript
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 .\PipeScript.psx.ps1 -ScriptBlock {
     [bash]{param([string]$Message) $message}
 }
 ```
+> EXAMPLE 4
 
-#### EXAMPLE 4
 ```PowerShell
 .\PipeScript.psx.ps1 -ScriptBlock {
     [explicit]{1;2;3;echo 4} 
 }
 ```
+> EXAMPLE 5
 
-#### EXAMPLE 5
 ```PowerShell
 {
     function [ProxyCommand<'Get-Process'>]GetProcessProxy {}
 } | .>PipeScript
 ```
-
 
 
 ---
