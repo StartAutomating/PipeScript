@@ -27,7 +27,8 @@ When used on a ```[Management.Automation.Language.VariableExpressionAst]``` will
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     param(
@@ -37,7 +38,6 @@ When used on a ```[Management.Automation.Language.VariableExpressionAst]``` will
     )
 } | .>PipeScript
 ```
-
 
 
 ---
