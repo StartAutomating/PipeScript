@@ -41,12 +41,12 @@ rem }
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Invoke-PipeScript {
     $VBScript = '    
 rem {
-```
 Uncommented lines between these two points will be ignored
 
 rem # Commented lines will become PipeScript / PowerShell.
@@ -59,6 +59,7 @@ rem }
 }
 
 Invoke-PipeScript .\HelloWorld.ps1.vbs
+```
 
 
 ---
