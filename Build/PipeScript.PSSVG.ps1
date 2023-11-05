@@ -39,12 +39,12 @@ svg -ViewBox 1920,1080 @(
     $circleBottom = (1920/2), ((1080/2)+$radius)
     $circleLeft   = ((1920/2) - $radius),((1080/2))
     SVG.ArcPath -Start $circleLeft -End $circleBottom -Sweep -Radius $radius -Large |
-        SVG.ArcPath -Radius $radius -End $circleLeft -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth 1.25 @(
+        SVG.ArcPath -Radius $radius -End $circleLeft -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth 1.25 -Content @(
             svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($RotateEvery.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
         )
 
     SVG.ArcPath -Start $circleRight -End $circleTop -Sweep -Radius $radius -Large |
-        SVG.ArcPath -Radius $radius -End $circleRight -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth 1.25 @(
+        SVG.ArcPath -Radius $radius -End $circleRight -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth 1.25 -Content @(
             svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($RotateEvery.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
         )     
 ) -OutputPath (
