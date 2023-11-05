@@ -32,19 +32,20 @@ Joins ScriptBlocks written in PowerShell or PipeScript.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Get-Command Join-PipeScript | Join-PipeScript
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 {param([string]$x)},
 {param([string]$y)} | 
     Join-PipeScript # Should -BeLike '*param(*$x,*$y*)*'
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 {
     begin {
@@ -56,14 +57,13 @@ Get-Command Join-PipeScript | Join-PipeScript
     }
 } | Join-PipeScript
 ```
+> EXAMPLE 4
 
-#### EXAMPLE 4
 ```PowerShell
 {
     param($x = 1)
 } | Join-PipeScript -ExcludeParameter x
 ```
-
 
 
 ---
