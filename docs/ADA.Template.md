@@ -28,12 +28,12 @@ Because ADA Scripts only allow single-line comments, this is done using a pair o
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Invoke-PipeScript {
     $AdaScript = '    
 with Ada.Text_IO;
-```
 procedure Hello_World is
 begin
     -- {
@@ -51,6 +51,7 @@ end Hello_World;
 }
 
 Invoke-PipeScript .\HelloWorld.ps1.adb
+```
 
 
 ---
