@@ -84,8 +84,10 @@ Valid Values:
 * Aspect
 * AutomaticVariable
 * BuildScript
+* Compiler
 * Interface
 * Optimizer
+* Parser
 * Partial
 * PipeScriptNoun
 * PostProcessor
