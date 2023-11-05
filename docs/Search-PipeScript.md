@@ -33,7 +33,8 @@ Search-PipeScript can search using an -ASTCondition -or -ASTType or with a -Regu
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Search-PipeScript -ScriptBlock {
     $a
@@ -42,7 +43,6 @@ Search-PipeScript -ScriptBlock {
     "text"
 } -AstType Variable
 ```
-
 
 
 ---
