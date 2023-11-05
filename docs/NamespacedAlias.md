@@ -24,13 +24,13 @@ Namespaces are used to logically group functionality in a way that can be effici
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 . {
     PipeScript.Template alias .\Transpilers\Templates\*.psx.ps1
 }.Transpile()
 ```
-
 
 
 ---
