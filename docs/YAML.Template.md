@@ -26,7 +26,8 @@ PipeScript can be included in a multiline Yaml string with the Key PipeScript an
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     $yamlContent = @'
@@ -34,7 +35,6 @@ PipeScript: |
 {
 @{a='b'}
 }
-```
 List:
 - PipeScript: |
   {
@@ -53,6 +53,7 @@ List:
 }
 
 .> .\HelloWorld.ps1.yaml
+```
 
 
 ---
