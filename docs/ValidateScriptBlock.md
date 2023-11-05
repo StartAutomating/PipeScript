@@ -22,7 +22,8 @@ Validates Script Blocks for a number of common scenarios.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     param(
@@ -30,10 +31,11 @@ Validates Script Blocks for a number of common scenarios.
     [ScriptBlock]
     $ScriptBlock
     )
-```
 $ScriptBlock
 } | .>PipeScript
-#### EXAMPLE 2
+```
+> EXAMPLE 2
+
 ```PowerShell
 {
     param(
@@ -41,10 +43,11 @@ $ScriptBlock
     [ScriptBlock]
     $ScriptBlock
     )
-```
 $ScriptBlock
 } | .>PipeScript
-#### EXAMPLE 3
+```
+> EXAMPLE 3
+
 ```PowerShell
 {
     param(
@@ -52,9 +55,9 @@ $ScriptBlock
     [ScriptBlock]
     $ScriptBlock
     )
-```
 $ScriptBlock
 } | .>PipeScript
+```
 
 
 ---
