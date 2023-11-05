@@ -26,7 +26,8 @@ PipeScript can be included in a TOML string that starts and ends with ```{}```, 
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     $tomlContent = @'
@@ -35,8 +36,8 @@ RandomNumber = """{Get-Random}"""
 '@
     [OutputFile('.\RandomExample.ps1.toml')]$tomlContent
 }
-```
 .> .\RandomExample.ps1.toml
+```
 
 
 ---
