@@ -28,9 +28,9 @@ Then the body of Automatic.Variable.MyCallstack will be added to the top of the 
 
 
 ### Examples
-#### EXAMPLE 1
+Declare an automatic variable, MyCallStack
+
 ```PowerShell
-# Declare an automatic variable, MyCallStack
 Import-PipeScript {
     Automatic.Variable function MyCallstack {
         Get-PSCallstack
@@ -42,7 +42,6 @@ Import-PipeScript {
     $MyCallstack
 } | Use-PipeScript
 ```
-
 
 
 ---
