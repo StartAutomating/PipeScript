@@ -22,11 +22,11 @@ $MyCaller (aka $CallStackPeek) contains the CallstackFrame that called this comm
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Invoke-PipeScript { $myCaller }
 ```
-
 
 
 ---
