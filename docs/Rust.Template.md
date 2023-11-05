@@ -24,7 +24,8 @@ Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 $HelloWorldRust = HelloWorld_Rust.rs template '    
 fn main() {
@@ -34,8 +35,8 @@ fn main() {
 '
 "$HelloWorldRust"
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 $HelloWorldRust = HelloWorld_Rust.rs template '    
 $HelloWorld = {param([Alias('msg')]$message = "Hello world") "`"$message`""}
@@ -44,7 +45,6 @@ fn main() {
     println!("{}",msg);
 }
 '
-```
 $HelloWorldRust.Evaluate('hi')
 $HelloWorldRust.Save(@{Message='Hello'}) |
     Foreach-Object { 
@@ -56,7 +56,9 @@ $HelloWorldRust.Save(@{Message='Hello'}) |
             Write-Error "Go install Rust"
         }
     }
-#### EXAMPLE 3
+```
+> EXAMPLE 3
+
 ```PowerShell
 '    
 fn main() {
@@ -64,9 +66,10 @@ fn main() {
     println!("{}",msg);
 }
 ' | Set-Content .\HelloWorld_Rust.ps.rs
-```
 Invoke-PipeScript .\HelloWorld_Rust.ps.rs
-#### EXAMPLE 4
+```
+> EXAMPLE 4
+
 ```PowerShell
 $HelloWorld = {param([Alias('msg')]$message = "Hello world") "`"$message`""}
 "    
@@ -75,7 +78,6 @@ fn main() {
     println!(`"{}`",msg);
 }
 " | Set-Content .\HelloWorld_Rust.ps1.rs
-```
 Invoke-PipeScript .\HelloWorld_Rust.ps1.rs -Parameter @{message='hi'} |
     Foreach-Object { 
         $file = $_
@@ -86,6 +88,7 @@ Invoke-PipeScript .\HelloWorld_Rust.ps1.rs -Parameter @{message='hi'} |
             Write-Error "Go install Rust"
         }
     }
+```
 
 
 ---
