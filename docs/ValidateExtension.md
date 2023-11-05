@@ -24,7 +24,8 @@ This creates a [ValidatePattern] that will ensure the extension matches.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {        
     param(
@@ -33,25 +34,22 @@ This creates a [ValidatePattern] that will ensure the extension matches.
     )
 } |.>PipeScript
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
-```PowerShell
 {
     param(
     [ValidateExtension(Extension=".cs", ".ps1")]
     $FilePath
     )
-```
 $FilePath
 } -Parameter @{FilePath=".ps1"}
-#### EXAMPLE 3
-```PowerShell
+> EXAMPLE 3
+
 {
     param(
     [ValidateExtension(Extension=".cs", ".ps1")]
     $FilePath
     )
-```
 $FilePath
 } -Parameter @{FilePath="foo.txt"}
 
