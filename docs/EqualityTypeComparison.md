@@ -26,7 +26,8 @@ This transpiler enables equality and type comparison with ===.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
     $a = 1
@@ -36,8 +37,8 @@ Invoke-PipeScript -ScriptBlock {
     }
 }
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
     $One = 1
@@ -50,8 +51,8 @@ Invoke-PipeScript -ScriptBlock {
     }
 }
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
     if ($null === $null) {
@@ -59,8 +60,8 @@ Invoke-PipeScript -ScriptBlock {
     }
 }
 ```
+> EXAMPLE 4
 
-#### EXAMPLE 4
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
     $zero = 0
@@ -69,15 +70,14 @@ Invoke-PipeScript -ScriptBlock {
     }
 }
 ```
+> EXAMPLE 5
 
-#### EXAMPLE 5
 ```PowerShell
 {
     $a = "b"
     $a === "b"
 } | .>PipeScript
 ```
-
 
 
 ---
