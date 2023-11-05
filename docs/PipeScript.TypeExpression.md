@@ -22,13 +22,13 @@ Type Expressions may be transpiled.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     [include[a.ps1]]
 } | .>PipeScript
 ```
-
 
 
 ---
