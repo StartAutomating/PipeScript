@@ -22,7 +22,8 @@ Gets Exported Commands from a module.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     $PipeScriptModule = Get-Module PipeScript
@@ -30,7 +31,6 @@ Gets Exported Commands from a module.
     $exports
 }
 ```
-
 
 
 ---
