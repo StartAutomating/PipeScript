@@ -22,11 +22,11 @@ Outputs a regular expression that will match any possible pattern.
 
 
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Aspect.ModuleCommandPattern -Module PipeScript # Should -BeOfType ([Regex])
 ```
-
 
 
 ---
