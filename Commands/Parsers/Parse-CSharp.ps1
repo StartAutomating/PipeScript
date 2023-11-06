@@ -9,6 +9,7 @@ function Parse.CSharp {
         Parse-CSharp -Source '"hello world";'
     #>
     [OutputType('Microsoft.CodeAnalysis.SyntaxTree')]
+    [Alias('Parse-CSharp')]
     param(
     # The source.  Can be a string or a file.
     [Parameter(ValueFromPipeline)]
@@ -50,7 +51,7 @@ function Parse.CSharp {
         while ($accumulate.Count) {
             $dequeue = $accumulate.Dequeue()
             if ($total -gt 1) {
-                Write-Progress "Parsing PowerShell" " " -Id $script:LastProgressID -PercentComplete $(
+                Write-Progress "Parsing CSharp" " " -Id $script:LastProgressID -PercentComplete $(
                     $count++
                     [Math]::Min($count / $total, 1) * 100
                 )
