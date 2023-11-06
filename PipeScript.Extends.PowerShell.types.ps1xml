@@ -1,0 +1,2421 @@
+<!-- Generated with EZOut 2.0.3: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
+<Types>
+  <Type>
+    <Name>System.Management.Automation.AliasInfo</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Namespace</Name>
+        <ReferencedMemberName>CommandNamespace</ReferencedMemberName>
+      </AliasProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.ApplicationInfo</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Namespace</Name>
+        <ReferencedMemberName>CommandNamespace</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptProperty>
+        <Name>Root</Name>
+        <GetScriptBlock>
+                        if ($this.'.Root') {
+    return $this.'.Root'    
+}
+
+$nextRoot = $this.Source | Split-Path
+:findingRoot do {
+    
+    $lastRoot = $nextRoot
+    $lastRootName = $lastRoot | Split-Path -Leaf
+
+    if ($lastRootName -as [Version]) {
+        $lastRootName = $lastRoot | Split-Path | Split-Path -Leaf
+    }
+
+    foreach ($fileNameThatIndicatesRoot in 'LICENSE', 'LICENSE.txt', 
+        "$LastRootName.psd1", "$LastRootName.psm1", ".git") {
+        $lookingForPath = Join-Path $lastRoot $fileNameThatIndicatesRoot
+        if (Test-Path $lookingForPath) {
+            break findingRoot
+        }
+    }
+
+    $nextRoot = $nextRoot | Split-Path
+} while ($nextRoot)
+
+$this | Add-Member NoteProperty '.Root' "$lastRoot" -Force
+$this.'.Root'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        $this | Add-Member NoteProperty ".Root" $args -Force
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.Language.Ast</Name>
+    <Members>
+      <ScriptMethod>
+        <Name>ConvertFromAST</Name>
+        <Script>
+                        param()
+
+return $this
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>GetLineage</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Gets AST Lineage
+.DESCRIPTION
+    Gets the Lineage of an Abstract Syntax Tree element.
+    
+    The Lineage is all of the Abstract Syntax Tree's parents.
+#&gt;
+$thisParent = $this.Parent
+while ($thisParent) {
+    $thisParent
+    $thisParent  = $thisParent.Parent
+}
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>Transpile</Name>
+        <Script>
+                        [ScriptBlock]::Create(
+    "$this"
+) | .&gt;PipeScript
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptProperty>
+        <Name>Tokens</Name>
+        <GetScriptBlock>
+                        $text = $this.Extent.ToString()
+    
+$previousToken = $null
+$tokenCount = 0
+@(foreach ($token in [Management.Automation.PSParser]::Tokenize($text, [ref]$null)) {
+    Add-Member NoteProperty Text $text -Force -InputObject $token
+    Add-Member NoteProperty PreviousToken $previousToken -Force -InputObject $token
+    if ($token.Type -in 'Variable', 'String') {
+        $realContent = $text.Substring($token.Start, $token.Length)
+        Add-Member NoteProperty Content $realContent  -Force -InputObject $token
+    }
+    $previousToken = $token
+    $tokenCount++
+    $token            
+})
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Transpilers</Name>
+        <GetScriptBlock>
+                        $scriptText = $this.Extent.ToString()
+
+# If the ScriptBlock had attributes, we'll add them to a special list of things that will be transpiled first.
+    
+# Find all AST elements within the script block.
+$astList = @($this.FindAll({$true}, $false))
+
+# At various points within transpilation, we will be skipping processing until a known end pointer.  For now, set this to null.
+$skipUntil  = 0
+# Keep track of the offset from a starting position as well, for the same reason.
+$myOffset   = 0
+
+# Walk over each item in the abstract syntax tree.
+:NextAstItem foreach ($item in $astList) {
+    # If skipUntil was set,
+    if ($skipUntil) {
+        # find the space between now and the last known offset.
+        try {
+            $newOffset = $scriptText.IndexOf($item.Extent.Text, $myOffset)
+            if ($newOffset -eq -1) { continue }
+            $myOffset  = $newOffset
+        } catch {
+            $ex =$_
+            $null = $null
+        }
+        if ($myOffset -lt $skipUntil) { # If this is before our skipUntil point
+            continue # ignore this AST element.
+        }
+        $skipUntil = $null # If we have reached our skipUntil point, let's stop skipping.
+    }
+    # otherwise, find if any pipescripts match this AST
+
+    $foundTranspilers = Get-Transpiler -CouldPipe $item -ValidateInput $item
+
+    if ($foundTranspilers) {
+        foreach ($transpiler in $foundTranspilers) {
+            [PSCustomObject][Ordered]@{
+                PSTypeName = 'PipeScript.Transpiler.Location'
+                Transpiler = 
+                    if ($Transpiler.ExtensionInputObject.ResolvedCommand) {
+                        @($Transpiler.ExtensionInputObject.ResolvedCommand) -ne $null
+                    } else {
+                        $Transpiler.ExtensionCommand
+                    }
+                AST = $item
+            }
+        }
+        
+        $start = $scriptText.IndexOf($item.Extent.Text, $myOffset) # determine the end of this AST element
+        $end   = $start + $item.Extent.Text.Length
+        $skipUntil = $end # set SkipUntil
+    }
+}
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.Language.AttributeAst</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Args</Name>
+        <ReferencedMemberName>ArgumentList</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Arguments</Name>
+        <ReferencedMemberName>ArgumentList</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Parameters</Name>
+        <ReferencedMemberName>Parameter</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptProperty>
+        <Name>ArgumentList</Name>
+        <GetScriptBlock>
+                        $Parameter    = [Ordered]@{}
+$ArgumentList = @()
+# Collect all of the arguments of the attribute, in the order they were specified.
+$argsInOrder = @(
+    @($this.PositionalArguments) + @($this.NamedArguments) | 
+    Sort-Object { $_.Extent.StartOffset}
+)
+
+
+# Now we need to map each of those arguments into either named or positional arguments.
+foreach ($attributeArg in $argsInOrder) {
+    # Named arguments are fairly straightforward:                                
+    if ($attributeArg -is [Management.Automation.Language.NamedAttributeArgumentAst]) {
+        $argName = $attributeArg.ArgumentName
+        $argAst  = $attributeArg.Argument
+        $parameter[$argName] =
+            if ($argName -eq $argAst) { # If the argument is the name,
+                $true # treat it as a [switch] parameter.
+            }
+            # If the argument value was an ScriptBlockExpression
+            else {
+                $argAst
+            }                        
+    } else {
+        # If we are a positional parameter, for the moment:
+        if ($parameter.Count) {
+            # add it to the last named parameter.
+            $parameter[@($parameter.Keys)[-1]] = 
+                @() + $parameter[@($parameter.Keys)[-1]] + $argAst
+        } else {
+            # Or add it to the list of string arguments.
+            $ArgumentList += 
+                $attributeArg.ConvertFromAst()                            
+        }
+    }
+}
+
+return $ArgumentList
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Parameter</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the parameters of an attribute
+.DESCRIPTION
+    Gets the named parameters of an attribute.
+.EXAMPLE
+    {
+        [AnAttribute(Parameter='Value')]$null
+    }.Ast.EndBlock.Statements[0].PipelineElements[0].Expression.Attribute.Parameters
+#&gt;
+$Parameter    = [Ordered]@{}
+# Collect all of the arguments of the attribute, in the order they were specified.
+$argsInOrder = @(
+    @($this.PositionalArguments) + @($this.NamedArguments) | 
+    Sort-Object { $_.Extent.StartOffset}
+)
+
+# Now we need to map each of those arguments into either named or positional arguments.
+foreach ($attributeArg in $argsInOrder) {
+    # Named arguments are fairly straightforward:                                
+    if ($attributeArg -is [Management.Automation.Language.NamedAttributeArgumentAst]) {
+        $argName = $attributeArg.ArgumentName
+        $argAst  = $attributeArg.Argument
+        $parameter[$argName] =
+            if ($argName -eq $argAst) { # If the argument is the name,
+                $true # treat it as a [switch] parameter.
+            }
+            # If the argument value was an ScriptBlockExpression
+            else {
+                $argAst.ConvertFromAst()
+            }
+    } else {
+        # If we are a positional parameter, for the moment:
+        if ($parameter.Count) {
+            # add it to the last named parameter.
+            $parameter[@($parameter.Keys)[-1]] = 
+                @() + $parameter[@($parameter.Keys)[-1]] + $attributeArg.ConvertFromAst()
+        }
+    }
+}
+
+return $Parameter
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ResolvedCommand</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Resolves an Attribute to a CommandInfo
+.DESCRIPTION
+    Resolves an Attribute to one or more CommandInfo.
+.EXAMPLE
+    {
+        [InvokePipeScript()]$null
+    }.Ast.EndBlock.Statements[0].PipelineElements[0].Expression.Attribute.ResolvedCommand
+.EXAMPLE
+    {
+        [Microsoft.PowerShell.Core.GetCommand()]$null
+    }.Ast.EndBlock.Statements[0].PipelineElements[0].Expression.Attribute.ResolvedCommand
+.EXAMPLE
+    {
+        [Get_Command()]$null
+    }.Ast.EndBlock.Statements[0].PipelineElements[0].Expression.Attribute.ResolvedCommand
+.EXAMPLE
+    {
+        [GetCommand()]$null
+    }.Ast.EndBlock.Statements[0].PipelineElements[0].Expression.Attribute.ResolvedCommand
+.EXAMPLE
+    {
+        [cmd()]$null  
+    }.EndBlock.Statements[0].PipelineElements[0].Expression.Attribute.ResolvedCommand
+#&gt;
+# Get the name of the transpiler.
+$transpilerStepName  = 
+    if ($this.TypeName.IsGeneric) {
+        $this.TypeName.TypeName.Name
+    } else {
+        $this.TypeName.Name
+    }
+$decamelCase = [Regex]::new('(?&lt;=[a-z])(?=[A-Z])')
+@(
+    #    If a Transpiler exists by that name, it will be returned first.
+    Get-Transpiler -TranspilerName $transpilerStepName
+    # Then, any periods in the attribute name will be converted to slashes, 
+    $fullCommandName = $transpilerStepName -replace '\.','\' -replace 
+        '_','-' # and any underscores to dashes.
+
+    # Then, the first CamelCased code will have a - injected in between the CamelCase.    
+    $fullCommandName = $decamelCase.Replace($fullCommandName, '-', 1)
+    # Now we will try to find the command.
+    $ExecutionContext.SessionState.InvokeCommand.GetCommand($fullCommandName, 'All')
+)
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.Language.CommandAst</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Args</Name>
+        <ReferencedMemberName>ArgumentList</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Arguments</Name>
+        <ReferencedMemberName>ArgumentList</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Parameters</Name>
+        <ReferencedMemberName>Parameter</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptMethod>
+        <Name>AsSentence</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Maps Natural Language Syntax to PowerShell Parameters
+.DESCRIPTION
+    Maps a statement in natural language syntax to a set of PowerShell parameters.
+
+    All parameters will be collected.
+    
+    For the purposes of natural language processing ValueFromPipeline will be ignored.
+    
+    The order the parameters is declared takes precedence over Position attributes.
+.NOTES
+    Each potential command can be thought of as a simple sentence with (mostly) natural syntax
+    
+    command &lt;parametername&gt; ...&lt;parameterargument&gt; (etc)
+        
+    either more natural or PowerShell syntax should be allowed, for example:
+
+    ~~~PowerShell
+    all functions can Quack {
+        "quack"
+    }
+    ~~~
+
+    would map to the command all and the parameters -Function and -Can (with the arguments Quack and {"quack"})
+
+    Assuming -Functions was a `[switch]` or an alias to a `[switch]`, it will match that `[switch]` and only that switch.
+
+    If -Functions was not a `[switch]`, it will match values from that point.
+
+    If the parameter type is not a list or PSObject, only the next parameter will be matched.
+
+    If the parameter type *is* a list or an PSObject, 
+    or ValueFromRemainingArguments is present and no named parameters were found,
+    then all remaining arguments will be matched until the next named parameter is found.
+    
+    _Aliasing is important_ when working with a given parameter.
+    The alias, _not_ the parameter name, will be what is mapped in .Parameters.
+#&gt;
+param()
+
+# Because we want to have flexible open-ended arguments here, we do not hard-code any arguments:
+# we parse them.
+
+# We're trying to determine:
+# Was it right to left?
+$IsRightToLeft   = $false
+# Are there specific commands it might be?
+$SpecificCommands = @()
+# If so, what are their names?
+$specificCommandNames = @()
+
+# We want to start after the first element by default
+$startingElementIndex = 1
+
+for ($argIndex =0 ; $argIndex -lt $args.Count; $argIndex++) {
+    $arg = $args[$argIndex]
+    # If the argument was an int and greater than one
+    if ($arg -is [int] -and $arg -gt 1) {
+        $startingElementIndex =  $arg # start parsing that many words in (#479).
+        continue
+    }
+    
+    $commandInfos = $arg -as [Management.Automation.CommandInfo[]]
+    if ($commandInfos) {
+        foreach ($cmdInfo in $commandInfos) {
+            $SpecificCommands += $cmdInfo
+            $specificCommandNames += $cmdInfo.Name
+        }        
+        continue
+    }    
+    if ($arg -match '^[-/]{0,2}(?:Is)?RightToLeft$') {
+        # If -RightToLeft was passed
+        $IsRightToLeft = $true
+        continue
+    }
+
+    $argCommands = @(
+        $foundTranspiler = Get-Transpiler -TranspilerName $arg 
+        if ($foundTranspiler) {
+            foreach ($transpiler in $foundTranspiler) {
+                if ($transpiler.Validate($arg)) { 
+                    $transpiler
+                }
+            }
+        } else {
+            $ExecutionContext.SessionState.InvokeCommand.GetCommands($arg, 'All', $true)
+        }
+    )
+
+    if ($argCommands) {        
+        $SpecificCommands += $argCommands
+        continue
+    }
+}
+
+
+$mappedParameters = [Ordered]@{}
+$sentence = [Ordered]@{
+    PSTypeName='PipeScript.Sentence'
+    Command   = $null
+}
+
+
+$commandAst = $this
+$commandElements = @($commandAst.CommandElements)
+# If we are going right to left, reverse the command elements
+
+
+if ($IsRightToLeft) {
+    [Array]::Reverse($commandElements)
+}
+
+
+$commandElements = # Walk thru each command element 
+    @(foreach ($element in $commandElements) {
+        # If the element is an array literal, expand it
+        if ($element -is [Management.Automation.Language.ArrayLiteralAst]) {
+            $element.Elements
+        } else {
+            # otherwise, include it as is.
+            $element
+        }
+    })
+
+# Now we have all of the words in a sentence.
+# We can still determine if an item in a list was in a list by inspecting it's parent.
+
+$sentences = @()
+if ($SpecificCommands) {    
+    $potentialCommands = $SpecificCommands
+    $potentialCommandNames = @($SpecificCommands | Select-Object -ExpandProperty Name)
+} else {
+
+    # The first command element should be the name of the command.
+    $firstCommandElement = $commandElements[0]
+    $commandName = ''
+    $potentialCommandNames = @()
+    $potentialCommands = 
+        @(    
+        if ($firstCommandElement.Value -and $firstCommandElement.StringConstantType -eq 'BareWord') {    
+            $commandName = $firstCommandElement.Value            
+            $foundTranspiler = Get-Transpiler -TranspilerName $commandName    
+            if ($foundTranspiler) {
+                foreach ($transpiler in $foundTranspiler) {
+                    if ($transpiler.Validate($commandAst)) { 
+                        $potentialCommandNames += $commandName
+                        $transpiler
+                    }
+                }
+            } else {
+                foreach ($foundCmd in $ExecutionContext.SessionState.InvokeCommand.GetCommands($commandName, 'All', $true)) {
+                    $foundCmd
+                    $potentialCommandNames += $commandName
+                }                
+            }
+        })
+
+    if (-not $potentialCommands) {
+        [PSCustomObject][Ordered]@{
+            PSTypeName = 'PipeScript.Sentence'
+            Keyword    = ''
+            Command    = $null
+            Arguments  = $commandElements[0..$commandElements.Length]
+        }
+    }
+}
+
+$mappedParameters = [Ordered]@{}
+
+if (-not $Script:SentenceWordCache) {
+    $Script:SentenceWordCache = @{}
+}
+
+$potentialCommandIndex = -1
+
+:nextPotentialCommand foreach ($potentialCommand in $potentialCommands) {
+    $potentialCommandIndex++
+    $commandName = $potentialCommandName = $potentialCommandNames[$potentialCommandIndex]
+
+    # To save time, generate a map of all potential bareword aliases for this command.
+    $potentialCommandBarewordMap = [Ordered]@{}
+    foreach ($parameterInfo in $potentialCommand.Parameters.Values) {
+        $potentialCommandBarewordMap[$parameterInfo.Name] = $parameterInfo
+        if ($parameterInfo.Aliases) {
+            foreach ($aliasName in $parameterInfo.Aliases) {
+                $potentialCommandBarewordMap[$aliasName] = $parameterInfo
+            }
+        }
+    }
+
+    # Cache the potential parameters
+    $potentialParameters = $potentialCommand.Parameters
+
+    # Assume the current parameter is empty,
+    $currentParameter  = ''
+    # the current parameter metadata is null,
+    $currentParameterMetadata = $null
+    # there is no current clause,
+    $currentClause = @()
+    # and there are no unbound parameters.            
+    $unboundParameters = @()
+    $clauses = @()
+
+    # Walk over each command element in a for loop (we may adjust the index when we match)
+    for ($commandElementIndex = $startingElementIndex ;$commandElementIndex -lt $commandElements.Count; $commandElementIndex++) {
+        $commandElement = $CommandElements[$commandElementIndex]
+        # by default, we assume we haven't found a parameter.
+        $parameterFound  = $false
+        
+        $barewordSequenece = 
+            @(for ($cei = $commandElementIndex; $cei  -lt $commandElements.Count; $cei++) {
+                if (
+                    $commandElements[$cei] -isnot [Management.Automation.Language.StringConstantExpressionAst] -or 
+                    $commandElements[$cei].StringConstantType -ne 'Bareword'
+                ) { break }
+                $commandElements[$cei].Value
+            })
+
+        # That assumption is quickly challenged if the AST type was CommandParameter
+        if ($commandElement -is [Management.Automation.Language.CommandParameterAst]) {
+            # If there were already clauses, finalize them before we start this clause
+            if ($currentClause) {                
+                $clauses += [PSCustomObject][Ordered]@{
+                    PSTypeName    = 'PipeScript.Sentence.Clause'
+                    Name          = if ($currentParameter) { $currentParameter} else { '' }
+                    ParameterName = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+                    Words         = $currentClause
+                }
+            }
+
+            $commandParameter = $commandElement
+            # In that case, we know the name they want to use for the parameter                      
+            $currentParameter = $commandParameter.ParameterName
+            
+            $currentClause = @($currentParameter)
+            $currentClauseValues = @()
+            # We need to get the parameter metadata as well.
+            $currentParameterMetadata = 
+                # If it was the real name of a parameter, this is easy
+                if ($potentialCommand.Parameters[$currentParameter]) {
+                    $potentialCommand.Parameters[$currentParameter]
+                    $parameterFound = $true
+                }
+                else {
+                    # Otherwise, we need to search each parameter for aliases.
+                    foreach ($cmdParam in $potentialCommand.Parameters.Values) {
+                        if ($cmdParam.Aliases -contains $currentParameter) {
+                            $parameterFound = $true
+                            $cmdParam
+                            break
+                        }                            
+                    }
+                }
+            
+            # If the parameter had an argument
+            if ($commandParameter.Argument) {
+                # Use that argument
+                if ($mappedParameters[$currentParameter]) {
+                    $mappedParameters[$currentParameter] = @($mappedParameters[$currentParameter]) + @(
+                        $commandParameter.Argument
+                    )                    
+                } else {
+                    $mappedParameters[$currentParameter] = $commandParameter.Argument
+                }
+                # and move onto the next element.                
+                $clauses += [PSCustomObject][Ordered]@{
+                    PSTypeName      = 'PipeScript.Sentence.Clause'
+                    Name            = if ($currentParameter) { $currentParameter} else { '' }
+                    ParameterName   = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+                    Words           = $currentClause
+                    ParameterValues = @($commandParameter.Argument)
+                }
+                $currentParameter = ''
+                $currentParameterMetadata = $null
+                
+                $currentClause = @()
+                $currentClauseValues = @()
+                continue
+            }
+            # Since we have found a parameter, we advance the index.
+            $commandElementIndex++
+        }
+        
+        # If the command element was a bareword, it could also be the name of a parameter
+        elseif ($barewordSequenece) {
+            # We need to know the name of the parameter as it was written.
+            # However, we also want to allow --parameters and /parameters,
+            $potentialParameterName = $barewordSequenece[0]
+            # therefore, we will compare against the potential name without leading dashes or slashes.
+            $parameterFound = $false
+
+            :MappedBareword for (
+                $barewordSequenceIndex = $barewordSequenece.Length - 1; 
+                $barewordSequenceIndex -ge 0;
+                $barewordSequenceIndex--
+            ) {
+                $combinedBareword = $barewordSequenece[0..$barewordSequenceIndex] -replace '^[-/]{0,}' -join ' '
+                if (-not $potentialCommandBarewordMap[$combinedBareword]) {
+                    continue
+                }
+
+                # If we are already in a clause
+                if ($currentClause) {
+                    # output the existing clause
+                    $clauses += [PSCustomObject][Ordered]@{
+                        PSTypeName      = 'PipeScript.Sentence.Clause'
+                        Name            = if ($currentParameter) { $currentParameter} else { '' }
+                        ParameterName   = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+                        Words           = $currentClause
+                        ParameterValues = $currentClauseValues
+                    }                         
+                }
+
+                # keep track of of it and advance the index.
+                $currentParameter = $combinedBareword
+                $currentParameterMetadata = $potentialCommandBarewordMap[$combinedBareword]                
+                
+                
+                $currentClause = @($commandElements[$commandElementIndex..($commandElementIndex + $barewordSequenceIndex)])
+                $currentClauseValues = @()
+                $commandElementIndex = $commandElementIndex +$barewordSequenceIndex + 1
+
+                $parameterFound = $true
+                break MappedBareword
+            }
+
+            
+            
+            
+            if (-not $parameterFound) {
+                foreach ($potentialParameter in $potentialCommand.Parameters.Values) {
+                    # If we did not, check the parameter for .ValueFromRemainingArguments
+                    foreach ($attr in $potentialParameter.Attributes) {
+                        if ($attr.ValueFromRemainingArguments) {
+                            $valueFromRemainingArgumentsParameter = $potentialParameter
+                            break
+                        }
+                    }
+                }
+            }            
+            
+        }
+
+        # If we have our current parameter, but it is a switch,
+        if ($currentParameter -and $currentParameterMetadata.ParameterType -eq [switch]) {        
+            $mappedParameters[$currentParameter] = $true # set it.
+            if ($currentClause) {                
+                $clauses += [PSCustomObject][Ordered]@{
+                    PSTypeName      = 'PipeScript.Sentence.Clause'
+                    Name            = if ($currentParameter) { $currentParameter} else { '' }
+                    ParameterName   = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+                    Words           = $currentClause
+                    ParameterValues = $currentClauseValues
+                }                                     
+            }
+            $currentParameter = '' # and clear the current parameter.
+            $currentClause = @()
+            $commandElementIndex--
+            continue            
+        }
+        elseif ($currentParameter) {
+            if ($mappedParameters.Contains($currentParameter) -and
+                $currentParameterMetadata.ParameterType -ne [Collections.IList] -and
+                $currentParameterMetadata.ParameterType -ne [PSObject] -and
+                $currentParameterMetadata.ParameterType -ne [Object]
+            ) {
+                $clauses += [PSCustomObject][Ordered]@{
+                    PSTypeName    = 'PipeScript.Sentence.Clause'
+                    Name          = if ($currentParameter) { $currentParameter} else { '' }
+                    ParameterName = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+                    Words         = $currentClause
+                    ParameterValues = $currentClauseValues
+                }
+                $currentParameter = $null
+                $currentParameterMetadata = $null
+                $currentClause = @()
+                $commandElementIndex--
+                continue
+            }
+        }
+
+        # Refersh our $commandElement, as the index may have changed.
+        $commandElement = $CommandElements[$commandElementIndex]
+
+        # If we have a ValueFromRemainingArguments but no current parameter mapped
+        if ($valueFromRemainingArgumentsParameter -and -not $currentParameter) {
+            # assume the ValueFromRemainingArguments parameter is the current parameter.
+            $currentParameter = $valueFromRemainingArgumentsParameter.Name
+            $currentParameterMetadata = $valueFromRemainingArgumentsParameter            
+            $currentClause = @()
+            $currentClauseValues = @()
+        }
+
+        $commandElementValue =
+            if ($commandElement.Value -and 
+                $commandElement -isnot [Management.Automation.Language.ExpandableStringExpressionAst]) {
+                $commandElement.Value
+            } 
+            elseif ($commandElement -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
+                [ScriptBlock]::Create($commandElement.Extent.ToString() -replace '^\{' -replace '\}$')
+            }
+            else {
+                $commandElement
+            }
+
+        # If we have a current parameter
+        if ($currentParameter) {
+            
+            # Map the current element to this parameter.
+            $mappedParameters[$currentParameter] =
+                if ($mappedParameters[$currentParameter]) {
+                    @($mappedParameters[$currentParameter]) + $commandElementValue
+                } else {
+                    $commandElementValue
+                }
+            $currentClause += $commandElement
+            $currentClauseValues = @(@($currentClauseValues) -ne $null) + $commandElementValue
+        } else {
+            # otherwise add the command element to our unbound parameters.
+            $unboundParameters += $commandElementValue                
+            $currentClause += $commandElement
+            $currentClauseValues = @(@($currentClauseValues) -ne $null) + $commandElementValue
+        }
+    }
+
+    if ($currentClause) {
+        $clauses += [PSCustomObject][Ordered]@{
+            PSTypeName       = 'PipeScript.Sentence.Clause'
+            Name             = if ($currentParameter) { $currentParameter} else { '' }
+            ParameterName    = if ($currentParameterMetadata) { $currentParameterMetadata.Name } else { '' }
+            Words            = $currentClause
+            ParameterValues  = $currentClauseValues
+        }                        
+    }
+
+    if ($potentialCommand -isnot [Management.Automation.ApplicationInfo] -and 
+        @($mappedParameters.Keys) -match '^[-/]') {
+        $keyIndex = -1
+        :nextParameter foreach ($mappedParamName in @($mappedParameters.Keys)) {
+            $keyIndex++
+            $dashAndSlashlessName = $mappedParamName -replace '^[-/]{0,}'
+            if ($potentialCommand.Parameters[$mappedParamName]) {
+                continue
+            } else {
+                foreach ($potentialParameter in $potentialCommand.Parameters) {
+                    if ($potentialParameter.Aliases -contains $mappedParamName) {
+                        continue nextParameter
+                    }
+                }
+                $mappedParameters.Insert($keyIndex, $dashAndSlashlessName, $mappedParameters[$mappedParamName])
+                $mappedParameters.Remove($mappedParamName)                
+            }
+
+        }
+    }
+
+    $sentence = 
+        [PSCustomObject]@{
+            PSTypeName = 'PipeScript.Sentence'
+            Keyword    = $potentialCommandName
+            Command    = $potentialCommand
+            Clauses    = $clauses
+            Parameters = $mappedParameters
+            Arguments  = $unboundParameters
+        }
+    $sentences+= $sentence
+    $sentence
+}
+                    </Script>
+      </ScriptMethod>
+      <ScriptProperty>
+        <Name>ArgumentList</Name>
+        <GetScriptBlock>
+                        $parameterAstType  = [Management.Automation.Language.CommandParameterAst]
+@(
+for (
+    $commandElementIndex = 1
+    $commandElementIndex -lt $this.CommandElements.Count
+    $commandElementIndex++
+)
+{
+    $commandElement = $this.CommandElements[$commandElementIndex]
+    $nextElement    = $this.CommandElements[$commandElementIndex + 1]
+    if ($commandElement -is $parameterAstType) {
+        if (-not $commandElement.Argument -and
+            $nextElement -and 
+            $nextElement -isnot $parameterAstType)  {
+            $commandElementIndex++
+        }
+    } else {
+        $commandElement.ConvertFromAst()  
+    }    
+}
+)
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>IsAssigned</Name>
+        <GetScriptBlock>
+                        $this.Parent.IsAssigned -as [bool]
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>IsPiped</Name>
+        <GetScriptBlock>
+                        ($this.Parent -is [Management.Automation.Language.PipelineAst]) -and
+($this.Parent.PipelineElements.Count -gt 1)
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>IsPipedFrom</Name>
+        <GetScriptBlock>
+                        if ($this.Parent -isnot [Management.Automation.Language.PipelineAst]) { return $false }
+$this.Parent.PipelineElements.IndexOf($this) -lt ($this.Parent.PipelineElements.Count - 1)
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>IsPipedTo</Name>
+        <GetScriptBlock>
+                        if ($this.Parent -isnot [Management.Automation.Language.PipelineAst]) { return $false }
+$this.Parent.PipelineElements.IndexOf($this) -gt 0
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Parameter</Name>
+        <GetScriptBlock>
+                        $commandAst = $this
+$NamedParameters = [Ordered]@{}
+$parameterAstType = [Management.Automation.Language.CommandParameterAst]
+
+for (
+    $commandElementIndex = 1
+    $commandElementIndex -lt $commandAst.CommandElements.Count
+    $commandElementIndex++
+)
+{
+    $commandElement = $commandAst.CommandElements[$commandElementIndex]
+    $nextElement    = $commandAst.CommandElements[$commandElementIndex + 1]
+    if ($commandElement -is $parameterAstType) {
+        if ($commandElement.Argument) {            
+            $NamedParameters[$commandElement.ParameterName] =                 
+                $commandElement.Argument.ConvertFromAst()
+        } elseif ($nextElement -and $nextElement -isnot $parameterAstType)  {
+            $NamedParameters[$commandElement.ParameterName] = 
+                $nextElement.ConvertFromAst()
+            $commandElementIndex++
+        } else {
+            $NamedParameters[$commandElement.ParameterName] = $true
+        }
+    }
+}
+
+$NamedParameters
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>PipelineLength</Name>
+        <GetScriptBlock>
+                        if ($this.Parent -isnot [Management.Automation.Language.PipelineAst]) { return $null }
+$this.Parent.PipelineElements.Count
+
+
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>PipelinePosition</Name>
+        <GetScriptBlock>
+                        if ($this.Parent -isnot [Management.Automation.Language.PipelineAst]) { return $null }
+$this.Parent.PipelineElements.IndexOf($this)
+
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ResolvedCommand</Name>
+        <GetScriptBlock>
+                        
+$commandName = $this.CommandElements[0].ToString()
+$foundTranspiler = Get-Transpiler -TranspilerName $commandName
+if ($foundTranspiler) {
+    foreach ($transpiler in $foundTranspiler) {
+        if ($transpiler.Validate($this)) { 
+            $transpiler
+        }
+    }
+} else {
+    $ExecutionContext.SessionState.InvokeCommand.GetCommands($commandName, 'All', $true)
+}
+
+
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.CommandInfo</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Categories</Name>
+        <ReferencedMemberName>Category</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Example</Name>
+        <ReferencedMemberName>Examples</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Link</Name>
+        <ReferencedMemberName>Links</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Order</Name>
+        <ReferencedMemberName>Rank</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptMethod>
+        <Name>CouldPipe</Name>
+        <Script>
+                        param([PSObject]$InputObject)
+
+:nextParameterSet foreach ($paramSet in $this.ParameterSets) {
+    if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
+    $params = @{}
+    $mappedParams = [Ordered]@{} # Create a collection of mapped parameters
+    # Walk thru each parameter of this command
+    :nextParameter foreach ($myParam in $paramSet.Parameters) {
+        # If the parameter is ValueFromPipeline
+        if ($myParam.ValueFromPipeline) {
+            $potentialPSTypeNames = @($myParam.Attributes.PSTypeName) -ne ''
+            if ($potentialPSTypeNames)  {                                
+                foreach ($potentialTypeName in $potentialPSTypeNames) {
+                    if ($potentialTypeName -and $InputObject.pstypenames -contains $potentialTypeName) {
+                        $mappedParams[$myParam.Name] = $params[$myParam.Name] = $InputObject
+                        continue nextParameter
+                    }
+                }                                    
+            }
+            # and we have an input object
+            elseif ($null -ne $inputObject -and
+                (
+                    # of the exact type
+                    $myParam.ParameterType -eq $inputObject.GetType() -or
+                    # (or a subclass of that type)
+                    $inputObject.GetType().IsSubClassOf($myParam.ParameterType) -or
+                    # (or an inteface of that type)
+                    ($myParam.ParameterType.IsInterface -and $InputObject.GetType().GetInterface($myParam.ParameterType))
+                )
+            ) {
+                # then map the parameter.
+                $mappedParams[$myParam.Name] = $params[$myParam.Name] = $InputObject
+            }
+        }
+    }
+    # Check for parameter validity.
+    foreach ($mappedParamName in @($mappedParams.Keys)) {
+        if (-not $this.IsParameterValid($mappedParamName, $mappedParams[$mappedParamName])) {
+            $mappedParams.Remove($mappedParamName)
+        }
+    }
+    if ($mappedParams.Count -gt 0) {
+        return $mappedParams
+    }
+}
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>CouldPipeType</Name>
+        <Script>
+                        param(
+[Type]
+$Type
+)
+
+:nextParameterSet foreach ($paramSet in $this.ParameterSets) {
+    if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
+    $params = @{}
+    $mappedParams = [Ordered]@{} # Create a collection of mapped parameters
+    # Walk thru each parameter of this command
+    :nextParameter foreach ($myParam in $paramSet.Parameters) {
+        # If the parameter is ValueFromPipeline
+        if ($myParam.ValueFromPipeline -and
+            (
+        
+                # of the exact type
+                $myParam.ParameterType -eq $type -or
+                # (or a subclass of that type)
+                $type.IsSubClassOf($myParam.ParameterType) -or
+                # (or an inteface of that type)
+                ($myParam.ParameterType.IsInterface -and $type.GetInterface($myParam.ParameterType))
+            )
+        ) {
+            return $true
+        }        
+    }
+}
+
+return $false
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>CouldRun</Name>
+        <Script>
+                        param([Collections.IDictionary]$params, [string]$ParameterSetName)
+
+:nextParameterSet foreach ($paramSet in $this.ParameterSets) {
+    if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
+    $mappedParams = [Ordered]@{} # Create a collection of mapped parameters
+    $mandatories  =  # Walk thru each parameter of this command
+        @(foreach ($myParam in $paramSet.Parameters) {
+            if ($params.Contains($myParam.Name)) { # If this was in Params,
+                $mappedParams[$myParam.Name] = $params[$myParam.Name] # then map it.
+            } else {
+                foreach ($paramAlias in $myParam.Aliases) { # Otherwise, check the aliases
+                    if ($params.Contains($paramAlias)) { # and map it if the parameters had the alias.
+                        $mappedParams[$myParam.Name] = $params[$paramAlias]
+                        break
+                    }
+                }
+            }
+            if ($myParam.IsMandatory) { # If the parameter was mandatory,
+                $myParam.Name # keep track of it.
+            }
+        })
+
+    # Check for parameter validity.
+    foreach ($mappedParamName in @($mappedParams.Keys)) {
+        if (-not $this.IsParameterValid($mappedParamName, $mappedParams[$mappedParamName])) {
+            $mappedParams.Remove($mappedParamName)
+        }
+    }
+    
+    foreach ($mandatoryParam in $mandatories) { # Walk thru each mandatory parameter.
+        if (-not $mappedParams.Contains($mandatoryParam)) { # If it wasn't in the parameters.
+            continue nextParameterSet
+        }
+    }
+    return $mappedParams
+}
+return $false
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>GetHelpField</Name>
+        <Script>
+                        param([Parameter(Mandatory)]$Field)
+$fieldNames = 'synopsis','description','link','example','inputs', 'outputs', 'parameter', 'notes'
+foreach ($block in $this.BlockComments) {                
+    foreach ($match in [Regex]::new("
+        \.(?&lt;Field&gt;$Field)                   # Field Start
+        [\s-[\r\n]]{0,}                      # Optional Whitespace
+        [\r\n]+                              # newline
+        (?&lt;Content&gt;(?:.|\s)+?(?=
+        (
+            [\r\n]{0,}\s{0,}\.(?&gt;$($fieldNames -join '|'))|
+            \#\&gt;|
+            \z
+        ))) # Anything until the next .field or end of the comment block
+        ", 'IgnoreCase,IgnorePatternWhitespace', [Timespan]::FromSeconds(1)).Matches(
+            $block.Value
+        )) {                        
+        $match.Groups["Content"].Value -replace '[\s\r\n]+$'
+    }
+    break
+}
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>IsParameterValid</Name>
+        <Script>
+                        param([Parameter(Mandatory)]$ParameterName, [PSObject]$Value)
+
+if ($this.Parameters.Count -ge 0 -and 
+    $this.Parameters[$parameterName].Attributes
+) {
+    foreach ($attr in $this.Parameters[$parameterName].Attributes) {
+        $_ = $value
+        if ($attr -is [Management.Automation.ValidateScriptAttribute]) {
+            $result = try { . $attr.ScriptBlock } catch { $null }
+            if ($result -ne $true) {
+                return $false
+            }
+        }
+        elseif ($attr -is [Management.Automation.ValidatePatternAttribute] -and 
+                (-not [Regex]::new($attr.RegexPattern, $attr.Options, '00:00:05').IsMatch($value))
+            ) {
+                return $false
+            }
+        elseif ($attr -is [Management.Automation.ValidateSetAttribute] -and 
+                $attr.ValidValues -notcontains $value) {
+                    return $false
+                }
+        elseif ($attr -is [Management.Automation.ValidateRangeAttribute] -and (
+            ($value -gt $attr.MaxRange) -or ($value -lt $attr.MinRange)
+        )) {
+            return $false
+        }
+    }
+}
+return $true
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>Validate</Name>
+        <Script>
+                        param(
+    # input being validated
+    [PSObject]$ValidateInput,
+    # If set, will require all [Validate] attributes to be valid.
+    # If not set, any input will be valid.
+    [switch]$AllValid
+)
+
+foreach ($attr in $this.ScriptBlock.Attributes) {
+    if ($attr -is [Management.Automation.ValidateScriptAttribute]) {
+        try {
+            $_ = $this = $psItem = $ValidateInput
+            $isValidInput = . $attr.ScriptBlock
+            if ($isValidInput -and -not $AllValid) { return $true}
+            if (-not $isValidInput -and $AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } elseif ($AllValid) {
+                    throw "'$ValidateInput' is not a valid value."
+                }
+            }
+        } catch {
+            if ($AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw
+                }
+            }
+        }
+    }
+    elseif ($attr -is [Management.Automation.ValidateSetAttribute]) {
+        if ($ValidateInput -notin $attr.ValidValues) {
+            if ($AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw "'$ValidateInput' is not a valid value.  Valid values are '$(@($attr.ValidValues) -join "','")'"
+                }
+            }
+        } elseif (-not $AllValid) {
+            return $true
+        }
+    }
+    elseif ($attr -is [Management.Automation.ValidatePatternAttribute]) {
+        $matched = [Regex]::new($attr.RegexPattern, $attr.Options, [Timespan]::FromSeconds(1)).Match("$ValidateInput")
+        if (-not $matched.Success) {
+            if ($allValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw "'$ValidateInput' is not a valid value.  Valid values must match the pattern '$($attr.RegexPattern)'"
+                }
+            }
+        } elseif (-not $AllValid) {
+            return $true
+        }
+    }
+    elseif ($attr -is [Management.Automation.ValidateRangeAttribute]) {
+        if ($null -ne $attr.MinRange -and $validateInput -lt $attr.MinRange) {
+            if ($AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw "'$ValidateInput' is below the minimum range [ $($attr.MinRange)-$($attr.MaxRange) ]"
+                }
+            }
+        }
+        elseif ($null -ne $attr.MaxRange -and $validateInput -gt $attr.MaxRange) {
+            if ($AllValid) {
+                if ($ErrorActionPreference -eq 'ignore') {
+                    return $false
+                } else {
+                    throw "'$ValidateInput' is above the maximum range [ $($attr.MinRange)-$($attr.MaxRange) ]"
+                }
+            }
+        }
+        elseif (-not $AllValid) {
+            return $true
+        }
+    }
+}
+
+if ($AllValid) {
+    return $true
+} else {
+    return $false
+}
+                    </Script>
+      </ScriptMethod>
+      <ScriptProperty>
+        <Name>BlockComments</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Block Comments
+.DESCRIPTION
+    Gets Block Comments declared within a script.
+#&gt;
+$TargetScriptBlock = $this.ScriptBlock
+if (-not $TargetScriptBlock) {
+    if ($this -is [Management.Automation.AliasInfo]) {
+        $resolveThis = $this
+        while ($resolveThis.ResolvedCommand) {
+            $resolveThis = $resolveThis.ResolvedCommand
+        }
+        if ($resolveThis.ScriptBlock) {
+            $TargetScriptBlock = $resolveThis.ScriptBlock
+        } else {
+            $TargetScriptBlock = ''
+        }
+    } else {
+        $TargetScriptBlock = ''
+    }    
+}
+
+@([Regex]::New("
+\&lt;\# # The opening tag
+(?&lt;Block&gt;
+    (?:.|\s)+?(?=\z|\#&gt;) # anything until the closing tag
+)
+\#\&gt; # the closing tag
+", 'IgnoreCase,IgnorePatternWhitespace', '00:00:01').Matches($TargetScriptBlock)) -as [Text.RegularExpressions.Match[]]
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Category</Name>
+        <GetScriptBlock>
+                        @(foreach ($attr in $this.ScriptBlock.Attributes) {
+    if ($attr -is [Reflection.AssemblyMetaDataAttribute] -and
+        $attr.Key -eq 'Category') {
+        $attr.Value
+    }
+    elseif ($attr -is [ComponentModel.CategoryAttribute]) {
+        $attr.Category
+    }
+}) -as [string[]]
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>CommandMetaData</Name>
+        <GetScriptBlock>
+                        if (-not $this.'.CommandMetadata') {
+    $this.psobject.properties.add(
+        [psnoteproperty]::new('.CommandMetadata', 
+            [PSObject]::new([Management.Automation.CommandMetadata]::new($this))
+        ), $true
+    )    
+}
+
+return $this.'.CommandMetadata'
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>CommandNamespace</Name>
+        <GetScriptBlock>
+                        $matched = $this.Separator.Match($this.FullyQualifiedName)
+if ($matched.Success -and $matched.Index -gt 0) {
+    $this.FullyQualifiedName.Substring(0,$matched.Index)
+}
+else {
+    ''
+}
+
+
+
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Description</Name>
+        <GetScriptBlock>
+                        if ($this -is [Management.Automation.AliasInfo]) {
+    $resolveThis = $this
+    while ($resolveThis.ResolvedCommand) {
+        $resolveThis = $resolveThis.ResolvedCommand
+    }
+    if ($resolveThis) {
+        @($resolveThis.GetHelpField("Description"))[0] -replace '^\s+'
+    }
+} else {
+    @($this.GetHelpField("Description"))[0] -replace '^\s+'
+}
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Examples</Name>
+        <GetScriptBlock>
+                        $this.GetHelpField("Example")
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>FullyQualifiedName</Name>
+        <GetScriptBlock>
+                        if ($this -is [Management.Automation.ExternalScriptInfo] -or 
+    $this -is [Management.Automation.ApplicationInfo]) {
+    if ($this.Root -and 
+        $this.Source.StartsWith -and
+        $this.Source.StartsWith($this.Root, "OrdinalIgnoreCase")) {
+        $this.Source.Substring($this.Root.Length)
+    } else {
+        $this.Source
+    }    
+}
+elseif ($this.Module) {
+    '' + $this.Module + '\' + $this.Name
+} 
+elseif ($this -is [Management.Automation.CmdletInfo]) {
+    $this.ImplementingType.Namespace + '.' + $this.Name
+}
+else {
+    $this.Name
+}
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>HasValidation</Name>
+        <GetScriptBlock>
+                        foreach ($attr in $this.ScriptBlock.Attributes) {
+    if ($attr -is [Management.Automation.ValidateScriptAttribute] -or
+        $attr -is [Management.Automation.ValidateSetAttribute] -or 
+        $attr -is [Management.Automation.ValidatePatternAttribute] -or 
+        $attr -is [Management.Automation.ValidateRangeAttribute]) {
+        return $true                        
+    }
+}
+
+return $false
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Links</Name>
+        <GetScriptBlock>
+                        $this.GetHelpField("Link")
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Metadata</Name>
+        <GetScriptBlock>
+                        $Metadata = [Ordered]@{}
+foreach ($attr in $this.ScriptBlock.Attributes) {
+    if ($attr -is [Reflection.AssemblyMetaDataAttribute]) {
+        if ($Metadata[$attr.Key]) {
+            $Metadata[$attr.Key] = @($Metadata[$attr.Key]) + $attr.Value
+        } else {
+            $Metadata[$attr.Key] = $attr.Value
+        }                            
+    }
+}
+return $Metadata
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>PipeScriptType</Name>
+        <GetScriptBlock>
+                        
+if ($this.pstypenames -like '*.Command') {
+    $this.pstypenames -like '*.Command' -replace '\.Command'
+}
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Rank</Name>
+        <GetScriptBlock>
+                        foreach ($attr in $this.ScriptBlock.Attributes) {
+    if ($attr -is [Reflection.AssemblyMetaDataAttribute] -and
+        $attr.Key -in 'Order', 'Rank') {
+        return $attr.Value -as [int]
+    }
+}
+return 0
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Segments</Name>
+        <GetScriptBlock>
+                        $allMatches = @($this.Separator.Matches($this.FullyQualifiedName))
+@(
+    # All namespaces are a series of matches
+    foreach ($matched in $allMatches) {
+        $this.FullyQualifiedName.Substring($matched.Index)
+    }
+    if ($matched.Index -gt 0) {
+        $this.FullyQualifiedName
+    }
+) -as [string[]]
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Separator</Name>
+        <GetScriptBlock>
+                        # Allowing this to be set (caching what what set in .`.NamespaceSeparator`)
+if ($this.'.Separator') {    
+    if ($this.'.Separator' -is [regex]) {
+        $this.'.Separator'
+    } else {
+        [Regex]::new("[" +
+            [Regex]::Escape($this.'.Separator') +
+        "]", 'RightToLeft')
+    }
+}
+# Laying groundwork for some special/automatic variables
+elseif ($psCommandNameSeparator) 
+{
+    if ($psCommandNameSeparator -is [string])  {
+        [Regex]::new("[" +
+            [Regex]::Escape($psCommandNameSeparator) +
+        "]{1,}", 'RightToLeft')
+    } elseif ($psCommandNameSeparator -is [regex]) {
+        $psCommandNameSeparator
+    }
+}
+else
+{
+    [Regex]::new('[\p{P}&lt;&gt;]{1,}','RightToLeft')
+}
+
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        $this | Add-Member NoteProperty ".Separator" $args -Force
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Synopsis</Name>
+        <GetScriptBlock>
+                        @($this.GetHelpField("Synopsis"))[0] -replace '^\s+'
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.Language.ConstantExpressionAst</Name>
+    <Members>
+      <ScriptMethod>
+        <Name>ConvertFromAST</Name>
+        <Script>
+                        $this.Value
+
+                    </Script>
+      </ScriptMethod>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.ExternalScriptInfo</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Namespace</Name>
+        <ReferencedMemberName>CommandNamespace</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptProperty>
+        <Name>Root</Name>
+        <GetScriptBlock>
+                        if ($this.'.Root') {
+    return $this.'.Root'
+}
+
+$nextRoot = $this.Source | Split-Path
+:findingRoot do {
+    
+    $lastRoot = $nextRoot
+    $lastRootName = $lastRoot | Split-Path -Leaf
+
+    if ($lastRootName -as [Version]) {
+        $lastRootName = $lastRoot | Split-Path | Split-Path -Leaf
+    }
+
+    foreach ($fileNameThatIndicatesRoot in 'LICENSE', 'LICENSE.txt', 
+        "$LastRootName.psd1", "$LastRootName.psm1", ".git") {
+        $lookingForPath = Join-Path $lastRoot $fileNameThatIndicatesRoot
+        if (Test-Path $lookingForPath) {
+            break findingRoot
+        }
+    }
+
+    $nextRoot = $nextRoot | Split-Path
+} while ($nextRoot)
+
+$this | Add-Member NoteProperty '.Root' "$lastRoot" -Force
+$this.'.Root'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        $this | Add-Member NoteProperty ".Root" $args -Force
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.FunctionInfo</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Namespace</Name>
+        <ReferencedMemberName>CommandNamespace</ReferencedMemberName>
+      </AliasProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.Language.ParamBlockAst</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>Header</Name>
+        <GetScriptBlock>
+                        # and extract the difference between the parent and the start of the block
+$offsetDifference = $this.Extent.StartOffset - $this.Parent.Extent.StartOffset
+# (this is where the header and help reside)
+# try to strip off leading braces and whitespace
+$this.Parent.Extent.ToString().Substring(0, $offsetDifference) -replace '^[\r\n\s]{0,}\{'
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ParameterNames</Name>
+        <GetScriptBlock>
+                        @(foreach ($parameter in $this.Parameters) {
+    $parameter.ParameterNames
+})
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.Language.ParameterAST</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Aliases</Name>
+        <ReferencedMemberName>ParameterNames</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>FriendlyName</Name>
+        <ReferencedMemberName>DisplayName</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ValueByName</Name>
+        <ReferencedMemberName>ByPropertyName</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ValueFromPipeline</Name>
+        <ReferencedMemberName>FromPipeline</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ValueFromPipelineByPropertyName</Name>
+        <ReferencedMemberName>ByPropertyName</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ValueFromRemaining</Name>
+        <ReferencedMemberName>FromUnbound</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ValueFromRemainingArguments</Name>
+        <ReferencedMemberName>FromUnbound</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>VBN</Name>
+        <ReferencedMemberName>ByPropertyName</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>VFP</Name>
+        <ReferencedMemberName>FromPipeline</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>VFPBN</Name>
+        <ReferencedMemberName>ByPropertyName</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptProperty>
+        <Name>Binding</Name>
+        <GetScriptBlock>
+                        $isBindable = $false
+foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ((-not $reflectedType) -or 
+        $reflectedType -notin [ComponentModel.DefaultBindingPropertyAttribute],
+        [ComponentModel.BindableAttribute],
+        [ComponentModel.ComplexBindingPropertiesAttribute]) {        
+        continue
+    }
+    
+    $positionalArguments = @(
+        foreach ($positionalParameter in $attr.PositionalArguments) {
+            $positionalParameter.Value
+        }
+    )
+    $realAttribute = 
+        if ($positionalArguments) {
+            $reflectedType::new($positionalArguments)
+        } else {
+            $reflectedType::new()
+        }
+    
+    
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -eq 'Name') {
+            $realAttribute.$($namedArgument.ArgumentName) = $namedArgument.Argument.Value
+        }
+    }
+    $realAttribute
+}
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ByPropertyName</Name>
+        <GetScriptBlock>
+                        foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [Management.Automation.ParameterAttribute]) {
+        continue
+    }
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -ne 'ValueFromPipelineByPropertyName') {
+            continue            
+        }
+        if ($namedArgument.Argument -and $namedArgument.Argument.Value) {
+            return $true
+        } elseif (-not $namedArgument.Argument) {
+            return $true
+        }
+    }
+}
+
+return $false
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>DefaultBindingProperty</Name>
+        <GetScriptBlock>
+                        $isBindable = $false
+foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [ComponentModel.DefaultBindingPropertyAttribute]) {
+        if ($reflectedType -eq [ComponentModel.BindableAttribute]) {
+            if ($attr.PositionalArguments.Value -eq $false) {
+                return ''
+            } else {
+                $isBindable = $true
+            }
+        }
+        continue
+    }
+    
+    foreach ($positionalParameter in $attr.PositionalArguments) {
+        return $positionalParameter.Value
+    }
+
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -eq 'Name') {
+            return $namedArgument.Argument.Value
+        }
+    }    
+}
+
+
+if ($isBindable) {
+    return $this.Name.VariablePath.ToString()
+} else {
+    return ''
+}
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>DisplayName</Name>
+        <GetScriptBlock>
+                        foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [ComponentModel.DisplayNameAttribute]) {
+        continue
+    }
+    
+    foreach ($positionalParameter in $attr.PositionalArguments) {
+        return $positionalParameter.Value
+    }
+
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -eq 'DisplayName') {
+            return $namedArgument.Argument.Value
+        }
+    }
+}
+
+return $this.Name.VariablePath.ToString()
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>FromPipeline</Name>
+        <GetScriptBlock>
+                        foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [Management.Automation.ParameterAttribute]) {
+        continue
+    }
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -ne 'ValueFromPipeline') {
+            continue
+        }
+        if ($namedArgument.Argument -and $namedArgument.Argument.Value) {
+            return $true
+        } elseif (-not $namedArgument.Argument) {
+            return $true
+        }    
+    }
+}
+
+return $false
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>FromUnbound</Name>
+        <GetScriptBlock>
+                        foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [Management.Automation.ParameterAttribute]) {
+        continue
+    }
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -ne 'ValueFromRemainingArguments') {
+            continue            
+        }
+        if ($namedArgument.Argument -and $namedArgument.Argument.Value) {
+            return $true
+        } elseif (-not $namedArgument.Argument) {
+            return $true
+        }
+    }
+}
+
+return $false
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Help</Name>
+        <GetScriptBlock>
+                        $parameter = $this
+$parameterIndex = $parameter.Parent.Parameters.IndexOf($this)
+
+if ($parameterIndex -eq 0) { # For the first parameter
+    $parentExtent = $parameter.Parent.Extent.ToString()
+    # This starts after the first parenthesis. 
+    $afterFirstParens = $parentExtent.IndexOf('(') + 1
+    # and goes until the start of the parameter.
+    $parentExtent.Substring($afterFirstParens, 
+        $parameter.Extent.StartOffset - 
+            $parameter.Parent.Extent.StartOffset - 
+                $afterFirstParens) -replace '^[\s\r\n]+'
+    # (don't forget to trim leading whitespace)
+} else {
+    # for every other parameter it is the content between parameters.
+    $lastParameter   = $parameter.Parent.Parameters[$parameterIndex - 1]                                    
+    $relativeOffset  = $lastParameter.Extent.EndOffset + 1 - $parameter.Parent.Extent.StartOffset
+    $distance        = $parameter.Extent.StartOffset - $lastParameter.Extent.EndOffset - 1
+    # (don't forget to trim leading whitespace and commas)
+    $parameter.Parent.Extent.ToString().Substring($relativeOffset,$distance) -replace '^[\,\s\r\n]+'
+}
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Index</Name>
+        <GetScriptBlock>
+                        $this.Parent.Parameters.IndexOf($this)
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Metadata</Name>
+        <GetScriptBlock>
+                        $metadata = [Ordered]@{}
+
+foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [Reflection.AssemblyMetadataAttribute]) {
+        continue
+    }
+    $key, $value =
+        foreach ($positionalParameter in $attr.PositionalArguments) {
+            $positionalParameter.Value
+        }
+
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -eq 'Key') {
+            $key = $namedArgument.Argument.Value
+        }
+        elseif ($namedArgument.ArgumentName -eq 'Value') {
+            $value = $namedArgument.Argument.Value
+        }
+    }
+    if (-not $metadata[$key]) {
+        $metadata[$key] = $value
+    } else {
+        $metadata[$key] = @($metadata[$key]) + $value
+    }
+}
+
+return $metadata
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ParameterNames</Name>
+        <GetScriptBlock>
+                        @(foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [Alias]) {        
+        continue
+    }
+    
+    foreach ($positionalParameter in $attr.PositionalArguments) {
+        $positionalParameter.Value
+    }
+
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -eq 'AliasNames') {
+            $namedArgument.Argument.Value
+        }
+    }    
+}
+
+$this.Name.VariablePath.ToString())
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ParameterSets</Name>
+        <GetScriptBlock>
+                        $parameterSetNames = @(foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [Management.Automation.ParameterAttribute]) {
+        continue
+    }
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -eq 'ParameterSetName') {
+            $namedArgument.Argument.Value
+        }
+    }
+})
+
+if ($parameterSetNames) {
+    $parameterSetNames -as [string[]]
+} else {
+    "__AllParameterSets" -as [string[]]
+}
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Position</Name>
+        <GetScriptBlock>
+                        $positions = @(
+:nextAttribute foreach ($attr in $this.Attributes) {
+    $reflectedType = $attr.TypeName.GetReflectionType()
+    if ($reflectedType -ne [Management.Automation.ParameterAttribute]) {
+        continue
+    }
+    foreach ($namedArgument in $attr.NamedArguments) {
+        if ($namedArgument.ArgumentName -eq 'Position') {
+            $namedArgument.Argument.Value
+            continue nextAttribute
+        }
+    }
+})
+
+if ($positions.Length -gt 1) {
+    $positions -as [int[]]
+} elseif ($positions) {
+    $positions[0]
+} else {
+    $null
+}
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.Language.PipelineAST</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>IsAssigned</Name>
+        <GetScriptBlock>
+                        $this.Parent -and
+$this.Parent.GetType().Name -in 'AssignmentStatementAST', 'HashtableAST'
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.ScriptBlock</Name>
+    <Members>
+      <ScriptMethod>
+        <Name>Transpile</Name>
+        <Script>
+                        $TranspilerErrors   = @()
+$TranspilerWarnings = @()
+
+$ErrorsAndWarnings  = @{ErrorVariable='TranspilerErrors';WarningVariable='TranspilerWarnings'}
+$this | .&gt;PipeScript @ErrorsAndWarnings
+
+if ($TranspilerErrors) {
+    $failedMessage = (@(        
+        "$($TranspilerErrors.Count) error(s)"
+        if ($transpilerWarnings) {
+            "$($TranspilerWarnings.Count) warning(s)"
+        }
+    ) -join ',') + (@(
+        foreach ($transpilerError in $TranspilerErrors) {
+            "$($transpilerError | Out-String)"
+        }
+    ) -join [Environment]::Newline)
+    throw $failedMessage
+}
+elseif ($TranspilerWarnings) {
+    foreach ($TranspilerWarning in $TranspilerWarnings) {
+        Write-Warning "$TranspilerWarning "
+    }
+}
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptProperty>
+        <Name>Transpilers</Name>
+        <GetScriptBlock>
+                        $this.Ast.Transpilers
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.Language.ScriptBlockExpressionAst</Name>
+    <Members>
+      <ScriptMethod>
+        <Name>ConvertFromAST</Name>
+        <Script>
+                        $this.GetScriptBlock()
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>GetScriptBlock</Name>
+        <Script>
+                        [ScriptBlock]::create($this -replace '^\{' -replace '\}$')
+
+                    </Script>
+      </ScriptMethod>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.Language.ScriptBlockAst</Name>
+    <Members>
+      <ScriptMethod>
+        <Name>ConvertFromAST</Name>
+        <Script>
+                        $this.GetScriptBlock()
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>GetScriptBlock</Name>
+        <Script>
+                        [ScriptBlock]::create($this -replace '^\{' -replace '\}$')
+
+                    </Script>
+      </ScriptMethod>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.Language.ScriptRequirements</Name>
+    <Members>
+      <ScriptMethod>
+        <Name>ToString</Name>
+        <Script>
+                        $this.Script.ToString()
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptProperty>
+        <Name>Script</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the script that represents a requires statement
+.DESCRIPTION
+    Gets the a PowerShell `[ScriptBlock]` that #requires the exact same list of script requirements.
+
+    This script method exists because it provides a way to check the requirements without actually running a full script.
+.EXAMPLE
+    [ScriptBlock]::Create('#requires -Module PipeScript').Ast.ScriptRequirements.Script
+#&gt;
+$requirement = $this
+[ScriptBlock]::create(
+    @(if ($requirement.RequirementPSVersion) {
+        "#requires -Version $($requirement.RequirementPSVersion)"
+    }
+    if ($requirement.IsElevationRequired) {
+        "#requires -RunAsAdministrator"
+    }
+    if ($requirement.RequiredModules) {
+        "#requires -Module $(@(foreach ($reqModule in $requirement.RequiredModules) {
+            if ($reqModule.Version -or $req.RequiredVersion -or $req.MaximumVersion) {
+                '@{' + $(@(foreach ($prop in $reqModule.PSObject.Properties) {
+                    if (-not $prop.Value) { continue }
+                    if ($prop.Name -in 'Name', 'Version') {
+                        "Module$($prop.Name)='$($prop.Value.ToString().Replace("'","''"))'"
+                    } elseif ($prop.Name -eq 'RequiredVersion') {
+                        "MinimumVersion='$($prop.Value)'" 
+                    } else {
+                        "$($prop.Name)='$($prop.Value)'" 
+                    }
+                }) -join ';') + '}'
+            } else {
+                $reqModule.Name
+            }
+        }) -join ',')"
+    }
+    if ($requirement.RequiredAssemblies) {
+        "#requires -Assembly $($requirement.RequiredAssemblies -join ',')"
+    }) -join [Environment]::NewLine
+)
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.Language.TypeConstraintAst</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Args</Name>
+        <ReferencedMemberName>ArgumentList</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Arguments</Name>
+        <ReferencedMemberName>ArgumentList</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Parameters</Name>
+        <ReferencedMemberName>Parameter</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptProperty>
+        <Name>ArgumentList</Name>
+        <GetScriptBlock>
+                        if (-not $this.TypeName.IsGeneric) { return @() }
+@(foreach ($typeName in $this.TypeName.GenericArguments ) {
+    if ($TypeName.IsGeneric) { continue }
+    if (-not $TypeName.IsArray) {
+        $TypeName.Name
+    }
+})
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Parameter</Name>
+        <GetScriptBlock>
+                        
+
+function TypeConstraintToArguments (
+    [Parameter(ValueFromPipeline)]
+    $TypeName
+) {
+    begin {
+        $TypeNameArgs = @()
+        $TypeNameParams = [Ordered]@{}
+        
+    }
+    process {
+
+        if ($TypeName.IsGeneric) {            
+            $TypeNameParams[$typeName.TypeName.Name] = 
+                $typeName.GenericArguments |
+                    TypeConstraintToArguments                        
+        } elseif (-not $TypeName.IsArray) {    
+            $TypeNameArgs += $TypeName.Name
+        }
+    }
+    end {
+        if ($TypeNameParams.Count) {
+            $TypeNameParams
+        } elseif ($TypeNameArgs) {
+            $TypeNameArgs
+        }                        
+    }
+}
+
+if (-not $this.TypeName.IsGeneric) { return @{} }
+foreach ($arg in @($this.TypeName.GenericArguments | TypeConstraintToArguments)) {
+    if ($arg -is [Collections.IDictionary]) {
+        $arg
+    }
+}
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ResolvedCommand</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Resolves an TypeConstraintAST to a CommandInfo
+.DESCRIPTION
+    Resolves an TypeConstraintAST to one or more CommandInfo Objects.
+.EXAMPLE
+    {
+        [InvokePipeScript[a]]$null
+    }.Ast.EndBlock.Statements[0].PipelineElements[0].Expression.Attribute.ResolvedCommand
+.EXAMPLE
+    {
+        [Microsoft.PowerShell.Core.GetCommand]$null
+    }.Ast.EndBlock.Statements[0].PipelineElements[0].Expression.Attribute.ResolvedCommand
+.EXAMPLE
+    {
+        [Get_Command]$null
+    }.Ast.EndBlock.Statements[0].PipelineElements[0].Expression.Attribute.ResolvedCommand
+.EXAMPLE
+    {
+        [GetCommand]$null
+    }.Ast.EndBlock.Statements[0].PipelineElements[0].Expression.Attribute.ResolvedCommand
+.EXAMPLE
+    {
+        [cmd]$null  
+    }.EndBlock.Statements[0].PipelineElements[0].Expression.Attribute.ResolvedCommand
+#&gt;
+# Get the name of the transpiler.
+$transpilerStepName  = 
+    if ($this.TypeName.IsGeneric) {
+        $this.TypeName.TypeName.Name
+    } else {
+        $this.TypeName.Name
+    }
+$decamelCase = [Regex]::new('(?&lt;=[a-z])(?=[A-Z])')
+@(
+    #    If a Transpiler exists by that name, it will be returned first.
+    Get-Transpiler -TranspilerName $transpilerStepName
+    # Then, any periods in the attribute name will be converted to slashes, 
+    $fullCommandName = $transpilerStepName -replace '\.','\' -replace 
+        '_','-' # and any underscores to dashes.
+
+    # Then, the first CamelCased code will have a - injected in between the CamelCase.    
+    $fullCommandName = $decamelCase.Replace($fullCommandName, '-', 1)
+    # Now we will try to find the command.
+    $ExecutionContext.SessionState.InvokeCommand.GetCommand($fullCommandName, 'All')
+)
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>System.Management.Automation.Language.VariableExpressionAst</Name>
+    <Members>
+      <ScriptMethod>
+        <Name>ConvertFromAST</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Converts a VariablExpressionAST to an object 
+.DESCRIPTION
+    Converts a VariablExpressionAST to an object, if possible.
+
+    Most variables we will not know the value of until we have run.
+
+    The current exceptions to the rule are:  $true, $false, and $null
+#&gt;
+if ($this.variablePath.userPath -in 'true', 'false', 'null') {
+    $ExecutionContext.SessionState.PSVariable.Get($this.variablePath).Value
+} else {
+    $this
+}
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>GetAssignments</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Gets assignments of a variable
+.DESCRIPTION
+    Searches the abstract syntax tree for assignments of the variable.
+.EXAMPLE
+    {
+        $x = 1
+        $y = 2
+        $x * $y
+    }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.Left.GetAssignments()
+.EXAMPLE
+    {
+        [int]$x, [int]$y = 1, 2
+        $x * $y
+    }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.Left.GetAssignments()
+.EXAMPLE
+    {
+        param($x, $y)        
+        $x * $y
+    }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.Left.GetAssignments()
+#&gt;
+param()
+
+$astVariableName = "$this"
+$variableFoundAt = @{}
+foreach ($parent in $this.GetLineage()) {
+    $parent.FindAll({
+        param($ast)
+        $IsAssignment = 
+            (
+                $ast -is [Management.Automation.Language.AssignmentStatementAst] -and
+                $ast.Left.Find({
+                    param($leftAst)
+                    $leftAst -is [Management.Automation.Language.VariableExpressionAST] -and
+                    "$leftAst" -eq $astVariableName
+                }, $false)
+            ) -or (
+                $ast -is [Management.Automation.Language.ParameterAst] -and 
+                "$($ast.Name)" -eq $astVariableName
+            )
+
+        if ($IsAssignment -and -not $variableFoundAt[$ast.Extent.StartOffset]) {
+            $variableFoundAt[$ast.Extent.StartOffset] = $ast
+            $ast
+        }        
+    }, $false)
+}
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>GetVariableType</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Gets a Variable's Likely Type
+.DESCRIPTION
+    Determines the type of a variable.
+
+    This looks for the closest assignment statement and uses this to determine what type the variable is likely to be.
+.NOTES
+    Subject to revision and improvement.  While this covers many potential scenarios, it does not always
+.EXAMPLE
+    {
+        [int]$x = 1
+        $y = 2
+        $x + $y
+    }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.Left.GetVariableType()
+    # Should -Be ([int])
+.EXAMPLE
+    {
+        $x = Get-Process        
+        $x + $y
+    }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.Left.GetVariableType()
+    # Should -Be ([Diagnostics.Process])
+.EXAMPLE
+    {
+        $x = [type].name
+        $x        
+    }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.GetVariableType()
+
+#&gt;
+if ($this.VariablePath.userPath -eq 'psBoundParmeters') {
+    return [Management.Automation.PSBoundParametersDictionary]    
+}
+$assignments = $this.GetAssignments()
+$closestAssignment = $assignments[0]
+
+# Our easiest scenario is that the variable is assigned in a parameter
+if ($closestAssignment -is [Management.Automation.Language.ParameterAst]) {
+    # If so, the .StaticType will give us our variable type.
+    return $closestAssignment.StaticType
+}
+
+# Our next simple scenario is that the closest assignment is declaring a hashtable
+if ($closestAssignment.Right.Expression -is [Management.Automation.Language.HashtableAst]) {    
+    return [hashtable]   
+}
+
+# The left can be a convert expression.
+if ($closestAssignment.Left -is [Management.Automation.Language.ConvertExpressionAst]) {
+    # If the left was [ordered]
+    if ($closestAssignment.Left.Type.Tostring() -eq '[ordered]') {
+        return [Collections.specialized.OrderedDictionary] # return an OrderedDictionary
+    } else {
+        # If the left side's type can be reflected
+        $reflectedType   = $closestAssignment.Left.Type.TypeName.GetReflectionType()
+        if ($reflectedType) {
+            return $reflectedType # return it.
+        }
+        else {
+            # otherwise, return the left's static type.
+            return $closestAssignment.Left.StaticType
+        }
+    }
+}
+
+# Determine if the left side is multiple assignment
+$isMultiAssignment =$closestAssignment.Left -is [Management.Automation.Language.ArrayLiteralAst]
+
+# If the left side is not multiple assignment, but the right side is an array
+if (-not $isMultiAssignment -and 
+    $closestAssignment.Right.Expression -is [Management.Automation.Language.ArrayExpressionAst]) {
+    # then the object is an array.
+    return [Object[]]
+}
+
+# Next, if the right as a convert expression
+if ($closestAssignment.Right.Expression -is [Management.Automation.Language.ConvertExpressionAst]) {
+    # If it was '[ordered]'
+    if ($closestAssignment.Right.Expression.Type.Tostring() -eq '[ordered]') {
+        # return an ordered dictionary
+        return [Collections.specialized.OrderedDictionary]
+    } else {
+        # Otherwise, see if we have a reflected type.
+        $reflectedType   = $closestAssignment.Right.Expression.Type.TypeName.GetReflectionType()
+        if ($reflectedType) { 
+            return $reflectedType # If we do, return it.            
+        }
+        else {
+            # If we don't, return the static type of the expression
+            return $closestAssignment.Right.Expression.StaticType
+        }
+    }       
+}
+
+if ($closestAssignment.Right.Expression -is [Management.Automation.Language.MemberExpressionAst]) {
+    $invokeMemberExpr = $closestAssignment.Right.Expression
+    $memberName = $invokeMemberExpr.Member.ToString()
+    if ($invokeMemberExpr.Expression.TypeName) {
+        $invokeType = $invokeMemberExpr.Expression.TypeName.GetReflectionType()            
+        if ($invokeType) {
+            $potentialTypes = @(
+            foreach ($invokeableMember in $invokeType.GetMember($memberName, "Public, IgnoreCase,$(if ($invokeMemberExpr.Static) { 'Static'} else { 'Instance'})")) {
+                if ($invokeableMember.PropertyType) {
+                    $invokeableMember.PropertyType
+                } elseif ($invokeableMember.ReturnType) {
+                    $invokeableMember.ReturnType
+                }
+            })
+            return $potentialTypes | Select-Object -Unique
+        }
+    }            
+}
+
+
+# The right side could be a pipeline
+if ($closestAssignment.Right -is [Management.Automation.Language.PipelineAst]) {
+    # If so, walk backwards thru the pipeline
+    for ($pipelineElementIndex = $closestAssignment.Right.PipelineElements.Count - 1;
+        $pipelineElementIndex -ge 0;
+        $pipelineElementIndex--) {
+        $commandInfo = $closestAssignment.Right.PipelineElements[$pipelineElementIndex].ResolvedCommand
+        # If the command had an output type, return it.
+        if ($commandInfo.OutputType) {
+            return $commandInfo.OutputType.Type
+        }
+    }
+}
+
+# If we don't know, return nothing
+return
+                    </Script>
+      </ScriptMethod>
+    </Members>
+  </Type>
+</Types>
