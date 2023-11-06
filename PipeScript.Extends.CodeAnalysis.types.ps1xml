@@ -1,0 +1,35 @@
+<!-- Generated with EZOut 2.0.3: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
+<Types>
+  <Type>
+    <Name>Microsoft.CodeAnalysis.SyntaxNode</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>Text</Name>
+        <GetScriptBlock>
+                        if (-not $this.'.Text') {    
+    $this | Add-Member NoteProperty '.Text' $this.GetText() -Force    
+}
+
+$this.'.Text'
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>Microsoft.CodeAnalysis.SyntaxTree</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>Text</Name>
+        <GetScriptBlock>
+                        if (-not $this.'.Text') {    
+    $this | Add-Member NoteProperty '.Text' $this.GetText([Threading.CancellationToken]::None) -Force    
+}
+
+$this.'.Text'
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+</Types>
