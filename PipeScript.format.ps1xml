@@ -2323,5 +2323,55 @@ $BackgroundColor
         </CustomEntries>
       </CustomControl>
     </View>
+    <View>
+      <Name>Microsoft.CodeAnalysis.SyntaxNode</Name>
+      <ViewSelectedBy>
+        <TypeName>Microsoft.CodeAnalysis.SyntaxNode</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <PropertyName>Language</PropertyName>
+      </GroupBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <Wrap />
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Text</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>Microsoft.CodeAnalysis.SyntaxTree</Name>
+      <ViewSelectedBy>
+        <TypeName>Microsoft.CodeAnalysis.SyntaxTree</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <PropertyName>Language</PropertyName>
+      </GroupBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <Wrap />
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Text</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
   </ViewDefinitions>
 </Configuration>
