@@ -12,15 +12,16 @@ $FunctionDefinition
 )
 
 begin {
-    $pipeScriptCommands = @($ExecutionContext.SessionState.InvokeCommand.GetCommands('PipeScript*', 'Function,Alias', $true)) -match '^PipeScript\.(?>Pre|Post|Analyze|Optimize)'
+    
+    $pipeScriptCommands = Get-PipeScript -PipeScriptType PostProcessor, PreProcessor, Optimizer, Analyzer
     $preCommands = @()
     $postCommands = @()
     foreach ($pipeScriptCommand in $pipeScriptCommands) {
-        if ($pipeScriptCommand.Name -match '^PipeScript.(?>Pre|Analyze)' -and 
+        if ($pipeScriptCommand.Name -match '(?>Pre|Analyze)' -and 
             $pipeScriptCommand.CouldPipeType([Management.Automation.Language.FunctionDefinitionAst])) {
             $preCommands += $pipeScriptCommand
         }
-        if ($pipeScriptCommand.Name -match '^PipeScript.(?>Post|Optimize)' -and
+        if ($pipeScriptCommand.Name -match '(?>Post|Optimize)' -and
             $pipeScriptCommand.CouldPipeType([Management.Automation.Language.FunctionDefinitionAst])
         ) {
             $postCommands += $pipeScriptCommand
