@@ -35,15 +35,42 @@ function Parse.PowerShell {
     [PSObject]    
     $Source
     )
+    
+    begin {
+        $accumulate = [Collections.Queue]::new()
+    }
     process {
-        if ($Source -is [string]) {
-            [ScriptBlock]::Create($Source).Ast
+        $accumulate.Enqueue([Ordered]@{} + $PSBoundParameters)
+    }
+    end {
+        $count = 0
+        $total = $accumulate.Count -as [double]
+        if (-not $script:LastProgressID) { $script:LastProgressID = 1}
+        $script:LastProgressID++
+        while ($accumulate.Count) {
+            $dequeue = $accumulate.Dequeue()
+            if ($total -gt 1) {
+                Write-Progress "Parsing PowerShell" " " -Id $script:LastProgressID -PercentComplete $(
+                    $count++
+                    [Math]::Min($count / $total, 1) * 100
+                )
+            }
+            foreach ($kv in $dequeue.GetEnumerator()) {
+                $ExecutionContext.SessionState.PSVariable.Set($kv.Key, $kv.Value)
+            }
+            if ($Source -is [string]) {
+                [ScriptBlock]::Create($Source).Ast
+            }
+            elseif ($Source -is [IO.FileInfo]) {
+                if ($Source.Extension -eq '.ps1') {
+                    $ExecutionContext.SessionState.InvokeCommand.GetCommand($Source,'ExternalScript').ScriptBlock.Ast
+                }            
+            }
         }
-        elseif ($Source -is [IO.FileInfo]) {
-            if ($Source.Extension -eq '.ps1') {
-                $ExecutionContext.SessionState.InvokeCommand.GetCommand($Source,'ExternalScript').ScriptBlock.Ast
-            }            
+        if ($total -gt 1) {
+            Write-Progress "Parsing PowerShell" " " -Completed -Id $script:LastProgressID
         }
+        
     }
 }
 
