@@ -1,4 +1,4 @@
-Language function BASIC{
+Language function BASIC {
     <#
     .SYNOPSIS
         BASIC Language Definition.
@@ -16,7 +16,7 @@ Language function BASIC{
         ```VBScript    
         rem {
 
-        Uncommented lines between these two points will be ignored
+        rem # Uncommented lines between these two points will be ignored
 
         rem # Commented lines will become PipeScript / PowerShell.
         rem param($message = "hello world")
