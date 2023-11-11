@@ -4,7 +4,6 @@ These are all of the transpilers currently included in PipeScript:
 
 |Language                                                                  |Synopsis                        |Pattern                         |
 |--------------------------------------------------------------------------|--------------------------------|--------------------------------|
-|[Java.Template](Transpilers/Templates/Java.Template.psx.ps1)              |Java Template Transpiler.       |```\.(?>java)$```               |
 |[JavaScript.Template](Transpilers/Templates/JavaScript.Template.psx.ps1)  |JavaScript Template Transpiler. |```\.js$```                     |
 |[Json.Template](Transpilers/Templates/Json.Template.psx.ps1)              |JSON PipeScript Transpiler.     |```\.json$```                   |
 |[Kotlin.Template](Transpilers/Templates/Kotlin.Template.psx.ps1)          |Kotlin Template Transpiler.     |```\.kt$```                     |

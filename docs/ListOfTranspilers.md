@@ -22,7 +22,6 @@ These are all of the transpilers currently included in PipeScript:
 |[Help](Transpilers/Help.psx.ps1)                                                           |Help Transpiler                                   |
 |[Include](Transpilers/Include.psx.ps1)                                                     |Includes Files                                    |
 |[Inherit](Transpilers/Inherit.psx.ps1)                                                     |Inherits a Command                                |
-|[Java.Template](Transpilers/Templates/Java.Template.psx.ps1)                               |Java Template Transpiler.                         |
 |[JavaScript.Template](Transpilers/Templates/JavaScript.Template.psx.ps1)                   |JavaScript Template Transpiler.                   |
 |[Json.Template](Transpilers/Templates/Json.Template.psx.ps1)                               |JSON PipeScript Transpiler.                       |
 |[Kotlin.Template](Transpilers/Templates/Kotlin.Template.psx.ps1)                           |Kotlin Template Transpiler.                       |
