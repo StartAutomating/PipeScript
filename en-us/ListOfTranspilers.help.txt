@@ -22,7 +22,6 @@ These are all of the transpilers currently included in PipeScript:
 |[Help](Transpilers/Help.psx.ps1)                                                           |Help Transpiler                                   |
 |[Include](Transpilers/Include.psx.ps1)                                                     |Includes Files                                    |
 |[Inherit](Transpilers/Inherit.psx.ps1)                                                     |Inherits a Command                                |
-|[LUA.Template](Transpilers/Templates/LUA.Template.psx.ps1)                                 |LUA Template Transpiler.                          |
 |[Markdown.Template](Transpilers/Templates/Markdown.Template.psx.ps1)                       |Markdown Template Transpiler.                     |
 |[ModuleExports](Transpilers/Modules/ModuleExports.psx.ps1)                                 |Gets Module Exports                               |
 |[ModuleRelationship](Transpilers/Modules/ModuleRelationship.psx.ps1)                       |Gets Module Relationships                         |
