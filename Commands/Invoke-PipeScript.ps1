@@ -268,6 +268,15 @@
                 
                 # and attempt to find a transpiler.
                 $foundTranspiler = Get-Transpiler -CouldPipe $Command -ValidateInput $Command -ErrorAction Ignore
+                
+                $matchingPipeScriptLanguageCommand
+                $matchingPipeScriptLanguage = $(foreach ($pipescriptLanguage in $pipeScriptLanguages) {                    
+                    if ($pipescriptLanguage.IsMatch($Command)) {
+                        $matchingPipeScriptLanguageCommand = $pipescriptLanguage
+                        & $pipescriptLanguage
+                        break
+                    }
+                })
 
                 $ParamsAndArgs    = [Ordered]@{Parameter=$Parameter;ArgumentList = $ArgumentList}
                 $transpilerErrors   = @()
@@ -318,7 +327,18 @@
                                 break             # and stop processing additional transpilers.
                             }
                         }
-                    } else {
+                    } 
+                    elseif($matchingPipeScriptLanguage) {
+                        $templateName = ($command.Source | Split-Path -Leaf) -replace '[\s\p{Ps}]\(\)]' -replace '\.ps1?'
+                        $PipeScriptTemplateFileContent = [IO.File]::ReadAllText($command.Source)                        
+                        $PipeScriptTemplateObject = Invoke-PipeScript "template $templateName `$PipeScriptTemplateFileContent"
+                        $PipeScriptTemplateObject.Save.Invoke(@(
+                            $OutputPath
+                            $ArgumentList
+                            $Parameter
+                        ))
+                    }
+                    else {
                         # If we did not find a transpiler, treat the source code as PipeScript/PowerShell.
                         $fileScriptBlock =
                             # If there was no .ScriptBlock on the command.
