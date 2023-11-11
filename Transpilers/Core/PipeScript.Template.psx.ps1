@@ -139,6 +139,8 @@ begin {
             return
         }
 
+        if ($this.LinePattern) {$LinePattern = $this.LinePattern}
+
         if ($LinePattern -and $match.Groups["IsSingleLine"].Value) {
             $pipeScriptLines = @($pipeScriptText -split '(?>\r\n|\n)')
             $pipeScriptText  = $pipeScriptLines -match $LinePattern -replace $LinePattern -join [Environment]::Newline
@@ -507,6 +509,9 @@ process {
     PSTypeName = 'PipeScript.Template'
     Name = '$($TemplateName -replace "'", "''")'
     Language = '$languageString'
+    $(if ($LinePattern) {
+        "LinePattern = '$LinePattern'"
+    })
     SourceFile = ''
     FilePattern = '$($filePattern -replace "'", "''")'
     Pattern = 
