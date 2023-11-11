@@ -20,7 +20,6 @@ These are all of the transpilers currently included in PipeScript:
 |[EqualityTypeComparison](Transpilers/Syntax/EqualityTypeComparison.psx.ps1)                |Allows equality type comparison.                  |
 |[Explicit](Transpilers/Explicit.psx.ps1)                                                   |Makes Output from a PowerShell function Explicit. |
 |[Help](Transpilers/Help.psx.ps1)                                                           |Help Transpiler                                   |
-|[HTML.Template](Transpilers/Templates/HTML.Template.psx.ps1)                               |HTML PipeScript Transpiler.                       |
 |[Include](Transpilers/Include.psx.ps1)                                                     |Includes Files                                    |
 |[Inherit](Transpilers/Inherit.psx.ps1)                                                     |Inherits a Command                                |
 |[Java.Template](Transpilers/Templates/Java.Template.psx.ps1)                               |Java Template Transpiler.                         |
