@@ -4,7 +4,6 @@ These are all of the transpilers currently included in PipeScript:
 
 |Language                                                                  |Synopsis                        |Pattern                         |
 |--------------------------------------------------------------------------|--------------------------------|--------------------------------|
-|[HTML.Template](Transpilers/Templates/HTML.Template.psx.ps1)              |HTML PipeScript Transpiler.     |```\.htm{0,1}```                |
 |[Java.Template](Transpilers/Templates/Java.Template.psx.ps1)              |Java Template Transpiler.       |```\.(?>java)$```               |
 |[JavaScript.Template](Transpilers/Templates/JavaScript.Template.psx.ps1)  |JavaScript Template Transpiler. |```\.js$```                     |
 |[Json.Template](Transpilers/Templates/Json.Template.psx.ps1)              |JSON PipeScript Transpiler.     |```\.json$```                   |
