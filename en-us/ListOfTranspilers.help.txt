@@ -4,7 +4,6 @@ These are all of the transpilers currently included in PipeScript:
 
 |Name                                                                                       |Synopsis                                          |
 |-------------------------------------------------------------------------------------------|--------------------------------------------------|
-|[ADA.Template](Transpilers/Templates/ADA.Template.psx.ps1)                                 |ADA Template Transpiler.                          |
 |[Aliases](Transpilers/Parameters/Aliases.psx.ps1)                                          |Dynamically Defines Aliases                       |
 |[All](Transpilers/Keywords/All.psx.ps1)                                                    |all keyword                                       |
 |[Arduino.Template](Transpilers/Templates/Arduino.Template.psx.ps1)                         |Arduino Template Transpiler.                      |
