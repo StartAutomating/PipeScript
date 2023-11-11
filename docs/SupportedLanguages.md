@@ -4,7 +4,6 @@ These are all of the transpilers currently included in PipeScript:
 
 |Language                                                                  |Synopsis                        |Pattern                         |
 |--------------------------------------------------------------------------|--------------------------------|--------------------------------|
-|[Kusto.Template](Transpilers/Templates/Kusto.Template.psx.ps1)            |Kusto Template Transpiler.      |```\.kql$```                    |
 |[Latex.Template](Transpilers/Templates/Latex.Template.psx.ps1)            |Latex Template Transpiler.      |```\.(?>latex\\|tex)$```        |
 |[LUA.Template](Transpilers/Templates/LUA.Template.psx.ps1)                |LUA Template Transpiler.        |```\.lua$```                    |
 |[Markdown.Template](Transpilers/Templates/Markdown.Template.psx.ps1)      |Markdown Template Transpiler.   |```\.(?>md\\|markdown\\|txt)$```|
