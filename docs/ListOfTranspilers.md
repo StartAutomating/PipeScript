@@ -8,7 +8,6 @@ These are all of the transpilers currently included in PipeScript:
 |[All](Transpilers/Keywords/All.psx.ps1)                                                    |all keyword                                       |
 |[ArrowOperator](Transpilers/Syntax/ArrowOperator.psx.ps1)                                  |Arrow Operator                                    |
 |[Assert](Transpilers/Keywords/Assert.psx.ps1)                                              |Assert keyword                                    |
-|[ATOM.Template](Transpilers/Templates/ATOM.Template.psx.ps1)                               |ATOM Template Transpiler.                         |
 |[Await](Transpilers/Keywords/Await.psx.ps1)                                                |awaits asynchronous operations                    |
 |[Bash](Transpilers/Wrappers/Bash.psx.ps1)                                                  |Wraps PowerShell in a Bash Script                 |
 |[Bash.Template](Transpilers/Templates/Bash.Template.psx.ps1)                               |Bash Template Transpiler.                         |

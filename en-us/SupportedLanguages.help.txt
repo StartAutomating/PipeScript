@@ -4,7 +4,6 @@ These are all of the transpilers currently included in PipeScript:
 
 |Language                                                                  |Synopsis                        |Pattern                         |
 |--------------------------------------------------------------------------|--------------------------------|--------------------------------|
-|[ATOM.Template](Transpilers/Templates/ATOM.Template.psx.ps1)              |ATOM Template Transpiler.       |```\.atom$```                   |
 |[Bash.Template](Transpilers/Templates/Bash.Template.psx.ps1)              |Bash Template Transpiler.       |```\.sh$```                     |
 |[Basic.Template](Transpilers/Templates/Basic.Template.psx.ps1)            |Basic Template Transpiler.      |```\.(?>bas\\|vbs{0,1})$```     |
 |[Batch.Template](Transpilers/Templates/Batch.Template.psx.ps1)            |Batch Template Transpiler.      |```\.cmd$```                    |
