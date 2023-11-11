@@ -4,7 +4,6 @@ These are all of the transpilers currently included in PipeScript:
 
 |Language                                                                  |Synopsis                        |Pattern                  |
 |--------------------------------------------------------------------------|--------------------------------|-------------------------|
-|[Perl.Template](Transpilers/Templates/Perl.Template.psx.ps1)              |Perl Template Transpiler.       |```\.(?>pl\\|pod)$```    |
 |[PHP.Template](Transpilers/Templates/PHP.Template.psx.ps1)                |PHP Template Transpiler.        |```\.php$```             |
 |[PS1XML.Template](Transpilers/Templates/PS1XML.Template.psx.ps1)          |PS1XML Template Transpiler.     |```\.ps1xml$```          |
 |[PSD1.Template](Transpilers/Templates/PSD1.Template.psx.ps1)              |PSD1 Template Transpiler.       |```\.psd1$```            |
