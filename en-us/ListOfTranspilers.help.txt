@@ -19,7 +19,6 @@ These are all of the transpilers currently included in PipeScript:
 |[EqualityComparison](Transpilers/Syntax/EqualityComparison.psx.ps1)                        |Allows equality comparison.                       |
 |[EqualityTypeComparison](Transpilers/Syntax/EqualityTypeComparison.psx.ps1)                |Allows equality type comparison.                  |
 |[Explicit](Transpilers/Explicit.psx.ps1)                                                   |Makes Output from a PowerShell function Explicit. |
-|[HAXE.Template](Transpilers/Templates/HAXE.Template.psx.ps1)                               |Haxe Template Transpiler.                         |
 |[HCL.Template](Transpilers/Templates/HCL.Template.psx.ps1)                                 |HCL Template Transpiler.                          |
 |[Help](Transpilers/Help.psx.ps1)                                                           |Help Transpiler                                   |
 |[HLSL.Template](Transpilers/Templates/HLSL.Template.psx.ps1)                               |HLSL Template Transpiler.                         |
