@@ -1,13 +1,12 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 25 languages or file types.
+PipeScript can be used to generate 24 languages or file types.
 
 ### Supported Languages
 
 
 |Language                                   |Synopsis                        |Pattern                         |
 |-------------------------------------------|--------------------------------|--------------------------------|
-|[Latex](Latex.Template.psx.ps1)            |Latex Template Transpiler.      |```\.(?>latex\\|tex)$```        |
 |[LUA](LUA.Template.psx.ps1)                |LUA Template Transpiler.        |```\.lua$```                    |
 |[Markdown](Markdown.Template.psx.ps1)      |Markdown Template Transpiler.   |```\.(?>md\\|markdown\\|txt)$```|
 |[ObjectiveC](ObjectiveC.Template.psx.ps1)  |Objective Template Transpiler.  |```\.(?>m\\|mm)$```             |
