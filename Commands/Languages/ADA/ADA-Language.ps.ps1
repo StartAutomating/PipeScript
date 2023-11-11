@@ -1,5 +1,4 @@
-Language function ADA
-{   
+Language function ADA {   
     <#
     .SYNOPSIS
         ADA Template Transpiler.
