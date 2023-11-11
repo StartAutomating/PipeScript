@@ -28,16 +28,7 @@ function Language.Rust {
             '
         
             $HelloWorldRust.Evaluate('hi')
-            $HelloWorldRust.Save(@{Message='Hello'}) |
-                Foreach-Object { 
-                    $file = $_
-                    if (Get-Command rustc -commandType Application) {
-                        $null = rustc $file.FullName
-                        & ".\$($file.Name.Replace($file.Extension, '.exe'))"
-                    } else {
-                        Write-Error "Go install Rust"
-                    }
-                }
+            $HelloWorldRust.Save(@{Message='Hello'})
         }
     .EXAMPLE
         '    
@@ -55,16 +46,7 @@ function Language.Rust {
             println!(`"{}`",msg);
         }
         " | Set-Content .\HelloWorld_Rust.ps1.rs
-        Invoke-PipeScript .\HelloWorld_Rust.ps1.rs -Parameter @{message='hi'} |
-            Foreach-Object { 
-                $file = $_
-                if (Get-Command rustc -commandType Application) {
-                    $null = rustc $file.FullName
-                    & ".\$($file.Name.Replace($file.Extension, '.exe'))"
-                } else {
-                    Write-Error "Go install Rust"
-                }
-            }
+        Invoke-PipeScript .\HelloWorld_Rust.ps1.rs -Parameter @{message='hi'}
     #>
 [ValidatePattern('\.rs$')]
 [Alias('Rust-Language','Language-Rust')]
@@ -103,16 +85,7 @@ New-Module {
             '
         
             $HelloWorldRust.Evaluate('hi')
-            $HelloWorldRust.Save(@{Message='Hello'}) |
-                Foreach-Object { 
-                    $file = $_
-                    if (Get-Command rustc -commandType Application) {
-                        $null = rustc $file.FullName
-                        & ".\$($file.Name.Replace($file.Extension, '.exe'))"
-                    } else {
-                        Write-Error "Go install Rust"
-                    }
-                }
+            $HelloWorldRust.Save(@{Message='Hello'})
         }
     .EXAMPLE
         '    
@@ -130,16 +103,7 @@ New-Module {
             println!(`"{}`",msg);
         }
         " | Set-Content .\HelloWorld_Rust.ps1.rs
-        Invoke-PipeScript .\HelloWorld_Rust.ps1.rs -Parameter @{message='hi'} |
-            Foreach-Object { 
-                $file = $_
-                if (Get-Command rustc -commandType Application) {
-                    $null = rustc $file.FullName
-                    & ".\$($file.Name.Replace($file.Extension, '.exe'))"
-                } else {
-                    Write-Error "Go install Rust"
-                }
-            }
+        Invoke-PipeScript .\HelloWorld_Rust.ps1.rs -Parameter @{message='hi'}
     #>
     [ValidatePattern('\.rs$')]
     [Alias('Rust-Language','Language-Rust')]
