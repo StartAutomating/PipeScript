@@ -12,15 +12,18 @@ function Language.Go {
         * ```nil```
         * ```""```
         * ```''```
-    .EXAMPLE    
-        $helloGo = HelloWorld.go template '
+    .EXAMPLE
+        Invoke-PipeScript {    
+            HelloWorld.go template '
         package main
         import "fmt"
         func main() {
             fmt.Println("/*{param($msg = "hello world") "`"$msg`""}*/")
         }
         '
+        }
     .EXAMPLE
+        Invoke-PipeScript {
         $HelloWorld = {param([Alias('msg')]$message = "Hello world") "`"$message`""}
         $helloGo = HelloWorld.go template "
         package main
@@ -30,6 +33,7 @@ function Language.Go {
         }
         "
         $helloGo.Save()
+        }
     #>
 [ValidatePattern('\.go$')]
 param(
@@ -51,15 +55,18 @@ New-Module {
         * ```nil```
         * ```""```
         * ```''```
-    .EXAMPLE    
-        $helloGo = HelloWorld.go template '
+    .EXAMPLE
+        Invoke-PipeScript {    
+            HelloWorld.go template '
         package main
         import "fmt"
         func main() {
             fmt.Println("/*{param($msg = "hello world") "`"$msg`""}*/")
         }
         '
+        }
     .EXAMPLE
+        Invoke-PipeScript {
         $HelloWorld = {param([Alias('msg')]$message = "Hello world") "`"$message`""}
         $helloGo = HelloWorld.go template "
         package main
@@ -69,6 +76,7 @@ New-Module {
         }
         "
         $helloGo.Save()
+        }
     #>
     [ValidatePattern('\.go$')]
     param(
