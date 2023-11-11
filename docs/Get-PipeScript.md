@@ -86,6 +86,7 @@ Valid Values:
 * BuildScript
 * Compiler
 * Interface
+* Language
 * Optimizer
 * Parser
 * Partial
