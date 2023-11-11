@@ -86,6 +86,19 @@
                 '
                 CommandType = '(?>Function|Alias)'
             }
+
+            'Language' = @{
+                Description = 'Language Commands describe languages'
+                Pattern = '                    
+                    Language    # Language
+                    (?>
+                        \.ps1$  # ending with .ps1
+                        |       # or
+                        \p{P}   # followed by punctuation
+                    )
+                '
+                CommandType = '(?>Function)'
+            }
                                     
             'Interface'  = @{
                 Description = 'An Interface Command'
@@ -154,35 +167,35 @@
                     '
                 }
 
-                'Transform' = @{
-                    Description = 'Transforms'
-                    Pattern = '              
-                        (?>
-                            # Transforms have two forms, one that is very "query" friendly
+            'Transform' = @{
+                Description = 'Transforms'
+                Pattern = '              
+                    (?>
+                        # Transforms have two forms, one that is very "query" friendly
+                        \=\> # =>
+                        (?<TransformName>[^\p{Ps}\<]+)?  # Optional transform name
+                        [\p{Ps}\<]                       # Transform From Type Start
+                        (?<TransformFrom>[^\p{Pe}\>]+)   # TransformFrom
+                        [^\p{Pe}\>]                      # Transform From Type End
+                        (?:
                             \=\> # =>
-                            (?<TransformName>[^\p{Ps}\<]+)?  # Optional transform name
-                            [\p{Ps}\<]                       # Transform From Type Start
-                            (?<TransformFrom>[^\p{Pe}\>]+)   # TransformFrom
-                            [^\p{Pe}\>]                      # Transform From Type End
-                            (?:
-                                \=\> # =>
-                                (?<TransformToName>[^\p{Ps}\<]+)?  # Optional to name
-                                [\p{Ps}\<]                       # Transform To Type Start
-                                (?<TransformTo>[^\p{Pe}\>]+)     # Transform To
-                                [^\p{Pe}\>]                      # Transform To Type End
-                            )?                         
-                            |
-                            # The other form is fairly normal:
-                            Transform(?>s|er)?             # Transform or Transforms or Transformer
-                            (?>
-                                \.ps1$                     # ending with .ps1
-                                |                          # or
-                                \p{P}                      # followed by punctuation
-                            )
+                            (?<TransformToName>[^\p{Ps}\<]+)?  # Optional to name
+                            [\p{Ps}\<]                       # Transform To Type Start
+                            (?<TransformTo>[^\p{Pe}\>]+)     # Transform To
+                            [^\p{Pe}\>]                      # Transform To Type End
+                        )?                         
+                        |
+                        # The other form is fairly normal:
+                        Transform(?>s|er)?             # Transform or Transforms or Transformer
+                        (?>
+                            \.ps1$                     # ending with .ps1
+                            |                          # or
+                            \p{P}                      # followed by punctuation
                         )
-                    '
-                    ExcludeCommandType = '(?>Application|Script|Cmdlet)'
-                }
+                    )
+                '
+                ExcludeCommandType = '(?>Application|Script|Cmdlet)'
+            }            
               
             'Template'     = 
                 @{
