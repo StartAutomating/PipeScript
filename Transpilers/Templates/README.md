@@ -1,13 +1,12 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 21 languages or file types.
+PipeScript can be used to generate 20 languages or file types.
 
 ### Supported Languages
 
 
 |Language                                   |Synopsis                        |Pattern                  |
 |-------------------------------------------|--------------------------------|-------------------------|
-|[OpenSCAD](OpenSCAD.Template.psx.ps1)      |OpenSCAD Template Transpiler.   |```\.scad$```            |
 |[Perl](Perl.Template.psx.ps1)              |Perl Template Transpiler.       |```\.(?>pl\\|pod)$```    |
 |[PHP](PHP.Template.psx.ps1)                |PHP Template Transpiler.        |```\.php$```             |
 |[PS1XML](PS1XML.Template.psx.ps1)          |PS1XML Template Transpiler.     |```\.ps1xml$```          |
