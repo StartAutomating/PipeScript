@@ -1,9 +1,11 @@
 Language function ADA {   
     <#
     .SYNOPSIS
-        ADA Template Transpiler.
+        ADA Language Definition
     .DESCRIPTION
-        Allows PipeScript to be used to generate ADA.
+        Defines ADA within PipeScript.
+
+        This allows ADA to be templated.
         
         Because ADA Scripts only allow single-line comments, this is done using a pair of comment markers.
 
