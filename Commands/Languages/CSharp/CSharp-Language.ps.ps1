@@ -1,4 +1,4 @@
-Language functon CSharp {
+Language function CSharp {
     <#
     .SYNOPSIS
         C# Language Definition.
