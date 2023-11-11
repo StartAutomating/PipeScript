@@ -269,7 +269,8 @@
                 # and attempt to find a transpiler.
                 $foundTranspiler = Get-Transpiler -CouldPipe $Command -ValidateInput $Command -ErrorAction Ignore
                 
-                $matchingPipeScriptLanguageCommand
+                $pipeScriptLanguages = Get-PipeScript -PipeScriptType Language
+                $matchingPipeScriptLanguageCommand = $null
                 $matchingPipeScriptLanguage = $(foreach ($pipescriptLanguage in $pipeScriptLanguages) {                    
                     if ($pipescriptLanguage.IsMatch($Command)) {
                         $matchingPipeScriptLanguageCommand = $pipescriptLanguage
