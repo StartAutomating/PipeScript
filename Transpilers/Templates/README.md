@@ -1,13 +1,12 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 44 languages or file types.
+PipeScript can be used to generate 43 languages or file types.
 
 ### Supported Languages
 
 
 |Language                                   |Synopsis                        |Pattern                         |
 |-------------------------------------------|--------------------------------|--------------------------------|
-|[Bash](Bash.Template.psx.ps1)              |Bash Template Transpiler.       |```\.sh$```                     |
 |[Basic](Basic.Template.psx.ps1)            |Basic Template Transpiler.      |```\.(?>bas\\|vbs{0,1})$```     |
 |[Batch](Batch.Template.psx.ps1)            |Batch Template Transpiler.      |```\.cmd$```                    |
 |[Bicep](Bicep.Template.psx.ps1)            |Bicep Template Transpiler.      |```\.bicep$```                  |
