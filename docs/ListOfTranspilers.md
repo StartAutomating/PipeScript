@@ -13,7 +13,6 @@ These are all of the transpilers currently included in PipeScript:
 |[Batch](Transpilers/Wrappers/Batch.psx.ps1)                                                |Wraps PowerShell in a Windows Batch Script        |
 |[BatchPowerShell](Transpilers/Wrappers/BatchPowerShell.psx.ps1)                            |Wraps PowerShell in a Windows Batch Script        |
 |[ConditionalKeyword](Transpilers/Syntax/ConditionalKeyword.psx.ps1)                        |Conditional Keyword Expansion                     |
-|[Dart.Template](Transpilers/Templates/Dart.Template.psx.ps1)                               |Dart Template Transpiler.                         |
 |[Decorate](Transpilers/Decorate.psx.ps1)                                                   |decorate transpiler                               |
 |[Define](Transpilers/Define.psx.ps1)                                                       |Defines a variable                                |
 |[Dot](Transpilers/Syntax/Dot.psx.ps1)                                                      |Dot Notation                                      |
