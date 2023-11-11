@@ -1,13 +1,12 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 38 languages or file types.
+PipeScript can be used to generate 37 languages or file types.
 
 ### Supported Languages
 
 
 |Language                                   |Synopsis                        |Pattern                         |
 |-------------------------------------------|--------------------------------|--------------------------------|
-|[CSS](CSS.Template.psx.ps1)                |CSS Template Transpiler.        |```\.s{0,1}css$```              |
 |[Dart](Dart.Template.psx.ps1)              |Dart Template Transpiler.       |```\.(?>dart)$```               |
 |[Eiffel](Eiffel.Template.psx.ps1)          |Eiffel Template Transpiler.     |```\.e$```                      |
 |[Go](Go.Template.psx.ps1)                  |Go Template Transpiler.         |```\.go$```                     |
