@@ -16,8 +16,9 @@ Language function Go {
         * ```nil```
         * ```""```
         * ```''```
-    .EXAMPLE    
-        $helloGo = HelloWorld.go template '
+    .EXAMPLE
+        Invoke-PipeScript {    
+            HelloWorld.go template '
         package main
 
         import "fmt"
@@ -25,7 +26,9 @@ Language function Go {
             fmt.Println("/*{param($msg = "hello world") "`"$msg`""}*/")
         }
         '
+        }
     .EXAMPLE
+        Invoke-PipeScript {
         $HelloWorld = {param([Alias('msg')]$message = "Hello world") "`"$message`""}
         $helloGo = HelloWorld.go template "
         package main
@@ -37,6 +40,7 @@ Language function Go {
         "
 
         $helloGo.Save()
+        }
     #>
     [ValidatePattern('\.go$')]
     param(
