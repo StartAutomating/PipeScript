@@ -6,7 +6,6 @@ These are all of the transpilers currently included in PipeScript:
 |-------------------------------------------------------------------------------------------|--------------------------------------------------|
 |[Aliases](Transpilers/Parameters/Aliases.psx.ps1)                                          |Dynamically Defines Aliases                       |
 |[All](Transpilers/Keywords/All.psx.ps1)                                                    |all keyword                                       |
-|[Arduino.Template](Transpilers/Templates/Arduino.Template.psx.ps1)                         |Arduino Template Transpiler.                      |
 |[ArrowOperator](Transpilers/Syntax/ArrowOperator.psx.ps1)                                  |Arrow Operator                                    |
 |[Assert](Transpilers/Keywords/Assert.psx.ps1)                                              |Assert keyword                                    |
 |[ATOM.Template](Transpilers/Templates/ATOM.Template.psx.ps1)                               |ATOM Template Transpiler.                         |
