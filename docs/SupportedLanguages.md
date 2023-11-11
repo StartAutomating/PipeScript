@@ -4,8 +4,6 @@ These are all of the transpilers currently included in PipeScript:
 
 |Language                                                                  |Synopsis                        |Pattern                         |
 |--------------------------------------------------------------------------|--------------------------------|--------------------------------|
-|[CSharp.Template](Transpilers/Templates/CSharp.Template.psx.ps1)          |C# Template Transpiler.         |```\.cs$```                     |
-|[CSS.Template](Transpilers/Templates/CSS.Template.psx.ps1)                |CSS Template Transpiler.        |```\.s{0,1}css$```              |
 |[Dart.Template](Transpilers/Templates/Dart.Template.psx.ps1)              |Dart Template Transpiler.       |```\.(?>dart)$```               |
 |[Eiffel.Template](Transpilers/Templates/Eiffel.Template.psx.ps1)          |Eiffel Template Transpiler.     |```\.e$```                      |
 |[Go.Template](Transpilers/Templates/Go.Template.psx.ps1)                  |Go Template Transpiler.         |```\.go$```                     |
