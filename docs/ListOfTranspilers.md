@@ -27,7 +27,6 @@ These are all of the transpilers currently included in PipeScript:
 |[NamespacedAlias](Transpilers/Syntax/NamespacedAlias.psx.ps1)                              |Declares a namespaced alias                       |
 |[NamespacedFunction](Transpilers/Syntax/NamespacedFunction.psx.ps1)                        |Namespaced functions                              |
 |[New](Transpilers/Keywords/New.psx.ps1)                                                    |'new' keyword                                     |
-|[OpenSCAD.Template](Transpilers/Templates/OpenSCAD.Template.psx.ps1)                       |OpenSCAD Template Transpiler.                     |
 |[OutputFile](Transpilers/OutputFile.psx.ps1)                                               |Outputs to a File                                 |
 |[Perl.Template](Transpilers/Templates/Perl.Template.psx.ps1)                               |Perl Template Transpiler.                         |
 |[PHP.Template](Transpilers/Templates/PHP.Template.psx.ps1)                                 |PHP Template Transpiler.                          |
