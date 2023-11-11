@@ -95,6 +95,7 @@ Valid Values:
 * Protocol
 * Sentence
 * Template
+* Transform
 * Transpiler
 
 
