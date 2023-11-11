@@ -16,12 +16,9 @@ These are all of the transpilers currently included in PipeScript:
 |[Decorate](Transpilers/Decorate.psx.ps1)                                                   |decorate transpiler                               |
 |[Define](Transpilers/Define.psx.ps1)                                                       |Defines a variable                                |
 |[Dot](Transpilers/Syntax/Dot.psx.ps1)                                                      |Dot Notation                                      |
-|[Eiffel.Template](Transpilers/Templates/Eiffel.Template.psx.ps1)                           |Eiffel Template Transpiler.                       |
 |[EqualityComparison](Transpilers/Syntax/EqualityComparison.psx.ps1)                        |Allows equality comparison.                       |
 |[EqualityTypeComparison](Transpilers/Syntax/EqualityTypeComparison.psx.ps1)                |Allows equality type comparison.                  |
 |[Explicit](Transpilers/Explicit.psx.ps1)                                                   |Makes Output from a PowerShell function Explicit. |
-|[Go.Template](Transpilers/Templates/Go.Template.psx.ps1)                                   |Go Template Transpiler.                           |
-|[HAXE.Template](Transpilers/Templates/HAXE.Template.psx.ps1)                               |Haxe Template Transpiler.                         |
 |[HCL.Template](Transpilers/Templates/HCL.Template.psx.ps1)                                 |HCL Template Transpiler.                          |
 |[Help](Transpilers/Help.psx.ps1)                                                           |Help Transpiler                                   |
 |[HLSL.Template](Transpilers/Templates/HLSL.Template.psx.ps1)                               |HLSL Template Transpiler.                         |
