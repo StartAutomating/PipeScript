@@ -1,13 +1,12 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 33 languages or file types.
+PipeScript can be used to generate 32 languages or file types.
 
 ### Supported Languages
 
 
 |Language                                   |Synopsis                        |Pattern                         |
 |-------------------------------------------|--------------------------------|--------------------------------|
-|[HCL](HCL.Template.psx.ps1)                |HCL Template Transpiler.        |```\.hcl$```                    |
 |[HLSL](HLSL.Template.psx.ps1)              |HLSL Template Transpiler.       |```\.hlsl$```                   |
 |[HTML](HTML.Template.psx.ps1)              |HTML PipeScript Transpiler.     |```\.htm{0,1}```                |
 |[Java](Java.Template.psx.ps1)              |Java Template Transpiler.       |```\.(?>java)$```               |
