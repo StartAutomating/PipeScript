@@ -1961,6 +1961,18 @@ $this.Parent.GetType().Name -in 'AssignmentStatementAST', 'HashtableAST'
   <Type>
     <Name>System.Management.Automation.PSModuleInfo</Name>
     <Members>
+      <AliasProperty>
+        <Name>ExtendedCommand</Name>
+        <ReferencedMemberName>Extension</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ExtendedCommands</Name>
+        <ReferencedMemberName>Extension</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Extensions</Name>
+        <ReferencedMemberName>Extension</ReferencedMemberName>
+      </AliasProperty>
       <ScriptMethod>
         <Name>FindExtensions</Name>
         <Script>
@@ -2522,6 +2534,27 @@ if (-not $this.'.CommandTypes') {
 }
 $this.'.CommandTypes'
 
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Extension</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Extended Commands
+.DESCRIPTION
+    Gets Extended Commands for this module
+.EXAMPLE
+    (Get-Module PipeScript).Extensions
+#&gt;
+if (-not $this.'.ExtendedCommands') {
+    Add-Member -InputObject $this -MemberType NoteProperty -Name '.Extensions' -Value @(
+        $this.FindExtensions()    
+        $this.FindExtensions(($This | Split-Path))        
+    )
+}
+$this.'.ExtendedCommands'
 
                     </GetScriptBlock>
       </ScriptProperty>
