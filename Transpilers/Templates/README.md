@@ -1,13 +1,12 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 47 languages or file types.
+PipeScript can be used to generate 46 languages or file types.
 
 ### Supported Languages
 
 
 |Language                                   |Synopsis                        |Pattern                         |
 |-------------------------------------------|--------------------------------|--------------------------------|
-|[ADA](ADA.Template.psx.ps1)                |ADA Template Transpiler.        |```\.ad[bs]$```                 |
 |[Arduino](Arduino.Template.psx.ps1)        |Arduino Template Transpiler.    |```\.(?>ino)$```                |
 |[ATOM](ATOM.Template.psx.ps1)              |ATOM Template Transpiler.       |```\.atom$```                   |
 |[Bash](Bash.Template.psx.ps1)              |Bash Template Transpiler.       |```\.sh$```                     |
