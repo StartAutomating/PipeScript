@@ -29,23 +29,7 @@
             'Partial' = @{
                 Description = 'A partial function.'
                 Pattern = '(?>PipeScript\p{P})?Partial\p{P}'
-            }
-
-            'PreProcessor' = @{
-                Description = 'Preprocessing Commands'
-                Pattern     = '
-                    (?>PipeScript\p{P})?  # (optionally) PipeScript+Punctuation
-                    PreProc[^\p{P}]+\p{P} # Preproc + Many NotPunctuation + Punctuation
-                '
-            }
-
-            'PostProcessor' = @{
-                Description = 'PostProcessing Commands'
-                Pattern     = '
-                    (?>PipeScript\p{P})?  # (optionally) PipeScript+Punctuation
-                    PostProc[^\p{P}]+\p{P} # Postproc + Many NotPunctuation + Punctuation
-                '
-            }
+            }            
 
             'Optimizer' = @{
                 Description = 'Optimization Commands'
@@ -125,19 +109,36 @@
                 '
                 ExcludeCommandType = 'Application'
             }
+
+            'PreProcessor' = @{
+                Description = 'Preprocessing Commands'
+                Pattern     = '
+                    (?>PipeScript\p{P})?  # (optionally) PipeScript+Punctuation
+                    PreProc[^\p{P}]+\p{P} # Preproc + Many NotPunctuation + Punctuation
+                '
+                ExcludeCommandType = '(?>Application|Script|Cmdlet)'
+            }
+
+            'PostProcessor' = @{
+                Description = 'PostProcessing Commands'
+                Pattern     = '
+                    (?>PipeScript\p{P})?  # (optionally) PipeScript+Punctuation
+                    PostProc[^\p{P}]+\p{P} # Postproc + Many NotPunctuation + Punctuation
+                '
+                ExcludeCommandType = '(?>Application|Script|Cmdlet)'
+            }
             
             'Parser' = @{
                 Description = 'Parsers'
-                Pattern = '
-                    (?>PipeScript\p{P})?         # Optional PipeScript + Punctuation
-                    Parse[sr]?\p{P}              # Parse or Parses or Parser + Punctuation
+                Pattern = '                    
+                    Parse[sr]?              # Parse or Parses or Parser + Punctuation
                     (?>
-                        ps1$                     # Ending with .ps1
-                        |                        # or
-                        (?=[^[\p{P}-[\.]]]+$)    # Followed by anything but punctuation (except literal periods).
+                        \.ps1$                     # Ending with .ps1
+                        |                          # or
+                        \p{P}
                     )
                 '
-            }
+            }            
                             
             'Transpiler' = 
                 @{
