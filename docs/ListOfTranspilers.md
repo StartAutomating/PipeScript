@@ -81,7 +81,6 @@ These are all of the transpilers currently included in PipeScript:
 |[Rest](Transpilers/Rest.psx.ps1)                                                           |Generates PowerShell to talk to a REST api.       |
 |[RSS.Template](Transpilers/Templates/RSS.Template.psx.ps1)                                 |RSS Template Transpiler.                          |
 |[Ruby.Template](Transpilers/Templates/Ruby.Template.psx.ps1)                               |Ruby Template Transpiler.                         |
-|[Rust.Template](Transpilers/Templates/Rust.Template.psx.ps1)                               |Rust Template Transpiler.                         |
 |[Scala.Template](Transpilers/Templates/Scala.Template.psx.ps1)                             |Scala Template Transpiler.                        |
 |[SQL.Template](Transpilers/Templates/SQL.Template.psx.ps1)                                 |SQL Template Transpiler.                          |
 |[SVG.template](Transpilers/Templates/SVG.template.psx.ps1)                                 |SVG Template Transpiler.                          |

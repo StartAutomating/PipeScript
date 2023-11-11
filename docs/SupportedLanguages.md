@@ -41,7 +41,6 @@ These are all of the transpilers currently included in PipeScript:
 |[Razor.Template](Transpilers/Templates/Razor.Template.psx.ps1)            |Razor Template Transpiler.      |```\.(cshtml\\|razor)$```       |
 |[RSS.Template](Transpilers/Templates/RSS.Template.psx.ps1)                |RSS Template Transpiler.        |```\.rss$```                    |
 |[Ruby.Template](Transpilers/Templates/Ruby.Template.psx.ps1)              |Ruby Template Transpiler.       |```\.rb$```                     |
-|[Rust.Template](Transpilers/Templates/Rust.Template.psx.ps1)              |Rust Template Transpiler.       |```\.rs$```                     |
 |[Scala.Template](Transpilers/Templates/Scala.Template.psx.ps1)            |Scala Template Transpiler.      |```\.(?>scala\\|sc)$```         |
 |[SQL.Template](Transpilers/Templates/SQL.Template.psx.ps1)                |SQL Template Transpiler.        |```\.sql$```                    |
 |[SVG.template](Transpilers/Templates/SVG.template.psx.ps1)                |SVG Template Transpiler.        |```\.svg$```                    |
