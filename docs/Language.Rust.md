@@ -26,35 +26,40 @@ This allows Rust to be templated.
 > EXAMPLE 1
 
 ```PowerShell
-$HelloWorldRust = HelloWorld_Rust.rs template '    
-fn main() {
-    let msg = /*{param($msg = ''hello world'') "`"$msg`""}*/ ;
-    println!("{}",msg);
+Invoke-PipeScript -ScriptBlock {
+    $HelloWorldRustString = '    
+    fn main() {
+        let msg = /*{param($msg = ''hello world'') "`"$msg`""}*/ ;
+        println!("{}",msg);
+    }
+    '
+    $HelloWorldRust = HelloWorld_Rust.rs template $HelloWorldRustString
+    "$HelloWorldRust"
 }
-'
-"$HelloWorldRust"
 ```
 > EXAMPLE 2
 
 ```PowerShell
-$HelloWorldRust = HelloWorld_Rust.rs template '    
-$HelloWorld = {param([Alias(''msg'')]$message = "Hello world") "`"$message`""}
-fn main() {
-    let msg = /*{param($msg = ''hello world'') "`"$msg`""}*/ ;
-    println!("{}",msg);
-}
-'
-$HelloWorldRust.Evaluate('hi')
-$HelloWorldRust.Save(@{Message='Hello'}) |
-    Foreach-Object { 
-        $file = $_
-        if (Get-Command rustc -commandType Application) {
-            $null = rustc $file.FullName
-            & ".\$($file.Name.Replace($file.Extension, '.exe'))"
-        } else {
-            Write-Error "Go install Rust"
-        }
+Invoke-PipeScript -ScriptBlock {
+    $HelloWorldRust = HelloWorld_Rust.rs template '    
+    $HelloWorld = {param([Alias(''msg'')]$message = "Hello world") "`"$message`""}
+    fn main() {
+        let msg = /*{param($msg = ''hello world'') "`"$msg`""}*/ ;
+        println!("{}",msg);
     }
+    '
+$HelloWorldRust.Evaluate('hi')
+    $HelloWorldRust.Save(@{Message='Hello'}) |
+        Foreach-Object { 
+            $file = $_
+            if (Get-Command rustc -commandType Application) {
+                $null = rustc $file.FullName
+                & ".\$($file.Name.Replace($file.Extension, '.exe'))"
+            } else {
+                Write-Error "Go install Rust"
+            }
+        }
+}
 ```
 > EXAMPLE 3
 
