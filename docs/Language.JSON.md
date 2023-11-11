@@ -32,9 +32,11 @@ Multiline comments can be preceeded or followed by 'empty' syntax, which will be
 > EXAMPLE 1
 
 ```PowerShell
-a.json template "{
-procs : null/*{Get-Process | Select Name, ID}*/
-}"
+Invoke-PipeScript {
+    a.json template "{
+    procs : null/*{Get-Process | Select Name, ID}*/
+    }"
+}
 ```
 
 
