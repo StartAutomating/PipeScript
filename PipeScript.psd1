@@ -10,7 +10,7 @@
     CompanyName       = 'Start-Automating'
     Copyright         = '2022 Start-Automating'
     Author            = 'James Brundage'
-    FunctionsToExport = 'Export-Pipescript','Get-PipeScript','Get-Transpiler','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript','Compile.LanguageDefinition','PipeScript.Automatic.Variable.IsPipedTo','PipeScript.Automatic.Variable.IsPipedFrom','PipeScript.Automatic.Variable.MyCallstack','PipeScript.Automatic.Variable.MySelf','PipeScript.Automatic.Variable.MyParameters','PipeScript.Automatic.Variable.MyCaller','PipeScript.Automatic.Variable.MyCommandAst','Language.ATOM','Language.Lua','Language.ADA','Language.CPlusPlus','Language.HCL','Language.Kotlin','Language.Bicep','Language.Bash','Language.Haxe','Language.HLSL','Language.LaTeX','Language.JavaScript','Language.Kusto','Language.Go','Language.Java','Language.JSON','Language.Dart','Language.CSS','Language.Batch','Language.Eiffel','Language.Arduino','Language.Rust','Language.CSharp','Language.HTML','Language.BASIC','PipeScript.Optimizer.ConsolidateAspects','Protocol.HTTP','Protocol.JSONSchema','Protocol.OpenAPI','Protocol.UDP','Parse.CSharp','Parse.PowerShell','Aspect.DynamicParameter','Aspect.ModuleExtensionType','Aspect.ModuleExtensionPattern','Aspect.ModuleExtensionCommand','PipeScript.PostProcess.InitializeAutomaticVariables','PipeScript.PostProcess.PartialFunction'
+    FunctionsToExport = 'Export-Pipescript','Get-PipeScript','Get-Transpiler','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript','Aspect.DynamicParameter','Aspect.ModuleExtensionType','Aspect.ModuleExtensionPattern','Aspect.ModuleExtensionCommand','Aspect.GroupByTypeName','Aspect.GroupByType','PipeScript.Automatic.Variable.IsPipedTo','PipeScript.Automatic.Variable.IsPipedFrom','PipeScript.Automatic.Variable.MyCallstack','PipeScript.Automatic.Variable.MySelf','PipeScript.Automatic.Variable.MyParameters','PipeScript.Automatic.Variable.MyCaller','PipeScript.Automatic.Variable.MyCommandAst','Compile.CSharp','Compile.LanguageDefinition','Compile.PowerShell','Interface.PipeScript','interface.FileExporter','interface.FileImporter','Language.PowerShell','Language.ADA','Language.Arduino','Language.ATOM','Language.Bash','Language.BASIC','Language.Batch','Language.Bicep','Language.CPlusPlus','Language.CSharp','CSharp.Overload','Language.CSS','Language.Dart','Language.Eiffel','Language.Go','Language.Haxe','Language.HCL','Language.HLSL','Language.HTML','Language.Java','Language.JavaScript','Language.JSON','Language.Kotlin','Language.Kusto','Language.LaTeX','Language.Lua','Language.Markdown','Language.Rust','Get-Noun','Get-Parser','Noun.Of.Type','PipeScript.Optimizer.ConsolidateAspects','Parse.CSharp','Parse.PowerShell','PipeScript.PostProcess.InitializeAutomaticVariables','PipeScript.PostProcess.PartialFunction','Protocol.HTTP','Protocol.JSONSchema','Protocol.OpenAPI','Protocol.UDP','sentence.Map*','shape.FileExporter','shape.FileImporter','Signal.Artifact','signal.Task'
     PrivateData = @{
         FunctionTypes = @{
             'Partial' = @{
@@ -84,7 +84,7 @@
                         \p{P}   # followed by punctuation
                     )
                 '
-                CommandType = '(?>Function)'
+                CommandType = '(?>Function|Alias)'
             }
                                     
             'Interface'  = @{
