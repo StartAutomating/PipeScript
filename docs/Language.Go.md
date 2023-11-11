@@ -32,17 +32,20 @@ The Go Transpiler will consider the following syntax to be empty:
 > EXAMPLE 1
 
 ```PowerShell
-$helloGo = HelloWorld.go template '
+Invoke-PipeScript {    
+    HelloWorld.go template '
 package main
 import "fmt"
 func main() {
     fmt.Println("/*{param($msg = "hello world") "`"$msg`""}*/")
 }
 '
+}
 ```
 > EXAMPLE 2
 
 ```PowerShell
+Invoke-PipeScript {
 $HelloWorld = {param([Alias('msg')]$message = "Hello world") "`"$message`""}
 $helloGo = HelloWorld.go template "
 package main
@@ -52,6 +55,7 @@ func main() {
 }
 "
 $helloGo.Save()
+}
 ```
 
 
