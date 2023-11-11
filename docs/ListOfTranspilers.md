@@ -22,13 +22,11 @@ These are all of the transpilers currently included in PipeScript:
 |[Help](Transpilers/Help.psx.ps1)                                                           |Help Transpiler                                   |
 |[Include](Transpilers/Include.psx.ps1)                                                     |Includes Files                                    |
 |[Inherit](Transpilers/Inherit.psx.ps1)                                                     |Inherits a Command                                |
-|[Markdown.Template](Transpilers/Templates/Markdown.Template.psx.ps1)                       |Markdown Template Transpiler.                     |
 |[ModuleExports](Transpilers/Modules/ModuleExports.psx.ps1)                                 |Gets Module Exports                               |
 |[ModuleRelationship](Transpilers/Modules/ModuleRelationship.psx.ps1)                       |Gets Module Relationships                         |
 |[NamespacedAlias](Transpilers/Syntax/NamespacedAlias.psx.ps1)                              |Declares a namespaced alias                       |
 |[NamespacedFunction](Transpilers/Syntax/NamespacedFunction.psx.ps1)                        |Namespaced functions                              |
 |[New](Transpilers/Keywords/New.psx.ps1)                                                    |'new' keyword                                     |
-|[ObjectiveC.Template](Transpilers/Templates/ObjectiveC.Template.psx.ps1)                   |Objective Template Transpiler.                    |
 |[OpenSCAD.Template](Transpilers/Templates/OpenSCAD.Template.psx.ps1)                       |OpenSCAD Template Transpiler.                     |
 |[OutputFile](Transpilers/OutputFile.psx.ps1)                                               |Outputs to a File                                 |
 |[Perl.Template](Transpilers/Templates/Perl.Template.psx.ps1)                               |Perl Template Transpiler.                         |
