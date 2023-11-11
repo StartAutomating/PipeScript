@@ -1,35 +1,33 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 23 languages or file types.
+PipeScript can be used to generate 21 languages or file types.
 
 ### Supported Languages
 
 
-|Language                                   |Synopsis                        |Pattern                         |
-|-------------------------------------------|--------------------------------|--------------------------------|
-|[Markdown](Markdown.Template.psx.ps1)      |Markdown Template Transpiler.   |```\.(?>md\\|markdown\\|txt)$```|
-|[ObjectiveC](ObjectiveC.Template.psx.ps1)  |Objective Template Transpiler.  |```\.(?>m\\|mm)$```             |
-|[OpenSCAD](OpenSCAD.Template.psx.ps1)      |OpenSCAD Template Transpiler.   |```\.scad$```                   |
-|[Perl](Perl.Template.psx.ps1)              |Perl Template Transpiler.       |```\.(?>pl\\|pod)$```           |
-|[PHP](PHP.Template.psx.ps1)                |PHP Template Transpiler.        |```\.php$```                    |
-|[PS1XML](PS1XML.Template.psx.ps1)          |PS1XML Template Transpiler.     |```\.ps1xml$```                 |
-|[PSD1](PSD1.Template.psx.ps1)              |PSD1 Template Transpiler.       |```\.psd1$```                   |
-|[Python](Python.Template.psx.ps1)          |Python Template Transpiler.     |```\.py$```                     |
-|[R](R.Template.psx.ps1)                    |R Template Transpiler.          |```\.r$```                      |
-|[Racket](Racket.Template.psx.ps1)          |Racket Template Transpiler.     |```\.rkt$```                    |
-|[Razor](Razor.Template.psx.ps1)            |Razor Template Transpiler.      |```\.(cshtml\\|razor)$```       |
-|[RSS](RSS.Template.psx.ps1)                |RSS Template Transpiler.        |```\.rss$```                    |
-|[Ruby](Ruby.Template.psx.ps1)              |Ruby Template Transpiler.       |```\.rb$```                     |
-|[Scala](Scala.Template.psx.ps1)            |Scala Template Transpiler.      |```\.(?>scala\\|sc)$```         |
-|[SQL](SQL.Template.psx.ps1)                |SQL Template Transpiler.        |```\.sql$```                    |
-|[SVG](SVG.template.psx.ps1)                |SVG Template Transpiler.        |```\.svg$```                    |
-|[TCL](TCL.Template.psx.ps1)                |TCL/TK Template Transpiler.     |```\.t(?>cl\\|k)$```            |
-|[TOML](TOML.Template.psx.ps1)              |TOML Template Transpiler.       |```\.toml$```                   |
-|[TypeScript](TypeScript.Template.psx.ps1)  |TypeScript Template Transpiler. |```\.tsx{0,1}```                |
-|[WebAssembly](WebAssembly.Template.psx.ps1)|WebAssembly Template Transpiler.|```\.wat$```                    |
-|[XAML](XAML.Template.psx.ps1)              |XAML Template Transpiler.       |```\.xaml$```                   |
-|[XML](XML.Template.psx.ps1)                |XML Template Transpiler.        |```\.xml$```                    |
-|[YAML](YAML.Template.psx.ps1)              |Yaml Template Transpiler.       |```\.(?>yml\\|yaml)$```         |
+|Language                                   |Synopsis                        |Pattern                  |
+|-------------------------------------------|--------------------------------|-------------------------|
+|[OpenSCAD](OpenSCAD.Template.psx.ps1)      |OpenSCAD Template Transpiler.   |```\.scad$```            |
+|[Perl](Perl.Template.psx.ps1)              |Perl Template Transpiler.       |```\.(?>pl\\|pod)$```    |
+|[PHP](PHP.Template.psx.ps1)                |PHP Template Transpiler.        |```\.php$```             |
+|[PS1XML](PS1XML.Template.psx.ps1)          |PS1XML Template Transpiler.     |```\.ps1xml$```          |
+|[PSD1](PSD1.Template.psx.ps1)              |PSD1 Template Transpiler.       |```\.psd1$```            |
+|[Python](Python.Template.psx.ps1)          |Python Template Transpiler.     |```\.py$```              |
+|[R](R.Template.psx.ps1)                    |R Template Transpiler.          |```\.r$```               |
+|[Racket](Racket.Template.psx.ps1)          |Racket Template Transpiler.     |```\.rkt$```             |
+|[Razor](Razor.Template.psx.ps1)            |Razor Template Transpiler.      |```\.(cshtml\\|razor)$```|
+|[RSS](RSS.Template.psx.ps1)                |RSS Template Transpiler.        |```\.rss$```             |
+|[Ruby](Ruby.Template.psx.ps1)              |Ruby Template Transpiler.       |```\.rb$```              |
+|[Scala](Scala.Template.psx.ps1)            |Scala Template Transpiler.      |```\.(?>scala\\|sc)$```  |
+|[SQL](SQL.Template.psx.ps1)                |SQL Template Transpiler.        |```\.sql$```             |
+|[SVG](SVG.template.psx.ps1)                |SVG Template Transpiler.        |```\.svg$```             |
+|[TCL](TCL.Template.psx.ps1)                |TCL/TK Template Transpiler.     |```\.t(?>cl\\|k)$```     |
+|[TOML](TOML.Template.psx.ps1)              |TOML Template Transpiler.       |```\.toml$```            |
+|[TypeScript](TypeScript.Template.psx.ps1)  |TypeScript Template Transpiler. |```\.tsx{0,1}```         |
+|[WebAssembly](WebAssembly.Template.psx.ps1)|WebAssembly Template Transpiler.|```\.wat$```             |
+|[XAML](XAML.Template.psx.ps1)              |XAML Template Transpiler.       |```\.xaml$```            |
+|[XML](XML.Template.psx.ps1)                |XML Template Transpiler.        |```\.xml$```             |
+|[YAML](YAML.Template.psx.ps1)              |Yaml Template Transpiler.       |```\.(?>yml\\|yaml)$```  |
 
 
 
