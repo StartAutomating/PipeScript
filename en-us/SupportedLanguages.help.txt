@@ -4,7 +4,6 @@ These are all of the transpilers currently included in PipeScript:
 
 |Language                                                                  |Synopsis                        |Pattern                         |
 |--------------------------------------------------------------------------|--------------------------------|--------------------------------|
-|[Dart.Template](Transpilers/Templates/Dart.Template.psx.ps1)              |Dart Template Transpiler.       |```\.(?>dart)$```               |
 |[Eiffel.Template](Transpilers/Templates/Eiffel.Template.psx.ps1)          |Eiffel Template Transpiler.     |```\.e$```                      |
 |[Go.Template](Transpilers/Templates/Go.Template.psx.ps1)                  |Go Template Transpiler.         |```\.go$```                     |
 |[HAXE.Template](Transpilers/Templates/HAXE.Template.psx.ps1)              |Haxe Template Transpiler.       |```\.hx$```                     |
