@@ -16,9 +16,11 @@ Language function JSON {
         * ```{}```
         * ```[]```
     .EXAMPLE
-        a.json template "{
-        procs : null/*{Get-Process | Select Name, ID}*/
-        }"
+        Invoke-PipeScript {
+            a.json template "{
+            procs : null/*{Get-Process | Select Name, ID}*/
+            }"
+        }
     #>
     [ValidatePattern('\.json$')]
     param(

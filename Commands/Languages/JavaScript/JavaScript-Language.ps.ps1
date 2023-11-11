@@ -18,20 +18,26 @@ Language function JavaScript {
     * ```""```
     * ```''```
 .EXAMPLE
-    $helloJs = Hello.js template '
-    msg = null /*{param($msg = ''hello world'') "`"$msg`""}*/ ;
-    if (console) {
-        console.log(msg);
+    Invoke-PipeScript {
+        Hello.js template '
+        msg = null /*{param($msg = ''hello world'') "`"$msg`""}*/ ;
+        if (console) {
+            console.log(msg);
+        }
+        '
+        
     }
-    '
 .EXAMPLE
-    $helloMsg = {param($msg = 'hello world') "`"$msg`""}
-    $helloJs = HelloWorld.js template "
-    msg = null /*{$helloMsg}*/;
-    if (console) {
-        console.log(msg);
+    Invoke-PipeScript {
+        $helloMsg = {param($msg = 'hello world') "`"$msg`""}
+        $helloJs = HelloWorld.js template "
+        msg = null /*{$helloMsg}*/;
+        if (console) {
+            console.log(msg);
+        }
+        "
+        $helloJs
     }
-    "
 #>
 [ValidatePattern('\.js$')]
 param(
