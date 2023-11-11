@@ -1,3 +1,4 @@
+Language function Markdown {
 <#
 .SYNOPSIS
     Markdown Template Transpiler.
@@ -12,7 +13,7 @@
 .Example
     .> {
         $markdownContent = @'
-# Thinking of a Number Between 1 and 100: ```.<{Get-Random -Min 1 -Max 100}>.``` is the number
+# Thinking of a Number Between 1 and 100: `|{Get-Random -Min 1 -Max 100}|` is the number
 
 ### abc
 
@@ -33,28 +34,10 @@
 
     .> .\HelloWorld.ps1.md
 #>
-[ValidatePattern('\.(?>md|markdown|txt)$')]
-param(
-# The command information.  This will include the path to the file.
-[Parameter(Mandatory,ValueFromPipeline,ParameterSetName='TemplateFile')]
-[Management.Automation.CommandInfo]
-$CommandInfo,
+    [ValidatePattern('\.(?>md|markdown|txt)$')]
+    param()
 
-# If set, will return the information required to dynamically apply this template to any text.
-[Parameter(Mandatory,ParameterSetName='TemplateObject')]
-[switch]
-$AsTemplateObject,
 
-# A dictionary of parameters.
-[Collections.IDictionary]
-$Parameter,
-
-# A list of arguments.
-[PSObject[]]
-$ArgumentList
-)
-
-begin {
     # Note: Markdown is one of the more complicated templates.
 
     # This is because Markdown isn't _just_ Markdown.  Markdown allows inline HTML.  Inline HTML, in turn, allows inline JavaScript and CSS.
@@ -109,46 +92,27 @@ $($endConditions -join ([Environment]::NewLine + '  |' + [Environment]::NewLine)
     "
     
     
-    $startRegex = "(?<PSStart>${startComment})"
+    $StartPattern = "(?<PSStart>${startComment})"
     # * EndRegex       ```$whitespace + '}' + $EndComment```
-    $endRegex   = "(?<PSEnd>${endComment})"
-
-    # Create a splat containing arguments to the core inline transpiler
-    $Splat      = [Ordered]@{
-        StartPattern  = $startRegex
-        EndPattern    = $endRegex
-    }
-}
-
-process {
-    # If we have been passed a command
-    if ($CommandInfo) {
-        # add parameters related to the file.
-        $Splat.SourceFile = $commandInfo.Source -as [IO.FileInfo]
-        $Splat.SourceText = [IO.File]::ReadAllText($commandInfo.Source)
-    }
-    
-    if ($Parameter) { $splat.Parameter = $Parameter }
-    if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
-    $Splat.ForeachObject = {
+    $EndPattern   = "(?<PSEnd>${endComment})"
+    $ForeachObject = {
         process {
-            if ($_ -is [string]) {
-                $_
-            } elseif ($_.GetType -and $_.GetType().IsPrimitive) {
-                $_
-            } else {
+            $in = $_
+            if ($in -is [string]) {
+                $in
+            } elseif ($in.GetType -and $in.GetType().IsPrimitive) {
+                $in
+            } 
+            elseif ($in -is [Regex]) {
+                $markdownObject = [PSCustomObject][Ordered]@{PSTypeName='Markdown';Code="$in";CodeLanguage='regex'}                
+                $markdownObject | Out-String -Width 1kb
+            }
+            else {
                 $markdownObject = [PSObject]::new($_)
                 $markdownObject.pstypenames.clear()
                 $markdownObject.pstypenames.add('Markdown')
                 $markdownObject | Out-String -Width 1kb
             }
         }
-    }
-    # If we are being used within a keyword,
-    if ($AsTemplateObject) {
-        $splat # output the parameters we would use to evaluate this file.
-    } else {
-        # Otherwise, call the core template transpiler
-        .>PipeScript.Template @Splat # and output the changed file.
     }
 }
