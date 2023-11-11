@@ -10,7 +10,6 @@ These are all of the transpilers currently included in PipeScript:
 |[Assert](Transpilers/Keywords/Assert.psx.ps1)                                              |Assert keyword                                    |
 |[Await](Transpilers/Keywords/Await.psx.ps1)                                                |awaits asynchronous operations                    |
 |[Bash](Transpilers/Wrappers/Bash.psx.ps1)                                                  |Wraps PowerShell in a Bash Script                 |
-|[Basic.Template](Transpilers/Templates/Basic.Template.psx.ps1)                             |Basic Template Transpiler.                        |
 |[Batch](Transpilers/Wrappers/Batch.psx.ps1)                                                |Wraps PowerShell in a Windows Batch Script        |
 |[Batch.Template](Transpilers/Templates/Batch.Template.psx.ps1)                             |Batch Template Transpiler.                        |
 |[BatchPowerShell](Transpilers/Wrappers/BatchPowerShell.psx.ps1)                            |Wraps PowerShell in a Windows Batch Script        |
