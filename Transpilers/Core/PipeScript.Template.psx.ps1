@@ -165,7 +165,10 @@ process {
     #region Finding Template Transpiler 
     if ($CommandAst) {
         # Get command transpilers
-        $commandInfoTranspilers = Get-Transpiler -CouldPipe $MyInvocation.MyCommand
+        $commandInfoTranspilers = @(
+            Get-PipeScript -PipeScriptType Language    
+            Get-Transpiler -CouldPipe $MyInvocation.MyCommand        
+        )
 
         # Collect all of the bareword arguments
         $barewords = 
@@ -181,33 +184,53 @@ process {
         # Find a matching template transpiler.
         $foundTemplateTranspiler = 
             :nextTranspiler foreach ($cmdTranspiler in $commandInfoTranspilers) {
-                $langName = $cmdTranspiler.ExtensionCommand.DisplayName -replace '^(?>Inline|Template)\.'
+                
+
+                $langName = if ($cmdTranspiler.pstypenames -contains 'Language.Command') {
+                    $cmdTranspiler.Name -replace 'Language\p{P}' -replace 'ps1$'
+                } else {
+                    $cmdTranspiler.ExtensionCommand.DisplayName -replace '^(?>Inline|Template)\.'
+                }                
+                if (-not $langName) { continue }
                 if ($barewords -contains $langName) {
-                    $cmdTranspiler
+                    $cmdTranspiler.ExtensionCommand
                     continue
                 }
                 if ($CommandAst.CommandElements[1] -is [Management.Automation.Language.MemberExpressionAst] -and 
                     $CommandAst.CommandElements[1].Member.Value -eq $langName) {
-                    $cmdTranspiler
+                    $cmdTranspiler.ExtensionCommand
                     continue
                 }
+                $attrList = 
+                    if ($cmdTranspiler.ExtensionCommand.Attributes) {
+                        $cmdTranspiler.ExtensionCommand.Attributes
+                    } elseif ($cmdTranspiler.ScriptBlock.Attributes) {
+                        $cmdTranspiler.ScriptBlock.Attributes
+                    }
 
-                foreach ($attr in $cmdTranspiler.ExtensionCommand.Attributes) {
+                $languageCmd = 
+                    if ($cmdTranspiler.ExtensionCommand) {
+                        $cmdTranspiler.ExtensionCommand
+                    } else {
+                        $cmdTranspiler
+                    }
+
+                foreach ($attr in $attrList) {
                     if ($attr -isnot [Management.Automation.ValidatePatternAttribute]) { continue }
                     $regexPattern = [Regex]::new($attr.RegexPattern, $attr.Options, '00:00:05')
                     if ($regexPattern.Match($barewords[0]).Success) {
                         $TemplateName = $barewords[0]
-                        $cmdTranspiler
+                        $languageCmd
                         continue nextTranspiler
                     } elseif ($barewords[1] -and $regexPattern.Match($barewords[1]).Success) {
                         $TemplateName = $barewords[1]
-                        $cmdTranspiler
+                        $languageCmd
                         continue nextTranspiler
                     }
 
                     if ($CommandAst.CommandElements[1] -is [Management.Automation.Language.MemberExpressionAst] -and 
                         $regexPattern.Match(('.' + $CommandAst.CommandElements[1].Member)).Success) {
-                        $cmdTranspiler
+                        $languageCmd
                         continue nextTranspiler
                     }                
                 }
@@ -217,14 +240,22 @@ process {
         # If we found a template transpiler
         # we'll want to effectively pack the transpilation engine into an object
         if ($foundTemplateTranspiler) {
-            if (-not $foundTemplateTranspiler.ExtensionCommand.Parameters.AsTemplateObject) {
+            if (-not $foundTemplateTranspiler.Parameters.AsTemplateObject -and -not ($foundTemplateTranspiler.pstypenames -contains 'Language.Command')) {
                 Write-Error "$($foundTemplateTranspiler) does not support dynamic use"
                 return
             }
-            $Splat = & $foundTemplateTranspiler.ExtensionCommand -AsTemplateObject
-            foreach ($kv in $splat.GetEnumerator()) {
-                $ExecutionContext.SessionState.PSVariable.Set($kv.Key, $kv.Value)
-                $PSBoundParameters[$kv.Key] = $kv.Value
+            if ($foundTemplateTranspiler.pstypenames -contains 'Language.Command') {
+                $languageDef = & $foundTemplateTranspiler
+                foreach ($kv in $languageDef.psobject.properties) {
+                    $ExecutionContext.SessionState.PSVariable.Set($kv.Name, $kv.Value)
+                    $PSBoundParameters[$kv.Name] = $kv.Value
+                }
+            } else {
+                $Splat = & $foundTemplateTranspiler -AsTemplateObject
+                foreach ($kv in $splat.GetEnumerator()) {
+                    $ExecutionContext.SessionState.PSVariable.Set($kv.Key, $kv.Value)
+                    $PSBoundParameters[$kv.Key] = $kv.Value
+                }
             }
         }
     }
@@ -428,7 +459,7 @@ process {
             Get-Item -Path $name        
         }
         $filePattern = 
-            foreach ($attr in $foundTemplateTranspiler.ExtensionCommand.ScriptBlock.Attributes) {
+            foreach ($attr in $foundTemplateTranspiler.ScriptBlock.Attributes) {
                 if ($attr -is [ValidatePattern]) {
                     $attr.RegexPattern
                     break
@@ -462,7 +493,13 @@ process {
             $convertedAst
         }
         if (-not $templateElements) { $templateElements = "''"}        
-        $languageString = $($foundTemplateTranspiler.ExtensionCommand.DisplayName -replace '(?>Template|Inline)\.' -replace '^\.')
+        $languageString = $(
+            if ($foundTemplateTranspiler.pstypenames -contains 'Language.Command') {
+                $foundTemplateTranspiler.Name -replace 'Language\p{P}' -replace 'ps1$'                
+            } else {
+                $foundTemplateTranspiler.DisplayName -replace '(?>Template|Inline)\.' -replace '^\.'
+            }            
+        )
         if (-not $TemplateName) { $TemplateName = $languageString }
         $createdSb = [scriptblock]::Create(@"
 `$(
