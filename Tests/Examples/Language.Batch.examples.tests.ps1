@@ -4,7 +4,7 @@ describe 'Language.Batch' {
         Invoke-PipeScript {
             $batchScript = '    
         :: {
-        Uncommented lines between these two points will be ignored
+        :: # Uncommented lines between these two points will be ignored
         :: # Commented lines will become PipeScript / PowerShell.
         :: param($message = "hello world")
         :: "echo $message"
