@@ -4,7 +4,6 @@ These are all of the transpilers currently included in PipeScript:
 
 |Language                                                                  |Synopsis                        |Pattern                         |
 |--------------------------------------------------------------------------|--------------------------------|--------------------------------|
-|[Bicep.Template](Transpilers/Templates/Bicep.Template.psx.ps1)            |Bicep Template Transpiler.      |```\.bicep$```                  |
 |[CPlusPlus.Template](Transpilers/Templates/CPlusPlus.Template.psx.ps1)    |C/C++ Template Transpiler.      |```\.(?>c\\|cpp\\|h\\|swig)$``` |
 |[CSharp.Template](Transpilers/Templates/CSharp.Template.psx.ps1)          |C# Template Transpiler.         |```\.cs$```                     |
 |[CSS.Template](Transpilers/Templates/CSS.Template.psx.ps1)                |CSS Template Transpiler.        |```\.s{0,1}css$```              |
