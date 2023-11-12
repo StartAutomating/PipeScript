@@ -27,7 +27,7 @@ $IgnoredContext = "
     [\s - [ \r\n ] ]{0,}
 ){0,1}"
 # * StartPattern     ```$IgnoredContext + $StartComment + '{' + $Whitespace```
-$StartPattern = [Pattern]::New("(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)", 'IgnorePatternWhitespace')
+$StartPattern = [regex]::New("(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)", 'IgnorePatternWhitespace')
 # * EndPattern       ```$whitespace + '}' + $EndComment + $ignoredContext```
 $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}[\s-[\r\n]]{0,}${IgnoredContext})"
 
