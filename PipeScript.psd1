@@ -97,7 +97,7 @@
                         \p{P}   # followed by punctuation
                     )
                 '
-                CommandType = '(?>Function)'
+                CommandType = '(?>Function|Alias)'
             }
                                     
             'Interface'  = @{
