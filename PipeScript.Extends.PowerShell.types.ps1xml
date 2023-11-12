@@ -143,7 +143,16 @@ $this.'.ByType'
       <ScriptProperty>
         <Name>Defines</Name>
         <GetScriptBlock>
-                        , @(
+                        &lt;#
+.SYNOPSIS
+    Gets all Definitions within an AST
+.DESCRIPTION
+    Gets all Function and Type Definitions within a PowerShell Abstract Syntax Tree
+.EXAMPLE
+    {function foo() { "foo"} class bar { $bar = "none"} }.Ast.Defines
+#&gt;
+
+, @(
     foreach ($node in $this.ByType[@(
         [Management.Automation.Language.FunctionDefinitionAst]
         [Management.Automation.Language.TypeDefinitionAst]
@@ -230,6 +239,24 @@ $myOffset   = 0
         $skipUntil = $end # set SkipUntil
     }
 }
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Types</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets all Types within an AST
+.DESCRIPTION
+    Gets all Types referenced within a PowerShell Abstract Syntax Tree
+.EXAMPLE
+    {[int];[psobject];[xml]}.Ast.Types
+#&gt;
+
+,@(foreach ($node in $this.ByType[[Management.Automation.Language.TypeExpressionAst]]) {
+    $node
+})
+
                     </GetScriptBlock>
       </ScriptProperty>
     </Members>
