@@ -259,6 +259,24 @@ $myOffset   = 0
 
                     </GetScriptBlock>
       </ScriptProperty>
+      <ScriptProperty>
+        <Name>Variables</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets all Variables within an AST
+.DESCRIPTION
+    Gets all Variable references within a PowerShell Abstract Syntax Tree
+.EXAMPLE
+    {$x, $y, $z}.Ast.Variables
+#&gt;
+
+, @(foreach ($node in $this.ByType[[Management.Automation.Language.VariableExpressionAst]]) {
+    $node
+})
+
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>
