@@ -54,7 +54,6 @@ These are all of the transpilers currently included in PipeScript:
 |[ValidValues](Transpilers/Parameters/ValidValues.psx.ps1)                                  |Dynamically Defines ValidateSet attributes        |
 |[VBN](Transpilers/Parameters/VBN.psx.ps1)                                                  |ValueFromPiplineByPropertyName Shorthand          |
 |[VFP](Transpilers/Parameters/VFP.psx.ps1)                                                  |ValueFromPipline Shorthand                        |
-|[WebAssembly.Template](Transpilers/Templates/WebAssembly.Template.psx.ps1)                 |WebAssembly Template Transpiler.                  |
 |[WhereMethod](Transpilers/Syntax/WhereMethod.psx.ps1)                                      |Where Method                                      |
 |[XAML.Template](Transpilers/Templates/XAML.Template.psx.ps1)                               |XAML Template Transpiler.                         |
 |[XML.Template](Transpilers/Templates/XML.Template.psx.ps1)                                 |XML Template Transpiler.                          |
