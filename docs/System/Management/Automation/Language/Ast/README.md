@@ -5,3 +5,4 @@
 
 
 * [GetLineage](GetLineage.md)
+* [get_ByType](get_ByType.md)
