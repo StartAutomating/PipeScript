@@ -55,4 +55,3 @@ These are all of the transpilers currently included in PipeScript:
 |[VBN](Transpilers/Parameters/VBN.psx.ps1)                                                  |ValueFromPiplineByPropertyName Shorthand          |
 |[VFP](Transpilers/Parameters/VFP.psx.ps1)                                                  |ValueFromPipline Shorthand                        |
 |[WhereMethod](Transpilers/Syntax/WhereMethod.psx.ps1)                                      |Where Method                                      |
-|[YAML.Template](Transpilers/Templates/YAML.Template.psx.ps1)                               |Yaml Template Transpiler.                         |
