@@ -7,9 +7,9 @@
     (Get-Module PipeScript).Extensions
 #>
 if (-not $this.'.ExtendedCommands') {
-    Add-Member -InputObject $this -MemberType NoteProperty -Name '.Extensions' -Value @(
+    Add-Member -InputObject $this -MemberType NoteProperty -Name '.ExtendedCommands' -Value @(
         $this.FindExtensions()    
         $this.FindExtensions(($This | Split-Path))        
-    )
+    ) -Force
 }
 $this.'.ExtendedCommands'
