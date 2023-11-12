@@ -1,7 +1,7 @@
-Language function PS1XML {
+Language function PowerShellXML {
 <#
 .SYNOPSIS
-    PS1XML Template Transpiler.
+    PowerShellXML Language Definition
 .DESCRIPTION
     Allows PipeScript to generate PS1XML.
 
