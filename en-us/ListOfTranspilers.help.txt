@@ -28,7 +28,6 @@ These are all of the transpilers currently included in PipeScript:
 |[NamespacedFunction](Transpilers/Syntax/NamespacedFunction.psx.ps1)                        |Namespaced functions                              |
 |[New](Transpilers/Keywords/New.psx.ps1)                                                    |'new' keyword                                     |
 |[OutputFile](Transpilers/OutputFile.psx.ps1)                                               |Outputs to a File                                 |
-|[PHP.Template](Transpilers/Templates/PHP.Template.psx.ps1)                                 |PHP Template Transpiler.                          |
 |[PipedAssignment](Transpilers/Syntax/PipedAssignment.psx.ps1)                              |Piped Assignment Transpiler                       |
 |[PipeScript.Aspect](Transpilers/Core/PipeScript.Aspect.psx.ps1)                            |Aspect Transpiler                                 |
 |[PipeScript.AttributedExpression](Transpilers/Core/PipeScript.AttributedExpression.psx.ps1)|The PipeScript AttributedExpression Transpiler    |
