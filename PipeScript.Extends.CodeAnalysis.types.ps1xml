@@ -3,6 +3,87 @@
   <Type>
     <Name>Microsoft.CodeAnalysis.SyntaxNode</Name>
     <Members>
+      <ScriptMethod>
+        <Name>Find</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Finds a CSharp Node
+.DESCRIPTION
+    Finds a single CSharp Syntax Node that meets any one of a number of criteria
+.EXAMPLE
+    (Parse-CSharp 'Console.WriteLine("Hello World");').Find("*hello*")
+#&gt;
+param()
+
+$Conditions = @(
+foreach ($argument in $args) {
+    if ($argument -is [scriptblock]) {
+        [ScriptBlock]::Create($argument)
+    }
+    elseif ($argument -is [string]) {
+        [ScriptBlock]::Create("`$_ -like '$argument'")
+    }
+    elseif ($argument -is [type] -and $argument.IsPublic) {
+        [ScriptBlock]::Create("`$_ -as [$($argument.Fullname)]")   
+    }
+}
+)
+
+foreach ($node in $this.DescendantNodes($null, $true)) {
+    foreach ($condition in $Conditions) {
+        $_ = $ast = $node
+        $conditionResult = . $condition
+        if ($conditionResult) {
+            return $node
+        }
+    }    
+}
+
+
+
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>FindAll</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Finds all CSharp Nodes
+.DESCRIPTION
+    Finds all CSharp Syntax Nodes that meet any one of a number of criteria
+.EXAMPLE
+    (Parse-CSharp 'Console.WriteLine("Hello World");').FindAll("*hello*")
+#&gt;
+param()
+
+$Conditions = @(
+foreach ($argument in $args) {
+    if ($argument -is [scriptblock]) {
+        [ScriptBlock]::Create($argument)
+    }
+    elseif ($argument -is [string]) {
+        [ScriptBlock]::Create("$_ -like $argument")
+    }
+}
+)
+
+foreach ($node in $this.DescendantNodes($null, $true)) {
+    foreach ($condition in $Conditions) {
+        $_ = $ast = $node
+        $conditionResult = . $condition
+        if ($conditionResult) {
+            $node
+        }
+    }    
+}
+
+
+
+
+                    </Script>
+      </ScriptMethod>
       <ScriptProperty>
         <Name>ByType</Name>
         <GetScriptBlock>
@@ -75,6 +156,36 @@ $this.'.Text'
   <Type>
     <Name>Microsoft.CodeAnalysis.SyntaxTree</Name>
     <Members>
+      <ScriptMethod>
+        <Name>Find</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Finds a CSharp Node
+.DESCRIPTION
+    Finds a single CSharp Syntax Node that meets any one of a number of criteria
+.EXAMPLE
+    (Parse-CSharp 'Console.WriteLine("Hello World");').Find("*hello*")
+#&gt;
+$this.Root.Find.Invoke($args)
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>FindAll</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Finds all CSharp Nodes
+.DESCRIPTION
+    Finds all CSharp Syntax Nodes that meet any one of a number of criteria
+.EXAMPLE
+    (Parse-CSharp 'Console.WriteLine("Hello World");').FindAll("*hello*")
+#&gt;
+$this.Root.FindAll.Invoke($args)
+
+                    </Script>
+      </ScriptMethod>
       <ScriptProperty>
         <Name>ByType</Name>
         <GetScriptBlock>
