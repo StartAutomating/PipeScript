@@ -4,5 +4,7 @@
 ### Script Methods
 
 
+* [Find](Find.md)
+* [FindAll](FindAll.md)
 * [get_ByType](get_ByType.md)
 * [get_Defines](get_Defines.md)
