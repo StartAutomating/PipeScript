@@ -45,7 +45,6 @@ These are all of the transpilers currently included in PipeScript:
 |[RenameVariable](Transpilers/RenameVariable.psx.ps1)                                       |Renames variables                                 |
 |[Requires](Transpilers/Keywords/Requires.psx.ps1)                                          |requires one or more modules, variables, or types.|
 |[Rest](Transpilers/Rest.psx.ps1)                                                           |Generates PowerShell to talk to a REST api.       |
-|[TypeScript.Template](Transpilers/Templates/TypeScript.Template.psx.ps1)                   |TypeScript Template Transpiler.                   |
 |[Until](Transpilers/Keywords/Until.psx.ps1)                                                |until keyword                                     |
 |[ValidateExtension](Transpilers/Parameters/ValidateExtension.psx.ps1)                      |Validates Extensions                              |
 |[ValidatePlatform](Transpilers/Parameters/ValidatePlatform.psx.ps1)                        |Validates the Platform                            |
