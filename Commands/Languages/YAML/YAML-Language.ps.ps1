@@ -1,3 +1,4 @@
+Language function YAML {
 <#
 .SYNOPSIS
     Yaml Template Transpiler.
@@ -35,32 +36,8 @@ List:
     .> .\HelloWorld.ps1.yaml
 #>
 [ValidatePattern('\.(?>yml|yaml)$')]
-param(
-# The command information.  This will include the path to the file.
-[Parameter(Mandatory,ValueFromPipeline,ParameterSetName='TemplateFile')]
-[Management.Automation.CommandInfo]
-$CommandInfo,
-
-# If set, will return the information required to dynamically apply this template to any text.
-[Parameter(Mandatory,ParameterSetName='TemplateObject')]
-[switch]
-$AsTemplateObject,
-
-# A dictionary of parameters.
-[Collections.IDictionary]
-$Parameter,
-
-# A list of arguments.
-[PSObject[]]
-$ArgumentList
-)
-
-begin {
-    # We start off by declaring a number of regular expressions:    
-    
-    # Create a splat containing arguments to the core inline transpiler
-    $Splat      = [Ordered]@{
-        ReplacePattern  = [Regex]::new('        
+    param()    
+    $ReplacePattern  = [Regex]::new('        
         (?<Indent>\s{0,})      # Capture the indentation level
         (?<InList>-\s)?        # Determine if we are in a list
         PipeScript              # Then match the key Pipescript
@@ -81,20 +58,8 @@ begin {
         (?(InList)\s{2})
         \}
         ', 'IgnorePatternWhitespace,IgnoreCase')
-    }
-}
-
-process {
-    # If we have been passed a command
-    if ($CommandInfo) {
-        # add parameters related to the file.
-        $Splat.SourceFile = $commandInfo.Source -as [IO.FileInfo]
-        $Splat.SourceText = [IO.File]::ReadAllText($commandInfo.Source)
-    }
     
-    if ($Parameter) { $splat.Parameter = $Parameter }
-    if ($ArgumentList) { $splat.ArgumentList = $ArgumentList }
-    $Splat.ForeachObject = {
+    $ForeachObject = {
         begin {
             $yamlOut = [Collections.Queue]::new()
         }
@@ -137,11 +102,5 @@ process {
             }) -join [Environment]::Newline
         }
     }
-    # If we are being used within a keyword,
-    if ($AsTemplateObject) {
-        $splat # output the parameters we would use to evaluate this file.
-    } else {
-        # Otherwise, call the core template transpiler
-        .>PipeScript.Template @Splat # and output the changed file.
-    }
+    
 }
