@@ -268,6 +268,10 @@
                 
                 # and attempt to find a transpiler.
                 $foundTranspiler = Get-Transpiler -CouldPipe $Command -ValidateInput $Command -ErrorAction Ignore
+
+                if (-not $script:CoreTemplateTranspiler) {
+                    $script:CoreTemplateTranspiler = Get-Transpiler -TranspilerName PipeScript.Template
+                }
                 
                 $pipeScriptLanguages = Get-PipeScript -PipeScriptType Language
                 $matchingPipeScriptLanguageCommand = $null
@@ -331,13 +335,24 @@
                     } 
                     elseif($matchingPipeScriptLanguage) {
                         $templateName = ($command.Source | Split-Path -Leaf) -replace '[\s\p{Ps}]\(\)]' -replace '\.ps1?'
-                        $PipeScriptTemplateFileContent = [IO.File]::ReadAllText($command.Source)                        
-                        $PipeScriptTemplateObject = Invoke-PipeScript "template $templateName `$PipeScriptTemplateFileContent"
-                        $PipeScriptTemplateObject.Save.Invoke(@(
-                            $OutputPath
-                            $ArgumentList
-                            $Parameter
-                        ))
+
+                        $CoreTemplateTranspilerSplat = [Ordered]@{SourceText=[IO.File]::ReadAllText($command.Source)}
+                        if ($ArgumentList) {
+                            $CoreTemplateTranspilerSplat.ArgumentList = $ArgumentList
+                        }
+                        if ($parameter) {
+                            $CoreTemplateTranspilerSplat.Parameter = $Parameter
+                        }
+                        foreach ($prop in $matchingPipeScriptLanguage.psobject.properties) {
+                            if ($script:CoreTemplateTranspiler.Parameters[$prop.Name]) {
+                                $CoreTemplateTranspilerSplat[$prop.Name] = $prop.Value
+                            }
+                        }
+                        $templateOutput = & $script:CoreTemplateTranspiler @CoreTemplateTranspilerSplat
+                        if ($templateOutput) {
+                            $templateOutput | Set-Content -Path $OutputPath
+                            Get-Item -Path $OutputPath
+                        }                                            
                     }
                     else {
                         # If we did not find a transpiler, treat the source code as PipeScript/PowerShell.
