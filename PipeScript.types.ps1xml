@@ -3309,7 +3309,16 @@ $requirement = $this
       <ScriptProperty>
         <Name>ByType</Name>
         <GetScriptBlock>
-                        if (-not $this.'.ByType') {
+                        &lt;#
+.SYNOPSIS
+    Gets CSharp AST Nodes by type
+.DESCRIPTION
+    Gets a dictionary of all nodes in a CSharp AST beneath this point, grouped by type.
+.EXAMPLE
+    (Parse-CSharp '"Hello World";').ByType
+#&gt;
+
+if (-not $this.'.ByType') {
     $ByType = [Collections.Generic.Dictionary[Type,Collections.Generic.List[PSObject]]]::new()
     foreach ($node in $this.FindAll({$true}, $true)) {
         $nodeType = $node.GetType()
@@ -3356,6 +3365,28 @@ $this.'.Text'
 
 
 $this.Root.ByType
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Root</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the root of a Syntax Tree
+.DESCRIPTION
+    Gets the root of a CSharp Abstract Syntax Tree
+.EXAMPLE
+    (Parse-CSharp 'Console.WriteLine("Hello world");').Root
+#&gt;
+if (-not $this.'.Root') {    
+    $rootObject = $this.GetRoot()
+    $rootObject | Add-Member NoteProperty '.Tree' $this -Force
+    $this | Add-Member NoteProperty '.Root' $rootObject -Force
+}
+
+$this.'.Root'
+
 
                     </GetScriptBlock>
       </ScriptProperty>
