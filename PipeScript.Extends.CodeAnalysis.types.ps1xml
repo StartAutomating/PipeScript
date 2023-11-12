@@ -141,6 +141,20 @@ $this.'.ByType'
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Id</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the Identifier of a Syntax Node. 
+.DESCRIPTION
+    Gets a [string] Identifier of a CSharp syntax node
+#&gt;
+if ($this.Identifier) {
+    "$($this.Identifier)"
+}
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Text</Name>
         <GetScriptBlock>
                         if (-not $this.'.Text') {    
