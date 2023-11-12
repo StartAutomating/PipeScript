@@ -4,10 +4,7 @@ These are all of the transpilers currently included in PipeScript:
 
 |Language                                                                  |Synopsis                        |Pattern                  |
 |--------------------------------------------------------------------------|--------------------------------|-------------------------|
-|[PSD1.Template](Transpilers/Templates/PSD1.Template.psx.ps1)              |PSD1 Template Transpiler.       |```\.psd1$```            |
 |[Python.Template](Transpilers/Templates/Python.Template.psx.ps1)          |Python Template Transpiler.     |```\.py$```              |
-|[R.Template](Transpilers/Templates/R.Template.psx.ps1)                    |R Template Transpiler.          |```\.r$```               |
-|[Racket.Template](Transpilers/Templates/Racket.Template.psx.ps1)          |Racket Template Transpiler.     |```\.rkt$```             |
 |[Razor.Template](Transpilers/Templates/Razor.Template.psx.ps1)            |Razor Template Transpiler.      |```\.(cshtml\\|razor)$```|
 |[RSS.Template](Transpilers/Templates/RSS.Template.psx.ps1)                |RSS Template Transpiler.        |```\.rss$```             |
 |[Ruby.Template](Transpilers/Templates/Ruby.Template.psx.ps1)              |Ruby Template Transpiler.       |```\.rb$```              |

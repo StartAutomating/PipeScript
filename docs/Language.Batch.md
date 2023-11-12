@@ -19,7 +19,7 @@ Because Batch Scripts only allow single-line comments, this is done using a pair
         
 ```batch    
 :: {
-Uncommented lines between these two points will be ignored
+:: Uncommented lines between these two points will be ignored
 :: # Commented lines will become PipeScript / PowerShell.
 :: param($message = 'hello world')
 :: "echo $message"
