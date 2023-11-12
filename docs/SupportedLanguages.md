@@ -5,5 +5,4 @@ These are all of the transpilers currently included in PipeScript:
 |Language                                                        |Synopsis                   |Pattern                |
 |----------------------------------------------------------------|---------------------------|-----------------------|
 |[Python.Template](Transpilers/Templates/Python.Template.psx.ps1)|Python Template Transpiler.|```\.py$```            |
-|[XML.Template](Transpilers/Templates/XML.Template.psx.ps1)      |XML Template Transpiler.   |```\.xml$```           |
 |[YAML.Template](Transpilers/Templates/YAML.Template.psx.ps1)    |Yaml Template Transpiler.  |```\.(?>yml\\|yaml)$```|
