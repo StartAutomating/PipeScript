@@ -5,7 +5,6 @@ These are all of the transpilers currently included in PipeScript:
 |Language                                                                  |Synopsis                        |Pattern                |
 |--------------------------------------------------------------------------|--------------------------------|-----------------------|
 |[Python.Template](Transpilers/Templates/Python.Template.psx.ps1)          |Python Template Transpiler.     |```\.py$```            |
-|[SVG.template](Transpilers/Templates/SVG.template.psx.ps1)                |SVG Template Transpiler.        |```\.svg$```           |
 |[TCL.Template](Transpilers/Templates/TCL.Template.psx.ps1)                |TCL/TK Template Transpiler.     |```\.t(?>cl\\|k)$```   |
 |[TOML.Template](Transpilers/Templates/TOML.Template.psx.ps1)              |TOML Template Transpiler.       |```\.toml$```          |
 |[TypeScript.Template](Transpilers/Templates/TypeScript.Template.psx.ps1)  |TypeScript Template Transpiler. |```\.tsx{0,1}```       |
