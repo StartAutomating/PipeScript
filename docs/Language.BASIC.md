@@ -47,7 +47,7 @@ rem param($message = "hello world")
 rem "CreateObject(`"WScript.Shell`").Popup(`"$message`")" 
 rem }
 '
-[OutputFile('.\HelloWorld.ps1.vbs')]$VBScript
+    [OutputFile('.\HelloWorld.ps1.vbs')]$VBScript
 }
 Invoke-PipeScript .\HelloWorld.ps1.vbs
 ```
