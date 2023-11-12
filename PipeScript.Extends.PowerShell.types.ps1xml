@@ -141,6 +141,20 @@ $this.'.ByType'
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Defines</Name>
+        <GetScriptBlock>
+                        , @(
+    foreach ($node in $this.ByType[@(
+        [Management.Automation.Language.FunctionDefinitionAst]
+        [Management.Automation.Language.TypeDefinitionAst]
+    )]) {
+        $node
+    }
+)
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Tokens</Name>
         <GetScriptBlock>
                         $text = $this.Extent.ToString()
