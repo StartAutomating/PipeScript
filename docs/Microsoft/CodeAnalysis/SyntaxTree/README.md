@@ -5,4 +5,5 @@
 
 
 * [get_ByType](get_ByType.md)
+* [get_Defines](get_Defines.md)
 * [get_Root](get_Root.md)
