@@ -1,6 +1,6 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 6 languages or file types.
+PipeScript can be used to generate 5 languages or file types.
 
 ### Supported Languages
 
@@ -8,7 +8,6 @@ PipeScript can be used to generate 6 languages or file types.
 |Language                                   |Synopsis                        |Pattern                |
 |-------------------------------------------|--------------------------------|-----------------------|
 |[Python](Python.Template.psx.ps1)          |Python Template Transpiler.     |```\.py$```            |
-|[TypeScript](TypeScript.Template.psx.ps1)  |TypeScript Template Transpiler. |```\.tsx{0,1}```       |
 |[WebAssembly](WebAssembly.Template.psx.ps1)|WebAssembly Template Transpiler.|```\.wat$```           |
 |[XAML](XAML.Template.psx.ps1)              |XAML Template Transpiler.       |```\.xaml$```          |
 |[XML](XML.Template.psx.ps1)                |XML Template Transpiler.        |```\.xml$```           |
