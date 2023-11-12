@@ -10,7 +10,7 @@
     CompanyName       = 'Start-Automating'
     Copyright         = '2022 Start-Automating'
     Author            = 'James Brundage'
-    FunctionsToExport = '' <#{
+    FunctionsToExport = '*' <#{
         $exportNames = Get-ChildItem -Recurse -Filter '*-*.ps1' |
             Where-Object Name -notmatch '\.ps1?\.ps1$' |            
             Foreach-Object {
@@ -97,7 +97,7 @@
                         \p{P}   # followed by punctuation
                     )
                 '
-                CommandType = '(?>Function)'
+                CommandType = '(?>Function|Alias)'
             }
                                     
             'Interface'  = @{
