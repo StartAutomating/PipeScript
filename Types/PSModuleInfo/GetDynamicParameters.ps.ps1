@@ -4,15 +4,21 @@
 .DESCRIPTION
     Gets dynamic parameters for a command
 #>
-param(    
-    $InvocationName,
+param()
 
-    [Collections.IDictionary]
-    $DyanmicParameterOption = [Ordered]@{
-        ParameterSetName='__AllParameterSets'
-        NoMandatory = $true
-    }    
-)
+$DynamicParameterSplat = [Ordered]@{}
+$dynamicParametersFrom =@(foreach ($arg in $args | & { process{ $_ } } ) {
+    if ($arg -is [CommandInfo] -or $arg -is [ScriptBlock]) {
+        $arg
+    }
+    if ($arg -is [Collections.IDictionary]) {
+        foreach ($keyValuePair in $arg.GetEnumerator()) {
+            $DynamicParameterSplat[$keyValuePair.Key] = $keyValuePair.Value
+        }
+    }
+})
 
-$this.ExtensionsOf($InvocationName) | 
+if (-not $dynamicParametersFrom) { return }
+
+$dynamicParametersFrom | 
     Aspect.DynamicParameter @DyanmicParameterOption
