@@ -44,7 +44,7 @@ Invoke-PipeScript {
 :: "echo $message"
 :: }
 '
-[OutputFile('.\HelloWorld.ps1.cmd')]$batchScript
+    [OutputFile('.\HelloWorld.ps1.cmd')]$batchScript
 }
 Invoke-PipeScript .\HelloWorld.ps1.cmd
 ```
