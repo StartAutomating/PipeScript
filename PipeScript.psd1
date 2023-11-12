@@ -10,7 +10,20 @@
     CompanyName       = 'Start-Automating'
     Copyright         = '2022 Start-Automating'
     Author            = 'James Brundage'
-    FunctionsToExport = 'Export-Pipescript','Get-PipeScript','Get-Transpiler','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript','Compile.LanguageDefinition','PipeScript.Automatic.Variable.IsPipedTo','PipeScript.Automatic.Variable.IsPipedFrom','PipeScript.Automatic.Variable.MyCallstack','PipeScript.Automatic.Variable.MySelf','PipeScript.Automatic.Variable.MyParameters','PipeScript.Automatic.Variable.MyCaller','PipeScript.Automatic.Variable.MyCommandAst','Language.ATOM','Language.Lua','Language.ADA','Language.PHP','Language.CPlusPlus','Language.HCL','Language.Kotlin','Language.Bicep','Language.Bash','Language.PowerShellData','Language.PowerShellXML','Language.Haxe','Language.HLSL','Language.LaTeX','Language.JavaScript','Language.Kusto','Language.Markdown','Language.Go','Language.OpenSCAD','Language.Java','Language.JSON','Language.Dart','Language.CSS','Language.Batch','Language.Eiffel','Language.Arduino','Language.Rust','Language.Perl','Language.ObjectiveC','Language.CSharp','Language.HTML','Language.BASIC','PipeScript.Optimizer.ConsolidateAspects','Protocol.HTTP','Protocol.JSONSchema','Protocol.OpenAPI','Protocol.UDP','Parse.CSharp','Parse.PowerShell','Aspect.DynamicParameter','Aspect.ModuleExtensionType','Aspect.ModuleExtensionPattern','Aspect.ModuleExtensionCommand','PipeScript.PostProcess.InitializeAutomaticVariables','PipeScript.PostProcess.PartialFunction'
+    FunctionsToExport = '' <#{
+        $exportNames = Get-ChildItem -Recurse -Filter '*-*.ps1' |
+            Where-Object Name -notmatch '\.ps1?\.ps1$' |            
+            Foreach-Object {
+              foreach ($match in @(
+                  [Regex]::Matches((Get-Content -Raw $_.FullName), "^function\s(?<n>[\S-[\(\)]]+)\s{0,}\{", 'Multiline')
+              )) {
+                if ($match.Groups["n"] -match '\p{P}') {
+                  $match.Groups["n"]
+                }
+              }              
+            }
+        "'$($exportNames -join "','")'"
+    }#>
     PrivateData = @{
         FunctionTypes = @{
             'Partial' = @{
