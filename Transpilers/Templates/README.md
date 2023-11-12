@@ -1,26 +1,25 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 14 languages or file types.
+PipeScript can be used to generate 13 languages or file types.
 
 ### Supported Languages
 
 
-|Language                                   |Synopsis                        |Pattern                  |
-|-------------------------------------------|--------------------------------|-------------------------|
-|[Python](Python.Template.psx.ps1)          |Python Template Transpiler.     |```\.py$```              |
-|[Razor](Razor.Template.psx.ps1)            |Razor Template Transpiler.      |```\.(cshtml\\|razor)$```|
-|[RSS](RSS.Template.psx.ps1)                |RSS Template Transpiler.        |```\.rss$```             |
-|[Ruby](Ruby.Template.psx.ps1)              |Ruby Template Transpiler.       |```\.rb$```              |
-|[Scala](Scala.Template.psx.ps1)            |Scala Template Transpiler.      |```\.(?>scala\\|sc)$```  |
-|[SQL](SQL.Template.psx.ps1)                |SQL Template Transpiler.        |```\.sql$```             |
-|[SVG](SVG.template.psx.ps1)                |SVG Template Transpiler.        |```\.svg$```             |
-|[TCL](TCL.Template.psx.ps1)                |TCL/TK Template Transpiler.     |```\.t(?>cl\\|k)$```     |
-|[TOML](TOML.Template.psx.ps1)              |TOML Template Transpiler.       |```\.toml$```            |
-|[TypeScript](TypeScript.Template.psx.ps1)  |TypeScript Template Transpiler. |```\.tsx{0,1}```         |
-|[WebAssembly](WebAssembly.Template.psx.ps1)|WebAssembly Template Transpiler.|```\.wat$```             |
-|[XAML](XAML.Template.psx.ps1)              |XAML Template Transpiler.       |```\.xaml$```            |
-|[XML](XML.Template.psx.ps1)                |XML Template Transpiler.        |```\.xml$```             |
-|[YAML](YAML.Template.psx.ps1)              |Yaml Template Transpiler.       |```\.(?>yml\\|yaml)$```  |
+|Language                                   |Synopsis                        |Pattern                |
+|-------------------------------------------|--------------------------------|-----------------------|
+|[Python](Python.Template.psx.ps1)          |Python Template Transpiler.     |```\.py$```            |
+|[RSS](RSS.Template.psx.ps1)                |RSS Template Transpiler.        |```\.rss$```           |
+|[Ruby](Ruby.Template.psx.ps1)              |Ruby Template Transpiler.       |```\.rb$```            |
+|[Scala](Scala.Template.psx.ps1)            |Scala Template Transpiler.      |```\.(?>scala\\|sc)$```|
+|[SQL](SQL.Template.psx.ps1)                |SQL Template Transpiler.        |```\.sql$```           |
+|[SVG](SVG.template.psx.ps1)                |SVG Template Transpiler.        |```\.svg$```           |
+|[TCL](TCL.Template.psx.ps1)                |TCL/TK Template Transpiler.     |```\.t(?>cl\\|k)$```   |
+|[TOML](TOML.Template.psx.ps1)              |TOML Template Transpiler.       |```\.toml$```          |
+|[TypeScript](TypeScript.Template.psx.ps1)  |TypeScript Template Transpiler. |```\.tsx{0,1}```       |
+|[WebAssembly](WebAssembly.Template.psx.ps1)|WebAssembly Template Transpiler.|```\.wat$```           |
+|[XAML](XAML.Template.psx.ps1)              |XAML Template Transpiler.       |```\.xaml$```          |
+|[XML](XML.Template.psx.ps1)                |XML Template Transpiler.        |```\.xml$```           |
+|[YAML](YAML.Template.psx.ps1)              |Yaml Template Transpiler.       |```\.(?>yml\\|yaml)$```|
 
 
 
