@@ -384,6 +384,12 @@
                             }
                         }
                         $templateOutput = & $script:CoreTemplateTranspiler @CoreTemplateTranspilerSplat
+                        if ($matchingPipeScriptLanguage.ReplaceOutputFileName) {
+                            # This is a little annoying and esoteric, but it's required to make something like a "Dockerfile" work.
+                            $OutputPath = $OutputPath | Split-Path | Join-Path -ChildPath (
+                                ($OutputPath | Split-Path -Leaf) -replace $matchingPipeScriptLanguage.ReplaceOutputFileName
+                            )
+                        }
                         if ($templateOutput) {
                             $templateOutput | Set-Content -Path $OutputPath
                             Get-Item -Path $OutputPath
