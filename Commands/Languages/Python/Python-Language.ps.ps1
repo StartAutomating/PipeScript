@@ -38,5 +38,5 @@ param()
     $startPattern = "(?<PSStart>${startComment})"    
     $endPattern   = "(?<PSEnd>${endComment})"
 
-    $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('py', 'Application'))[0] # Get the first py, if present
+    $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('python', 'Application'))[0] # Get the first python, if present
 }
