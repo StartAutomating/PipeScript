@@ -34,6 +34,15 @@ function Language.Go {
         "
         $helloGo.Save()
         }
+    .EXAMPLE
+        '
+        package main
+        import fmt
+        func main() {
+            fmt.Println("hello world")
+        }
+        ' | Set-Content .\HelloWorld.go
+        Invoke-PipeScript .\HelloWorld.go
     #>
 [ValidatePattern('\.go$')]
 param(
@@ -77,6 +86,15 @@ New-Module {
         "
         $helloGo.Save()
         }
+    .EXAMPLE
+        '
+        package main
+        import fmt
+        func main() {
+            fmt.Println("hello world")
+        }
+        ' | Set-Content .\HelloWorld.go
+        Invoke-PipeScript .\HelloWorld.go
     #>
     [ValidatePattern('\.go$')]
     param(
@@ -91,6 +109,7 @@ New-Module {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('go', 'Application'))[0], 'run' # Get the first go, if present
     
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
