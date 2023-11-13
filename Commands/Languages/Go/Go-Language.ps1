@@ -109,7 +109,7 @@ New-Module {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
-    $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('go', 'Application'))[0], 'run' # Get the first go, if present
+    $Runner  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('go', 'Application'))[0], 'run' # Get the first go, if present
     
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
