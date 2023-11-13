@@ -30,8 +30,7 @@ namespace Pipescript.Net
         Dictionary<string, string> MimeTypes = new Dictionary<string, string>();        
         RunspacePool _PSNodePool;        
         ScriptBlock _PSNodeAction;
-        ScriptBlock _FullPSNodeAction;
-        string CORS;
+        ScriptBlock _FullPSNodeAction;        
         PSNodeJob parentJob = null;        
         AuthenticationSchemes authenticationType = AuthenticationSchemes.Anonymous;
         private string PSNodeScriptPreface = @"
@@ -86,6 +85,7 @@ namespace Pipescript.Net
         public HttpListener Listener { get; set; }
         public bool AllowBrowseDirectory { get; set; } 
         public bool AllowScriptExecution { get; set; }
+        public string CORS { get; set;}
         public AuthenticationSchemes AuthenticationType {
             get {
                 return authenticationType;
