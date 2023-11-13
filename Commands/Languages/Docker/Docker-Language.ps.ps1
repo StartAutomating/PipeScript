@@ -29,6 +29,8 @@ Language function Docker {
             #if ($DockerInstallModules) { "RUN /opt/microsoft/powershell/7/pwsh --noprofile --nologo -c Install-Module Splatter,ugit -Scope CurrentUser -Force"} 
             #}
         '
+        $dockerFile | Set-Content .\PipeScript.Example.ps.Dockerfile
+        Invoke-PipeScript .\PipeScript.Example.ps.Dockerfile
     #>
     [ValidatePattern('\.?Dockerfile$')]
     param()
