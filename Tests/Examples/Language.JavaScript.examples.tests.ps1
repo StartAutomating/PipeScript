@@ -23,5 +23,9 @@ describe 'Language.JavaScript' {
         $helloJs
     }
     }
+    it 'Language.JavaScript Example 3' {
+    "console.log('hi')" > .\Hello.js
+    Invoke-PipeScript .\Hello.js
+    }
 }
 
