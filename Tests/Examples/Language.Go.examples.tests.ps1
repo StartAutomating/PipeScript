@@ -27,7 +27,7 @@ describe 'Language.Go' {
     it 'Language.Go Example 3' {
         '
         package main
-        import fmt
+        import "fmt"
         func main() {
             fmt.Println("hello world")
         }
