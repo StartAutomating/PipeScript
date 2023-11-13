@@ -24,5 +24,15 @@ describe 'Language.Go' {
         $helloGo.Save()
         }
     }
+    it 'Language.Go Example 3' {
+        '
+        package main
+        import fmt
+        func main() {
+            fmt.Println("hello world")
+        }
+        ' | Set-Content .\HelloWorld.go
+        Invoke-PipeScript .\HelloWorld.go
+    }
 }
 
