@@ -31,6 +31,7 @@ namespace Pipescript.Net
         RunspacePool _PSNodePool;        
         ScriptBlock _PSNodeAction;
         ScriptBlock _FullPSNodeAction;
+        string CORS;
         PSNodeJob parentJob = null;        
         AuthenticationSchemes authenticationType = AuthenticationSchemes.Anonymous;
         private string PSNodeScriptPreface = @"
@@ -313,7 +314,7 @@ namespace Pipescript.Net
             string contentType = request.ContentType;
             if (contentType != null) {
                 contentType = contentType.ToLower();
-            }
+            }            
            
             using (
                 PowerShell command = PowerShell.Create()
@@ -337,6 +338,9 @@ namespace Pipescript.Net
                 }
                 
                 command.RunspacePool = PSNodePool;
+                if (! string.IsNullOrEmpty(this.CORS)) {
+                    response.Headers["Access-Control-Allow-Origin"] = this.CORS;
+                }
                 
                 int offset = 0;
 
@@ -346,6 +350,7 @@ namespace Pipescript.Net
                     {
                         if (psObject.BaseObject == null) { continue; }
                         byte[] buffer = System.Text.Encoding.UTF8.GetBytes(psObject.ToString());
+                        
                         response.OutputStream.Write(buffer, 0, buffer.Length);
                         offset += buffer.Length;
                         buffer = null;
