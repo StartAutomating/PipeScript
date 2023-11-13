@@ -37,7 +37,7 @@ function Language.Go {
     .EXAMPLE
         '
         package main
-        import fmt
+        import "fmt"
         func main() {
             fmt.Println("hello world")
         }
@@ -89,7 +89,7 @@ New-Module {
     .EXAMPLE
         '
         package main
-        import fmt
+        import "fmt"
         func main() {
             fmt.Println("hello world")
         }
