@@ -57,6 +57,12 @@ Invoke-PipeScript {
     $helloJs
 }
 ```
+> EXAMPLE 3
+
+```PowerShell
+.\Hello.js
+Invoke-PipeScript .\Hello.js
+```
 
 
 ---
