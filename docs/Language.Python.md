@@ -40,6 +40,12 @@ print("$msg")
 }
 .> .\HelloWorld.ps1.py
 ```
+> EXAMPLE 2
+
+```PowerShell
+.\HelloWorld.py
+Invoke-PipeScript .\HelloWorld.py # Should -Be 'Hello World'
+```
 
 
 ---
