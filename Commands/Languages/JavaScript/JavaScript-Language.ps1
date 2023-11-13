@@ -34,6 +34,9 @@ function Language.JavaScript {
         "
         $helloJs
     }
+.EXAMPLE
+    "console.log('hi')" > .\Hello.js
+    Invoke-PipeScript .\Hello.js
 #>
 [ValidatePattern('\.js$')]
 param(
@@ -77,6 +80,9 @@ New-Module {
         "
         $helloJs
     }
+.EXAMPLE
+    "console.log('hi')" > .\Hello.js
+    Invoke-PipeScript .\Hello.js
 #>
 [ValidatePattern('\.js$')]
 param(
