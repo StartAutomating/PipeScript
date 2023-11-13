@@ -2219,6 +2219,7 @@ foreach ($potentialTemplatePath in $potentialTemplatePaths ) {
         RunspacePool _PSNodePool;        
         ScriptBlock _PSNodeAction;
         ScriptBlock _FullPSNodeAction;
+        string CORS;
         PSNodeJob parentJob = null;        
         AuthenticationSchemes authenticationType = AuthenticationSchemes.Anonymous;
         private string PSNodeScriptPreface = @"
@@ -2501,7 +2502,7 @@ foreach ($potentialTemplatePath in $potentialTemplatePaths ) {
             string contentType = request.ContentType;
             if (contentType != null) {
                 contentType = contentType.ToLower();
-            }
+            }            
            
             using (
                 PowerShell command = PowerShell.Create()
@@ -2525,6 +2526,9 @@ foreach ($potentialTemplatePath in $potentialTemplatePaths ) {
                 }
                 
                 command.RunspacePool = PSNodePool;
+                if (! string.IsNullOrEmpty(this.CORS)) {
+                    response.Headers["Access-Control-Allow-Origin"] = this.CORS;
+                }
                 
                 int offset = 0;
 
@@ -2534,6 +2538,7 @@ foreach ($potentialTemplatePath in $potentialTemplatePaths ) {
                     {
                         if (psObject.BaseObject == null) { continue; }
                         byte[] buffer = System.Text.Encoding.UTF8.GetBytes(psObject.ToString());
+                        
                         response.OutputStream.Write(buffer, 0, buffer.Length);
                         offset += buffer.Length;
                         buffer = null;
