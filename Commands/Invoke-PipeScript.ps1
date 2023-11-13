@@ -250,13 +250,18 @@
                 # we'll try to invoke it.
 
                 # If we have an interpreter for that language
-                if ($matchingPipeScriptLanguage.Interpreter) {
+                if ($matchingPipeScriptLanguage.Interpreter -or $matchingPipeScriptLanguage.Runner) {
 
                     # Figure out what command or script block we will run instead
                     $interpreterCommand = $null
+                    $InterpreterOrRunner = if ($matchingPipeScriptLanguage.Interpreter) {
+                        $matchingPipeScriptLanguage.Interpreter
+                    } else {
+                        $matchingPipeScriptLanguage.Runner
+                    }
                     $interpreterArguments = @(
                         # and what other arguments we pass positionally
-                        switch ($matchingPipeScriptLanguage.Interpreter) {
+                        switch ($InterpreterOrRunner) {
                             { $_ -is [Management.Automation.CommandInfo] -and -not $interpreterCommand} { $interpreterCommand = $_ }
                             { $_ -is [scriptblock] -and -not $interpreterCommand} { $interpreterCommand = $_ }
                             default {
@@ -269,7 +274,10 @@
                     # If we found an interpreter
                     if ($interpreterCommand) {
                         # rearrange the arguments
-                        $ArgumentList = @($interpreterArguments) + ($command.Source) + $ArgumentList
+                        $ArgumentList = @($interpreterArguments) + $(
+                            if ($matchingPipeScriptLanguage.Interpreter) {
+                                $command.Source
+                            }) + $ArgumentList
                         # and change the command we're calling.
                         $command = $interpreterCommand
                     }
