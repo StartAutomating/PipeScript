@@ -235,9 +235,46 @@
             # Determine if the Command is a SourceGenerator.
             $IsSourceGenerator = '\.ps1{0,1}\.(?<ext>[^.]+$)' # if it matches the regex designating a SourceGenerator
 
+            $pipeScriptLanguages = Get-PipeScript -PipeScriptType Language
+            $matchingPipeScriptLanguageCommand = $null
+            $matchingPipeScriptLanguage = $(foreach ($pipescriptLanguage in $pipeScriptLanguages) {                    
+                if ($pipescriptLanguage.IsMatch($Command)) {
+                    $matchingPipeScriptLanguageCommand = $pipescriptLanguage
+                    & $pipescriptLanguage
+                    break
+                }
+            })
+
             # If the command was not a source generator
             if ($Command.Source -notmatch $IsSourceGenerator ) {
-                # invoke it normally.                
+                # we'll try to invoke it.
+
+                # If we have an interpreter for that language
+                if ($matchingPipeScriptLanguage.Interpreter) {
+
+                    # Figure out what command or script block we will run instead
+                    $interpreterCommand = $null
+                    $interpreterArguments = @(
+                        # and what other arguments we pass positionally
+                        switch ($matchingPipeScriptLanguage.Interpreter) {
+                            { $_ -is [Management.Automation.CommandInfo] -and -not $interpreterCommand} { $interpreterCommand = $_ }
+                            { $_ -is [scriptblock] -and -not $interpreterCommand} { $interpreterCommand = $_ }
+                            default {
+                                # (any other results in a language's Interpreter will be counted as positional arguments)
+                                $_
+                            }
+                        }
+                    )
+
+                    # If we found an interpreter
+                    if ($interpreterCommand) {
+                        # rearrange the arguments
+                        $ArgumentList = @($interpreterArguments) + ($command.Source) + $ArgumentList
+                        # and change the command we're calling.
+                        $command = $interpreterCommand
+                    }
+                }
+                
                 $CommandStart = [DateTime]::now
                 if ($InputObject) {
                     $InputObject | & $Command @Parameter @ArgumentList
@@ -271,17 +308,7 @@
 
                 if (-not $script:CoreTemplateTranspiler) {
                     $script:CoreTemplateTranspiler = Get-Transpiler -TranspilerName PipeScript.Template
-                }
-                
-                $pipeScriptLanguages = Get-PipeScript -PipeScriptType Language
-                $matchingPipeScriptLanguageCommand = $null
-                $matchingPipeScriptLanguage = $(foreach ($pipescriptLanguage in $pipeScriptLanguages) {                    
-                    if ($pipescriptLanguage.IsMatch($Command)) {
-                        $matchingPipeScriptLanguageCommand = $pipescriptLanguage
-                        & $pipescriptLanguage
-                        break
-                    }
-                })
+                }                                                
 
                 $ParamsAndArgs    = [Ordered]@{Parameter=$Parameter;ArgumentList = $ArgumentList}
                 $transpilerErrors   = @()
