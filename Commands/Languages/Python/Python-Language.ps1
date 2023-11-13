@@ -20,6 +20,9 @@ print("$msg")
         [OutputFile('.\HelloWorld.ps1.py')]$PythonContent
     }
     .> .\HelloWorld.ps1.py
+.EXAMPLE
+    'print("Hello World")' > .\HelloWorld.py
+    Invoke-PipeScript .\HelloWorld.py # Should -Be 'Hello World'
 #>
 [ValidatePattern('\.py$')]
 param(
@@ -49,6 +52,9 @@ print("$msg")
         [OutputFile('.\HelloWorld.ps1.py')]$PythonContent
     }
     .> .\HelloWorld.ps1.py
+.EXAMPLE
+    'print("Hello World")' > .\HelloWorld.py
+    Invoke-PipeScript .\HelloWorld.py # Should -Be 'Hello World'
 #>
 [ValidatePattern('\.py$')]
 param()
@@ -59,8 +65,7 @@ param()
     
     $startPattern = "(?<PSStart>${startComment})"    
     $endPattern   = "(?<PSEnd>${endComment})"
-    
-    
+    $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('py', 'Application'))[0] # Get the first py, if present
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
