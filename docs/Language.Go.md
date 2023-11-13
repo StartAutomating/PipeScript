@@ -57,6 +57,18 @@ func main() {
 $helloGo.Save()
 }
 ```
+> EXAMPLE 3
+
+```PowerShell
+'
+package main
+import fmt
+func main() {
+    fmt.Println("hello world")
+}
+' | Set-Content .\HelloWorld.go
+Invoke-PipeScript .\HelloWorld.go
+```
 
 
 ---
