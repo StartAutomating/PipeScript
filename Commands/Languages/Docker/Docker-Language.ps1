@@ -10,7 +10,7 @@ function Language.Docker {
         $DockerFile = '
             FROM mcr.microsoft.com/powershell
             #{
-            ## If we're in a module directory, copy the module
+            ## If we are in a module directory, copy the module
             # $LoadedModuleInPath = (Get-Module | Split-Path) -match ([Regex]::Escape($pwd)) | Select -first 1
             # if ($LoadedModuleInPath) { "COPY ./ ./Modules/$($LoadedModuleInPath | Split-Path -Leaf)" } 
             #}
@@ -44,7 +44,7 @@ New-Module {
         $DockerFile = '
             FROM mcr.microsoft.com/powershell
             #{
-            ## If we're in a module directory, copy the module
+            ## If we are in a module directory, copy the module
             # $LoadedModuleInPath = (Get-Module | Split-Path) -match ([Regex]::Escape($pwd)) | Select -first 1
             # if ($LoadedModuleInPath) { "COPY ./ ./Modules/$($LoadedModuleInPath | Split-Path -Leaf)" } 
             #}
