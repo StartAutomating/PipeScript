@@ -9,41 +9,48 @@ function Start-PSNode {
     #>
     param(
     # The Script Block to run in the Job
-    [Parameter(Mandatory,ParameterSetName='ScriptBlock',Position=0,ValueFromPipeline)]
+    [Parameter(Mandatory,ParameterSetName='ScriptBlock',Position=0,ValueFromPipeline,ValueFromPipelineByPropertyName)]
     [Alias('ScriptBlock','Action')]
     [ScriptBlock]
     $Command,
     # One or more listener prefixes that will be used to handle to request.
+    [Parameter(ValueFromPipelineByPropertyName)]
     [Alias('Route')]
     [String[]]
     $Server,
     # The cross origin resource sharing
+    [Parameter(ValueFromPipelineByPropertyName)]
     [Alias('AccessControlAllowOrigin','Access-Control-Allow-Origin')]
     [string]
     $CORS = '*',
     # The root directory.  If this is provided, the PSNode will act as a file server for this location.
+    [Parameter(ValueFromPipelineByPropertyName)]
     [string]
     $RootPath,
     # The buffer size.  If PSNode is acting as a file server, this is the size of the buffer that it will use to stream files.
+    [Parameter(ValueFromPipelineByPropertyName)]
     [Uint32]
     $BufferSize = 512kb,
     # The number of runspaces in the PSNode's runspace pool.
     # As the PoolSize increases, the PSNode will be able to handle more concurrent requests and will consume more memory.
+    [Parameter(ValueFromPipelineByPropertyName)]
     [Uint32]
     $PoolSize = 3,
     # The user session timeout.  By default, 15 minutes.
+    [Parameter(ValueFromPipelineByPropertyName)]
     [TimeSpan]$SessionTimeout,
     # The modules that will be loaded in the PSNode
+    [Parameter(ValueFromPipelineByPropertyName)]
     [string[]]
     $ImportModule,
     # If set, will allow the directories beneath RootPath to be browsed.
+    [Parameter(ValueFromPipelineByPropertyName)]
     [Switch]
     $AllowBrowseDirectory,
     # If set, will execute .ps1 files located beneath the RootPath.  If this is not provided, these .PS1 files will be displayed in the browser like any other file (assuming you provided a RootPath)
+    [Parameter(ValueFromPipelineByPropertyName)]
     [Switch]
     $AllowScriptExecution,
-    [Management.Automation.PSCredential]
-    $Credential,
     # The authentication type
     [Parameter(ValueFromPipelineByPropertyName=$true)]
     [Net.AuthenticationSchemes]
@@ -168,9 +175,9 @@ Add-Member -InputObject $request -MemberType ScriptProperty -Name Params -Value 
             } 
             elseif ($rawData -match '^\s[\{\[](?!@)') {
                 try {
-                    $parsedData = [Web.HttpUtility]::ParseQueryString($rawData)
-                    foreach ($k in $parsedData.Keys) {
-                        $requestParams[$k] = $parsedData[$k]
+                    $parsedData = ConvertFrom-Json $rawData
+                    foreach ($k in $parsedData.psobject.properties) {
+                        $requestParams[$k.Name] = $parsedData[$k.Value]
                     }
                 } catch {
                 }
