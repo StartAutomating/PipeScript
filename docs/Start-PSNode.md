@@ -33,9 +33,9 @@ The Script Block to run in the Job
 
 
 
-|Type           |Required|Position|PipelineInput |Aliases               |
-|---------------|--------|--------|--------------|----------------------|
-|`[ScriptBlock]`|true    |1       |true (ByValue)|ScriptBlock<br/>Action|
+|Type           |Required|Position|PipelineInput                 |Aliases               |
+|---------------|--------|--------|------------------------------|----------------------|
+|`[ScriptBlock]`|true    |1       |true (ByValue, ByPropertyName)|ScriptBlock<br/>Action|
 
 
 
@@ -48,9 +48,9 @@ One or more listener prefixes that will be used to handle to request.
 
 
 
-|Type        |Required|Position|PipelineInput|Aliases|
-|------------|--------|--------|-------------|-------|
-|`[String[]]`|false   |named   |false        |Route  |
+|Type        |Required|Position|PipelineInput        |Aliases|
+|------------|--------|--------|---------------------|-------|
+|`[String[]]`|false   |named   |true (ByPropertyName)|Route  |
 
 
 
@@ -63,9 +63,9 @@ The cross origin resource sharing
 
 
 
-|Type      |Required|Position|PipelineInput|Aliases                                                 |
-|----------|--------|--------|-------------|--------------------------------------------------------|
-|`[String]`|false   |named   |false        |AccessControlAllowOrigin<br/>Access-Control-Allow-Origin|
+|Type      |Required|Position|PipelineInput        |Aliases                                                 |
+|----------|--------|--------|---------------------|--------------------------------------------------------|
+|`[String]`|false   |named   |true (ByPropertyName)|AccessControlAllowOrigin<br/>Access-Control-Allow-Origin|
 
 
 
@@ -78,9 +78,9 @@ The root directory.  If this is provided, the PSNode will act as a file server f
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[String]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[String]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -93,9 +93,9 @@ The buffer size.  If PSNode is acting as a file server, this is the size of the 
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[UInt32]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[UInt32]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -109,9 +109,9 @@ As the PoolSize increases, the PSNode will be able to handle more concurrent req
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[UInt32]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[UInt32]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -124,9 +124,9 @@ The user session timeout.  By default, 15 minutes.
 
 
 
-|Type        |Required|Position|PipelineInput|
-|------------|--------|--------|-------------|
-|`[TimeSpan]`|false   |named   |false        |
+|Type        |Required|Position|PipelineInput        |
+|------------|--------|--------|---------------------|
+|`[TimeSpan]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -139,9 +139,9 @@ The modules that will be loaded in the PSNode
 
 
 
-|Type        |Required|Position|PipelineInput|
-|------------|--------|--------|-------------|
-|`[String[]]`|false   |named   |false        |
+|Type        |Required|Position|PipelineInput        |
+|------------|--------|--------|---------------------|
+|`[String[]]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -154,9 +154,9 @@ If set, will allow the directories beneath RootPath to be browsed.
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Switch]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -169,20 +169,9 @@ If set, will execute .ps1 files located beneath the RootPath.  If this is not pr
 
 
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[Switch]`|false   |named   |false        |
-
-
-
-#### **Credential**
-
-
-
-
-|Type            |Required|Position|PipelineInput|
-|----------------|--------|--------|-------------|
-|`[PSCredential]`|false   |named   |false        |
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[Switch]`|false   |named   |true (ByPropertyName)|
 
 
 
@@ -220,5 +209,5 @@ Valid Values:
 
 ### Syntax
 ```PowerShell
-Start-PSNode [-Command] <ScriptBlock> [-Server <String[]>] [-CORS <String>] [-RootPath <String>] [-BufferSize <UInt32>] [-PoolSize <UInt32>] [-SessionTimeout <TimeSpan>] [-ImportModule <String[]>] [-AllowBrowseDirectory] [-AllowScriptExecution] [-Credential <PSCredential>] [-AuthenticationType {None | Digest | Negotiate | Ntlm | IntegratedWindowsAuthentication | Basic | Anonymous}] [<CommonParameters>]
+Start-PSNode [-Command] <ScriptBlock> [-Server <String[]>] [-CORS <String>] [-RootPath <String>] [-BufferSize <UInt32>] [-PoolSize <UInt32>] [-SessionTimeout <TimeSpan>] [-ImportModule <String[]>] [-AllowBrowseDirectory] [-AllowScriptExecution] [-AuthenticationType {None | Digest | Negotiate | Ntlm | IntegratedWindowsAuthentication | Basic | Anonymous}] [<CommonParameters>]
 ```
