@@ -130,7 +130,8 @@
             
             'Parser' = @{
                 Description = 'Parsers'
-                Pattern = '                    
+                Pattern = '
+                    (?>^|\.)                # After a period or the start of a string
                     Parse[sr]?              # Parse or Parses or Parser + Punctuation
                     (?>
                         \.ps1$                     # Ending with .ps1
@@ -182,7 +183,19 @@
                     )
                 '
                 ExcludeCommandType = '(?>Application|Script|Cmdlet)'
-            }            
+            }
+            
+            'Route' = @{
+                Pattern = '
+                    (?>^|\.)                # After a period or the start of a string
+                    Route[sr]?              # The words Route or Routes or Router
+                    (?>                     # Followed by either
+                        \.ps1$              # the .ps1 and end of string
+                        |                   # or 
+                        \p{P}               # any other punctuation.
+                    )
+                '
+            }
               
             'Template'     = 
                 @{
