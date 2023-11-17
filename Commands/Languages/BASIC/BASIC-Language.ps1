@@ -40,6 +40,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition =
 New-Module {
+    
 <#
 .SYNOPSIS
     BASIC Language Definition.
@@ -83,6 +84,7 @@ $EndPattern   = "(?<PSEnd>${endComment})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
+$languageDefinition.pstypenames.add("Language")
 $languageDefinition.pstypenames.add("Language.BASIC")
 $this.psobject.properties.add([PSNoteProperty]::new('Self',$languageDefinition))
 }
