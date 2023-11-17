@@ -18,6 +18,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition =
 New-Module {
+    
 <#
 .SYNOPSIS
     PSD1 Template Transpiler.
@@ -47,6 +48,7 @@ $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}[\s-[\r\n]]{0,}${IgnoredCont
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
+$languageDefinition.pstypenames.add("Language")
 $languageDefinition.pstypenames.add("Language.PowerShellData")
 $this.psobject.properties.add([PSNoteProperty]::new('Self',$languageDefinition))
 }
