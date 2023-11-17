@@ -42,8 +42,9 @@ function Compile.LanguageDefinition {
     process {
         switch ($PSCmdlet.ParameterSetName) {
             ScriptBlock {
-                $newScriptLines = @(
-                    "`New-Module {$LanguageDefinition"        
+                $newScriptLines = @(                    
+                    "`New-Module {"
+                    "    $LanguageDefinition"
                     "    Export-ModuleMember -Variable * -Function * -Alias *"
                     "} -AsCustomObject"
                 )
@@ -60,6 +61,7 @@ function Compile.LanguageDefinition {
                     )
                     $languageName = $LanguageFunctionAst.Name -replace '^Language\p{P}'
                     '$languageDefinition.pstypenames.clear()'
+                    '$languageDefinition.pstypenames.add("Language")'
                     '$languageDefinition.pstypenames.add("Language.' + $languageName + '")'
                     '$this.psobject.properties.add([PSNoteProperty]::new(''Self'',$languageDefinition))'
                     '}'
