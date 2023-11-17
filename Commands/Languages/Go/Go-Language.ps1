@@ -52,6 +52,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition =
 New-Module {
+    
     <#
     .SYNOPSIS
         Go Template Transpiler.
@@ -122,6 +123,7 @@ New-Module {
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
+$languageDefinition.pstypenames.add("Language")
 $languageDefinition.pstypenames.add("Language.Go")
 $this.psobject.properties.add([PSNoteProperty]::new('Self',$languageDefinition))
 }
