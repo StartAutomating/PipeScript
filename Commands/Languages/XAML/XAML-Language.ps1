@@ -16,6 +16,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition =
 New-Module {
+    
 <#
 .SYNOPSIS
     XAML Language Definition.
@@ -37,6 +38,7 @@ param()
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
+$languageDefinition.pstypenames.add("Language")
 $languageDefinition.pstypenames.add("Language.XAML")
 $this.psobject.properties.add([PSNoteProperty]::new('Self',$languageDefinition))
 }
