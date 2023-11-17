@@ -37,6 +37,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition =
 New-Module {
+    
 <#
 .SYNOPSIS
     Batch Language Definition.
@@ -80,6 +81,7 @@ $LinePattern   = "^\s{0,}(?>\:\:|rem)\s{0,}"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
+$languageDefinition.pstypenames.add("Language")
 $languageDefinition.pstypenames.add("Language.Batch")
 $this.psobject.properties.add([PSNoteProperty]::new('Self',$languageDefinition))
 }
