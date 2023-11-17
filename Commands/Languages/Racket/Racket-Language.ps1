@@ -18,6 +18,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition =
 New-Module {
+    
 <#
 .SYNOPSIS
     Racket Template Transpiler.
@@ -42,6 +43,7 @@ param()
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
+$languageDefinition.pstypenames.add("Language")
 $languageDefinition.pstypenames.add("Language.Racket")
 $this.psobject.properties.add([PSNoteProperty]::new('Self',$languageDefinition))
 }
