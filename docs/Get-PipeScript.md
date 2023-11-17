@@ -94,6 +94,7 @@ Valid Values:
 * PostProcessor
 * PreProcessor
 * Protocol
+* Route
 * Sentence
 * Template
 * Transform
