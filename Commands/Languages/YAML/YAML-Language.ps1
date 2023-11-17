@@ -40,6 +40,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition =
 New-Module {
+    
 <#
 .SYNOPSIS
     Yaml Template Transpiler.
@@ -142,6 +143,7 @@ List:
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
+$languageDefinition.pstypenames.add("Language")
 $languageDefinition.pstypenames.add("Language.YAML")
 $this.psobject.properties.add([PSNoteProperty]::new('Self',$languageDefinition))
 }
