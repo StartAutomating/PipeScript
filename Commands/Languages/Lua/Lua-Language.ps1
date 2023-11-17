@@ -15,6 +15,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition =
 New-Module {
+    
     <#
     .SYNOPSIS
         LUA Template Transpiler.
@@ -33,6 +34,7 @@ New-Module {
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
+$languageDefinition.pstypenames.add("Language")
 $languageDefinition.pstypenames.add("Language.Lua")
 $this.psobject.properties.add([PSNoteProperty]::new('Self',$languageDefinition))
 }
