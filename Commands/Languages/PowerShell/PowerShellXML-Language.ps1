@@ -57,6 +57,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition =
 New-Module {
+    
 <#
 .SYNOPSIS
     PowerShellXML Language Definition
@@ -119,6 +120,7 @@ $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
+$languageDefinition.pstypenames.add("Language")
 $languageDefinition.pstypenames.add("Language.PowerShellXML")
 $this.psobject.properties.add([PSNoteProperty]::new('Self',$languageDefinition))
 }
