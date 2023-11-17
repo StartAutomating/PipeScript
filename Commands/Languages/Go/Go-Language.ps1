@@ -109,7 +109,15 @@ New-Module {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
-    $Runner  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('go', 'Application'))[0], 'run' # Get the first go, if present
+    # Find Go in the path
+    $GoApplication = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('go', 'Application'))[0]
+    $Compiler = # To compile go
+        $GoApplication, # we call 'go'
+        'build' # followed by 'build'
+    
+    $Interpret  = # To interpret go,
+        $GoApplication, # we call 'go' in the path
+        'run' # and always pass it run
     
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
