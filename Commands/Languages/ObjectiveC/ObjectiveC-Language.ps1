@@ -21,6 +21,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition =
 New-Module {
+    
 <#
 .SYNOPSIS
     Objective-C Language Definition.
@@ -49,6 +50,7 @@ param()
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
+$languageDefinition.pstypenames.add("Language")
 $languageDefinition.pstypenames.add("Language.ObjectiveC")
 $this.psobject.properties.add([PSNoteProperty]::new('Self',$languageDefinition))
 }
