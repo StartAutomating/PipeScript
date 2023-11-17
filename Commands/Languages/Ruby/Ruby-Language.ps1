@@ -32,6 +32,7 @@ param()
         '""',
         "''"
     $IgnoredContext = "(?<ignore>(?>$($ignoreEach -join '|'))\s{0,}){0,1}"
+    $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('ruby', 'Application'))[0] # Get the first python, if presentS
     
     $startPattern = "(?<PSStart>${IgnoredContext}${startComment})"    
     $endPattern   = "(?<PSEnd>${endComment}${IgnoredContext})"
