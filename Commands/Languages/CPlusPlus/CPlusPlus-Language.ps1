@@ -20,6 +20,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition =
 New-Module {
+    
     <#
     .SYNOPSIS
         C/C++ Language Definition.
@@ -48,6 +49,7 @@ New-Module {
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
+$languageDefinition.pstypenames.add("Language")
 $languageDefinition.pstypenames.add("Language.CPlusPlus")
 $this.psobject.properties.add([PSNoteProperty]::new('Self',$languageDefinition))
 }
