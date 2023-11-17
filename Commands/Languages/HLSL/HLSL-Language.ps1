@@ -15,6 +15,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition =
 New-Module {
+    
     <#
     .SYNOPSIS
         HLSL Language Definition.
@@ -37,6 +38,7 @@ New-Module {
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
+$languageDefinition.pstypenames.add("Language")
 $languageDefinition.pstypenames.add("Language.HLSL")
 $this.psobject.properties.add([PSNoteProperty]::new('Self',$languageDefinition))
 }
