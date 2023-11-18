@@ -6,3 +6,4 @@
 
 * [AllValid](AllValid.md)
 * [AnyValid](AnyValid.md)
+* [get_IsEmpty](get_IsEmpty.md)
