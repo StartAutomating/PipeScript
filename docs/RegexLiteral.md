@@ -1,16 +1,10 @@
 RegexLiteral
 ------------
 
-
-
-
 ### Synopsis
 Regex Literal Transpiler
 
-
-
 ---
-
 
 ### Description
 
@@ -20,10 +14,7 @@ Regex Literals are strings enclosed within slashes.
 
 The ending slash may be followed by ```[Text.RegularExpressions.RegexOptions]```.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -88,7 +79,6 @@ $($Keywords -join '|') # followed by keywords
 "@
 } | .>PipeScript
 
-
 # This will become:
 
 [regex]::new(@"
@@ -99,45 +89,24 @@ $($Keywords -join '|') # followed by keywords
 "@, 'IgnorePatternWhitespace,IgnoreCase')
 ```
 
-
 ---
-
 
 ### Parameters
 #### **StringConstantExpression**
-
 A RegexLiteral can be any string constant expression (as long as it's not in an attribute).
-
-
-
-
-
 
 |Type                           |Required|Position|PipelineInput |
 |-------------------------------|--------|--------|--------------|
 |`[StringConstantExpressionAst]`|true    |named   |true (ByValue)|
 
-
-
 #### **ExpandableStringExpression**
-
 It can also by any expandable string, which allows you to construct Regexes using PowerShell variables and subexpressions.
-
-
-
-
-
 
 |Type                             |Required|Position|PipelineInput |
 |---------------------------------|--------|--------|--------------|
 |`[ExpandableStringExpressionAst]`|true    |named   |true (ByValue)|
 
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
