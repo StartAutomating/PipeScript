@@ -1,16 +1,10 @@
 Language.Markdown
 -----------------
 
-
-
-
 ### Synopsis
 Markdown Template Transpiler.
 
-
-
 ---
-
 
 ### Description
 
@@ -20,10 +14,7 @@ PipeScript can be included in a Markdown code block that has the Language ```Pip
 
 In Markdown, PipeScript can also be specified as the language using any two of the following characters ```.<>```
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -47,9 +38,7 @@ In Markdown, PipeScript can also be specified as the language using any two of t
 .> .\HelloWorld.ps1.md
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
