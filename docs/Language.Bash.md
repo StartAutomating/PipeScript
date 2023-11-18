@@ -1,16 +1,10 @@
 Language.Bash
 -------------
 
-
-
-
 ### Synopsis
 Bash Language Definition
 
-
-
 ---
-
 
 ### Description
 
@@ -24,10 +18,7 @@ Heredocs named PipeScript{} will be treated as blocks of PipeScript.
 PipeScript{}
 ```
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -45,9 +36,7 @@ Invoke-PipeScript {
 Invoke-PipeScript .\HelloWorld.ps1.sh
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
