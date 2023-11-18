@@ -1,25 +1,16 @@
 System.Management.Automation.ValidatePatternAttribute.Validate()
 ----------------------------------------------------------------
 
-
-
-
 ### Synopsis
 Validates an Object against a Pattern
 
-
-
 ---
-
 
 ### Description
 
 Validates one or more objects against the .RegexPattern of this attribute.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -32,6 +23,5 @@ Validates one or more objects against the .RegexPattern of this attribute.
 ```PowerShell
 [ValidatePattern]::new("a").Validate("b") # Should -Be $false
 ```
-
 
 ---
