@@ -1,16 +1,10 @@
 Language.Go
 -----------
 
-
-
-
 ### Synopsis
 Go Template Transpiler.
 
-
-
 ---
-
 
 ### Description
 
@@ -23,10 +17,7 @@ The Go Transpiler will consider the following syntax to be empty:
 * ```""```
 * ```''```
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -70,9 +61,7 @@ func main() {
 Invoke-PipeScript .\HelloWorld.go
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
