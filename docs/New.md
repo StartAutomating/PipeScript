@@ -1,16 +1,10 @@
 New
 ---
 
-
-
-
 ### Synopsis
 'new' keyword
 
-
-
 ---
-
 
 ### Description
 
@@ -26,10 +20,7 @@ If 'new' is followed by a single string, and the type has a ::Parse method, new 
 
 If 'new'
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -83,26 +74,16 @@ If 'new'
 { new 'https://schema.org/Thing' }
 ```
 
-
 ---
-
 
 ### Parameters
 #### **CommandAst**
-
-
-
 
 |Type          |Required|Position|PipelineInput |
 |--------------|--------|--------|--------------|
 |`[CommandAst]`|true    |1       |true (ByValue)|
 
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
