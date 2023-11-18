@@ -1,16 +1,10 @@
 Language.Perl
 -------------
 
-
-
-
 ### Synopsis
 Perl Template Transpiler.
 
-
-
 ---
-
 
 ### Description
 
@@ -18,10 +12,7 @@ Allows PipeScript to generate Perl.
 Also Transpiles Plain Old Document
 PipeScript can be embedded in a Plain Old Document block that starts with ```=begin PipeScript``` and ends with ```=end PipeScript```.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -39,9 +30,7 @@ $msg = "hello", "hi", "hey", "howdy" | Get-Random
 .> .\HelloWorld.ps1.pl
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
