@@ -1,25 +1,16 @@
 Protocol.HTTP
 -------------
 
-
-
-
 ### Synopsis
 HTTP protocol
 
-
-
 ---
-
 
 ### Description
 
 Converts an http(s) protocol commands to PowerShell.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -88,117 +79,59 @@ $statusHealthCheck = {
 & $StatusHealthCheck
 ```
 
-
 ---
-
 
 ### Parameters
 #### **CommandUri**
-
 The URI.
-
-
-
-
-
 
 |Type   |Required|Position|PipelineInput|
 |-------|--------|--------|-------------|
 |`[Uri]`|true    |1       |false        |
 
-
-
 #### **CommandAst**
-
 The Command's Abstract Syntax Tree
-
-
-
-
-
 
 |Type          |Required|Position|PipelineInput|
 |--------------|--------|--------|-------------|
 |`[CommandAst]`|true    |named   |false        |
 
-
-
 #### **ScriptBlock**
-
-
-
 
 |Type           |Required|Position|PipelineInput |
 |---------------|--------|--------|--------------|
 |`[ScriptBlock]`|true    |named   |true (ByValue)|
 
-
-
 #### **ArgumentList**
-
 Any remaining arguments.  These will be passed positionally to the invoker.
-
-
-
-
-
 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[Object]`|false   |named   |false        |
 
-
-
 #### **Parameter**
-
 Any named parameters for the invoker.
-
-
-
-
-
 
 |Type           |Required|Position|PipelineInput|
 |---------------|--------|--------|-------------|
 |`[IDictionary]`|false   |named   |false        |
 
-
-
 #### **Method**
-
 The HTTP method.  By default, get.
-
-
-
-
-
 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[String]`|false   |named   |false        |
 
-
-
 #### **Invoker**
-
 The invocation command.  By default, Invoke-RestMethod.
 Whatever alternative command provided should have a similar signature to Invoke-RestMethod.
 
-
-
-
-
-
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[String]`|false   |named   |false        |
 
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
