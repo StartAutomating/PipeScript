@@ -1,25 +1,16 @@
 PipeScript.Automatic.Variable.IsPipedFrom
 -----------------------------------------
 
-
-
-
 ### Synopsis
 $IsPipedFrom
 
-
-
 ---
-
 
 ### Description
 
 $IsPipedFrom determines if the pipeline continues after this command.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -34,9 +25,7 @@ $PipedFrom # Should -Be $False
 & (Use-PipeScript { $IsPipedFrom }) | Foreach-Object { $_ } # Should -Be $true
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
