@@ -1,16 +1,10 @@
 Language.ObjectiveC
 -------------------
 
-
-
-
 ### Synopsis
 Objective-C Language Definition.
 
-
-
 ---
-
 
 ### Description
 
@@ -23,10 +17,7 @@ The Objective C Inline Transpiler will consider the following syntax to be empty
 * ```""```
 * ```''```
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
