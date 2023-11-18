@@ -1,25 +1,16 @@
 System.Management.Automation.Language.Ast.get_Defines()
 -------------------------------------------------------
 
-
-
-
 ### Synopsis
 Gets all Definitions within an AST
 
-
-
 ---
-
 
 ### Description
 
 Gets all Function and Type Definitions within a PowerShell Abstract Syntax Tree
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -27,6 +18,5 @@ Gets all Function and Type Definitions within a PowerShell Abstract Syntax Tree
 ```PowerShell
 {function foo() { "foo"} class bar { $bar = "none"} }.Ast.Defines
 ```
-
 
 ---
