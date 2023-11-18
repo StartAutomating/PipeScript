@@ -204,11 +204,6 @@ Aspect function ModuleExtensionCommand {
     [Management.Automation.CommandTypes]
     $CommandType,
 
-    # If set, will explicitly recursively look for a path.
-    # If not set, -Recurse will automatically be true when passed an absolute path, and false when passed a relative path.
-    [switch]
-    $Recurse,
-
     # The base PSTypeName(s).
     # If provided, any commands that match the pattern will apply these typenames, too.
     [string[]]
@@ -235,12 +230,8 @@ Aspect function ModuleExtensionCommand {
                 if (-not $commandType) {
                     $commandType = 'Application,ExternalScript'
                 }
-                $shouldRecurse = 
-                    if (-not $PSBoundParameters['Recurse']) {
-                        $PSBoundParameters['FilePath'] -notmatch '^\.\\'
-                    } else {
-                        $PSBoundParameters['Recurse'] -as [bool]
-                    }
+                $shouldRecurse = $PSBoundParameters['FilePath'] -notmatch '^\.\\'
+                    
                 foreach ($file in Get-ChildItem -File -Path $PSBoundParameters['FilePath'] -Recurse:$shouldRecurse ) {
                     $ExecutionContext.SessionState.InvokeCommand.GetCommand($file.FullName, $commandType)
                 }
