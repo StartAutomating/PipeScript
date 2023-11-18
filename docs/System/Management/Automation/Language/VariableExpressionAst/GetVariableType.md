@@ -1,16 +1,10 @@
 System.Management.Automation.Language.VariableExpressionAst.GetVariableType()
 -----------------------------------------------------------------------------
 
-
-
-
 ### Synopsis
 Gets a Variable's Likely Type
 
-
-
 ---
-
 
 ### Description
 
@@ -18,10 +12,7 @@ Determines the type of a variable.
 
 This looks for the closest assignment statement and uses this to determine what type the variable is likely to be.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -52,13 +43,9 @@ This looks for the closest assignment statement and uses this to determine what 
 }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.GetVariableType()
 ```
 
-
 ---
-
 
 ### Notes
 Subject to revision and improvement.  While this covers many potential scenarios, it does not always
-
-
 
 ---
