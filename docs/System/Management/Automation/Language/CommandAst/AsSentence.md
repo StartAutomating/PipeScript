@@ -1,16 +1,10 @@
 System.Management.Automation.Language.CommandAst.AsSentence()
 -------------------------------------------------------------
 
-
-
-
 ### Synopsis
 Maps Natural Language Syntax to PowerShell Parameters
 
-
-
 ---
-
 
 ### Description
 
@@ -22,10 +16,7 @@ For the purposes of natural language processing ValueFromPipeline will be ignore
 
 The order the parameters is declared takes precedence over Position attributes.
 
-
-
 ---
-
 
 ### Notes
 Each potential command can be thought of as a simple sentence with (mostly) natural syntax
@@ -54,7 +45,5 @@ then all remaining arguments will be matched until the next named parameter is f
 
 _Aliasing is important_ when working with a given parameter.
 The alias, _not_ the parameter name, will be what is mapped in .Parameters.
-
-
 
 ---
