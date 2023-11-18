@@ -1,25 +1,16 @@
 PipeScript.Automatic.Variable.MyCaller
 --------------------------------------
 
-
-
-
 ### Synopsis
 $MyCaller
 
-
-
 ---
-
 
 ### Description
 
 $MyCaller (aka $CallStackPeek) contains the CallstackFrame that called this command.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -28,9 +19,7 @@ $MyCaller (aka $CallStackPeek) contains the CallstackFrame that called this comm
 Invoke-PipeScript { $myCaller }
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
