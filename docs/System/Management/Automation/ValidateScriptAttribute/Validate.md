@@ -1,16 +1,10 @@
 System.Management.Automation.ValidateScriptAttribute.Validate()
 ---------------------------------------------------------------
 
-
-
-
 ### Synopsis
 Validates an Object with a Script
 
-
-
 ---
-
 
 ### Description
 
@@ -20,10 +14,7 @@ If the .ScriptBlock does not return "falsey" value (`$false, 0`), the validation
 
 If there are no arguments passed, this's ErrorMessage starts with `$`, then the values produced by that expression will be validated.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -36,6 +27,5 @@ If there are no arguments passed, this's ErrorMessage starts with `$`, then the 
 ```PowerShell
 [ValidateScript]::new({$_ % 2}).Validate(0) # Should -Be $false
 ```
-
 
 ---
