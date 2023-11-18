@@ -1,16 +1,10 @@
 Language.JavaScript
 -------------------
 
-
-
-
 ### Synopsis
 JavaScript Language Definition.
 
-
-
 ---
-
 
 ### Description
 
@@ -24,10 +18,7 @@ The JavaScript Inline Transpiler will consider the following syntax to be empty:
 * ```""```
 * ```''```
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -64,9 +55,7 @@ Invoke-PipeScript {
 Invoke-PipeScript .\Hello.js
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
