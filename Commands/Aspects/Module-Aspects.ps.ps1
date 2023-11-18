@@ -230,7 +230,8 @@ Aspect function ModuleExtensionCommand {
                 if (-not $commandType) {
                     $commandType = 'Application,ExternalScript'
                 }
-                $shouldRecurse = $PSBoundParameters['FilePath'] -notmatch '^\.\\'
+                
+                $shouldRecurse = $($PSBoundParameters['FilePath'] -notmatch '^\.\\') -as [bool]
                     
                 foreach ($file in Get-ChildItem -File -Path $PSBoundParameters['FilePath'] -Recurse:$shouldRecurse ) {
                     $ExecutionContext.SessionState.InvokeCommand.GetCommand($file.FullName, $commandType)
