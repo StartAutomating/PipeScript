@@ -1,16 +1,10 @@
 Language.Kotlin
 ---------------
 
-
-
-
 ### Synopsis
 Kotlin Language Definition.
 
-
-
 ---
-
 
 ### Description
 
@@ -22,10 +16,7 @@ The Kotlin Inline PipeScript Transpiler will consider the following syntax to be
 * ```""```
 * ```''```
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
