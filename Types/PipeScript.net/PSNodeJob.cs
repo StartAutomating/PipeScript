@@ -335,6 +335,8 @@ namespace Pipescript.Net
                     command.AddCommand("ConvertTo-Json").AddParameter("Compress", true);                    
                 } else if (request.ContentType != null && contentType == "text/plain") {
                     command.AddCommand("Out-String");
+                } else if (request.ContentType != null && contentType == "application/clixml") {
+                    command.AddScript("process { [Management.Automation.PSSerializer]::Serialize($_) }");
                 }
                 
                 command.RunspacePool = PSNodePool;
@@ -349,8 +351,9 @@ namespace Pipescript.Net
                     foreach (PSObject psObject in command.Invoke<PSObject>())
                     {
                         if (psObject.BaseObject == null) { continue; }
-                        byte[] buffer = System.Text.Encoding.UTF8.GetBytes(psObject.ToString());
-                        
+                        byte[] buffer = null;
+                        string stringified = psObject.ToString();                                            
+                        buffer = System.Text.Encoding.UTF8.GetBytes(stringified);                        
                         response.OutputStream.Write(buffer, 0, buffer.Length);
                         offset += buffer.Length;
                         buffer = null;
@@ -445,21 +448,14 @@ namespace Pipescript.Net
             catch (Exception e)
             {   
                 this.Error.Add(new ErrorRecord(e, e.Message, ErrorCategory.NotSpecified, e));
-/*              if (e is HttpListenerException) {
-                    HttpListenerException httpEx = (HttpListenerException)e;
-                    if (httpEx.ErrorCode != 995) {
-                        this.Error.Add(new ErrorRecord(e, httpEx.ErrorCode.ToString(), ErrorCategory.NotSpecified, e));                        
-                    }
-                } else {
-
-                }
-                */             
             }
         }
         
         public void WriteOutput(PSObject item) {
             this.Output.Add(item);
-        }        
+        }
+
+        private ElapsedEventHandler elapsedEventHandler = null;
         
         public void Start()
         {
@@ -473,13 +469,14 @@ namespace Pipescript.Net
             #endif
             if (SessionTimer != null) {
                 SessionTimer.Stop();
+                SessionTimer.Elapsed -= elapsedEventHandler;
             }
             SessionTimer = new System.Timers.Timer();
             SessionTimer.Interval = 5119;
-            SessionTimer.Elapsed += new ElapsedEventHandler(SessionTimerElapsed);
+            elapsedEventHandler = new ElapsedEventHandler(SessionTimerElapsed);
+            SessionTimer.Elapsed += elapsedEventHandler;
             SessionTimer.Start();
             
-
             if (! String.IsNullOrEmpty(this.RootPath)) {
                 #if Windows
                 RegistryKey hkcr = Microsoft.Win32.Registry.ClassesRoot;
@@ -491,6 +488,9 @@ namespace Pipescript.Net
                     }
                 }
                 #endif
+                if (! MimeTypes.ContainsKey(".js")) {
+                    MimeTypes[".css"] = "text/javascript";
+                }
                 if (! MimeTypes.ContainsKey(".css")) {
                     MimeTypes[".css"] = "text/css";
                 }
@@ -538,8 +538,7 @@ param($PSNodeJob, $listener)
     } catch {
         Write-Error -ErrorRecord $_
         return
-    }
-    
+    }    
     
     :NodeIsRunning while (1) {          
         $result = $listener.BeginGetContext($PSNodeJob.Callback, $listener);
@@ -551,6 +550,7 @@ param($PSNodeJob, $listener)
             if ($listener) {
                 $listener.Stop()
                 $listener.Close();
+                $listener.Dispose()
                 $listener.Prefixes.Clear();
             }
             continue ResetPSNode
@@ -559,7 +559,7 @@ param($PSNodeJob, $listener)
 
     $listener.Stop()
     $listener.Close()  
-    
+    $listener.Dispose()    
 }", false).AddArgument(nodeJob).AddArgument(this.Listener);
                         
             powerShellCommand.InvocationStateChanged += new EventHandler<PSInvocationStateChangedEventArgs>(powerShellCommand_InvocationStateChanged);
