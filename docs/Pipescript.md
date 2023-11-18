@@ -1,16 +1,10 @@
 Pipescript
 ----------
 
-
-
-
 ### Synopsis
 The Core PipeScript Transpiler
 
-
-
 ---
-
 
 ### Description
 
@@ -22,24 +16,14 @@ The Core Transpiler visits each item in the Abstract Syntax Tree and sees if it 
 
 It will run other converters as directed by the source code.
 
-
-
 ---
-
 
 ### Related Links
 * [.>Pipescript.Function](.>Pipescript.Function.md)
 
-
-
 * [.>Pipescript.AttributedExpression](.>Pipescript.AttributedExpression.md)
 
-
-
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -86,45 +70,24 @@ It will run other converters as directed by the source code.
 } | .>PipeScript
 ```
 
-
 ---
-
 
 ### Parameters
 #### **ScriptBlock**
-
 A ScriptBlock that will be transpiled.
-
-
-
-
-
 
 |Type           |Required|Position|PipelineInput |
 |---------------|--------|--------|--------------|
 |`[ScriptBlock]`|true    |1       |true (ByValue)|
 
-
-
 #### **Transpiler**
-
 One or more transpilation expressions that apply to the script block.
-
-
-
-
-
 
 |Type        |Required|Position|PipelineInput|
 |------------|--------|--------|-------------|
 |`[String[]]`|false   |named   |false        |
 
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
