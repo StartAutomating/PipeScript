@@ -1,16 +1,10 @@
 Language.CSS
 ------------
 
-
-
-
 ### Synopsis
 CSS Language Definition.
 
-
-
 ---
-
 
 ### Description
 
@@ -23,10 +17,7 @@ The CSS Inline Transpiler will consider the following syntax to be empty:
 * ```[\d\.](?>pt|px|em)```
 * ```auto```
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -45,9 +36,7 @@ text-color: "#000000" /*{
 .> .\StyleSheet.ps1.css
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
