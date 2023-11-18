@@ -1,16 +1,10 @@
 Language.JSON
 -------------
 
-
-
-
 ### Synopsis
 JSON PipeScript Transpiler.
 
-
-
 ---
-
 
 ### Description
 
@@ -23,10 +17,7 @@ Multiline comments can be preceeded or followed by 'empty' syntax, which will be
 * ```{}```
 * ```[]```
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -39,9 +30,7 @@ Invoke-PipeScript {
 }
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
