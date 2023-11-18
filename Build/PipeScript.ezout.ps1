@@ -24,7 +24,8 @@ if ($formatting) {
     $formatting | Out-FormatData -Module $MyModuleName -OutputPath $MyFormatFile
     $formatting | Out-FormatData -Module $MyModuleName -OutputPath ([Ordered]@{
         "System.Management.Automation.*" = "$(Join-Path $destinationRoot "PipeScript.Extends.PowerShell.format.ps1xml")"
-        "Microsoft.CodeAnalysis.*" = "$(Join-Path $destinationRoot "PipeScript.Extends.CodeAnalysis.format.ps1xml")"
+        "Microsoft.CodeAnalysis.*" = "$(Join-Path $destinationRoot "PipeScript.Extends.CodeAnalysis.format.ps1xml")"        
+        "PipeScript.Net.*" = "$(Join-Path $destinationRoot "PipeScript.Net.format.ps1xml")"
     })
 }
 
@@ -44,6 +45,7 @@ if ($types) {
     $types | Out-TypeData -OutputPath ([Ordered]@{
         "System.Management.Automation.*" = "$(Join-Path $destinationRoot "PipeScript.Extends.PowerShell.types.ps1xml")"
         "Microsoft.CodeAnalysis.*" = "$(Join-Path $destinationRoot "PipeScript.Extends.CodeAnalysis.types.ps1xml")"
+        "PipeScript.Net.*" = "$(Join-Path $destinationRoot "PipeScript.Net.types.ps1xml")"
     })#>    
 }
 Pop-Location
