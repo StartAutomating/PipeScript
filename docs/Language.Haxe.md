@@ -1,16 +1,10 @@
 Language.Haxe
 -------------
 
-
-
-
 ### Synopsis
 Haxe Template Transpiler.
 
-
-
 ---
-
 
 ### Description
 
@@ -22,10 +16,7 @@ The Haxe Inline Transpiler will consider the following syntax to be empty:
 * ```""```
 * ```''```
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
