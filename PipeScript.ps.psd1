@@ -172,19 +172,13 @@
                 Description = 'Transforms'
                 Pattern = '              
                     (?>
-                        # Transforms have two forms, one that is very "query" friendly
-                        \=\> # =>
-                        (?<TransformName>[^\p{Ps}\<]+)?  # Optional transform name
-                        [\p{Ps}\<]                       # Transform From Type Start
-                        (?<TransformFrom>[^\p{Pe}\>]+)   # TransformFrom
-                        [^\p{Pe}\>]                      # Transform From Type End
+                        # Transforms have two forms, one that is more "query" friendly
                         (?:
-                            \=\> # =>
-                            (?<TransformToName>[^\p{Ps}\<]+)?  # Optional to name
-                            [\p{Ps}\<]                       # Transform To Type Start
-                            (?<TransformTo>[^\p{Pe}\>]+)     # Transform To
-                            [^\p{Pe}\>]                      # Transform To Type End
-                        )?                         
+                            \=\>? # =>?
+                            (?<TransformStep>
+                                (?:.|\s){0,}?(?=\z|\=\>?)
+                            )
+                        ){1,}
                         |
                         # The other form is fairly normal:
                         Transform(?>s|er)?             # Transform or Transforms or Transformer
