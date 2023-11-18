@@ -1,16 +1,10 @@
 PipeScript.Aspect
 -----------------
 
-
-
-
 ### Synopsis
 Aspect Transpiler
 
-
-
 ---
-
 
 ### Description
 
@@ -20,10 +14,7 @@ Aspects enable aspect-oriented programming in PipeScript.
 
 Aspects should be small self-contained functions that solve one "aspect" of a problem.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -42,30 +33,17 @@ Import-PipeScript {
 Greetings
 ```
 
-
 ---
-
 
 ### Parameters
 #### **AspectCommandAst**
-
 An Aspect Command.  Aspect Commands are embedded inline.
-
-
-
-
-
 
 |Type          |Required|Position|PipelineInput |
 |--------------|--------|--------|--------------|
 |`[CommandAst]`|true    |1       |true (ByValue)|
 
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
