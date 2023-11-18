@@ -2912,6 +2912,85 @@ $this.'.ExtendedCommands'
     <Name>System.Management.Automation.ScriptBlock</Name>
     <Members>
       <ScriptMethod>
+        <Name>AllValid</Name>
+        <Script>
+                        
+&lt;#
+.SYNOPSIS
+    Determines if any validation passes, given an object.
+.DESCRIPTION
+    Determines if all of the `[ValidateScript]` or `[ValidatePattern]` attributes on a `[ScriptBlock]` pass, given one or more inputs.
+
+    Any input considered valid by all `[ValidateScript]` or `[ValidatePattern]` will be returned.
+
+    If there is no validation present, all objects will be returned.
+.EXAMPLE
+    {
+        [ValidatePattern("a")]
+        param()
+    }.AllValid("c","b","a","abc")
+.EXAMPLE
+    {
+        [ValidateScript({$_ % 2})]
+        [ValidateScript({-not ($_ % 3)})]
+        param()
+    }.AllValid(1..10)    
+#&gt;
+param()
+
+$allArgs = $args | &amp; { process { $_ }}
+
+, @(
+:nextArg foreach ($arg in $allArgs) {
+    foreach ($attr in $this.Attributes) {
+        if (-not $attr.Validate) { continue }
+        if (-not $attr.Validate($arg)) { continue nextArg}
+    }
+    $arg
+}    
+)
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>AnyValid</Name>
+        <Script>
+                        
+&lt;#
+.SYNOPSIS
+    Determines if any validation passes, given an object.
+.DESCRIPTION
+    Determines if any of the `[ValidateScript]` or `[ValidatePattern]` attributes on a `[ScriptBlock]` passes, given an input.
+
+    Any input considered valid by a `[ValidateScript]` or `[ValidatePattern]` will be returned.
+.EXAMPLE
+    {
+        [ValidatePattern("a")]
+        [ValidatePattern("b")]
+        param()
+    }.AnyValid("c","b","a")
+.EXAMPLE
+    {
+        [ValidateScript({$_ % 2})]
+        [ValidateScript({-not ($_ % 3)})]
+        param()
+    }.AnyValid(1..10)
+    
+#&gt;
+param()
+
+$allArgs = $args | &amp; { process { $_ }}
+
+, @(foreach ($attr in $this.Attributes) {
+    if (-not $attr.Validate) { continue }
+    foreach ($arg in $allArgs) {
+        if ($attr.Validate($arg)) {
+            $arg
+        }
+    }    
+})
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>Transpile</Name>
         <Script>
                         $TranspilerErrors   = @()
