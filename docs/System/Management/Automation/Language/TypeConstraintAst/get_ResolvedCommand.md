@@ -1,25 +1,16 @@
 System.Management.Automation.Language.TypeConstraintAst.get_ResolvedCommand()
 -----------------------------------------------------------------------------
 
-
-
-
 ### Synopsis
 Resolves an TypeConstraintAST to a CommandInfo
 
-
-
 ---
-
 
 ### Description
 
 Resolves an TypeConstraintAST to one or more CommandInfo Objects.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -58,6 +49,5 @@ Resolves an TypeConstraintAST to one or more CommandInfo Objects.
 }.EndBlock.Statements[0].PipelineElements[0].Expression.Attribute.ResolvedCommand
 Get the name of the transpiler.
 ```
-
 
 ---
