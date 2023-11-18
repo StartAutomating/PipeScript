@@ -1,26 +1,17 @@
 Language.PowerShellXML
 ----------------------
 
-
-
-
 ### Synopsis
 PowerShellXML Language Definition
 
-
-
 ---
-
 
 ### Description
 
 Allows PipeScript to generate PS1XML.
 Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -69,9 +60,7 @@ $typesFile.Save("Test.types.ps1xml",
 )
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
