@@ -1,16 +1,10 @@
 Language.TypeScript
 -------------------
 
-
-
-
 ### Synopsis
 TypeScript Language Definition.
 
-
-
 ---
-
 
 ### Description
 
@@ -24,10 +18,7 @@ The TypeScript Inline Transpiler will consider the following syntax to be empty:
 * ```""```
 * ```''```
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
