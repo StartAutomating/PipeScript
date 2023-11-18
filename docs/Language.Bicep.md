@@ -1,16 +1,10 @@
 Language.Bicep
 --------------
 
-
-
-
 ### Synopsis
 Bicep Language Definition.
 
-
-
 ---
-
 
 ### Description
 
@@ -20,10 +14,7 @@ Multiline comments can be preceeded or followed by 'empty' syntax, which will be
 * ```''```
 * ```{}```
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
