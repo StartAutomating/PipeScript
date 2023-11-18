@@ -1,25 +1,16 @@
 System.Management.Automation.Language.VariableExpressionAst.GetAssignments()
 ----------------------------------------------------------------------------
 
-
-
-
 ### Synopsis
 Gets assignments of a variable
 
-
-
 ---
-
 
 ### Description
 
 Searches the abstract syntax tree for assignments of the variable.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -47,6 +38,5 @@ Searches the abstract syntax tree for assignments of the variable.
     $x * $y
 }.Ast.EndBlock.Statements[-1].PipelineElements[0].Expression.Left.GetAssignments()
 ```
-
 
 ---
