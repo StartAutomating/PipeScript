@@ -1,16 +1,10 @@
 Language.Arduino
 ----------------
 
-
-
-
 ### Synopsis
 Arduino Language Definition
 
-
-
 ---
-
 
 ### Description
 
@@ -23,10 +17,7 @@ The C++ Inline Transpiler will consider the following syntax to be empty:
 * ```""```
 * ```''```
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
