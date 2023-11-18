@@ -1,25 +1,16 @@
 System.Management.Automation.Language.AttributeAst.get_ResolvedCommand()
 ------------------------------------------------------------------------
 
-
-
-
 ### Synopsis
 Resolves an Attribute to a CommandInfo
 
-
-
 ---
-
 
 ### Description
 
 Resolves an Attribute to one or more CommandInfo.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -58,6 +49,5 @@ Resolves an Attribute to one or more CommandInfo.
 }.EndBlock.Statements[0].PipelineElements[0].Expression.Attribute.ResolvedCommand
 Get the name of the transpiler.
 ```
-
 
 ---
