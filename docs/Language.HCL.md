@@ -1,16 +1,10 @@
 Language.HCL
 ------------
 
-
-
-
 ### Synopsis
 HCL Template Transpiler.
 
-
-
 ---
-
 
 ### Description
 
@@ -22,10 +16,7 @@ Multiline comments can be preceeded or followed by 'empty' syntax, which will be
 * ```{}```
 * ```[]```
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
