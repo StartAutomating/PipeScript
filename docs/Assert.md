@@ -1,16 +1,10 @@
 Assert
 ------
 
-
-
-
 ### Synopsis
 Assert keyword
 
-
-
 ---
-
 
 ### Description
 
@@ -32,10 +26,7 @@ Assertions will not be transpiled or included if -Verbose or -Debug has not been
 
 Additionally, while running, Assertions will be ignored if -Verbose or -Debug has not been set.
 
-
-
 ---
-
 
 ### Examples
 With no second argument, assert will throw an error with the condition of the assertion.
@@ -81,30 +72,17 @@ Invoke-PipeScript {
 } -Debug
 ```
 
-
 ---
-
 
 ### Parameters
 #### **CommandAst**
-
 The CommandAst
-
-
-
-
-
 
 |Type          |Required|Position|PipelineInput |
 |--------------|--------|--------|--------------|
 |`[CommandAst]`|true    |named   |true (ByValue)|
 
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
