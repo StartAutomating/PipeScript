@@ -1,26 +1,17 @@
 Language.Rust
 -------------
 
-
-
-
 ### Synopsis
 Rust Language Definition
 
-
-
 ---
-
 
 ### Description
 
 Defines Rust within PipeScript.
 This allows Rust to be templated.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -76,9 +67,7 @@ fn main() {
 Invoke-PipeScript .\HelloWorld_Rust.ps1.rs -Parameter @{message='hi'}
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
