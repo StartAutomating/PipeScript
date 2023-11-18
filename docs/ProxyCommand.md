@@ -1,25 +1,16 @@
 ProxyCommand
 ------------
 
-
-
-
 ### Synopsis
 Creates Proxy Commands
 
-
-
 ---
-
 
 ### Description
 
 Generates a Proxy Command for an underlying PowerShell or PipeScript command.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -71,75 +62,38 @@ Invoke-PipeScript -ScriptBlock {
 } | .>PipeScript
 ```
 
-
 ---
-
 
 ### Parameters
 #### **ScriptBlock**
-
 The ScriptBlock that will become a proxy command.  This should be empty, since it is ignored.
-
-
-
-
-
 
 |Type           |Required|Position|PipelineInput |
 |---------------|--------|--------|--------------|
 |`[ScriptBlock]`|false   |named   |true (ByValue)|
 
-
-
 #### **CommandName**
-
 The name of the command being proxied.
-
-
-
-
-
 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[String]`|true    |1       |false        |
 
-
-
 #### **RemoveParameter**
-
 If provided, will remove any number of parameters from the proxy command.
-
-
-
-
-
 
 |Type        |Required|Position|PipelineInput|
 |------------|--------|--------|-------------|
 |`[String[]]`|false   |named   |false        |
 
-
-
 #### **DefaultParameter**
-
 Any default parameters for the ProxyCommand.
-
-
-
-
-
 
 |Type           |Required|Position|PipelineInput|
 |---------------|--------|--------|-------------|
 |`[IDictionary]`|false   |named   |false        |
 
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
