@@ -1,25 +1,16 @@
 Microsoft.CodeAnalysis.SyntaxTree.get_Variables()
 -------------------------------------------------
 
-
-
-
 ### Synopsis
 Gets all Variables within an AST
 
-
-
 ---
-
 
 ### Description
 
 Gets all Variable and Field Definitions within a CSharp Abstract Syntax Tree
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -34,6 +25,5 @@ Parse-CSharp ('
     }
 ').Variables
 ```
-
 
 ---
