@@ -1,26 +1,17 @@
 Language.Docker
 ---------------
 
-
-
-
 ### Synopsis
 Docker language definition
 
-
-
 ---
-
 
 ### Description
 
 Defines the Docker language within PipeScript.
 This allows the Dockerfile to be generated with PipeScript.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -46,9 +37,7 @@ $dockerFile | Set-Content .\PipeScript.Example.ps.Dockerfile
 Invoke-PipeScript .\PipeScript.Example.ps.Dockerfile
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
