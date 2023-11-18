@@ -1,16 +1,10 @@
 Language.ADA
 ------------
 
-
-
-
 ### Synopsis
 ADA Language Definition
 
-
-
 ---
-
 
 ### Description
 
@@ -21,10 +15,7 @@ Because ADA Scripts only allow single-line comments, this is done using a pair o
 -- { or -- PipeScript{  begins a PipeScript block
 -- } or -- }PipeScript  ends a PipeScript block
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -48,9 +39,7 @@ end Hello_World;
 Invoke-PipeScript .\HelloWorld.ps1.adb
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
