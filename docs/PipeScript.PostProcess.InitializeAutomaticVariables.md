@@ -1,16 +1,10 @@
 PipeScript.PostProcess.InitializeAutomaticVariables
 ---------------------------------------------------
 
-
-
-
 ### Synopsis
 Initializes any automatic variables
 
-
-
 ---
-
 
 ### Description
 
@@ -22,10 +16,7 @@ For example:
 * AND $myCallStack is used within a ScriptBlock
 Then the body of Automatic.Variable.MyCallstack will be added to the top of the ScriptBlock.
 
-
-
 ---
-
 
 ### Examples
 Declare an automatic variable, MyCallStack
@@ -43,37 +34,22 @@ Import-PipeScript {
 } | Use-PipeScript
 ```
 
-
 ---
-
 
 ### Parameters
 #### **ScriptBlock**
-
-
-
 
 |Type           |Required|Position|PipelineInput |
 |---------------|--------|--------|--------------|
 |`[ScriptBlock]`|true    |named   |true (ByValue)|
 
-
-
 #### **FunctionDefinitionAst**
-
-
-
 
 |Type                     |Required|Position|PipelineInput |
 |-------------------------|--------|--------|--------------|
 |`[FunctionDefinitionAst]`|true    |named   |true (ByValue)|
 
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
