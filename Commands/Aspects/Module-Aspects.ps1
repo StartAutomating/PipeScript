@@ -281,7 +281,7 @@ function Aspect.ModuleExtensionCommand {
         Each returned script will be decorated with the typename(s) that match,
         so that the extended commands can be augmented by the extended types system.
     .LINK
-        Aspect.ModuleCommandPattern
+        Aspect.ModuleExtensionPattern
     .EXAMPLE
         Aspect.ModuleExtensionCommand -Module PipeScript # Should -BeOfType ([Management.Automation.CommandInfo])
     #>
@@ -619,7 +619,10 @@ function Aspect.ModuleExtensionCommand {
                 if (-not $commandType) {
                     $commandType = 'Application,ExternalScript'
                 }
-                foreach ($file in Get-ChildItem -File -Path $PSBoundParameters['FilePath'] -Recurse) {
+                
+                $shouldRecurse = $($PSBoundParameters['FilePath'] -notmatch '^\.\\') -as [bool]
+                    
+                foreach ($file in Get-ChildItem -File -Path $PSBoundParameters['FilePath'] -Recurse:$shouldRecurse ) {
                     $ExecutionContext.SessionState.InvokeCommand.GetCommand($file.FullName, $commandType)
                 }
             } else {
