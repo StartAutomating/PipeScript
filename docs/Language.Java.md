@@ -1,16 +1,10 @@
 Language.Java
 -------------
 
-
-
-
 ### Synopsis
 Java Template Transpiler.
 
-
-
 ---
-
 
 ### Description
 
@@ -22,10 +16,7 @@ The Java Inline PipeScript Transpiler will consider the following syntax to be e
 * ```""```
 * ```''```
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
