@@ -1,16 +1,10 @@
 Language.SQL
 ------------
 
-
-
-
 ### Synopsis
 SQL Template Transpiler.
 
-
-
 ---
-
 
 ### Description
 
@@ -31,10 +25,7 @@ Uncommented lines between these two points will be ignored
 -- }
 ```
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -54,9 +45,7 @@ Uncommented lines between these two points will be ignored
 Invoke-PipeScript .\HelloWorld.ps1.sql
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
