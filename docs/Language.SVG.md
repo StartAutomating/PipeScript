@@ -1,26 +1,17 @@
 Language.SVG
 ------------
 
-
-
-
 ### Synopsis
 SVG Language Definition.
 
-
-
 ---
-
 
 ### Description
 
 Allows PipeScript to generate SVG.
 Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -36,9 +27,7 @@ $starsTemplate = Invoke-PipeScript {
 $starsTemplate.Save("$pwd\Stars.svg")
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
