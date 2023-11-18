@@ -1,16 +1,10 @@
 Language.Eiffel
 ---------------
 
-
-
-
 ### Synopsis
 Eiffel Template Transpiler.
 
-
-
 ---
-
 
 ### Description
 
@@ -20,10 +14,7 @@ Because Eiffel only allow single-line comments, this is done using a pair of com
 -- { or -- PipeScript{  begins a PipeScript block
 -- } or -- }PipeScript  ends a PipeScript block
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
