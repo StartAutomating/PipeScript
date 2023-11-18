@@ -1,16 +1,10 @@
 Language.BASIC
 --------------
 
-
-
-
 ### Synopsis
 BASIC Language Definition.
 
-
-
 ---
-
 
 ### Description
 
@@ -29,10 +23,7 @@ rem "CreateObject(`"WScript.Shell`").Popup(`"$message`")"
 rem }
 ```
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -52,9 +43,7 @@ rem }
 Invoke-PipeScript .\HelloWorld.ps1.vbs
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
