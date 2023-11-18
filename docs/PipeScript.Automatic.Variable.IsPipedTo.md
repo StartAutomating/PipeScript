@@ -1,25 +1,16 @@
 PipeScript.Automatic.Variable.IsPipedTo
 ---------------------------------------
 
-
-
-
 ### Synopsis
 $IsPipedTo
 
-
-
 ---
-
 
 ### Description
 
 $IsPipedTo determines if a command is being piped to.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -33,9 +24,7 @@ $IsPipedTo determines if a command is being piped to.
 1 | & (Use-PipeScript { $IsPipedTo }) # Should -Be $True
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
