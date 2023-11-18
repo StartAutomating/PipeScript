@@ -1,16 +1,10 @@
 Language.PowerShellData
 -----------------------
 
-
-
-
 ### Synopsis
 PSD1 Template Transpiler.
 
-
-
 ---
-
 
 ### Description
 
@@ -20,10 +14,7 @@ Multiline comments can be preceeded or followed by single-quoted strings, which 
 * ```''```
 * ```{}```
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
