@@ -1,16 +1,10 @@
 Language.Scala
 --------------
 
-
-
-
 ### Synopsis
 Scala Template Transpiler.
 
-
-
 ---
-
 
 ### Description
 
@@ -22,10 +16,7 @@ The Scala Template Transpiler will consider the following syntax to be empty:
 * ```""```
 * ```''```
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
