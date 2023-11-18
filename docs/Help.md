@@ -1,25 +1,16 @@
 Help
 ----
 
-
-
-
 ### Synopsis
 Help Transpiler
 
-
-
 ---
-
 
 ### Description
 
 The Help Transpiler allows you to write inline help without directly writing comments.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -53,90 +44,45 @@ The Help Transpiler allows you to write inline help without directly writing com
 } | .>PipeScript
 ```
 
-
 ---
-
 
 ### Parameters
 #### **Synopsis**
-
 The synopsis of the help topic
-
-
-
-
-
 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[String]`|true    |1       |false        |
 
-
-
 #### **Description**
-
 The description of the help topic
-
-
-
-
-
 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[String]`|false   |named   |false        |
 
-
-
 #### **Example**
-
 One or more examples
 
-
-
-
-
-
 |Type        |Required|Position|PipelineInput|
 |------------|--------|--------|-------------|
 |`[String[]]`|false   |named   |false        |
-
-
 
 #### **Link**
-
 One or more links
-
-
-
-
-
 
 |Type        |Required|Position|PipelineInput|
 |------------|--------|--------|-------------|
 |`[String[]]`|false   |named   |false        |
 
-
-
 #### **ScriptBlock**
-
 A ScriptBlock.  If this is provided, the help will be added to this scriptblock.
-
-
-
-
-
 
 |Type           |Required|Position|PipelineInput |
 |---------------|--------|--------|--------------|
 |`[ScriptBlock]`|false   |named   |true (ByValue)|
 
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
