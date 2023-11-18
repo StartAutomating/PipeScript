@@ -2846,6 +2846,113 @@ param($PSNodeJob, $listener)
     }
 }</Value>
       </NoteProperty>
+      <NoteProperty>
+        <Name>PSTransform.cs</Name>
+        <Value>namespace Pipescript.Net
+{
+    using System;
+    using System.ComponentModel;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Management.Automation;
+    /// &lt;summary&gt;    
+    /// Transforms objects with PowerShell.
+    /// &lt;/summary&gt;    
+    public class PSTransformAttribute : ArgumentTransformationAttribute
+    {
+        /// &lt;summary&gt;
+        /// Creates a Argument Transform from an expression.
+        /// &lt;/summary&gt;
+        /// &lt;param name="transformExpression"&gt;
+        /// An expression to use for the transform.
+        /// This will be converted into a ScriptBlock.&lt;/param&gt;
+        public PSTransformAttribute(string transformExpression) {
+            this.TransformScript = ScriptBlock.Create(transformExpression);
+        }
+
+        /// &lt;summary&gt;
+        /// Creates a Argument Transform from a ScriptBlock
+        /// &lt;/summary&gt;
+        /// &lt;param name="transformScript"&gt;A ScriptBlock to transform the value&lt;/param&gt;
+        public PSTransformAttribute(ScriptBlock transformScript) {
+            this.TransformScript = transformScript;            
+        }                        
+
+        /// &lt;summary&gt;
+        /// A ScriptBlock to transform the value.
+        /// The output of this script block will become the argument.
+        /// &lt;/summary&gt;
+        public ScriptBlock TransformScript {
+            get;
+            set;
+        }        
+
+        /// &lt;summary&gt;
+        /// If a transform is disabled, nothing will happen.
+        /// &lt;/summary&gt;
+        public bool Disabled {
+            get;
+            set;
+        }
+
+        /// &lt;summary&gt;
+        /// The name of the transform.
+        /// This is not required. It is present in order to disambiguate multiple transforms.
+        /// &lt;/summary&gt;
+        public string TransformName {
+            get;
+            set;
+        }
+
+        /// &lt;summary&gt;
+        /// Determines if the script uses a new scope to execute.
+        /// &lt;/summary&gt;
+        public bool UseNewScope {
+            get;
+            set;
+        }
+
+        /// &lt;summary&gt;
+        /// Transforms arguments.        
+        /// If the attribute is disabled, no transformation will take place.        
+        /// If the attribute has a .TransformScript, this argument will be transformed by invoking the script. 
+        /// &lt;/summary&gt;
+        /// &lt;param name="engineIntrinsics"&gt;&lt;/param&gt;
+        /// &lt;param name="inputData"&gt;&lt;/param&gt;
+        /// &lt;returns&gt;&lt;/returns&gt;
+        public override object Transform(EngineIntrinsics engineIntrinsics, object inputData) {
+            // If disabled, do nothing
+            if (this.Disabled) { return inputData; }
+            // If there is no transform script, return the input data.
+            if (this.TransformScript == null) { return inputData; }                      
+
+            // By getting the value of InvocationInfo now, we know what command is trying to perform the transform.
+            InvocationInfo myInvocation = engineIntrinsics.SessionState.PSVariable.Get("MyInvocation").Value as InvocationInfo;
+
+            engineIntrinsics.SessionState.PSVariable.Set("thisTransform", this);
+            engineIntrinsics.SessionState.PSVariable.Set("_", inputData);    
+
+            // The transform script will be passed the following arguments:
+            // The input data, invocation info,  command, and this attribute.
+            object[] arguments        = new object[] { inputData, myInvocation, myInvocation.MyCommand, this };
+            object[] transformInput   = new object[] inputData; 
+
+            // Invoke it in place.
+            // ($_ will be the current transformed value)            
+            Collection&lt;PSObject&gt; invokeResults = engineIntrinsics.SessionState.InvokeCommand.InvokeScript(this.UseNewScope, this.TransformScript, transformInput, arguments);
+            
+            if (invokeResults != null &amp;&amp; invokeResults.Count == 1) {
+                return invokeResults[0];
+            } else if (invokeResults != null)  {
+                return invokeResults;
+            } else {
+                return inputData;
+            }
+        }
+    }
+}</Value>
+      </NoteProperty>
     </Members>
   </Type>
   <Type>
