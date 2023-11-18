@@ -1,16 +1,10 @@
 PipeScript.Protocol
 -------------------
 
-
-
-
 ### Synopsis
 Core Protocol Transpiler
 
-
-
 ---
-
 
 ### Description
 
@@ -24,10 +18,7 @@ So is ```MyCustomProtocol:// -Parameter value```.
 
 This transpiler enables commands in protocol format to be transpiled.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -54,38 +45,22 @@ This transpiler enables commands in protocol format to be transpiled.
 }
 ```
 
-
 ---
-
 
 ### Parameters
 #### **CommandAst**
-
 The Command Abstract Syntax Tree.
-
-
-
-
-
 
 |Type          |Required|Position|PipelineInput |
 |--------------|--------|--------|--------------|
 |`[CommandAst]`|true    |1       |true (ByValue)|
 
-
-
-
-
 ---
-
 
 ### Notes
 This transpiler will match any command whose first or second element contains ```://```
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
