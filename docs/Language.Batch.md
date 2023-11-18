@@ -1,16 +1,10 @@
 Language.Batch
 --------------
 
-
-
-
 ### Synopsis
 Batch Language Definition.
 
-
-
 ---
-
 
 ### Description
 
@@ -26,10 +20,7 @@ Because Batch Scripts only allow single-line comments, this is done using a pair
 :: }
 ```
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -49,9 +40,7 @@ Invoke-PipeScript {
 Invoke-PipeScript .\HelloWorld.ps1.cmd
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
