@@ -1,16 +1,10 @@
 Language.Razor
 --------------
 
-
-
-
 ### Synopsis
 Razor Template Transpiler.
 
-
-
 ---
-
 
 ### Description
 
@@ -19,10 +13,7 @@ Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of
 JavaScript/CSS comment blocks like ```/*{}*/``` will also be treated as blocks of PipeScript.
 Razor comment blocks like ```@*{}*@``` will also be treated as blocks of PipeScript.
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
