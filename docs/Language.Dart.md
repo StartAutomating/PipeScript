@@ -1,16 +1,10 @@
 Language.Dart
 -------------
 
-
-
-
 ### Synopsis
 Dart Language Definition.
 
-
-
 ---
-
 
 ### Description
 
@@ -22,10 +16,7 @@ The Dart Template Transpiler will consider the following syntax to be empty:
 * ```""```
 * ```''```
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
