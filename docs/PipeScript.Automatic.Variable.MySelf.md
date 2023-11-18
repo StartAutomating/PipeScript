@@ -1,26 +1,17 @@
 PipeScript.Automatic.Variable.MySelf
 ------------------------------------
 
-
-
-
 ### Synopsis
 $MySelf
 
-
-
 ---
-
 
 ### Description
 
 $MySelf contains the currently executing ScriptBlock.
 A Command can & $myself to use anonymous recursion.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -43,9 +34,7 @@ Invoke-PipeScript {
 } -ArgumentList 10
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
