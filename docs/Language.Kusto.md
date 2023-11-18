@@ -1,16 +1,10 @@
 Language.Kusto
 --------------
 
-
-
-
 ### Synopsis
 Kusto Template Transpiler.
 
-
-
 ---
-
 
 ### Description
 
@@ -22,10 +16,7 @@ The Kusto Template Transpiler will consider the following syntax to be empty:
 * ```""```
 * ```''```
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
