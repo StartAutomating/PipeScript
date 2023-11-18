@@ -1,16 +1,10 @@
 Language.OpenSCAD
 -----------------
 
-
-
-
 ### Synopsis
 OpenSCAD Language Definition.
 
-
-
 ---
-
 
 ### Description
 
@@ -23,10 +17,7 @@ The OpenSCAD Inline Transpiler will consider the following syntax to be empty:
 * ```"[^"]+"```
 * ```[\d\.]+```
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -51,9 +42,7 @@ circle(Size);
 .> .\RandomShapeAndSize.ps1.scad
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
