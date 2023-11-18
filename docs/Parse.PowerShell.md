@@ -1,25 +1,16 @@
 Parse.PowerShell
 ----------------
 
-
-
-
 ### Synopsis
 Parses PowerShell
 
-
-
 ---
-
 
 ### Description
 
 Parses PowerShell, using the abstract syntax tree
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -34,41 +25,22 @@ Get-ChildItem *.ps1 |
 Parse-PowerShell "'hello world'"
 ```
 
-
 ---
-
 
 ### Parameters
 #### **Source**
-
 The source.  Can be a string or a file.
-
-
-
-
-
 
 |Type        |Required|Position|PipelineInput |Aliases                           |
 |------------|--------|--------|--------------|----------------------------------|
 |`[PSObject]`|false   |1       |true (ByValue)|Text<br/>SourceText<br/>SourceFile|
 
-
-
-
-
 ---
-
 
 ### Outputs
 * [Management.Automation.Language.Ast](https://learn.microsoft.com/en-us/dotnet/api/System.Management.Automation.Language.Ast)
 
-
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
