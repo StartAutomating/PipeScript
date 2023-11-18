@@ -3021,6 +3021,31 @@ elseif ($TranspilerWarnings) {
                     </Script>
       </ScriptMethod>
       <ScriptProperty>
+        <Name>IsEmpty</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Determines if a ScriptBlock is empty
+.DESCRIPTION
+    Determines if a ScriptBlock is empty.
+
+    A ScriptBlock is considered empty if it's Abstract Syntax Tree contains no statements or parameters.
+#&gt;
+$ast = $this.Ast
+if ($ast.Body) {
+    $ast = $ast.Body
+}
+foreach ($property in $ast.psobject.Properties) {
+    if ($property.Name -notmatch 'Block$') { continue }
+    if ($property.Value.Statements.Count) { return $false }
+    if ($property.Value.Parameters.Count) { return $false }
+}
+
+return $true
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Transpilers</Name>
         <GetScriptBlock>
                         $this.Ast.Transpilers
@@ -3046,6 +3071,31 @@ elseif ($TranspilerWarnings) {
 
                     </Script>
       </ScriptMethod>
+      <ScriptProperty>
+        <Name>IsEmpty</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Determines if a ScriptBlock AST is empty
+.DESCRIPTION
+    Determines if a ScriptBlock AST is empty.
+
+    A ScriptBlock is considered empty if it's Abstract Syntax Tree contains no statements or parameters.
+#&gt;
+$ast = $this
+if ($ast.Body) {
+    $ast = $ast.Body
+}
+foreach ($property in $ast.psobject.Properties) {
+    if ($property.Name -notmatch 'Block$') { continue }
+    if ($property.Value.Statements.Count) { return $false }
+    if ($property.Value.Parameters.Count) { return $false }
+}
+
+return $true
+
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>
@@ -3065,6 +3115,31 @@ elseif ($TranspilerWarnings) {
 
                     </Script>
       </ScriptMethod>
+      <ScriptProperty>
+        <Name>IsEmpty</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Determines if a ScriptBlock AST is empty
+.DESCRIPTION
+    Determines if a ScriptBlock AST is empty.
+
+    A ScriptBlock is considered empty if it's Abstract Syntax Tree contains no statements or parameters.
+#&gt;
+$ast = $this
+if ($ast.Body) {
+    $ast = $ast.Body
+}
+foreach ($property in $ast.psobject.Properties) {
+    if ($property.Name -notmatch 'Block$') { continue }
+    if ($property.Value.Statements.Count) { return $false }
+    if ($property.Value.Parameters.Count) { return $false }
+}
+
+return $true
+
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>
