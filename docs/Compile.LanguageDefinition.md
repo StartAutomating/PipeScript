@@ -1,16 +1,10 @@
 Compile.LanguageDefinition
 --------------------------
 
-
-
-
 ### Synopsis
 Compiles a language definition
 
-
-
 ---
-
 
 ### Description
 
@@ -18,10 +12,7 @@ Compiles a language definition.
 
 Language definitions integrate languages into PipeScript, so that they can be templated, interpreted, and compiled.
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -34,59 +25,31 @@ Import-PipeScript {
 }
 ```
 
-
 ---
-
 
 ### Parameters
 #### **LanguageDefinition**
-
 A Language Definition, as a Script Block
-
-
-
-
-
 
 |Type           |Required|Position|PipelineInput |Aliases                   |
 |---------------|--------|--------|--------------|--------------------------|
 |`[ScriptBlock]`|true    |named   |true (ByValue)|ScriptBlock<br/>Definition|
 
-
-
 #### **LanguageFunctionAst**
-
 A Language Function Definition
-
-
-
-
-
 
 |Type                     |Required|Position|PipelineInput |
 |-------------------------|--------|--------|--------------|
 |`[FunctionDefinitionAst]`|true    |named   |true (ByValue)|
 
-
-
-
-
 ---
-
 
 ### Outputs
 * [Management.Automation.ScriptBlock](https://learn.microsoft.com/en-us/dotnet/api/System.Management.Automation.ScriptBlock)
 
-
 * [Management.Automation.Language.FunctionDefinitionAst](https://learn.microsoft.com/en-us/dotnet/api/System.Management.Automation.Language.FunctionDefinitionAst)
 
-
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
