@@ -1,16 +1,10 @@
 Language.CSharp
 ---------------
 
-
-
-
 ### Synopsis
 C# Language Definition.
 
-
-
 ---
-
 
 ### Description
 
@@ -23,10 +17,7 @@ The C# Inline Transpiler will consider the following syntax to be empty:
 * ```""```
 * ```''```
 
-
-
 ---
-
 
 ### Examples
 > EXAMPLE 1
@@ -52,9 +43,7 @@ $addedType = Add-Type -TypeDefinition (Get-Content $addedFile.FullName -Raw) -Pa
 $addedType::Main(@())
 ```
 
-
 ---
-
 
 ### Syntax
 ```PowerShell
