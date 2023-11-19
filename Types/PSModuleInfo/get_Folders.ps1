@@ -9,4 +9,4 @@
     (Get-Module PipeScript).Folders
 #>
 param()
-$this | Split-Path | Get-ChildItem -File -Recurse
+$this | Split-Path | Get-ChildItem -Directory -Recurse

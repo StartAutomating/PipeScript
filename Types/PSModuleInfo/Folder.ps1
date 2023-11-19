@@ -12,5 +12,5 @@ param()
 
 foreach ($arg in $args) {
     $shouldRecurse = ($arg -match "^\.\\") -as [bool]
-    $this | Split-Path | Get-ChildItem -File -Recurse -Path $arg -Recurse:$shouldRecurse
+    $this | Split-Path | Get-ChildItem -Directory -Recurse -Path $arg -Recurse:$shouldRecurse
 }
