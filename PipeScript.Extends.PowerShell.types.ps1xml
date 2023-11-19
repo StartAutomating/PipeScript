@@ -2067,6 +2067,39 @@ $this.Parent.GetType().Name -in 'AssignmentStatementAST', 'HashtableAST'
     <Name>System.Management.Automation.PSMemberSet</Name>
     <Members>
       <ScriptMethod>
+        <Name>hasOwnProperty</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Determines if an object has define a property
+.DESCRIPTION
+    Determines if an object has define a property (as opposed to inheriting it)    
+.NOTES
+    This makes .PSObject more similar to a JavaScript prototype.
+#&gt;
+param(
+# The property name.
+[string]
+$PropertyName
+)
+
+if ($PropertyName) {
+    if (-not $this.Properties[$PropertyName]) {
+        return $false
+    }
+    return $this.Properties[$PropertyName].IsInstance
+}
+
+
+
+
+
+
+
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>propertyIsEnumerable</Name>
         <Script>
                         &lt;#
