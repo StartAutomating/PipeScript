@@ -5,7 +5,7 @@ Route function VersionInfo {
     .DESCRIPTION
         A route for getting version information
     .EXAMPLE
-        (Get-PipeScript -PipeScriptType Route) |
+        Get-PipeScript -PipeScriptType Route |
             Where-Object Name -Match 'VersionInfo' |
             Foreach-Object { & $_ }
     #>
