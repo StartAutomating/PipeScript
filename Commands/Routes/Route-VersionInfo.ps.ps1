@@ -17,7 +17,6 @@ Route function VersionInfo {
         "/VersionInfo$", # We only serve requests that end in /VersionInfo 
         ErrorMessage='$request.uri' # and this applies to $request.uri
         )]
-    [Alias('*/VersionInfo',':/VersionInfo')]
     param()
 
     $versionInfo = [Ordered]@{PipeScriptVersion=(Get-Module PipeScript -ErrorAction Ignore).Version}
