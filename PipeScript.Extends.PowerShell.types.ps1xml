@@ -2177,6 +2177,10 @@ else {
         <ReferencedMemberName>Folders</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>Directory</Name>
+        <ReferencedMemberName>Folder</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>ExtendedCommand</Name>
         <ReferencedMemberName>Extension</ReferencedMemberName>
       </AliasProperty>
@@ -2218,6 +2222,26 @@ $InvocationName
         }
     }    
 })
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>File</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Gets a file in a module        
+.DESCRIPTION
+    Gets a file located within a module.
+    
+    Hidden files are ignored.
+.EXAMPLE
+    (Get-Module PipeScript).File(".\PipeScript.psd1")
+#&gt;
+param()
+foreach ($arg in $args) {
+    $shouldRecurse = ($arg -match "^\.\\") -as [bool]
+    $this | Split-Path | Get-ChildItem -File -Recurse -Path $arg -Recurse:$shouldRecurse
+}
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
@@ -2663,6 +2687,27 @@ foreach ($module in $targetModules) {
      } -Module $module @Splat
 }
 
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>Folder</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Gets a folder in a module        
+.DESCRIPTION
+    Gets a folder located within a module.
+    
+    Hidden folders are ignored.
+.EXAMPLE
+    (Get-Module PipeScript).Folder(".\Build")
+#&gt;
+param()
+
+foreach ($arg in $args) {
+    $shouldRecurse = ($arg -match "^\.\\") -as [bool]
+    $this | Split-Path | Get-ChildItem -File -Recurse -Path $arg -Recurse:$shouldRecurse
+}
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
