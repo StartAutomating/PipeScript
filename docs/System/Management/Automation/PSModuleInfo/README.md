@@ -5,7 +5,9 @@
 
 
 * [ExtensionsForName](ExtensionsForName.md)
+* [File](File.md)
 * [FindExtensions](FindExtensions.md)
+* [Folder](Folder.md)
 * [GetDynamicParameters](GetDynamicParameters.md)
 * [get_CommandType](get_CommandType.md)
 * [get_Extension](get_Extension.md)
