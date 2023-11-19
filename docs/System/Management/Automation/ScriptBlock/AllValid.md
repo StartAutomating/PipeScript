@@ -12,7 +12,7 @@ Determines if all of the `[ValidateScript]` or `[ValidatePattern]` attributes on
 
 Any input considered valid by all `[ValidateScript]` or `[ValidatePattern]` will be returned.
 
-If there is no validation present, all objects will be returned.
+If there is no validation present, no objects will be returned.
 
 ---
 
@@ -22,6 +22,7 @@ If there is no validation present, all objects will be returned.
 ```PowerShell
 {
     [ValidatePattern("a")]
+    [ValidatePattern("c$")]
     param()
 }.AllValid("c","b","a","abc")
 ```
