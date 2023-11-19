@@ -4143,6 +4143,14 @@ $this | Split-Path | Get-ChildItem -Directory -Recurse
   <Type>
     <Name>System.Management.Automation.ScriptBlock</Name>
     <Members>
+      <AliasProperty>
+        <Name>AllValidMatches</Name>
+        <ReferencedMemberName>AllValidMatch</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>AnyValidMatches</Name>
+        <ReferencedMemberName>AnyValidMatch</ReferencedMemberName>
+      </AliasProperty>
       <ScriptMethod>
         <Name>AllValid</Name>
         <Script>
@@ -4155,10 +4163,11 @@ $this | Split-Path | Get-ChildItem -Directory -Recurse
 
     Any input considered valid by all `[ValidateScript]` or `[ValidatePattern]` will be returned.
 
-    If there is no validation present, all objects will be returned.
+    If there is no validation present, no objects will be returned.
 .EXAMPLE
     {
         [ValidatePattern("a")]
+        [ValidatePattern("c$")]
         param()
     }.AllValid("c","b","a","abc")
 .EXAMPLE
@@ -4174,11 +4183,61 @@ $allArgs = $args | &amp; { process { $_ }}
 
 , @(
 :nextArg foreach ($arg in $allArgs) {
+    $validatedArg = $false
     foreach ($attr in $this.Attributes) {
         if (-not $attr.Validate) { continue }
         if (-not $attr.Validate($arg)) { continue nextArg}
+        else { $validatedArg = $true }
     }
-    $arg
+    if ($validatedArg) {
+        $arg
+    }    
+}    
+)
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>AllValidMatch</Name>
+        <Script>
+                        
+&lt;#
+.SYNOPSIS
+    Determines if all validation matches, given an object.
+.DESCRIPTION
+    Determines if all of the `[ValidatePattern]` attributes on a `[ScriptBlock]` pass, given one or more inputs.
+
+    Any input considered valid by all `[ValidatePattern]` will be returned.
+
+    If there is no validation present, no objects will be returned.
+.EXAMPLE
+    {
+        [ValidatePattern("a")]
+        [ValidatePattern("c$")]
+        param()
+    }.AllValidMatches("c","b","a","abc")
+.EXAMPLE
+    {
+        [ValidatePattern("a")]
+        [ValidatePattern("c$")]
+        param()
+    }.AllValidMatch("c","b","a","abc")
+#&gt;
+param()
+
+$allArgs = $args | &amp; { process { $_ }}
+
+, @(
+:nextArg foreach ($arg in $allArgs) {
+    $validatedArg = $false
+    foreach ($attr in $this.Attributes) {
+        if (-not $attr.Validate) { continue }
+        if ($attr -isnot [ValidatePattern]) { continue }
+        if (-not $attr.Validate($arg)) { continue nextArg}
+        else { $validatedArg = $true}
+    }
+    if ($validatedArg) {
+        $arg
+    }    
 }    
 )
                     </Script>
@@ -4214,6 +4273,39 @@ $allArgs = $args | &amp; { process { $_ }}
 
 , @(foreach ($attr in $this.Attributes) {
     if (-not $attr.Validate) { continue }
+    foreach ($arg in $allArgs) {
+        if ($attr.Validate($arg)) {
+            $arg
+        }
+    }    
+})
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
+        <Name>AnyValidMatch</Name>
+        <Script>
+                        
+&lt;#
+.SYNOPSIS
+    Determines if any validation passes, given an object.
+.DESCRIPTION
+    Determines if any of the `[ValidateScript]` or `[ValidatePattern]` attributes on a `[ScriptBlock]` passes, given an input.
+
+    Any input considered valid by a `[ValidateScript]` or `[ValidatePattern]` will be returned.
+.EXAMPLE
+    {
+        [ValidatePattern("a")]
+        [ValidatePattern("b")]
+        param()
+    }.AnyValidMatch("c","b","a")    
+#&gt;
+param()
+
+$allArgs = $args | &amp; { process { $_ }}
+
+, @(foreach ($attr in $this.Attributes) {
+    if (-not $attr.Validate) { continue }
+    if ($attr.Validate -isnot [ValidatePattern]) { continue }
     foreach ($arg in $allArgs) {
         if ($attr.Validate($arg)) {
             $arg
