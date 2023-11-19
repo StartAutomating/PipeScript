@@ -19,7 +19,7 @@ if ($PropertyName) {
     if (-not $this.Properties[$PropertyName]) {
         return $false
     }
-    return $this.Properties[$PropertyName] -is [Collections.IEnumerable]
+    return $this.Properties[$PropertyName].Value -is [Collections.IEnumerable]
 } else {
     $this.ImmediateBaseObject -is [Collections.IEnumerable]    
 }
