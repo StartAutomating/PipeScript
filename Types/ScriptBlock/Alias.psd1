@@ -1,0 +1,4 @@
+@{
+    AllValidMatches = 'AllValidMatch'
+    AnyValidMatches = 'AnyValidMatch'
+}

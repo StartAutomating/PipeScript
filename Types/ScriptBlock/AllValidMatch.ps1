@@ -1,11 +1,11 @@
 
 <#
 .SYNOPSIS
-    Determines if any validation passes, given an object.
+    Determines if all validation matches, given an object.
 .DESCRIPTION
-    Determines if all of the `[ValidateScript]` or `[ValidatePattern]` attributes on a `[ScriptBlock]` pass, given one or more inputs.
+    Determines if all of the `[ValidatePattern]` attributes on a `[ScriptBlock]` pass, given one or more inputs.
 
-    Any input considered valid by all `[ValidateScript]` or `[ValidatePattern]` will be returned.
+    Any input considered valid by all `[ValidatePattern]` will be returned.
 
     If there is no validation present, no objects will be returned.
 .EXAMPLE
@@ -13,13 +13,13 @@
         [ValidatePattern("a")]
         [ValidatePattern("c$")]
         param()
-    }.AllValid("c","b","a","abc")
+    }.AllValidMatches("c","b","a","abc")
 .EXAMPLE
     {
-        [ValidateScript({$_ % 2})]
-        [ValidateScript({-not ($_ % 3)})]
+        [ValidatePattern("a")]
+        [ValidatePattern("c$")]
         param()
-    }.AllValid(1..10)    
+    }.AllValidMatch("c","b","a","abc")
 #>
 param()
 
@@ -30,8 +30,9 @@ $allArgs = $args | & { process { $_ }}
     $validatedArg = $false
     foreach ($attr in $this.Attributes) {
         if (-not $attr.Validate) { continue }
+        if ($attr -isnot [ValidatePattern]) { continue }
         if (-not $attr.Validate($arg)) { continue nextArg}
-        else { $validatedArg = $true }
+        else { $validatedArg = $true}
     }
     if ($validatedArg) {
         $arg
