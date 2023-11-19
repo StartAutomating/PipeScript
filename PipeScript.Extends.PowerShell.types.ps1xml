@@ -2067,19 +2067,57 @@ $this.Parent.GetType().Name -in 'AssignmentStatementAST', 'HashtableAST'
     <Name>System.Management.Automation.PSMemberSet</Name>
     <Members>
       <ScriptMethod>
+        <Name>propertyIsEnumerable</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Determines if a property is enumerable
+.DESCRIPTION
+    Determines if a property or object is enumerable.    
+
+    If no PropertyName is provided, this method will determine if the .ImmediateBaseObject is enumerable.
+.NOTES
+    This makes .PSObject more similar to a JavaScript prototype.
+#&gt;
+param(
+# The property name.
+# If this is not provided, this method will determine if the .ImmediateBaseObject is enumerable.
+[string]
+$PropertyName
+)
+
+if ($PropertyName) {
+    if (-not $this.Properties[$PropertyName]) {
+        return $false
+    }
+    return $this.Properties[$PropertyName].Value -is [Collections.IEnumerable]
+} else {
+    $this.ImmediateBaseObject -is [Collections.IEnumerable]    
+}
+
+
+
+
+
+
+
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>valueOf</Name>
         <Script>
                         &lt;#
 .SYNOPSIS
     Returns the Value Of an object
-.DESCRIPTION
-    This makes .PSObject more similar to a JavaScript prototype.
-    
+.DESCRIPTION    
     valueOf allows you to override the returned value (in _some_ circumstances).
 
     Defining a member named `valueOf` will make .PSObject.valueOf return that member's value or result.
 
     Otherwise, `.valueOf()` will return the .ImmediateBaseObject.
+.NOTES
+    This makes .PSObject more similar to a JavaScript prototype.
 #&gt;
 param()
 $myName = 'valueOf'
