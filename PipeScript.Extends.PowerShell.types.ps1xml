@@ -2173,6 +2173,10 @@ else {
     <Name>System.Management.Automation.PSModuleInfo</Name>
     <Members>
       <AliasProperty>
+        <Name>Directories</Name>
+        <ReferencedMemberName>Folders</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>ExtendedCommand</Name>
         <ReferencedMemberName>Extension</ReferencedMemberName>
       </AliasProperty>
@@ -3009,6 +3013,42 @@ if (-not $this.'.ExtendedCommands') {
     ) -Force
 }
 $this.'.ExtendedCommands'
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Files</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets all files in a module        
+.DESCRIPTION
+    Gets all of the files located within a module.
+    
+    Hidden files are ignored.
+.EXAMPLE
+    (Get-Module PipeScript).Files
+#&gt;
+param()
+$this | Split-Path | Get-ChildItem -File -Recurse
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Folders</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets all folders in a module        
+.DESCRIPTION
+    Gets all of the file folders located within a module.
+    
+    Hidden folders are ignored.
+.EXAMPLE
+    (Get-Module PipeScript).Folders
+#&gt;
+param()
+$this | Split-Path | Get-ChildItem -File -Recurse
 
                     </GetScriptBlock>
       </ScriptProperty>
