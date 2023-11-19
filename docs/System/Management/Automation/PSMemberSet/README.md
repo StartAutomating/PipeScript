@@ -4,4 +4,5 @@
 ### Script Methods
 
 
+* [propertyIsEnumerable](propertyIsEnumerable.md)
 * [valueOf](valueOf.md)
