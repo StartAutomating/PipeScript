@@ -6,7 +6,7 @@
 .EXAMPLE
     {}.HasValidation
 .EXAMPLE
-    {[ValidateScript({$true})param()}.HasValidation
+    {[ValidateScript({$true})]param()}.HasValidation
 #>
 param()
 foreach ($attr in $this.Attributes) {
