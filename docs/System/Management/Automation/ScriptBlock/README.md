@@ -10,4 +10,5 @@
 * [AnyValid](AnyValid.md)
 * [AnyValidMatch](AnyValidMatch.md)
 * [AnyValidObject](AnyValidObject.md)
+* [get_HasValidation](get_HasValidation.md)
 * [get_IsEmpty](get_IsEmpty.md)
