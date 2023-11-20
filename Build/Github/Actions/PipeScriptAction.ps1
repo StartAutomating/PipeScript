@@ -146,7 +146,7 @@ if (-not $branchName) {
 }
 
 $PipeScriptStart = [DateTime]::Now
-if ($PipeScript) {
+if ($Script) {
     Invoke-PipeScript -Command $Script |
         . $processScriptOutput |
         Out-Host

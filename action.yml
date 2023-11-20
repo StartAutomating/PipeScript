@@ -37,12 +37,12 @@ runs:
       id: PipeScriptAction
       shell: pwsh
       env: 
+        Script: ${{inputs.Script}}
+        CommitMessage: ${{inputs.CommitMessage}}
+        UserName: ${{inputs.UserName}}
         SkipBuild: ${{inputs.SkipBuild}}
         InstallModule: ${{inputs.InstallModule}}
         UserEmail: ${{inputs.UserEmail}}
-        UserName: ${{inputs.UserName}}
-        Script: ${{inputs.Script}}
-        CommitMessage: ${{inputs.CommitMessage}}
       run: |
         $Parameters = @{}
         $Parameters.Script = ${env:Script}
@@ -207,7 +207,7 @@ runs:
         }
         
         $PipeScriptStart = [DateTime]::Now
-        if ($PipeScript) {
+        if ($Script) {
             Invoke-PipeScript -Command $Script |
                 . $processScriptOutput |
                 Out-Host
