@@ -138,6 +138,12 @@ Only lines beginning with this pattern within -StartPattern and -EndPattern will
 |---------|--------|--------|-------------|
 |`[Regex]`|false   |14      |false        |
 
+#### **AsScriptBlock**
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
 #### **CommandAst**
 The Command Abstract Syntax Tree.  If this is provided, we are transpiling a template keyword.
 
@@ -149,5 +155,5 @@ The Command Abstract Syntax Tree.  If this is provided, we are transpiling a tem
 
 ### Syntax
 ```PowerShell
-PipeScript.Template [[-SourceText] <String>] [[-ReplacePattern] <Regex>] [[-ReplaceTimeout] <TimeSpan>] [[-TemplateName] <Object>] [[-StartPattern] <Regex>] [[-EndPattern] <Regex>] [[-ReplacementEvaluator] <ScriptBlock>] [-NoTranspile] [[-SourceFile] <String>] [[-Begin] <ScriptBlock>] [[-ForeachObject] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [[-LinePattern] <Regex>] [[-CommandAst] <CommandAst>] [<CommonParameters>]
+PipeScript.Template [[-SourceText] <String>] [[-ReplacePattern] <Regex>] [[-ReplaceTimeout] <TimeSpan>] [[-TemplateName] <Object>] [[-StartPattern] <Regex>] [[-EndPattern] <Regex>] [[-ReplacementEvaluator] <ScriptBlock>] [-NoTranspile] [[-SourceFile] <String>] [[-Begin] <ScriptBlock>] [[-ForeachObject] <ScriptBlock>] [[-End] <ScriptBlock>] [[-Parameter] <IDictionary>] [[-ArgumentList] <PSObject[]>] [[-LinePattern] <Regex>] [-AsScriptBlock] [[-CommandAst] <CommandAst>] [<CommonParameters>]
 ```
