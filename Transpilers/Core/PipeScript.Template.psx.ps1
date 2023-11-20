@@ -123,6 +123,9 @@ $ArgumentList = @(),
 [Regex]
 $LinePattern,
 
+[switch]
+$AsScriptBlock,
+
 # The Command Abstract Syntax Tree.  If this is provided, we are transpiling a template keyword.
 [Parameter(ValueFromPipeline)]
 [Management.Automation.Language.CommandAst]
@@ -151,7 +154,9 @@ begin {
                 $firstLine, $restOfLines = $pipeScriptLines
                 $restOfLines = @($restOfLines)
                 $pipeScriptText = @(@($firstLine) + $restOfLines -match $LinePattern -replace $LinePattern) -join [Environment]::Newline
-            }              
+            } else {
+                $pipeScriptText = @($pipeScriptLines -match $LinePattern -replace $LinePattern) -join [Environment]::Newline
+            }             
         }
 
         $InlineScriptBlock = [scriptblock]::Create($pipeScriptText)
@@ -589,6 +594,96 @@ $replacePattern
     #endregion Template Keyword
 
     $FileModuleContext = New-Module @newModuleSplat
+
+
+    # There are a couple of paths we could take from here:
+    # We could replace inline, and keep a context for variables
+    # Or we can turn the whole thing into a `[ScriptBlock]`
+    if ($AsScriptBlock) {
+        $index = 0
+        $fileText      = $SourceText
+        $hasParameters = $false
+        $allInlineScripts = @()
+        
+        $newContent = @(
+        foreach ($match in $ReplacePattern.Matches($fileText)) {
+            if ($match.Index -gt $index) {
+                "@'" + 
+                    [Environment]::NewLine + 
+                    (
+                        $fileText.Substring($index, $match.Index - $index) -replace "'@", "''@"  -replace "@'", "@''" 
+                    ) +
+                    [Environment]::NewLine +
+                "'@" + { -replace "''@", "'@" -replace "@''", "'@"} + [Environment]::NewLine 
+            }
+            $inlineScriptBlock = & $GetInlineScript $match
+            if (-not $inlineScriptBlock) { 
+                continue # skip.
+            }
+
+            $allInlineScripts += $inlineScriptBlock
+
+            $inlineScriptBlock = if ($inlineScriptBlock.Ast.ParamBlock) {                
+                $hasParameters = $true
+                "$inlineScriptBlock".Substring($inlineScriptBlock.Ast.ParamBlock.Extent.ToString().Length)
+            } else {
+                "$inlineScriptBlock"
+            }
+
+            if ($Begin) {
+                "$Begin"
+            }
+
+            if ($ForeachObject) {
+                "@($inlineScriptBlock)" + $(
+                    if ($ForeachObject) {
+                        '|' + [Environment]::NewLine
+                        @(foreach ($foreachStatement in $ForeachObject) {
+                            if ($foreachStatement.Ast.ProcessBlock -or $foreachStatement.Ast.BeginBlock) {
+                                ". {$ForeachStatement}"
+                            } elseif ($foreachStatement.Ast.EndBlock.Statements -and 
+                                $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements -and
+                                $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements[0].CommandElements -and
+                                $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements[0].CommandElements.Value -in 'Foreach-Object', '%') {
+                                "$ForeachStatement"
+                            } else {
+                                "Foreach-Object {$ForeachStatement}"
+                            }
+                        }) -join (' |' + [Environment]::NewLine)
+                    }
+                )
+            } else {
+                $inlineScriptBlock
+            }
+
+            if ($end) {
+                "$end"
+            }
+                    
+            $index = $match.Index + $match.Length            
+        }
+        if ($index -lt $fileText.Length) {
+            "@'" + [Environment]::NewLine + (
+                $fileText.Substring($index) -replace "'@", "''@"
+            )  + "'@" + { -replace "''@", "'@" -replace "@''", "'@"} + [Environment]::NewLine
+            
+        }
+        )
+
+        $templateScriptBlock = 
+            if ($hasParameters) {
+                $combinedParamBlock = $allInlineScripts | Join-ScriptBlock -IncludeBlockType param, header, help
+                
+                $combinedParamBlock, ([ScriptBlock]::Create($newContent -join [Environment]::NewLine)) | Join-PipeScript
+            } else {
+                ([ScriptBlock]::Create($newContent -join [Environment]::NewLine))
+            }
+
+        
+
+        $null = $null
+        # return
+    }
 
     # If the parameter set was SourceTextReplace
     if ($ReplacePattern) {
