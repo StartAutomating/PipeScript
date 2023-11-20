@@ -2,7 +2,7 @@
 name: BuildPipeScript
 description: Builds code using PipeScript
 inputs: 
-  PipeScript: 
+  Script: 
     required: false
     description: |
       A PowerShell Script that uses PipeScript.  
@@ -37,15 +37,15 @@ runs:
       id: PipeScriptAction
       shell: pwsh
       env: 
-        UserName: ${{inputs.UserName}}
-        UserEmail: ${{inputs.UserEmail}}
-        InstallModule: ${{inputs.InstallModule}}
-        PipeScript: ${{inputs.PipeScript}}
         SkipBuild: ${{inputs.SkipBuild}}
+        InstallModule: ${{inputs.InstallModule}}
+        UserEmail: ${{inputs.UserEmail}}
+        UserName: ${{inputs.UserName}}
+        Script: ${{inputs.Script}}
         CommitMessage: ${{inputs.CommitMessage}}
       run: |
         $Parameters = @{}
-        $Parameters.PipeScript = ${env:PipeScript}
+        $Parameters.Script = ${env:Script}
         $Parameters.SkipBuild = ${env:SkipBuild}
         $Parameters.SkipBuild = $parameters.SkipBuild -match 'true';
         $Parameters.CommitMessage = ${env:CommitMessage}
@@ -78,7 +78,7 @@ runs:
         # Any files outputted from the script will be added to the repository.
         # If those files have a .Message attached to them, they will be committed with that message.
         [string]
-        $PipeScript,
+        $Script,
         
         # If set, will not run Build-PipeScript.
         [switch]
@@ -208,7 +208,7 @@ runs:
         
         $PipeScriptStart = [DateTime]::Now
         if ($PipeScript) {
-            Invoke-PipeScript -Command $PipeScript |
+            Invoke-PipeScript -Command $Script |
                 . $processScriptOutput |
                 Out-Host
         }

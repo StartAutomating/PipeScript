@@ -17,7 +17,7 @@ param(
 # Any files outputted from the script will be added to the repository.
 # If those files have a .Message attached to them, they will be committed with that message.
 [string]
-$PipeScript,
+$Script,
 
 # If set, will not run Build-PipeScript.
 [switch]
@@ -147,7 +147,7 @@ if (-not $branchName) {
 
 $PipeScriptStart = [DateTime]::Now
 if ($PipeScript) {
-    Invoke-PipeScript -Command $PipeScript |
+    Invoke-PipeScript -Command $Script |
         . $processScriptOutput |
         Out-Host
 }
