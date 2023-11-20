@@ -17,7 +17,8 @@ A route for getting version uptime
 
 ```PowerShell
 Get-PipeScript -PipeScriptType Route |
-    Where-Object Name -Match 'Uptime' |
+    Where-Object Name -Match 'Route\.Uptime' |
+    Select-Object -First 1 |
     Foreach-Object { & $_ }
 ```
 
