@@ -552,6 +552,7 @@ param($PSNodeJob, $listener)
                 $listener.Close();
                 $listener.Dispose()
                 $listener.Prefixes.Clear();
+                [GC]::Collect()
             }
             continue ResetPSNode
         }             
@@ -559,7 +560,8 @@ param($PSNodeJob, $listener)
 
     $listener.Stop()
     $listener.Close()  
-    $listener.Dispose()    
+    $listener.Dispose()
+    [GC]::Collect()    
 }", false).AddArgument(nodeJob).AddArgument(this.Listener);
                         
             powerShellCommand.InvocationStateChanged += new EventHandler<PSInvocationStateChangedEventArgs>(powerShellCommand_InvocationStateChanged);
@@ -632,10 +634,13 @@ param($PSNodeJob, $listener)
         {                           
             try {                
                 powerShellCommand.BeginStop(null, null);
-                //runspacePool.Close();
+                if (runspacePool.RunspacePoolStateInfo.State == RunspacePoolState.Opened) {
+                    runspacePool.BeginClose();
+                }                
                 if (Listener != null) {
                     Listener.Stop();
                     Listener.Close();
+                    Listener.Dispose();
                 }
 
             } catch (Exception ex) {
