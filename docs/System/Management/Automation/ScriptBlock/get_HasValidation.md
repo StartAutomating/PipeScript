@@ -20,6 +20,8 @@ Determines if a ScriptBlock has either a `[ValidatePattern]` or a `[ValidateScri
 ```
 > EXAMPLE 2
 
-{[ValidateScript({$true})param()}.HasValidation
+```PowerShell
+{[ValidateScript({$true})]param()}.HasValidation
+```
 
 ---
