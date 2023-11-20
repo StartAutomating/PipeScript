@@ -116,7 +116,7 @@ function Export-Pipescript {
                 try {
                     if ($buildFile.PipeScriptType -match 'BuildScript') {
                         if ($buildFile.ScriptBlock.Ast -and $buildFile.ScriptBlock.Ast.Find({param($ast)
-                            if ($ast -isnot [Management.Automation.CommandAst]) { return $false }
+                            if ($ast -isnot [Management.Automation.Language.CommandAst]) { return $false }
                             if ('task' -ne $ast.CommandElements[0]) { return $false }
                             return $true
                         }, $true)) {
