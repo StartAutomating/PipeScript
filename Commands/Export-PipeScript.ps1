@@ -132,7 +132,7 @@ function Export-Pipescript {
                 } catch {
                     $ex = $_
                     Write-Error -ErrorRecord $ex
-                    $filesWithErrors += $buildFile
+                    $filesWithErrors += $buildFile.Source -as [IO.FileInfo]
                     $errorsByFile[$buildFile.Source] = $ex
                 }
 
