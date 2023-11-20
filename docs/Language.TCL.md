@@ -2,7 +2,7 @@ Language.TCL
 ------------
 
 ### Synopsis
-TCL/TK Template Transpiler.
+TCL/TK Language Definition.
 
 ---
 
@@ -30,7 +30,7 @@ Uncommented lines between these two points will be ignored
 Invoke-PipeScript {
     $tclScript = '    
 # {
-Uncommented lines between these two points will be ignored
+# # Uncommented lines between these two points will be ignored
 #  # Commented lines will become PipeScript / PowerShell.
 # param($message = "hello world")
 # "puts `"$message`""
