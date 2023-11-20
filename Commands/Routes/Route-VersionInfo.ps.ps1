@@ -5,10 +5,7 @@ Route function VersionInfo {
     .DESCRIPTION
         A route for getting version information
     .EXAMPLE
-        Get-PipeScript -PipeScriptType Route |
-            Where-Object Name -Match 'Route\.VersionInfo' |
-            Select-Object -First 1 |
-            Foreach-Object { & $_ }
+        Route.VersionInfo
     #>
     [ValidatePattern(
         "https?://", # We only serve http requests here
