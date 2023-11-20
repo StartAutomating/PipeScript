@@ -133,7 +133,7 @@ function Export-Pipescript {
                     $ex = $_
                     Write-Error -ErrorRecord $ex
                     $filesWithErrors += $buildFile
-                    $errorsByFile[$buildFile.FullName] = $ex
+                    $errorsByFile[$buildFile.Source] = $ex
                 }
 
             $EventsFromFileBuild = Get-Event -SourceIdentifier *PipeScript* |
