@@ -77,10 +77,12 @@ Invoke-PipeScript .\HelloWorld.ps1.vbs
 param(
 )
 # We start off by declaring a number of regular expressions:
-$startComment = '(?>(?<IsSingleLine>(?>''|rem))\s{0,}(?:PipeScript)?\s{0,}\{)'
-$endComment   = '(?>(?>''|rem)\s{0,}(?:PipeScript)?\s{0,}\})'        
+$SingleLineCommentStart = '(?>''|rem)'
+$startComment = "(?>(?<IsSingleLine>$SingleLineCommentStart)\s{0,}(?:PipeScript)?\s{0,}\{)"
+$endComment   = "(?>$SingleLineCommentStart\s{0,}(?:PipeScript)?\s{0,}\})"
 $StartPattern = "(?<PSStart>${startComment})"
 $EndPattern   = "(?<PSEnd>${endComment})" 
+$LinePattern   = "^\s{0,}$SingleLineCommentStart\s{0,}"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
