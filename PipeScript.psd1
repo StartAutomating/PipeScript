@@ -189,6 +189,7 @@
                         \p{P}               # any other punctuation.
                     )
                 '
+                ExcludeCommandType = '(?>Application|Cmdlet)'
             }
               
             'Template'     = 
