@@ -1,5 +1,8 @@
 #requires -Module PSDevOps,GitPub
-Import-BuildStep -ModuleName PipeScript
+Import-BuildStep -SourcePath (
+    Join-Path $PSScriptRoot 'GitHub'
+) -BuildSystem GitHubWorkflow
+
 Push-Location ($PSScriptRoot | Split-Path)
 New-GitHubWorkflow -Name "Analyze, Test, Tag, and Publish" -On Push,
     PullRequest, 
