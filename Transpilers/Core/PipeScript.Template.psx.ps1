@@ -59,6 +59,10 @@ $SourceText,
 [regex]
 $ReplacePattern,
 
+# The timeout for a replacement.  By default, 15 seconds.
+[timespan]
+$ReplaceTimeout = '00:00:15',
+
 # The name of the template.  This can be implied by the pattern.
 [Alias('Name')]
 $TemplateName,
@@ -142,8 +146,12 @@ begin {
         if ($this.LinePattern) {$LinePattern = $this.LinePattern}
 
         if ($LinePattern -and $match.Groups["IsSingleLine"].Value) {
-            $pipeScriptLines = @($pipeScriptText -split '(?>\r\n|\n)')
-            $pipeScriptText  = $pipeScriptLines -match $LinePattern -replace $LinePattern -join [Environment]::Newline
+            $pipeScriptLines = @($pipeScriptText -split '(?>\r\n|\n)' -ne '')
+            if ($pipeScriptLines.Length -gt 1) {
+                $firstLine, $restOfLines = $pipeScriptLines
+                $restOfLines = @($restOfLines)
+                $pipeScriptText = @(@($firstLine) + $restOfLines -match $LinePattern -replace $LinePattern) -join [Environment]::Newline
+            }              
         }
 
         $InlineScriptBlock = [scriptblock]::Create($pipeScriptText)
@@ -217,9 +225,13 @@ process {
                         $cmdTranspiler
                     }
 
+                if (-not $ReplaceTimeout) {
+                    $ReplaceTimeout = [timespan]"00:00:15"
+                }
                 foreach ($attr in $attrList) {
-                    if ($attr -isnot [Management.Automation.ValidatePatternAttribute]) { continue }
-                    $regexPattern = [Regex]::new($attr.RegexPattern, $attr.Options, '00:00:05')
+                    if ($attr -isnot [Management.Automation.ValidatePatternAttribute]) { continue }                    
+                    
+                    $regexPattern = [Regex]::new($attr.RegexPattern, $attr.Options, $ReplaceTimeout)
                     if ($regexPattern.Match($barewords[0]).Success) {
                         $TemplateName = $barewords[0]
                         $languageCmd
@@ -265,6 +277,9 @@ process {
 
     
     if ($StartPattern -and $EndPattern) {
+        if (-not $ReplaceTimeout) {
+            $ReplaceTimeout = [timespan]"00:00:15"
+        }
         # If the Source Start and End were provided,
         # create a replacepattern that matches all content until the end pattern.
         $ReplacePattern = [Regex]::New("
@@ -276,7 +291,7 @@ process {
     )
     # Then Match the PipeScript End
     $EndPattern
-        ", 'IgnoreCase, IgnorePatternWhitespace', '00:00:10')
+        ", 'IgnoreCase, IgnorePatternWhitespace', $ReplaceTimeout)
 
         # Now switch the parameter set to SourceTextReplace
         $psParameterSet = 'SourceTextReplace'
@@ -385,8 +400,11 @@ process {
                     $ArgumentList += $arg
                 }
             }
-    
-            $ReplacePattern = [Regex]::new($this.Pattern,'IgnoreCase,IgnorePatternwhitespace','00:00:05')
+            
+            if (-not $ReplaceTimeout) {
+                $ReplaceTimeout = [timespan]"00:00:15"
+            }
+            $ReplacePattern = [Regex]::new($this.Pattern,'IgnoreCase,IgnorePatternwhitespace',$ReplaceTimeout)
     
             # Walk thru each match before we replace it
             foreach ($match in $ReplacePattern.Matches($fileText)) {
@@ -601,7 +619,7 @@ $replacePattern
         # This should run each inline script and replace the text.
         $replacement = 
             try {
-            $ReplacePattern.Replace($fileText, $ReplacementEvaluator)
+                $ReplacePattern.Replace($fileText, $ReplacementEvaluator)
             } catch {
                 $ex = $_
                 Write-Error -ErrorRecord $ex
