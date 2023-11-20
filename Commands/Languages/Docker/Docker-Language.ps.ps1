@@ -6,7 +6,7 @@ Language function Docker {
         Defines the Docker language within PipeScript.
 
         This allows the Dockerfile to be generated with PipeScript.
-    .EXAMPLE
+    .EXAMPLE        
         $DockerFile = '
             FROM mcr.microsoft.com/powershell
 
@@ -26,7 +26,7 @@ Language function Docker {
             ENV PSModulePath ./Modules
 
             #{
-            #if ($DockerInstallModules) { "RUN /opt/microsoft/powershell/7/pwsh --noprofile --nologo -c Install-Module Splatter,ugit -Scope CurrentUser -Force"} 
+            #if ($DockerInstallModules) { "RUN /opt/microsoft/powershell/7/pwsh --nologo -c Install-Module Splatter,ugit -Scope CurrentUser -Force"} 
             #}
         '
         $dockerFile | Set-Content .\PipeScript.Example.ps.Dockerfile
@@ -36,8 +36,11 @@ Language function Docker {
     param()
     $SingleLineCommentStart = '\#'
     # Any Language can be parsed with a series of regular expresssions.
-    $startComment = "(?>(?<IsSingleLine>$SingleLineCommentStart)\s{0,}(?:PipeScript)?\s{0,}\{)"
-    $endComment   = "(?>$SingleLineCommentStart\s{0,}\}\s{0,}(?:PipeScript)?\s{0,})"
+    # For languages that only support single comments:
+    # * The capture group IsSingleLine must be defined.
+    # * Whitespace should not be allowed (it makes nested blocks hard to end)
+    $startComment = "(?>(?<IsSingleLine>$SingleLineCommentStart)(?>PipeScript|PS)?\{)"
+    $endComment   = "(?>$SingleLineCommentStart(?:PipeScript)?\})"
 
     # To support templates, a language has to declare `$StartPattern` and `$EndPattern`:
     $StartPattern = "(?<PSStart>${startComment})"
@@ -51,8 +54,21 @@ Language function Docker {
 
     # No matter what the input file was, Docker's output file must be 'Dockerfile'
     $ReplaceOutputFileName = ".+?Dockerfile", 'Dockerfile'
-
+    
+    # Any language can define a ForeachObject.
+    # This is how output will be treated in a template.
     $ForeachObject = {
-        "$_".Trim() + [Environment]::NewLine # Each docker output should become it's own line.
+        
+        $striginifed = "$_"
+        @(
+            [Environment]::NewLine 
+            if ($striginifed -match '[\r\n]') {            
+                    # Docker output is continued by adding a \ to the end of a line.
+                $striginifed -split '[\r\n]+' -replace '\s{0,}$', "\$([Environment]::NewLine)"
+            } else {
+            
+                "$_".Trim()
+            }
+        ) -replace '\\\s+' -join ''
     }
 }
