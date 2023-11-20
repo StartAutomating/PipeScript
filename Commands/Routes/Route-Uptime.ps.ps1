@@ -6,7 +6,8 @@ Route function Uptime {
         A route for getting version uptime
     .EXAMPLE
         Get-PipeScript -PipeScriptType Route |
-            Where-Object Name -Match 'Uptime' |
+            Where-Object Name -Match 'Route\.Uptime' |
+            Select-Object -First 1 |
             Foreach-Object { & $_ }
     #>
     [ValidatePattern(
