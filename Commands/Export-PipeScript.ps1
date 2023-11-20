@@ -42,6 +42,9 @@ function Export-Pipescript {
                 }                
             }
         }
+
+        $filesWithErrors = @()
+        $errorsByFile = @{}
     }
 
     process {
@@ -129,6 +132,8 @@ function Export-Pipescript {
                 } catch {
                     $ex = $_
                     Write-Error -ErrorRecord $ex
+                    $filesWithErrors += $buildFile
+                    $errorsByFile[$buildFile.FullName] = $ex
                 }
 
             $EventsFromFileBuild = Get-Event -SourceIdentifier *PipeScript* |
@@ -204,6 +209,13 @@ function Export-Pipescript {
                 "PipeScript Factor: X$([Math]::round([double]$TotalOutputFileLength/[double]$TotalInputFileLength,4))"
             }
             
+        }
+
+        if ($filesWithErrors -and $env:GITHUB_WORKSPACE) {
+            "$($filesWithErrors.Length) files with Errors" | Out-Host
+            foreach ($fileWithError in $filesWithErrors) {
+                "$fileWithError : $($errorsByFile[$fileWithError.FullName] | Out-String)"| Out-Host
+            }
         }
         
         Write-Progress "Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" "Finished In $($BuildTime) " -Completed -id $filesToBuildID
