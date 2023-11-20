@@ -16,10 +16,7 @@ A route for getting version information
 > EXAMPLE 1
 
 ```PowerShell
-Get-PipeScript -PipeScriptType Route |
-    Where-Object Name -Match 'Route\.VersionInfo' |
-    Select-Object -First 1 |
-    Foreach-Object { & $_ }
+Route.VersionInfo
 ```
 
 ---
