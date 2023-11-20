@@ -16,10 +16,7 @@ A route for getting version uptime
 > EXAMPLE 1
 
 ```PowerShell
-Get-PipeScript -PipeScriptType Route |
-    Where-Object Name -Match 'Route\.Uptime' |
-    Select-Object -First 1 |
-    Foreach-Object { & $_ }
+Route.Uptime
 ```
 
 ---
