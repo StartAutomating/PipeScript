@@ -40,7 +40,7 @@ try {
 if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('New-PSDrive', 'Cmdlet')) {    
     try {
         # mount the module as a drive
-        New-PSDrive -Name $MyModule.Name -PSProvider FileSystem -Root ($MyModule.Path | Split-Path) -Description $MyModule.Description -Scope Global
+        New-PSDrive -Name $MyModule.Name -PSProvider FileSystem -Root ($MyModule.Path | Split-Path) -Description $MyModule.Description -Scope Global -ErrorAction Ignore
     } catch {
         Write-Verbose "Could not add drive: $($_ | Out-String)"
     }    
@@ -151,12 +151,5 @@ $global:ExecutionContext.SessionState.InvokeCommand.CommandNotFoundAction = $Com
 
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
     
-    $global:ExecutionContext.SessionState.InvokeCommand.CommandNotFoundAction = $null
-    if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('Remove-PSDrive', 'Cmdlet')) {
-        try {
-            Remove-PSDrive -Name $MyInvocation.MyCommand.ScriptBlock.Module -Force
-        } catch {
-            Write-Verbose "Could not remove drive: $($_ | Out-String)"
-        }
-    }
+    $global:ExecutionContext.SessionState.InvokeCommand.CommandNotFoundAction = $null    
 }
