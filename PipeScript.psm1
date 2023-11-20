@@ -67,13 +67,26 @@ $aliasList +=
     })
     
 
-Export-ModuleMember -Function * -Alias *
+try {
+    $ExecutionContext.SessionState.PSVariable.Set(
+        $MyInvocation.MyCommand.ScriptBlock.Module.Name,
+        $MyInvocation.MyCommand.ScriptBlock.Module
+    )
+} catch {
+    # There is the slimmest of chances we might not be able to set the variable, because it was already constrained by something else.
+    # If this happens, we still want to load the module, and we still want to know, so put it out to Verbose.
+    Write-Verbose "Could not assign module variable: $($_ | Out-String)"
+}
 
-$global:ExecutionContext.SessionState.InvokeCommand.CommandNotFoundAction = {
+Export-ModuleMember -Function * -Alias * -Variable $MyInvocation.MyCommand.ScriptBlock.Module.Name
+
+Update-TypeData -AppendPath (Join-Path $psScriptRoot "PipeScript.types.ps1xml")
+
+$CommandNotFoundAction = {
     param($sender, $eventArgs)
 
     # Rather than be the only thing that can handle command not found, we start by broadcasting an event.
-    New-Event -SourceIdentifier "PowerShell.CommandNotFound"  -MessageData $notFoundArgs -Sender $global:ExecutionContext -EventArguments $notFoundArgs
+    $null = New-Event -SourceIdentifier "PowerShell.CommandNotFound"  -MessageData $notFoundArgs -Sender $global:ExecutionContext -EventArguments $notFoundArgs
     
     # Then we determine our own script block.
     $myScriptBlock = $MyInvocation.MyCommand.ScriptBlock
@@ -166,6 +179,9 @@ Will not interactively transpile {$callingScriptBlock} ( because it would overwr
     return    
 }
 
+$global:ExecutionContext.SessionState.InvokeCommand.CommandNotFoundAction = $CommandNotFoundAction
+
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
     $global:ExecutionContext.SessionState.InvokeCommand.CommandNotFoundAction = $null
 }
+
