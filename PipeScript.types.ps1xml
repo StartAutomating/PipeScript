@@ -4476,6 +4476,27 @@ elseif ($TranspilerWarnings) {
                     </Script>
       </ScriptMethod>
       <ScriptProperty>
+        <Name>HasValidation</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Determines if a ScriptBlock has validation
+.DESCRIPTION
+    Determines if a ScriptBlock has either a `[ValidatePattern]` or a `[ValidateScript]` attribute defined.
+.EXAMPLE
+    {}.HasValidation
+.EXAMPLE
+    {[ValidateScript({$true})param()}.HasValidation
+#&gt;
+param()
+foreach ($attr in $this.Attributes) {
+    if ($attr -is [ValidatePattern]) { return $true }
+    if ($attr -is [ValidateScript])  { return $true }
+}
+return $false
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>IsEmpty</Name>
         <GetScriptBlock>
                         &lt;#
