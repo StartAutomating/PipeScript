@@ -67,15 +67,27 @@ $aliasList +=
     })
     
 
+
+
 try {
     $ExecutionContext.SessionState.PSVariable.Set(
-        $MyInvocation.MyCommand.ScriptBlock.Module.Name,
-        $MyInvocation.MyCommand.ScriptBlock.Module
+        $MyModule.Name,
+        $MyModule
     )
 } catch {
     # There is the slimmest of chances we might not be able to set the variable, because it was already constrained by something else.
     # If this happens, we still want to load the module, and we still want to know, so put it out to Verbose.
     Write-Verbose "Could not assign module variable: $($_ | Out-String)"
+}
+
+# If New-PSDrive exists
+if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('New-PSDrive', 'Cmdlet')) {    
+    try {
+        # mount the module as a drive
+        New-PSDrive -Name $MyModule.Name -PSProvider FileSystem -Root ($MyModule.Path | Split-Path) -Description $MyModule.Description -Scope Global
+    } catch {
+        Write-Verbose "Could not add drive: $($_ | Out-String)"
+    }    
 }
 
 Export-ModuleMember -Function * -Alias * -Variable $MyInvocation.MyCommand.ScriptBlock.Module.Name
@@ -182,6 +194,14 @@ Will not interactively transpile {$callingScriptBlock} ( because it would overwr
 $global:ExecutionContext.SessionState.InvokeCommand.CommandNotFoundAction = $CommandNotFoundAction
 
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
+    
     $global:ExecutionContext.SessionState.InvokeCommand.CommandNotFoundAction = $null
+    if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('Remove-PSDrive', 'Cmdlet')) {
+        try {
+            Remove-PSDrive -Name $MyInvocation.MyCommand.ScriptBlock.Module -Force
+        } catch {
+            Write-Verbose "Could not remove drive: $($_ | Out-String)"
+        }
+    }
 }
 
