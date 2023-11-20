@@ -9,7 +9,7 @@ function Export-Pipescript {
     .EXAMPLE
         Export-PipeScript
     #>
-    [Alias('Build-PipeScript','bps','eps')]
+    [Alias('Build-PipeScript','bps','eps','psc')]
     param(
     # One or more input paths.  If no -InputPath is provided, will build all scripts beneath the current directory.
     [Parameter(ValueFromPipelineByPropertyName)]
@@ -77,8 +77,7 @@ function Export-Pipescript {
         # Keep track of how much is input and output.
         [long]$TotalInputFileLength  = 0 
         [long]$TotalOutputFileLength = 0 
-        foreach ($buildFile in $filesToBuild) {
-            
+        foreach ($buildFile in $filesToBuild) {            
             $ThisBuildStartedAt = [DateTime]::Now
             Write-Progress "Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" "$($buildFile.Source) " -PercentComplete $(
                 $FilesToBuildCount++
@@ -102,7 +101,7 @@ function Export-Pipescript {
                         $fileAndLine = @(@($ex.ScriptStackTrace -split [Environment]::newLine)[-1] -split ',\s',2)[-1]
                         $file, $line = $fileAndLine -split ':\s\D+\s', 2
                         
-                        "::error file=$File,line=$line::$($ex.Exception.Message)" | Out-Host
+                        "::error file=$($buildFile.FullName),line=$line::$($ex.Exception.Message)" | Out-Host
                     }
                 }
                 $alreadyBuilt[$buildFileTemplate.Source] = $true
@@ -115,7 +114,18 @@ function Export-Pipescript {
             $FileBuildStarted = [datetime]::now
             $buildOutput = 
                 try {
-                    Invoke-PipeScript $buildFile.Source
+                    if ($buildFile.PipeScriptType -match 'BuildScript') {
+                        if ($buildFile.ScriptBlock.Ast -and $buildFile.ScriptBlock.Ast.Find({param($ast)
+                            if ($ast -isnot [Management.Automation.CommandAst]) { return $false }
+                            if ('task' -ne $ast.CommandElements[0]) { return $false }
+                            return $true
+                        }, $true)) {
+                            Invoke-PipeScript "require latest InvokeBuild"
+                            Invoke-Build -File $buildFile.Source -Result InvokeBuildResult
+                        }
+                    } else {
+                        Invoke-PipeScript $buildFile.Source
+                    }                    
                 } catch {
                     $ex = $_
                     Write-Error -ErrorRecord $ex
