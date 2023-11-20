@@ -17,7 +17,8 @@ A route for getting version information
 
 ```PowerShell
 Get-PipeScript -PipeScriptType Route |
-    Where-Object Name -Match 'VersionInfo' |
+    Where-Object Name -Match 'Route\.VersionInfo' |
+    Select-Object -First 1 |
     Foreach-Object { & $_ }
 ```
 
