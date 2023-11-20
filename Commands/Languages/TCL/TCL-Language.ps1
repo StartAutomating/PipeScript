@@ -2,7 +2,7 @@
 function Language.TCL {
 <#
 .SYNOPSIS
-    TCL/TK Template Transpiler.
+    TCL/TK Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate TCL or TK.
     Because TCL Scripts only allow single-line comments, this is done using a pair of comment markers.
@@ -20,7 +20,7 @@ function Language.TCL {
     Invoke-PipeScript {
         $tclScript = '    
     # {
-    Uncommented lines between these two points will be ignored
+    # # Uncommented lines between these two points will be ignored
     #  # Commented lines will become PipeScript / PowerShell.
     # param($message = "hello world")
     # "puts `"$message`""
@@ -42,7 +42,7 @@ New-Module {
     
 <#
 .SYNOPSIS
-    TCL/TK Template Transpiler.
+    TCL/TK Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate TCL or TK.
     Because TCL Scripts only allow single-line comments, this is done using a pair of comment markers.
@@ -60,7 +60,7 @@ New-Module {
     Invoke-PipeScript {
         $tclScript = '    
     # {
-    Uncommented lines between these two points will be ignored
+    # # Uncommented lines between these two points will be ignored
     #  # Commented lines will become PipeScript / PowerShell.
     # param($message = "hello world")
     # "puts `"$message`""
