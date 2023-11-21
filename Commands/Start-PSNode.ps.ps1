@@ -71,7 +71,7 @@ function Start-PSNode {
 
     # Any additional format.ps1xml files to load in the PSNode.
     [Parameter(ValueFromPipelineByPropertyName)]
-    [Alias('ImportFormatsFile', 'ImportFormatFiles','ImportFormatFiles')]
+    [Alias('ImportFormatsFile', 'ImportFormatFiles','ImportFormatsFiles')]
     [string[]]
     $ImportFormatFile,
     
