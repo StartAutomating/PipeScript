@@ -14,24 +14,23 @@ function Signal.Out {
     #>
     [Alias('Out-Signal','Out.Signal')]
     param()
-    process {
-       
+    
+   
 $MyCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
-             $myCallStack[-1])
-         if ($MyCaller) {
-                $myInv = $MyInvocation
-                $MyCaller.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
-                    param($ast) 
-                        $ast.Extent.StartLineNumber -eq $myInv.ScriptLineNumber -and
-                        $ast.Extent.StartColumnNumber -eq $myInv.OffsetInLine -and 
-                        $ast -is [Management.Automation.Language.CommandAst]
-                },$true)
-            })
- New-Event -SourceIdentifier $MyInvocation.InvocationName -MessageData ([PSCustomObject][Ordered]@{
-            Arguments = $args
-            Input     = $input
-            Command   = $MyCommandAst
+         $myCallStack[-1])
+     if ($MyCaller) {
+            $myInv = $MyInvocation
+            $MyCaller.InvocationInfo.MyCommand.ScriptBlock.Ast.FindAll({
+                param($ast) 
+                    $ast.Extent.StartLineNumber -eq $myInv.ScriptLineNumber -and
+                    $ast.Extent.StartColumnNumber -eq $myInv.OffsetInLine -and 
+                    $ast -is [Management.Automation.Language.CommandAst]
+            },$true)
         })
-    }
+ New-Event -SourceIdentifier $MyInvocation.InvocationName -MessageData ([PSCustomObject][Ordered]@{
+        Arguments = $args
+        Input     = @($input)
+        Command   = $MyCommandAst
+    })
 }
 
