@@ -37,6 +37,7 @@ These are all of the transpilers currently included in PipeScript:
 |[PipeScript.Protocol](Transpilers/Core/PipeScript.Protocol.psx.ps1)                        |Core Protocol Transpiler                          |
 |[Pipescript](Transpilers/Core/Pipescript.psx.ps1)                                          |The Core PipeScript Transpiler                    |
 |[PipeScript.Template](Transpilers/Core/PipeScript.Template.psx.ps1)                        |Template Transpiler                               |
+|[PipeScript.Translator](Transpilers/Core/PipeScript.Translator.psx.ps1)                    |PipeScript Translator                             |
 |[PipeScript.TypeConstraint](Transpilers/Core/PipeScript.TypeConstraint.psx.ps1)            |Transpiles Type Constraints                       |
 |[PipeScript.TypeExpression](Transpilers/Core/PipeScript.TypeExpression.psx.ps1)            |The PipeScript TypeExpression Transpiler          |
 |[ProxyCommand](Transpilers/ProxyCommand.psx.ps1)                                           |Creates Proxy Commands                            |
