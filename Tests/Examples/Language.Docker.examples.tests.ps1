@@ -14,7 +14,7 @@ describe 'Language.Docker' {
             # }
             ENV PSModulePath ./Modules
             #{
-            #if ($DockerInstallModules) { "RUN /opt/microsoft/powershell/7/pwsh --noprofile --nologo -c Install-Module Splatter,ugit -Scope CurrentUser -Force"} 
+            #if ($DockerInstallModules) { "RUN /opt/microsoft/powershell/7/pwsh --nologo -c Install-Module Splatter,ugit -Scope CurrentUser -Force"} 
             #}
         '
         $dockerFile | Set-Content .\PipeScript
