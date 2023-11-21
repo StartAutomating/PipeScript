@@ -19,7 +19,7 @@ function Signal.Nothing {
             ($VerbosePreference -ne 'continue')) {
             $null = New-Event -SourceIdentifier $MyInvocation.InvocationName -MessageData ([PSCustomObject][Ordered]@{
                 Arguments  = $args
-                Input      = $input
+                Input      = @($input)
                 Invocation = $MyInvocation
             })
         }
