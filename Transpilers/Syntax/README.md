@@ -8,6 +8,7 @@ This directory and it's subdirectories contain syntax changes that enable common
 |[ArrowOperator](ArrowOperator.psx.ps1)                  |[Arrow Operator](ArrowOperator.psx.ps1)                           |
 |[ConditionalKeyword](ConditionalKeyword.psx.ps1)        |[Conditional Keyword Expansion](ConditionalKeyword.psx.ps1)       |
 |[Dot](Dot.psx.ps1)                                      |[Dot Notation](Dot.psx.ps1)                                       |
+|[DoubleDotting](DoubleDotting.psx.ps1)                  |[Supports "Double Dotted" location changes](DoubleDotting.psx.ps1)|
 |[EqualityComparison](EqualityComparison.psx.ps1)        |[Allows equality comparison.](EqualityComparison.psx.ps1)         |
 |[EqualityTypeComparison](EqualityTypeComparison.psx.ps1)|[Allows equality type comparison.](EqualityTypeComparison.psx.ps1)|
 |[PipedAssignment](PipedAssignment.psx.ps1)              |[Piped Assignment Transpiler](PipedAssignment.psx.ps1)            |
@@ -230,6 +231,20 @@ This directory and it's subdirectories contain syntax changes that enable common
             $this.Numbers | Where-Object { $_ % 2}
         }
     }
+~~~
+
+## DoubleDotting Example 1
+
+
+~~~PowerShell
+    Invoke-PipeScript { .. }
+~~~
+
+## DoubleDotting Example 2
+
+
+~~~PowerShell
+    Invoke-PipeScript { ^.. }
 ~~~
 
 ## EqualityComparison Example 1
