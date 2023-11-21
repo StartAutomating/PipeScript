@@ -549,8 +549,7 @@ param($PSNodeJob, $listener)
 
             if ($listener) {
                 $listener.Stop()
-                $listener.Close();
-                $listener.Dispose()
+                $listener.Close();                
                 $listener.Prefixes.Clear();
                 [GC]::Collect()
             }
@@ -559,8 +558,7 @@ param($PSNodeJob, $listener)
     }
 
     $listener.Stop()
-    $listener.Close()  
-    $listener.Dispose()
+    $listener.Close()
     [GC]::Collect()    
 }", false).AddArgument(nodeJob).AddArgument(this.Listener);
                         
@@ -635,12 +633,11 @@ param($PSNodeJob, $listener)
             try {                
                 powerShellCommand.BeginStop(null, null);
                 if (runspacePool.RunspacePoolStateInfo.State == RunspacePoolState.Opened) {
-                    runspacePool.BeginClose();
+                    runspacePool.BeginClose(null, null);
                 }                
                 if (Listener != null) {
                     Listener.Stop();
-                    Listener.Close();
-                    Listener.Dispose();
+                    Listener.Close();                    
                 }
 
             } catch (Exception ex) {
