@@ -54,4 +54,5 @@ These are all of the transpilers currently included in PipeScript:
 |[ValidValues](Transpilers/Parameters/ValidValues.psx.ps1)                                  |Dynamically Defines ValidateSet attributes        |
 |[VBN](Transpilers/Parameters/VBN.psx.ps1)                                                  |ValueFromPiplineByPropertyName Shorthand          |
 |[VFP](Transpilers/Parameters/VFP.psx.ps1)                                                  |ValueFromPipline Shorthand                        |
+|[When](Transpilers/Keywords/When.psx.ps1)                                                  |On / When keyword                                 |
 |[WhereMethod](Transpilers/Syntax/WhereMethod.psx.ps1)                                      |Where Method                                      |
