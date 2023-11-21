@@ -15,6 +15,7 @@ This directory contains the implementations of PipeScript language keywords.
 |[New](New.psx.ps1)          |['new' keyword](New.psx.ps1)                                          |
 |[Requires](Requires.psx.ps1)|[requires one or more modules, variables, or types.](Requires.psx.ps1)|
 |[Until](Until.psx.ps1)      |[until keyword](Until.psx.ps1)                                        |
+|[When](When.psx.ps1)        |[On / When keyword](When.psx.ps1)                                     |
 
 
 
@@ -288,6 +289,24 @@ This directory contains the implementations of PipeScript language keywords.
         until (-not $tries) {
             "$tries tries left"
             $tries--            
+        }
+    }
+~~~
+
+## When Example 1
+
+
+~~~PowerShell
+    Use-PipeScript {
+        $y = when x {
+            "y"
+        }
+    }
+
+    Use-PipeScript {
+        $timer = new Timers.Timer 1000 @{AutoReset=$false}
+        when $timer.Elapsed {
+            "time's up"
         }
     }
 ~~~
