@@ -14,9 +14,9 @@ function Start-PSNode {
     [ScriptBlock]
     $Command,
 
-    # One or more listener prefixes that will be used to handle to request.
+    # The name of the server, or the route that is being served.
     [Parameter(ValueFromPipelineByPropertyName)]
-    [Alias('Route')]
+    [Alias('Route','Host','HostHeader')]
     [String[]]
     $Server,
 
@@ -46,11 +46,35 @@ function Start-PSNode {
     [Parameter(ValueFromPipelineByPropertyName)]
     [TimeSpan]$SessionTimeout,
 
-    # The modules that will be loaded in the PSNode
+    # The modules that will be loaded in the PSNode.
     [Parameter(ValueFromPipelineByPropertyName)]
     [string[]]
     $ImportModule,
 
+    # The functions that will be loaded in the PSNode.
+    [Parameter(ValueFromPipelineByPropertyName)]
+    [Alias('Functions','Function')]
+    [Management.Automation.FunctionInfo[]]
+    $DeclareFunction,
+
+    # The aliases that will be loaded in the PSNode.
+    [Parameter(ValueFromPipelineByPropertyName)]
+    [Alias('Alias', 'Aliases')]
+    [Management.Automation.AliasInfo[]]
+    $DeclareAlias,
+
+    # Any additional types.ps1xml files to load in the PSNode.
+    [Parameter(ValueFromPipelineByPropertyName)]
+    [Alias('ImportTypesFile', 'ImportTypeFiles','ImportTypesFiles')]
+    [string[]]
+    $ImportTypeFile,
+
+    # Any additional format.ps1xml files to load in the PSNode.
+    [Parameter(ValueFromPipelineByPropertyName)]
+    [Alias('ImportFormatsFile', 'ImportFormatFiles','ImportFormatFiles')]
+    [string[]]
+    $ImportFormatFile,
+    
     # If set, will allow the directories beneath RootPath to be browsed.
     [Parameter(ValueFromPipelineByPropertyName)]
     [Switch]
@@ -250,7 +274,21 @@ Add-Member -InputObject $request -MemberType ScriptProperty -Name Params -Value 
         if (-not $name) {$name = [GUID]::NewGuid() }
 
         $props = @{} + $PSBoundParameters
-        $props["ListenerLocation"] =  $Server
+        $server = foreach ($pathToServe in $server) {
+            @(switch -regex ($server) {
+                "^(?!https?://)" {
+                    "http://"
+                }
+                "." {
+                    $server
+                }
+                "(?<!/)" {
+                    '/'
+                }
+            }
+            ) -join ''
+        }
+        $props["ListenerLocation"] =  $Server -replace '//$', '/'
         $props.Remove('Server')
         $props.PSNodeAction = $Command
         $props.Remove('Command')

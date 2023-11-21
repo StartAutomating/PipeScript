@@ -70,6 +70,18 @@ namespace Pipescript.Net
                         }
                     }
 
+                    if (this.ImportTypeFile != null) {
+                        foreach (string typeFile in this.ImportTypeFile) {
+                            iss.Types.Add(new SessionStateTypeEntry(typeFile));
+                        }
+                    }
+
+                    if (this.ImportFormatFile != null) {
+                        foreach (string formatFile in this.ImportFormatFile) {
+                            iss.Formats.Add(new SessionStateFormatEntry(formatFile));
+                        }
+                    }
+
                     _PSNodePool = RunspaceFactory.CreateRunspacePool(iss);
                     //#StartWindowsOnly
                     _PSNodePool.ThreadOptions = PSThreadOptions.UseNewThread;
@@ -97,6 +109,8 @@ namespace Pipescript.Net
         }
         public FunctionInfo[] DeclareFunction { get; set; }
         public AliasInfo[] DeclareAlias { get; set; } 
+        public string[] ImportTypeFile { get; set; }
+        public string[] ImportFormatFile { get; set; }
         public string[] FileBlacklist { get; set; }
         public int BufferSize {  
             get { return bufferSize; }         
@@ -168,12 +182,7 @@ namespace Pipescript.Net
             : base(command, name)
         {
             
-            if (isChildJob)
-            {
-            //    Start(scriptBlock, parameters, argumentList);
-            }
-            else
-            {
+            if (! isChildJob) {
                 PSNodeJob childJob = new PSNodeJob(name, command, scriptBlock, parameters, argumentList, true);
                 childJob.StateChanged += new EventHandler<JobStateEventArgs>(childJob_StateChanged);
                 this.ChildJobs.Add(childJob);
