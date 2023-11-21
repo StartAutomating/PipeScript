@@ -14,12 +14,11 @@ Signal function Out {
     #>
     [Alias('Out-Signal','Out.Signal')]
     param()
+    
+    New-Event -SourceIdentifier $MyInvocation.InvocationName -MessageData ([PSCustomObject][Ordered]@{
+        Arguments = $args
+        Input     = @($input)
+        Command   = $MyCommandAst
+    })
 
-    process {
-        New-Event -SourceIdentifier $MyInvocation.InvocationName -MessageData ([PSCustomObject][Ordered]@{
-            Arguments = $args
-            Input     = $input
-            Command   = $MyCommandAst
-        })
-    }
 }
