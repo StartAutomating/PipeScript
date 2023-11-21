@@ -125,6 +125,8 @@ function Export-Pipescript {
                         }, $true)) {
                             Invoke-PipeScript "require latest InvokeBuild"
                             Invoke-Build -File $buildFile.Source -Result InvokeBuildResult
+                        } else {
+                            Invoke-PipeScript $buildFile.Source    
                         }
                     } else {
                         Invoke-PipeScript $buildFile.Source
