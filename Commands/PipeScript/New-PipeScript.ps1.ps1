@@ -620,12 +620,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                                 }
                                 $PsuedoType = $parameterType | psuedoTypeToRealType
                                 if ($PsuedoType) {
-                                    $parameterType = $PsuedoType
-                                    switch ($parameterType) {
-                                        [bool] { [switch]}
-                                        [array] { [PSObject[]] }
-                                        [object] { [PSObject] }
-                                    }
+                                    $parameterType = $PsuedoType                                    
                                     if ($parameterType -eq [bool]) {
                                         "[switch]"
                                     } 
