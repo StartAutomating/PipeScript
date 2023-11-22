@@ -23,11 +23,11 @@ The Script Block to run in the Job
 |`[ScriptBlock]`|true    |1       |true (ByValue, ByPropertyName)|ScriptBlock<br/>Action|
 
 #### **Server**
-One or more listener prefixes that will be used to handle to request.
+The name of the server, or the route that is being served.
 
-|Type        |Required|Position|PipelineInput        |Aliases|
-|------------|--------|--------|---------------------|-------|
-|`[String[]]`|false   |named   |true (ByPropertyName)|Route  |
+|Type        |Required|Position|PipelineInput        |Aliases                      |
+|------------|--------|--------|---------------------|-----------------------------|
+|`[String[]]`|false   |named   |true (ByPropertyName)|Route<br/>Host<br/>HostHeader|
 
 #### **CORS**
 The cross origin resource sharing
@@ -66,11 +66,39 @@ The user session timeout.  By default, 15 minutes.
 |`[TimeSpan]`|false   |named   |true (ByPropertyName)|
 
 #### **ImportModule**
-The modules that will be loaded in the PSNode
+The modules that will be loaded in the PSNode.
 
 |Type        |Required|Position|PipelineInput        |
 |------------|--------|--------|---------------------|
 |`[String[]]`|false   |named   |true (ByPropertyName)|
+
+#### **DeclareFunction**
+The functions that will be loaded in the PSNode.
+
+|Type              |Required|Position|PipelineInput        |Aliases               |
+|------------------|--------|--------|---------------------|----------------------|
+|`[FunctionInfo[]]`|false   |named   |true (ByPropertyName)|Functions<br/>Function|
+
+#### **DeclareAlias**
+The aliases that will be loaded in the PSNode.
+
+|Type           |Required|Position|PipelineInput        |Aliases          |
+|---------------|--------|--------|---------------------|-----------------|
+|`[AliasInfo[]]`|false   |named   |true (ByPropertyName)|Alias<br/>Aliases|
+
+#### **ImportTypeFile**
+Any additional types.ps1xml files to load in the PSNode.
+
+|Type        |Required|Position|PipelineInput        |Aliases                                                 |
+|------------|--------|--------|---------------------|--------------------------------------------------------|
+|`[String[]]`|false   |named   |true (ByPropertyName)|ImportTypesFile<br/>ImportTypeFiles<br/>ImportTypesFiles|
+
+#### **ImportFormatFile**
+Any additional format.ps1xml files to load in the PSNode.
+
+|Type        |Required|Position|PipelineInput        |Aliases                                                       |
+|------------|--------|--------|---------------------|--------------------------------------------------------------|
+|`[String[]]`|false   |named   |true (ByPropertyName)|ImportFormatsFile<br/>ImportFormatFiles<br/>ImportFormatsFiles|
 
 #### **AllowBrowseDirectory**
 If set, will allow the directories beneath RootPath to be browsed.
@@ -106,5 +134,5 @@ Valid Values:
 
 ### Syntax
 ```PowerShell
-Start-PSNode [-Command] <ScriptBlock> [-Server <String[]>] [-CORS <String>] [-RootPath <String>] [-BufferSize <UInt32>] [-PoolSize <UInt32>] [-SessionTimeout <TimeSpan>] [-ImportModule <String[]>] [-AllowBrowseDirectory] [-AllowScriptExecution] [-AuthenticationType {None | Digest | Negotiate | Ntlm | IntegratedWindowsAuthentication | Basic | Anonymous}] [<CommonParameters>]
+Start-PSNode [-Command] <ScriptBlock> [-Server <String[]>] [-CORS <String>] [-RootPath <String>] [-BufferSize <UInt32>] [-PoolSize <UInt32>] [-SessionTimeout <TimeSpan>] [-ImportModule <String[]>] [-DeclareFunction <FunctionInfo[]>] [-DeclareAlias <AliasInfo[]>] [-ImportTypeFile <String[]>] [-ImportFormatFile <String[]>] [-AllowBrowseDirectory] [-AllowScriptExecution] [-AuthenticationType {None | Digest | Negotiate | Ntlm | IntegratedWindowsAuthentication | Basic | Anonymous}] [<CommonParameters>]
 ```
