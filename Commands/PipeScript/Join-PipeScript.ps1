@@ -26,8 +26,7 @@ function Join-PipeScript
             param($x = 1)
         } | Join-PipeScript -ExcludeParameter x
     .LINK
-        Update-PipeScript
-    
+        Update-PipeScript    
     #>
     [Alias('Join-ScriptBlock', 'jps')]
     param(
@@ -404,8 +403,7 @@ function Join-PipeScript
             if ($IncludeBlockType -contains 'end') {
                 # If there were end blocks declared
                 $blocks = @($AllScriptBlocks.Ast.EndBlock)
-                if ($blocks -ne $null) {
-                    $blockOpen = $false # see if there was anything in them.
+                if ($blocks -ne $null) {                    
                     $unnamedBlocks = @($blocks.Unnamed)
                     foreach ($block in $blocks) {
                         if (-not $block) { continue }
@@ -430,6 +428,10 @@ function Join-PipeScript
                                 ' ' * ($block | MeasureIndent) + 'end {'
                                 $blockOpen = $true
                                 $closeEndBlock = $false
+                            } elseif ($blockOpen) {
+                                # If there was already a block open, we need to name the end block
+                                ' ' * ($block | MeasureIndent) + 'end {'
+                                $closeEndBlock = $true
                             }
                             if ($StatementsToAdd) {
                                 $StatementsToAdd -join [Environment]::NewLine
