@@ -15,6 +15,10 @@ Route function VersionInfo {
         "/VersionInfo$", # We only serve requests that end in /VersionInfo 
         ErrorMessage='$request.uri' # and this applies to $request.uri
         )]
+    [Reflection.AssemblyMetaData(
+        "CacheControl",
+        "max-age=86400"
+    )]
     param()
 
     $versionInfo = [Ordered]@{PipeScriptVersion=(Get-Module PipeScript -ErrorAction Ignore).Version}
