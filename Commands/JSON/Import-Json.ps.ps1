@@ -1,8 +1,8 @@
-function Import-JSON
+function Import-Json
 {
     <#
     .SYNOPSIS
-        Imports JSON
+        Imports json
     .DESCRIPTION
         Imports json files and outputs PowerShell objects    
     .PARAMETER LiteralPath
