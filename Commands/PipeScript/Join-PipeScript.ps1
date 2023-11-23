@@ -405,10 +405,11 @@ function Join-PipeScript
                 $blocks = @($AllScriptBlocks.Ast.EndBlock)
                 if ($blocks -ne $null) {                    
                     $unnamedBlocks = @($blocks.Unnamed)
+                    $emptyBlockCount = 0
                     foreach ($block in $blocks) {
-                        if (-not $block) { continue }
+                        if (-not $block) { $emptyBlockCount++;continue }
                         # Empty(ish) scripts may have an end bock that is an empty param block
-                        if ($block -match '^\s{0,}param\(\s{0,}\)\s{0,}$') { continue } # (skip those).
+                        if ($block -match '^\s{0,}param\(\s{0,}\)\s{0,}$') { $emptyBlockCount++; continue } # (skip those).
                         if (-not $blockOpen -and -not $block.Unnamed) {
                             # If the end block was named, it will need to be closed.
                             if ($StatementsToAdd) {
@@ -455,6 +456,8 @@ function Join-PipeScript
                                     '^end\s{0,}\{' -replace '\}$' -replace 
                                     '^param\(\)[\s\r\n]{0,}' # and any empty param blocks.
                             }                            
+                        } elseif (-not $block.Statements.Count) {
+                            $emptyBlockCount++                            
                         }
                     }
 
@@ -467,6 +470,10 @@ function Join-PipeScript
                         $StatementsToAdd = $null                        
                     }
 
+                    if ($emptyBlockCount -ge $blocks.Length) {
+                        $closeEndBlock = $false
+                    }
+
                     # If we need to close the end block, and it is open,
                     if ($closeEndBlock -and $blockOpen) {
                         if ($block.Statements.Count) {
@@ -475,6 +482,8 @@ function Join-PipeScript
                             '    }'
                         }
                     }
+                } else {
+                    $closeEndBlock = $false
                 }
             }
         )
