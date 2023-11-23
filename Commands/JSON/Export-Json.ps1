@@ -89,43 +89,41 @@ function Export-Json {
     $IncludeParameter = @()
     $ExcludeParameter = @()
     }
-        begin {
-        $inputQueue = [Collections.Queue]::new()
-        if (-not $depth) { $depth = 100 }
-    
-    }
-        process {
-        $inputQueue.Enqueue($inputObject)
-    
-    }
     end {
-        $ConvertToJsonParameters = [Ordered]@{}
-        
-        if ($depth) { $ConvertToJsonParameters['Depth'] = $depth }
-        
-        if ($inputQueue.Count -eq 1) {
-            $ConvertToJsonParameters.InputObject = $inputQueue[0]
-        } else {
-            $ConvertToJsonParameters.InputObject = $inputQueue.ToArray()
-        }
-        $FileSplat = [Ordered]@{}
-        
-        if ($path) { $FileSplat['Path'] = $path; $path }
-        elseif ($literalPath) { $FileSplat['LiteralPath'] = $path; $literalPath }
-        
-        if ((-not $Force) -and $NoClobber) {
-            if ((Test-Path @fileSplat) -and -not $Force) {
-                Write-Error "$($Path; $literalPath) already exists, use -Force to overwrite."
-                return
-            }
-        }
-        
-        if ($encoding) {
-            $fileSplat['Encoding'] = $encoding
-        }
-        if ($psCmdlet.ShouldProcess("$FileSplat")) { 
-            ConvertTo-Json @ConvertToJsonParameters | Set-Content @FileSplat
-        }
+   
+    $ConvertToJsonParameters = [Ordered]@{}
     
+    if ($depth) { $ConvertToJsonParameters['Depth'] = $depth }
+    $inputObjects = @($input)
+    if ($inputObjects.Length -eq 1) {
+        $ConvertToJsonParameters.InputObject = $inputObjects[0]
+    } else {
+        $ConvertToJsonParameters.InputObject = $inputObjects
+    }
+    $FileSplat = [Ordered]@{}
+    
+    if ($path) { $FileSplat['Path'] = $path; $path }
+    elseif ($literalPath) { $FileSplat['LiteralPath'] = $path; $literalPath }
+    
+    if ((-not $Force) -and $NoClobber) {
+        if ((Test-Path @fileSplat) -and -not $Force) {
+            Write-Error "$($Path; $literalPath) already exists, use -Force to overwrite."
+            return
+        }
+    }
+    
+    if ($encoding) {
+        $fileSplat['Encoding'] = $encoding
+    }
+    if ($psCmdlet.ShouldProcess("$FileSplat")) {
+        if ($Delimiter) {
+            @(foreach ($inObj in $inputObjects) {
+                $ConvertToJsonParameters.InputObject = $inObj
+                ConvertTo-Json @ConvertToJsonParameters
+            }) -join $Delimiter | Set-Content @FileSplat
+        } else {
+            ConvertTo-Json @ConvertToJsonParameters | Set-Content @FileSplat
+        }            
+    }
     }
 }
