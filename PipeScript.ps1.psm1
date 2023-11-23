@@ -46,9 +46,42 @@ if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('New-PSDrive', 'Cmdl
     }    
 }
 
+$typesFilePath = (Join-Path $psScriptRoot "PipeScript.types.ps1xml")
+Update-TypeData -AppendPath $typesFilePath
+
+$typesXmlNoteProperties = Select-Xml -Path $typesFilePath -XPath '//NoteProperty'
+$typeAccelerators = [psobject].assembly.gettype("System.Management.Automation.TypeAccelerators")
+
+foreach ($typesXmlNoteProperty in $typesXmlNoteProperties){
+    if ($typesXmlNoteProperty.Node.Name -notmatch '\.class\.ps1$') {
+        continue
+    }
+
+    $classScriptBlock =  
+        try {
+            ([scriptblock]::create($typesXmlNoteProperty.Node.Value))
+
+        } catch {
+            Write-Warning "Could not define '$($typesXmlNoteProperty.Node.Name)': $($_ | Out-String)"
+        }
+
+    if (-not $classScriptBlock) { continue }
+    
+    $typeDefinitionsAst = $classScriptBlock.Ast.FindAll({param($ast) $ast -is [Management.Automation.Language.TypeDefinitionAst]}, $true)
+    if (-not $typeDefinitionsAst) { continue }
+    . $classScriptBlock
+    foreach ($typeDefinitionAst in $typeDefinitionsAst) {
+        $resolvedType = $typeDefinitionAst.Name -as [type]
+        if (-not $resolvedType) { continue }
+        $typeAccelerators::Add("$($MyModule.Name).$($typeDefinitionAst.Name)", $resolvedType)
+        $typeAccelerators::Add("$($typeDefinitionAst.Name)", $resolvedType)
+    }    
+}
+
+
+
 Export-ModuleMember -Function * -Alias * -Variable $MyInvocation.MyCommand.ScriptBlock.Module.Name
 
-Update-TypeData -AppendPath (Join-Path $psScriptRoot "PipeScript.types.ps1xml")
 
 $CommandNotFoundAction = {
     param($sender, $eventArgs)
