@@ -102,8 +102,8 @@ function Export-Json {
     }
     $FileSplat = [Ordered]@{}
     
-    if ($path) { $FileSplat['Path'] = $path; $path }
-    elseif ($literalPath) { $FileSplat['LiteralPath'] = $path; $literalPath }
+    if ($path) { $FileSplat['Path'] = $path;}
+    elseif ($literalPath) { $FileSplat['LiteralPath'] = $literalPath; }
     
     if ((-not $Force) -and $NoClobber) {
         if ((Test-Path @fileSplat) -and -not $Force) {
