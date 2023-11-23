@@ -96,6 +96,11 @@ $                        # string end.
         $validating.Parent.Expression -ne $validating) {
         return $false
     }
+
+    # If we're a command parameter
+    if ($validating.Parent -is [Management.Automation.Language.CommandAst]) {
+        return $false
+    }
     return $true
 })]
 param(
