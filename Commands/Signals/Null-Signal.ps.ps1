@@ -13,15 +13,13 @@ Signal function Nothing {
     #>
     [Alias('null','nil','Signal.Null','Out-Nothing')]
     param()
-
-    process {
-        if (($DebugPreference -ne 'continue') -or 
-            ($VerbosePreference -ne 'continue')) {
-            $null = New-Event -SourceIdentifier $MyInvocation.InvocationName -MessageData ([PSCustomObject][Ordered]@{
-                Arguments  = $args
-                Input      = @($input)
-                Invocation = $MyInvocation
-            })
-        }
+    
+    if (($DebugPreference -ne 'continue') -or 
+        ($VerbosePreference -ne 'continue')) {
+        $null = New-Event -SourceIdentifier $MyInvocation.InvocationName -MessageData ([PSCustomObject][Ordered]@{
+            Arguments  = $args
+            Input      = @($input)
+            Invocation = $MyInvocation
+        })
     }
 }
