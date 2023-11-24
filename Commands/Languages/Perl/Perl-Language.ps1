@@ -20,13 +20,14 @@ $msg = "hello", "hi", "hey", "howdy" | Get-Random
     .> .\HelloWorld.ps1.pl
 #>
 [ValidatePattern('\.(?>pl|pod)$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'Perl'
+    
+    # We start off by declaring a number of regular expressions:
+    
     $startComment = '(?>
         (?>^|\[\r\n]{1,2})\s{0,}
         =begin
@@ -34,14 +35,15 @@ $languageDefinition = New-Module {
         (?>Pipescript|\{)
         [\s\r\n\{]{0,}
     )'
-$endComment   = '(?>
+    $endComment   = '(?>
         [\r\n]{1,3}
         \s{0,}
         =end
         (?>\}|\s{1,}PipeScript[\s\r\n\}]{0,})
     )'
-$startPattern = "(?<PSStart>${startComment})"
-$endPattern   = "(?<PSEnd>${endComment})"
+    
+    $startPattern = "(?<PSStart>${startComment})"    
+    $endPattern   = "(?<PSEnd>${endComment})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
