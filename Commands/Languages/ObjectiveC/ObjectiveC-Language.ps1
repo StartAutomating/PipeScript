@@ -14,19 +14,22 @@ function Language.ObjectiveC {
     * ```''```
 #>
 [ValidatePattern('\.(?>m|mm)$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'ObjectiveC'
-    $startComment = '/\*'
-$endComment   = '\*/'
-$Whitespace   = '[\s\n\r]{0,}'
-$IgnoredContext = "(?<ignore>(?>$("null", "nil", '""', "''" -join '|'))\s{0,}){0,1}"
-$StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
-$EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    
+# We start off by declaring a number of regular expressions:
+    $startComment = '/\*' # * Start Comments ```\*```
+    $endComment   = '\*/' # * End Comments   ```/*```
+    $Whitespace   = '[\s\n\r]{0,}'
+    # * IgnoredContext ```String.empty```, ```null```, blank strings and characters
+    $IgnoredContext = "(?<ignore>(?>$("null", "nil", '""', "''" -join '|'))\s{0,}){0,1}"
+    # * StartRegex     ```$IgnoredContext + $StartComment + '{' + $Whitespace```
+    $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
+    # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
+    $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
