@@ -50,18 +50,20 @@ function Language.Rust {
     #>
 [ValidatePattern('\.rs$')]
 [Alias('Rust-Language','Language-Rust')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'Rust'
-    $startComment = '/\*'
-$endComment   = '\*/'
-$Whitespace   = '[\s\n\r]{0,}'
-$StartPattern = "(?<PSStart>${startComment}\{$Whitespace)"
-$EndPattern   = "(?<PSEnd>$Whitespace\}${endComment})"
+    
+    # We start off by declaring a number of regular expressions:
+    $startComment = '/\*' # * Start Comments ```\*```
+    $endComment   = '\*/' # * End Comments   ```/*```
+    $Whitespace   = '[\s\n\r]{0,}'
+    # * StartPattern  ```$IgnoredContext + $StartComment + '{' + $Whitespace```
+    $StartPattern = "(?<PSStart>${startComment}\{$Whitespace)"
+    # * EndPattern    ```$whitespace + '}' + $EndComment + $ignoredContext```
+    $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
