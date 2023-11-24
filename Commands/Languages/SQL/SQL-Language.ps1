@@ -36,27 +36,31 @@ function Language.SQL {
     Invoke-PipeScript .\HelloWorld.ps1.sql
 #>
 [ValidatePattern('\.sql$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'SQL'
+    
+    
+    # We start off by declaring a number of regular expressions:
     $startComment = '(?>
         (?>
             (?<IsSingleLine>--)|
             /\*
         )\s{0,}(?:PipeScript)?\s{0,}\{)'
-$endComment   = '(?>
+    $endComment   = '(?>
         --\s{0,}\}\s{0,}(?:PipeScript)?
         |
         \}\*/(?:PipeScript)?\s{0,}
     )    
     '
-$startPattern   = "(?<PSStart>${startComment})"
-$endPattern     = [Regex]::new("(?<PSEnd>${endComment})",'IgnoreCase,IgnorePatternWhitespace')
-$LinePattern   = "^\s{0,}--\s{0,}"
+    $startPattern   = "(?<PSStart>${startComment})"
+    $endPattern     = [Regex]::new("(?<PSEnd>${endComment})",'IgnoreCase,IgnorePatternWhitespace')
+    # Create a splat containing arguments to the core inline transpiler
+    
+         # Using -LinePattern will skip any inline code not starting with --
+    $LinePattern   = "^\s{0,}--\s{0,}"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
