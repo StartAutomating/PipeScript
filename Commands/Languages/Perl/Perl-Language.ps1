@@ -24,8 +24,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'Perl'
-    
+    param()
     # We start off by declaring a number of regular expressions:
     
     $startComment = '(?>
@@ -44,6 +43,7 @@ $languageDefinition = New-Module {
     
     $startPattern = "(?<PSStart>${startComment})"    
     $endPattern   = "(?<PSEnd>${endComment})"
+    $LanguageName = 'Perl'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
