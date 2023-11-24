@@ -13,19 +13,22 @@ function Language.Scala {
     * ```''```
 #>
 [ValidatePattern('\.(?>scala|sc)$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'Scala'
-    $startComment = '/\*'
-$endComment   = '\*/'
-$Whitespace   = '[\s\n\r]{0,}'
-$IgnoredContext = "(?<ignore>(?>$("null", '""', "''" -join '|'))\s{0,}){0,1}"
-$startPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
-$endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    
+    # We start off by declaring a number of regular expressions:
+    $startComment = '/\*' # * Start Comments ```\*```
+    $endComment   = '\*/' # * End Comments   ```/*```
+    $Whitespace   = '[\s\n\r]{0,}'
+    # * IgnoredContext ```String.empty```, ```null```, blank strings and characters
+    $IgnoredContext = "(?<ignore>(?>$("null", '""', "''" -join '|'))\s{0,}){0,1}"
+    # * StartPattern     ```$IgnoredContext + $StartComment + '{' + $Whitespace```
+    $startPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
+    # * EndPattern       ```$whitespace + '}' + $EndComment + $ignoredContext```
+    $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
