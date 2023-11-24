@@ -13,8 +13,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'WebAssembly'
-    
+    param()
     # We start off by declaring a number of regular expressions:
     $startComment = '\(\;' # * Start Comments ```(;```
     $endComment   = '\;\)'   # * End Comments   ```;)```
@@ -23,6 +22,7 @@ $languageDefinition = New-Module {
     $startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
     # * EndPattern       ```$whitespace + '}' + $EndComment```
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
+    $LanguageName = 'WebAssembly'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
