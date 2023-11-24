@@ -9,18 +9,20 @@ function Language.XAML {
     Executed output will be converted to XAML
 #>
 [ValidatePattern('\.xaml$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'XAML'
-    $startComment = '<\!--'
-$endComment   = '-->'
-$Whitespace   = '[\s\n\r]{0,}'
-$startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
-$endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
+    
+    # We start off by declaring a number of regular expressions:
+    $startComment = '<\!--' # * Start Comments ```<!--```
+    $endComment   = '-->'   # * End Comments   ```-->```
+    $Whitespace   = '[\s\n\r]{0,}'
+    # * StartPattern     ```$StartComment + '{' + $Whitespace```
+    $startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
+    # * EndPattern       ```$whitespace + '}' + $EndComment```
+    $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
