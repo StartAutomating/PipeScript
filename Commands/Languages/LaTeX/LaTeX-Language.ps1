@@ -8,18 +8,18 @@ function Language.LaTeX {
         Multiline comments with %{}% will be treated as blocks of PipeScript.    
     #>
 [ValidatePattern('\.(?>latex|tex)$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'LaTeX'
-    $startComment = '\%\{'
-$endComment   = '\}\%'
-$Whitespace   = '[\s\n\r]{0,}'
-$StartPattern = "(?<PSStart>${startComment})"
-$EndPattern   = "(?<PSEnd>${endComment}\s{0,})"
+    
+    # We start off by declaring a number of regular expressions:
+    $startComment = '\%\{' # * Start Comments ```%{```
+    $endComment   = '\}\%' # * End Comments   ```}%```
+    $Whitespace   = '[\s\n\r]{0,}'        
+    $StartPattern = "(?<PSStart>${startComment})"    
+    $EndPattern   = "(?<PSEnd>${endComment}\s{0,})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
