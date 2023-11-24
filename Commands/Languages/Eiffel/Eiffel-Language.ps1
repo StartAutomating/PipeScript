@@ -11,18 +11,19 @@ function Language.Eiffel {
         -- } or -- }PipeScript  ends a PipeScript block                
     #>
 [ValidatePattern('\.e$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'Eiffel'
+    
+    # We start off by declaring a number of regular expressions:
     $startComment = '(?>(?<IsSingleLine>--)\s{0,}(?:PipeScript)?\s{0,}\{)'
-$endComment   = '(?>--\s{0,}\}\s{0,}(?:PipeScript)?\s{0,})'
-$StartPattern = "(?<PSStart>${startComment})"
-$EndPattern   = "(?<PSEnd>${endComment})"
-$LinePattern   = "^\s{0,}--\s{0,}"
+    $endComment   = '(?>--\s{0,}\}\s{0,}(?:PipeScript)?\s{0,})'        
+    $StartPattern = "(?<PSStart>${startComment})"
+    $EndPattern   = "(?<PSEnd>${endComment})"
+    # Using -LinePattern will skip any inline code not starting with --
+    $LinePattern   = "^\s{0,}--\s{0,}"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
