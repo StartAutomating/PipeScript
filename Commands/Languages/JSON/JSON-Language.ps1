@@ -20,20 +20,22 @@ function Language.JSON {
         }
     #>
 [ValidatePattern('\.json$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'JSON'
-    $startComment = '/\*'
-$endComment   = '\*/'
-$Whitespace   = '[\s\n\r]{0,}'
-$IgnoredContext = "(?<ignore>(?>$('null', '""', '\{\}', '\[\]' -join '|'))\s{0,}){0,1}"
-$StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
-$EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
-$ForeachObject = {
+    
+    # We start off by declaring a number of regular expressions:
+    $startComment = '/\*' # * Start Comments ```\*```
+    $endComment   = '\*/' # * End Comments   ```/*```
+    $Whitespace   = '[\s\n\r]{0,}'
+    # * IgnoredContext ```String.empty```, ```null```, blank strings and characters
+    $IgnoredContext = "(?<ignore>(?>$('null', '""', '\{\}', '\[\]' -join '|'))\s{0,}){0,1}"
+    
+    $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"    
+    $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    $ForeachObject = {
         $in = $_
         if (($in -is [string]) -or 
             ($in.GetType -and $in.GetType().IsPrimitive)) {
