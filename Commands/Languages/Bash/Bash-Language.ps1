@@ -27,17 +27,19 @@ function Language.Bash {
         Invoke-PipeScript .\HelloWorld.ps1.sh
     #>
 [ValidatePattern('\.sh$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'Bash'
-    $startComment = '(?>\<\<PipeScript\{\})'
-$endComment   = '(?>PipeScript\{\})'
-$StartPattern = "(?<PSStart>${startComment})"
-$EndPattern   = "(?<PSEnd>${endComment})"
+    
+    # We start off by declaring a number of regular expressions:
+    $startComment = '(?>\<\<PipeScript\{\})' 
+    $endComment   = '(?>PipeScript\{\})'    
+    
+    $StartPattern = "(?<PSStart>${startComment})"
+    
+    $EndPattern   = "(?<PSEnd>${endComment})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
