@@ -11,22 +11,25 @@ function Language.PowerShellData {
     * ```{}```
 #>
 [ValidatePattern('\.psd1$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'PowerShellData'
-    $startComment = '<\#'
-$endComment   = '\#>'
+    
+# We start off by declaring a number of regular expressions:
+$startComment = '<\#' # * Start Comments ```\*```
+$endComment   = '\#>' # * End Comments   ```/*```
 $Whitespace   = '[\s\n\r]{0,}'
+# * IgnoredContext (single-quoted strings)
 $IgnoredContext = "
 (?<ignore>
     (?>'((?:''|[^'])*)')
     [\s - [ \r\n ] ]{0,}
 ){0,1}"
+# * StartPattern     ```$IgnoredContext + $StartComment + '{' + $Whitespace```
 $StartPattern = [regex]::New("(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)", 'IgnorePatternWhitespace')
+# * EndPattern       ```$whitespace + '}' + $EndComment + $ignoredContext```
 $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}[\s-[\r\n]]{0,}${IgnoredContext})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
