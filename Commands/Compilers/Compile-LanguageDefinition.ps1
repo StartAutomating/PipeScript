@@ -7,7 +7,14 @@ function Compile.LanguageDefinition {
         Compiles a language definition.
         
         Language definitions integrate languages into PipeScript, so that they can be templated, interpreted, and compiled.
-    
+    .NOTES        
+        Language definitions are an open-ended object.
+        By providing key properties or methods, a language can support a variety of scenarios.
+        |Scenario|Required Properties|
+        |-|-|
+        |Templating    | `.StartPattern`, `.EndPattern`|
+        |Interpretation| `.Interpreter`                |
+        Language definitions should not contain named blocks.
     .EXAMPLE
         Import-PipeScript {         
             language function TestLanguage {
@@ -57,8 +64,8 @@ function Compile.LanguageDefinition {
                     '$this = $myInvocation.MyCommand'
                     'if (-not $this.Self) {'
                     '$languageDefinition = New-Module {'
-                    "    `$LanguageName = '$languageName'"
-                    "    $($LanguageFunctionAst.Body.Extent -replace '^{' -replace '}$')"
+                    "    `$LanguageName = '$languageName'"                    
+                    "    $($LanguageFunctionAst.Body.EndBlock.Statements -join [Environment]::NewLine)"
                     "    Export-ModuleMember -Variable * -Function * -Alias *"
                     "} -AsCustomObject"                    
                     '$languageDefinition.pstypenames.clear()'
