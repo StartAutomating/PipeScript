@@ -14,19 +14,21 @@ function Language.Arduino {
         * ```''```
     #>
 [ValidatePattern('\.(?>ino)$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'Arduino'
-    $startComment = '/\*'
-$endComment   = '\*/'
-$Whitespace   = '[\s\n\r]{0,}'
-$IgnoredContext = "(?<ignore>(?>$("null", '""', "''" -join '|'))\s{0,}){0,1}"
-$StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
-$EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    
+    # Any Language can be parsed with a series of regular expresssions.
+    $startComment = '/\*' # * Start Comments ```\*```
+    $endComment   = '\*/' # * End Comments   ```/*```
+    $Whitespace   = '[\s\n\r]{0,}'
+    # * IgnoredContext ```String.empty```, ```null```, blank strings and characters
+    $IgnoredContext = "(?<ignore>(?>$("null", '""', "''" -join '|'))\s{0,}){0,1}"
+    # To support templates, a language has to declare `$StartPattern` and `$EndPattern`:
+    $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
+    $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
