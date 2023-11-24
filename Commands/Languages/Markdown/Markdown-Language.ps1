@@ -28,13 +28,15 @@ function Language.Markdown {
     .> .\HelloWorld.ps1.md
 #>
 [ValidatePattern('\.(?>md|markdown|txt)$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'Markdown'
+    
+    # Note: Markdown is one of the more complicated templates.
+    # This is because Markdown isn't _just_ Markdown.  Markdown allows inline HTML.  Inline HTML, in turn, allows inline JavaScript and CSS.
+    # Also, Markdown code blocks can be provided a few different ways, and thus PipeScript can be embedded a few different ways.
     $StartConditions = 
         '# three ticks can start an inline code block
         (?>`{3})
@@ -52,7 +54,7 @@ $languageDefinition = New-Module {
         # Or a JavaScript/CSS comment start
         /\*
         '
-$endConditions = @(        
+    $endConditions = @(        
         '# Or a literal pipe, followed by a single tick
         \|`',
         '[\.\<\>]{2} # At least 2 of .<>
@@ -65,22 +67,26 @@ $endConditions = @(
         \*/
         '
     )
-$startComment = "(?>
+    $startComment = "(?>
 $($StartConditions -join ([Environment]::NewLine + '  |' + [Environment]::NewLine))        
     )\s{0,}
     # followed by a bracket and any opening whitespace.
     \{\s{0,}
 "
-$endComment   = "
+    
+    $endComment   = "
     \}
     \s{0,}
     (?>
 $($endConditions -join ([Environment]::NewLine + '  |' + [Environment]::NewLine))
     )
     "
-$StartPattern = "(?<PSStart>${startComment})"
-$EndPattern   = "(?<PSEnd>${endComment})"
-$ForeachObject = {
+    
+    
+    $StartPattern = "(?<PSStart>${startComment})"
+    # * EndRegex       ```$whitespace + '}' + $EndComment```
+    $EndPattern   = "(?<PSEnd>${endComment})"
+    $ForeachObject = {
         process {
             $in = $_
             if ($in -is [string]) {
