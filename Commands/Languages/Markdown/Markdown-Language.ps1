@@ -32,8 +32,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'Markdown'
-    
+    param()
     # Note: Markdown is one of the more complicated templates.
     # This is because Markdown isn't _just_ Markdown.  Markdown allows inline HTML.  Inline HTML, in turn, allows inline JavaScript and CSS.
     # Also, Markdown code blocks can be provided a few different ways, and thus PipeScript can be embedded a few different ways.
@@ -106,6 +105,7 @@ $($endConditions -join ([Environment]::NewLine + '  |' + [Environment]::NewLine)
             }
         }
     }
+    $LanguageName = 'Markdown'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
