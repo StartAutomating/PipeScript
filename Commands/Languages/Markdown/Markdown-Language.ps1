@@ -33,41 +33,8 @@ param(
                 )
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
-$languageDefinition =
-New-Module {
-    
-<#
-.SYNOPSIS
-    Markdown Template Transpiler.
-.DESCRIPTION
-    Allows PipeScript to generate Markdown.
-    Because Markdown does not support comment blocks, PipeScript can be written inline inside of specialized Markdown code blocks.
-    PipeScript can be included in a Markdown code block that has the Language ```PipeScript{```
-    
-    In Markdown, PipeScript can also be specified as the language using any two of the following characters ```.<>```
-.Example
-    .> {
-        $markdownContent = @'
-# Thinking of a Number Between 1 and 100: `|{Get-Random -Min 1 -Max 100}|` is the number
-### abc
-~~~PipeScript{
-    '* ' + @("a", "b", "c" -join ([Environment]::Newline + '* '))
-}
-~~~
-#### Guess what, other code blocks are unaffected
-~~~PowerShell
-1 + 1 -eq 2
-~~~
-'@
-        [OutputFile('.\HelloWorld.ps1.md')]$markdownContent
-    }
-    .> .\HelloWorld.ps1.md
-#>
-    [ValidatePattern('\.(?>md|markdown|txt)$')]
-    param()
-    # Note: Markdown is one of the more complicated templates.
-    # This is because Markdown isn't _just_ Markdown.  Markdown allows inline HTML.  Inline HTML, in turn, allows inline JavaScript and CSS.
-    # Also, Markdown code blocks can be provided a few different ways, and thus PipeScript can be embedded a few different ways.
+$languageDefinition = New-Module {
+    $LanguageName = 'Markdown'
     $StartConditions = 
         '# three ticks can start an inline code block
         (?>`{3})
@@ -85,7 +52,7 @@ New-Module {
         # Or a JavaScript/CSS comment start
         /\*
         '
-    $endConditions = @(        
+$endConditions = @(        
         '# Or a literal pipe, followed by a single tick
         \|`',
         '[\.\<\>]{2} # At least 2 of .<>
@@ -98,26 +65,22 @@ New-Module {
         \*/
         '
     )
-    $startComment = "(?>
+$startComment = "(?>
 $($StartConditions -join ([Environment]::NewLine + '  |' + [Environment]::NewLine))        
     )\s{0,}
     # followed by a bracket and any opening whitespace.
     \{\s{0,}
 "
-    
-    $endComment   = "
+$endComment   = "
     \}
     \s{0,}
     (?>
 $($endConditions -join ([Environment]::NewLine + '  |' + [Environment]::NewLine))
     )
     "
-    
-    
-    $StartPattern = "(?<PSStart>${startComment})"
-    # * EndRegex       ```$whitespace + '}' + $EndComment```
-    $EndPattern   = "(?<PSEnd>${endComment})"
-    $ForeachObject = {
+$StartPattern = "(?<PSStart>${startComment})"
+$EndPattern   = "(?<PSEnd>${endComment})"
+$ForeachObject = {
         process {
             $in = $_
             if ($in -is [string]) {
