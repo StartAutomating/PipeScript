@@ -18,17 +18,19 @@ RandomNumber = """{Get-Random}"""
     .> .\RandomExample.ps1.toml
 #>
 [ValidatePattern('\.toml$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'TOML'
+    
+    # We start off by declaring a number of regular expressions:
+    
     $startComment = '(?>"""\{)'
-$endComment   = '(?>\}""")'
-$startPattern = "(?<PSStart>${startComment})"
-$endPattern   = "(?<PSEnd>${endComment})"
+    $endComment   = '(?>\}""")'
+    
+    $startPattern = "(?<PSStart>${startComment})"    
+    $endPattern   = "(?<PSEnd>${endComment})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
