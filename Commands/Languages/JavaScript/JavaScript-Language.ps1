@@ -43,8 +43,8 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'JavaScript'
-    
+    param(
+)
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -64,6 +64,7 @@ $languageDefinition = New-Module {
             "$(ConvertTo-Json -Depth 100 -InputObject $in)"
         }
     }
+    $LanguageName = 'JavaScript'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
