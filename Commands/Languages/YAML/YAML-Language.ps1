@@ -33,13 +33,12 @@ List:
     .> .\HelloWorld.ps1.yaml
 #>
 [ValidatePattern('\.(?>yml|yaml)$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'YAML'
+        
     $ReplacePattern  = [Regex]::new('        
         (?<Indent>\s{0,})      # Capture the indentation level
         (?<InList>-\s)?        # Determine if we are in a list
@@ -61,7 +60,8 @@ $languageDefinition = New-Module {
         (?(InList)\s{2})
         \}
         ', 'IgnorePatternWhitespace,IgnoreCase')
-$ForeachObject = {
+    
+    $ForeachObject = {
         begin {
             $yamlOut = [Collections.Queue]::new()
         }
