@@ -15,8 +15,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'PowerShellData'
-    
+    param()
 # We start off by declaring a number of regular expressions:
 $startComment = '<\#' # * Start Comments ```\*```
 $endComment   = '\#>' # * End Comments   ```/*```
@@ -31,6 +30,7 @@ $IgnoredContext = "
 $StartPattern = [regex]::New("(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)", 'IgnorePatternWhitespace')
 # * EndPattern       ```$whitespace + '}' + $EndComment + $ignoredContext```
 $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}[\s-[\r\n]]{0,}${IgnoredContext})"
+    $LanguageName = 'PowerShellData'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
