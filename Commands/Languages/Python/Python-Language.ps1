@@ -25,18 +25,20 @@ print("$msg")
     Invoke-PipeScript .\HelloWorld.py # Should -Be 'Hello World'
 #>
 [ValidatePattern('\.py$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'Python'
+    
+    # We start off by declaring a number of regular expressions:
+    
     $startComment = '(?>"""\{)'
-$endComment   = '(?>\}""")'
-$startPattern = "(?<PSStart>${startComment})"
-$endPattern   = "(?<PSEnd>${endComment})"
-$Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('python', 'Application'))[0]
+    $endComment   = '(?>\}""")'
+    
+    $startPattern = "(?<PSStart>${startComment})"    
+    $endPattern   = "(?<PSEnd>${endComment})"
+    $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('python', 'Application'))[0]
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
