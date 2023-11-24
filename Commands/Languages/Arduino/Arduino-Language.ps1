@@ -18,8 +18,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'Arduino'
-    
+    param()
     # Any Language can be parsed with a series of regular expresssions.
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -29,6 +28,7 @@ $languageDefinition = New-Module {
     # To support templates, a language has to declare `$StartPattern` and `$EndPattern`:
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    $LanguageName = 'Arduino'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
