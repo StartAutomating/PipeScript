@@ -50,17 +50,19 @@ function Language.PowerShellXML {
     )
 #>
 [ValidatePattern('\.ps1xml$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'PowerShellXML'
-    $startComment = '<\!--'
-$endComment   = '-->'
+    
+# We start off by declaring a number of regular expressions:
+$startComment = '<\!--' # * Start Comments ```<!--```
+$endComment   = '-->'   # * End Comments   ```-->```
 $Whitespace   = '[\s\n\r]{0,}'
+# * StartPattern     ```$StartComment + '{' + $Whitespace```
 $startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
+# * EndPattern       ```$whitespace + '}' + $EndComment```
 $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
