@@ -45,24 +45,29 @@ function Language.Go {
         Invoke-PipeScript .\HelloWorld.go
     #>
 [ValidatePattern('\.go$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'Go'
-    $startComment = '/\*'
-$endComment   = '\*/'
-$Whitespace   = '[\s\n\r]{0,}'
-$IgnoredContext = "(?<ignore>(?>$("nil", '""', "''" -join '|'))\s{0,}){0,1}"
-$StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
-$EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
-$GoApplication = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('go', 'Application'))[0]
-$Compiler = # To compile go
+    
+    # We start off by declaring a number of regular expressions:
+    $startComment = '/\*' # * Start Comments ```\*```
+    $endComment   = '\*/' # * End Comments   ```/*```
+    $Whitespace   = '[\s\n\r]{0,}'
+    # * IgnoredContext ```String.empty```, ```null```, blank strings and characters
+    $IgnoredContext = "(?<ignore>(?>$("nil", '""', "''" -join '|'))\s{0,}){0,1}"
+    # * StartRegex     ```$IgnoredContext + $StartComment + '{' + $Whitespace```
+    $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
+    # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
+    $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    # Find Go in the path
+    $GoApplication = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('go', 'Application'))[0]
+    $Compiler = # To compile go
         $GoApplication, # we call 'go'
-        'build'
-$Interpret  = # To interpret go,
+        'build' # followed by 'build'
+    
+    $Interpret  = # To interpret go,
         $GoApplication, # we call 'go' in the path
         'run'
     Export-ModuleMember -Variable * -Function * -Alias *
