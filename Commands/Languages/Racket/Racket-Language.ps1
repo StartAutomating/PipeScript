@@ -11,18 +11,21 @@ function Language.Racket {
     * ```{}```
 #>
 [ValidatePattern('\.rkt$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'Racket'
-    $startComment = '\#\|'
-$endComment   = '\|\#'
-$Whitespace   = '[\s\n\r]{0,}'
-$startPattern = [Regex]::New("(?<PSStart>${startComment}\{$Whitespace)", 'IgnorePatternWhitespace')
-$endPattern   = "(?<PSEnd>$Whitespace\}${endComment}[\s-[\r\n]]{0,})"
+    
+    # We start off by declaring a number of regular expressions:
+    $startComment = '\#\|' # * Start Comments ```#|```
+    $endComment   = '\|\#' # * End Comments   ```|#```
+    $Whitespace   = '[\s\n\r]{0,}'
+    # * IgnoredContext (single-quoted strings)    
+    # * StartPattern     ```$IgnoredContext + $StartComment + '{' + $Whitespace```
+    $startPattern = [Regex]::New("(?<PSStart>${startComment}\{$Whitespace)", 'IgnorePatternWhitespace')
+    # * EndPattern       ```$whitespace + '}' + $EndComment + $ignoredContext```
+    $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}[\s-[\r\n]]{0,})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
