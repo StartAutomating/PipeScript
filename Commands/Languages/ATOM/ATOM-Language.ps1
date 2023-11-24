@@ -14,8 +14,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'ATOM'
-    
+    param()
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
@@ -23,6 +22,7 @@ $languageDefinition = New-Module {
     # To support templates, a language has to declare `$StartPattern` and `$EndPattern`:
     $StartPattern = "(?<PSStart>${startComment}\{$Whitespace)"
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
+    $LanguageName = 'ATOM'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
