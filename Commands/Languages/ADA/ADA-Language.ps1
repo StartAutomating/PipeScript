@@ -34,8 +34,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'ADA'
-    
+    param()
     # Any Language can be parsed with a series of regular expresssions.
     $startComment = '(?>(?<IsSingleLine>--)\s{0,}(?:PipeScript)?\s{0,}\{)'
     $endComment   = '(?>--\s{0,}\}\s{0,}(?:PipeScript)?\s{0,})'
@@ -46,6 +45,7 @@ $languageDefinition = New-Module {
     # A language can also declare a `$LinePattern`.  If it does, any inline code that does not match this pattern will be skipped.
     # Using -LinePattern will skip any inline code not starting with --
     $LinePattern   = "^\s{0,}--\s{0,}"
+    $LanguageName = 'ADA'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
