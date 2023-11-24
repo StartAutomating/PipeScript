@@ -32,18 +32,20 @@ function Language.TCL {
     Invoke-PipeScript .\HelloWorld.ps1.tcl
 #>
 [ValidatePattern('\.t(?>cl|k)$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'TCL'
+    
+    # We start off by declaring a number of regular expressions:
     $startComment = '(?>\#\s{0,}(?:PipeScript)?\s{0,}\{)'
-$endComment   = '(?>\#\s{0,}\}\s{0,}(?:PipeScript)?\s{0,})'
-$startPattern = "(?<PSStart>${startComment})"
-$endPattern   = "(?<PSEnd>${endComment})"
-$LinePattern   = "^\s{0,}\#\s{0,}"
+    $endComment   = '(?>\#\s{0,}\}\s{0,}(?:PipeScript)?\s{0,})'        
+    $startPattern = "(?<PSStart>${startComment})"
+    $endPattern   = "(?<PSEnd>${endComment})"
+    # Create a splat containing arguments to the core inline transpiler
+    # Using -LinePattern will skip any inline code not starting with #
+    $LinePattern   = "^\s{0,}\#\s{0,}"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
