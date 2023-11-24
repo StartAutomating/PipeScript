@@ -10,18 +10,20 @@ function Language.Razor {
     Razor comment blocks like ```@*{}*@``` will also be treated as blocks of PipeScript.
 #>
 [ValidatePattern('\.(cshtml|razor)$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'Razor'
-    $startComment = '(?><\!--|/\*|\@\*)'
-$endComment   = '(?>-->|\*/|\*@)'
-$Whitespace   = '[\s\n\r]{0,}'
-$startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
-$endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
+    
+    # We start off by declaring a number of regular expressions:
+    $startComment = '(?><\!--|/\*|\@\*)' 
+    $endComment   = '(?>-->|\*/|\*@)'
+    $Whitespace   = '[\s\n\r]{0,}'
+    # * StartPattern     ```$StartComment + '{' + $Whitespace```
+    $startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
+    # * EndPattern       ```$whitespace + '}' + $EndComment```
+    $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
