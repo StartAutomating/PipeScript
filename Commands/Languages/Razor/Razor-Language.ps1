@@ -14,8 +14,8 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'Razor'
-    
+    param(
+)
     # We start off by declaring a number of regular expressions:
     $startComment = '(?><\!--|/\*|\@\*)' 
     $endComment   = '(?>-->|\*/|\*@)'
@@ -24,6 +24,7 @@ $languageDefinition = New-Module {
     $startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
     # * EndPattern       ```$whitespace + '}' + $EndComment```
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
+    $LanguageName = 'Razor'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
