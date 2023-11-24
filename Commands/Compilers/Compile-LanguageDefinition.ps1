@@ -43,7 +43,7 @@ function Compile.LanguageDefinition {
         switch ($PSCmdlet.ParameterSetName) {
             ScriptBlock {
                 $newScriptLines = @(                    
-                    "`New-Module {"
+                    "`New-Module {"                    
                     "    $LanguageDefinition"
                     "    Export-ModuleMember -Variable * -Function * -Alias *"
                     "} -AsCustomObject"
@@ -53,13 +53,14 @@ function Compile.LanguageDefinition {
             FunctionDefinition {
                 if ($LanguageFunctionAst.Name -notmatch '^Language\p{P}') { return }
                 $newScriptLines = @(
+                    $languageName = $LanguageFunctionAst.Name -replace '^Language\p{P}'
                     '$this = $myInvocation.MyCommand'
                     'if (-not $this.Self) {'
-                    '$languageDefinition ='
-                    & $myCmd.ScriptBlock -LanguageDefinition (
-                        [ScriptBlock]::Create(($LanguageFunctionAst.Body.Extent -replace '^{' -replace '}$'))
-                    )
-                    $languageName = $LanguageFunctionAst.Name -replace '^Language\p{P}'
+                    '$languageDefinition = New-Module {'
+                    "    `$LanguageName = '$languageName'"
+                    "    $($LanguageFunctionAst.Body.Extent -replace '^{' -replace '}$')"
+                    "    Export-ModuleMember -Variable * -Function * -Alias *"
+                    "} -AsCustomObject"                    
                     '$languageDefinition.pstypenames.clear()'
                     '$languageDefinition.pstypenames.add("Language")'
                     '$languageDefinition.pstypenames.add("Language.' + $languageName + '")'
