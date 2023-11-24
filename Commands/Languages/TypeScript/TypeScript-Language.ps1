@@ -19,8 +19,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'TypeScript'
-    
+    param()
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -31,6 +30,7 @@ $languageDefinition = New-Module {
     $startPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndPattern       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    $LanguageName = 'TypeScript'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
