@@ -71,7 +71,7 @@ Compile function LanguageDefinition {
                     'if (-not $this.Self) {'
                     '$languageDefinition = New-Module {'
                     "    `$LanguageName = '$languageName'"                    
-                    "    $($LanguageFunctionAst.Body.EndBlock.Statements -join [Environment]::NewLine)"
+                    "    $($LanguageFunctionAst.Body.EndBlock -replace '^\s{0,}param\(\)')"
                     "    Export-ModuleMember -Variable * -Function * -Alias *"
                     "} -AsCustomObject"                    
                     '$languageDefinition.pstypenames.clear()'
@@ -98,9 +98,7 @@ Compile function LanguageDefinition {
                     $blockComments[0]                    
                 }
                 $LanguageFunctionAst.Body.ParamBlock.Attributes -join [Environment]::NewLine
-                'param(
-                    
-                )'
+                'param()'
                 $newScriptLines
                 "}") -join [Environment]::NewLine
                 
