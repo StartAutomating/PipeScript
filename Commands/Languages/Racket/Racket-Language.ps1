@@ -15,8 +15,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'Racket'
-    
+    param()
     # We start off by declaring a number of regular expressions:
     $startComment = '\#\|' # * Start Comments ```#|```
     $endComment   = '\|\#' # * End Comments   ```|#```
@@ -26,6 +25,7 @@ $languageDefinition = New-Module {
     $startPattern = [Regex]::New("(?<PSStart>${startComment}\{$Whitespace)", 'IgnorePatternWhitespace')
     # * EndPattern       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}[\s-[\r\n]]{0,})"
+    $LanguageName = 'Racket'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
