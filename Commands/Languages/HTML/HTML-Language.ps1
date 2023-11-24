@@ -60,18 +60,20 @@ function Language.HTML {
     $htmlFile = .> .\Index.ps.html
 #>
 [ValidatePattern('\.htm{0,1}')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'HTML'
-    $startComment = '(?><\!--|/\*)'
-$endComment   = '(?>-->|\*/)'
-$Whitespace   = '[\s\n\r]{0,}'
-$StartPattern = "(?<PSStart>${startComment}\{$Whitespace)"
-$EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
+    
+    # We start off by declaring a number of regular expressions:
+    $startComment = '(?><\!--|/\*)' # * Start Comments ```<!--```
+    $endComment   = '(?>-->|\*/)'   # * End Comments   ```-->```
+    $Whitespace   = '[\s\n\r]{0,}'
+    # * StartRegex     ```$StartComment + '{' + $Whitespace```
+    $StartPattern = "(?<PSStart>${startComment}\{$Whitespace)"
+    # * EndRegex       ```$whitespace + '}' + $EndComment```
+    $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
