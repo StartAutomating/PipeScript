@@ -36,8 +36,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'TCL'
-    
+    param()
     # We start off by declaring a number of regular expressions:
     $startComment = '(?>\#\s{0,}(?:PipeScript)?\s{0,}\{)'
     $endComment   = '(?>\#\s{0,}\}\s{0,}(?:PipeScript)?\s{0,})'        
@@ -46,6 +45,7 @@ $languageDefinition = New-Module {
     # Create a splat containing arguments to the core inline transpiler
     # Using -LinePattern will skip any inline code not starting with #
     $LinePattern   = "^\s{0,}\#\s{0,}"
+    $LanguageName = 'TCL'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
