@@ -38,43 +38,8 @@ param(
                 )
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
-$languageDefinition =
-New-Module {
-    
-<#
-.SYNOPSIS
-    Yaml Template Transpiler.
-.DESCRIPTION
-    Allows PipeScript to generate Yaml.
-    Because Yaml does not support comment blocks, PipeScript can be written inline inside of specialized Yaml string.
-    PipeScript can be included in a multiline Yaml string with the Key PipeScript and a Value surrounded by {}    
-.Example
-    .> {
-        $yamlContent = @'
-PipeScript: |
-  {
-    @{a='b'}
-  }
-List:
-  - PipeScript: |
-      {
-        @{a='b';k2='v';k3=@{k='v'}}
-      }
-  - PipeScript: |
-      {
-        @(@{a='b'}, @{c='d'})
-      }      
-  - PipeScript: |
-      {
-        @{a='b'}, @{c='d'}
-      }
-'@
-        [OutputFile('.\HelloWorld.ps1.yaml')]$yamlContent
-    }
-    .> .\HelloWorld.ps1.yaml
-#>
-[ValidatePattern('\.(?>yml|yaml)$')]
-    param()    
+$languageDefinition = New-Module {
+    $LanguageName = 'YAML'
     $ReplacePattern  = [Regex]::new('        
         (?<Indent>\s{0,})      # Capture the indentation level
         (?<InList>-\s)?        # Determine if we are in a list
@@ -96,8 +61,7 @@ List:
         (?(InList)\s{2})
         \}
         ', 'IgnorePatternWhitespace,IgnoreCase')
-    
-    $ForeachObject = {
+$ForeachObject = {
         begin {
             $yamlOut = [Collections.Queue]::new()
         }
@@ -139,7 +103,6 @@ List:
             }) -join [Environment]::Newline
         }
     }
-    
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
