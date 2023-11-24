@@ -13,28 +13,14 @@ param(
                 )
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
-$languageDefinition =
-New-Module {
-    
-<#
-.SYNOPSIS
-    XML Template Transpiler.
-.DESCRIPTION
-    Allows PipeScript to generate XML.
-    Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
-#>
-[ValidatePattern('\.xml$')]
-param()
-    # We start off by declaring a number of regular expressions:
-    $startComment = '<\!--' # * Start Comments ```<!--```
-    $endComment   = '-->'   # * End Comments   ```-->```
-    $Whitespace   = '[\s\n\r]{0,}'
-    # * StartPattern     ```$StartComment + '{' + $Whitespace```
-    $startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
-    # * EndPattern       ```$whitespace + '}' + $EndComment```
-    $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
-    
-    $ForeachObject = {
+$languageDefinition = New-Module {
+    $LanguageName = 'XML'
+    $startComment = '<\!--'
+$endComment   = '-->'
+$Whitespace   = '[\s\n\r]{0,}'
+$startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
+$endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
+$ForeachObject = {
         $in = $_
         if (($in -is [string]) -or 
             ($in.GetType -and $in.GetType().IsPrimitive)) {
