@@ -65,7 +65,7 @@ function Compile.LanguageDefinition {
                     'if (-not $this.Self) {'
                     '$languageDefinition = New-Module {'
                     "    `$LanguageName = '$languageName'"                    
-                    "    $($LanguageFunctionAst.Body.EndBlock -replace '^\s{0,}param\(\)')"
+                    "    $($LanguageFunctionAst.Body.EndBlock -replace '^\s{0,}param\([\s\r\n]{0,}\)')"
                     "    Export-ModuleMember -Variable * -Function * -Alias *"
                     "} -AsCustomObject"                    
                     '$languageDefinition.pstypenames.clear()'
