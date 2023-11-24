@@ -33,21 +33,24 @@ function Language.CSharp {
         $addedType::Main(@())    
     #>
 [ValidatePattern('\.cs$')]
-param(
-                    
-                )
+param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     $LanguageName = 'CSharp'
-    $startComment = '/\*'
-$endComment   = '\*/'
-$Whitespace   = '[\s\n\r]{0,}'
-$IgnoredContext = "(?<ignore>(?>$("String\.empty", "null", '""', "''" -join '|'))\s{0,}){0,1}"
-$StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
-$EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
-$Compiler = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('dotnet', 'Application'))[0], 'build'
-$Runner  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('dotnet', 'Application'))[0], 'run'
+    
+    # We start off by declaring a number of regular expressions:
+    $startComment = '/\*' # * Start Comments ```\*```
+    $endComment   = '\*/' # * End Comments   ```/*```
+    $Whitespace   = '[\s\n\r]{0,}'
+    # * IgnoredContext ```String.empty```, ```null```, blank strings and characters
+    $IgnoredContext = "(?<ignore>(?>$("String\.empty", "null", '""', "''" -join '|'))\s{0,}){0,1}"
+    # * StartPattern     ```$IgnoredContext + $StartComment + '{' + $Whitespace```
+    $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
+    # * EndPattern       ```$whitespace + '}' + $EndComment + $ignoredContext```
+    $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    $Compiler = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('dotnet', 'Application'))[0], 'build'  # To compile C#, we'll use dotnet build 
+    $Runner  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('dotnet', 'Application'))[0], 'run'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
