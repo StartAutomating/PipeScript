@@ -36,8 +36,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'R'
-    
+    param()
     # We start off by declaring a number of regular expressions:
     $startComment = '(?>(?<IsSingleLine>\#)\s{0,}(?:PipeScript)?\s{0,}\{)'
     $endComment   = '(?>\#\s{0,}\}\s{0,}(?:PipeScript)?\s{0,})'        
@@ -45,6 +44,7 @@ $languageDefinition = New-Module {
     $endPattern   = "(?<PSEnd>${endComment})"
         # Using -LinePattern will skip any inline code not starting with #
     $LinePattern   = "^\s{0,}\#\s{0,}"
+    $LanguageName = 'R'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
