@@ -12,8 +12,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'Ruby'
-    
+    param()
     # We start off by declaring a number of regular expressions:
     
     $startComment = '(?>[\r\n]{1,3}\s{0,}=begin[\s\r\n]{0,}\{)'
@@ -26,6 +25,7 @@ $languageDefinition = New-Module {
     
     $startPattern = "(?<PSStart>${IgnoredContext}${startComment})"    
     $endPattern   = "(?<PSEnd>${endComment}${IgnoredContext})"
+    $LanguageName = 'Ruby'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
