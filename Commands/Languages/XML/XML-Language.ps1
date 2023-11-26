@@ -5,6 +5,7 @@ function Language.XML {
     XML Template Transpiler.
 .DESCRIPTION
     Allows PipeScript to generate XML.
+
     Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
 #>
 [ValidatePattern('\.xml$')]
@@ -13,6 +14,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
