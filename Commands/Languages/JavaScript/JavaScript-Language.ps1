@@ -5,10 +5,15 @@ function Language.JavaScript {
     JavaScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate JavaScript.
+
     Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
+
     String output from these blocks will be embedded directly.  All other output will be converted to JSON.
+
     Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
+
     The JavaScript Inline Transpiler will consider the following syntax to be empty:
+
     * ```undefined```
     * ```null```
     * ```""```
@@ -45,6 +50,7 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
 )
+
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -54,7 +60,9 @@ $languageDefinition = New-Module {
     
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"    
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+
     $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('node', 'Application'))[0] # Get the first node, if present
+
     $ForeachObject = {
         $in = $_
         if (($in -is [string]) -or 
