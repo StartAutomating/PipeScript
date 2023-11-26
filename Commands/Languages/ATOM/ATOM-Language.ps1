@@ -5,6 +5,7 @@ function Language.ATOM {
         ATOM Language Definition
     .DESCRIPTION
         Defines ATOM within PipeScript.
+
         This allows ATOM to be templated.
         
         Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
@@ -15,6 +16,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
