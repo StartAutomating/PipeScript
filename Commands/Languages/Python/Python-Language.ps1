@@ -5,7 +5,9 @@ function Language.Python {
     Python Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate Python.
+
     Because Python does not support multiline comment blocks, PipeScript can be written inline inside of multiline string
+
     PipeScript can be included in a Python string that starts and ends with ```{}```, for example ```"""{}"""```
 .Example
     .> {
@@ -19,6 +21,7 @@ print("$msg")
 '@
         [OutputFile('.\HelloWorld.ps1.py')]$PythonContent
     }
+
     .> .\HelloWorld.ps1.py
 .EXAMPLE
     'print("Hello World")' > .\HelloWorld.py
@@ -30,6 +33,8 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
+
     # We start off by declaring a number of regular expressions:
     
     $startComment = '(?>"""\{)'
@@ -37,6 +42,7 @@ $languageDefinition = New-Module {
     
     $startPattern = "(?<PSStart>${startComment})"    
     $endPattern   = "(?<PSEnd>${endComment})"
+
     $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('python', 'Application'))[0]
     $LanguageName = 'Python'
     Export-ModuleMember -Variable * -Function * -Alias *
