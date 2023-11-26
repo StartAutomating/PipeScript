@@ -1,5 +1,7 @@
 
 function Signal.Nothing {
+
+
     <#
     .SYNOPSIS
         Outputs Nothing
@@ -23,5 +25,8 @@ function Signal.Nothing {
             Invocation = $MyInvocation
         })
     }
+
+
+
 }
 
