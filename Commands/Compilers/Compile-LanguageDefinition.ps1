@@ -1,5 +1,7 @@
 
 function Compile.LanguageDefinition {
+
+
     <#
     .SYNOPSIS
         Compiles a language definition 
@@ -9,11 +11,14 @@ function Compile.LanguageDefinition {
         Language definitions integrate languages into PipeScript, so that they can be templated, interpreted, and compiled.
     .NOTES        
         Language definitions are an open-ended object.
+
         By providing key properties or methods, a language can support a variety of scenarios.
+
         |Scenario|Required Properties|
         |-|-|
         |Templating    | `.StartPattern`, `.EndPattern`|
         |Interpretation| `.Interpreter`                |
+
         Language definitions should not contain named blocks.
     .EXAMPLE
         Import-PipeScript {         
@@ -40,12 +45,15 @@ function Compile.LanguageDefinition {
     [Alias('ScriptBlock','Definition')]
     [ScriptBlock]
     $LanguageDefinition,
+
     # A Language Function Definition
     [Parameter(Mandatory,ParameterSetName='FunctionDefinition',ValueFromPipeline)]
     [Management.Automation.Language.FunctionDefinitionAst]
     $LanguageFunctionAst
     )
+
     begin { $myCmd = $MyInvocation.MyCommand}
+
     process {
         switch ($PSCmdlet.ParameterSetName) {
             ScriptBlock {
@@ -55,6 +63,7 @@ function Compile.LanguageDefinition {
                     "    Export-ModuleMember -Variable * -Function * -Alias *"
                     "} -AsCustomObject"
                 )
+
                 [ScriptBlock]::Create($newScriptLines -join [Environment]::NewLine)
             }
             FunctionDefinition {
@@ -101,6 +110,9 @@ function Compile.LanguageDefinition {
         }
         
     }
+
+
+
 }
 
 
