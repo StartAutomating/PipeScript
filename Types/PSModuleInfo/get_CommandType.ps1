@@ -12,6 +12,8 @@ if (-not $this.'.CommandTypes') {
     Add-Member -InputObject $this -MemberType NoteProperty -Force -Name '.CommandTypes' (
         # Aspect.ModuleCommandType
         & { 
+        
+        
             <#
             .SYNOPSIS
                 Outputs a module's extension types
@@ -29,6 +31,7 @@ if (-not $this.'.CommandTypes') {
             [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
             [ValidateScript({
             $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+            
             $thisType = $_.GetType()
             $IsTypeOk =
                 $(@( foreach ($validType in $validTypeList) {
@@ -36,6 +39,7 @@ if (-not $this.'.CommandTypes') {
                         $true;break
                     }
                 }))
+            
             if (-not $isTypeOk) {
                 throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
             }
@@ -44,11 +48,13 @@ if (-not $this.'.CommandTypes') {
             
             $Module
             )
+        
             begin {
                 $ExtensionCollectionNames = 
                     "Extension", "Command", "Cmdlet", "Function", "Alias", "Script", "Application", "File","Configuration"
                 $ExtensionCollectionNames = @($ExtensionCollectionNames -replace '.+$','${0}Type') + @($ExtensionCollectionNames -replace '.+$','${0}Types')
             }
+        
             process {
                 #region Resolve Module Info
                 if ($Module -is [string]) {
@@ -57,6 +63,7 @@ if (-not $this.'.CommandTypes') {
                 $ModuleInfo = $module                
                 if (-not $ModuleInfo) { return }
                 #endregion Resolve Module Info
+        
                 #region Check Cache and Hopefully Return
                 if (-not $script:ModuleExtensionTypeCache) {
                     $script:ModuleExtensionTypeCache = @{}
@@ -66,8 +73,10 @@ if (-not $this.'.CommandTypes') {
                     return $script:ModuleExtensionTypeCache[$ModuleInfo]
                 }
                 #endregion Check Cache and Hopefully Return
+        
                 #region Find Extension Types
                 $modulePrivateData  = $ModuleInfo.PrivateData
+        
                 $SortedExtensionTypes = [Ordered]@{}
                 foreach ($TypeOfExtensionCollection in $ExtensionCollectionNames) {
                     $moduleExtensionTypes = 
@@ -78,7 +87,9 @@ if (-not $this.'.CommandTypes') {
                         } else {
                             $null
                         }
+        
                     if (-not $moduleExtensionTypes) { continue } 
+        
                     foreach ($commandType in @($ModuleExtensionTypes.GetEnumerator() | Sort-Object Key)) {
                         if ($commandType.Value -is [Collections.IDictionary]) {
                             if (-not $commandType.Value.Name) {
@@ -108,7 +119,11 @@ if (-not $this.'.CommandTypes') {
                 $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
                 $script:ModuleExtensionTypeCache[$ModuleInfo]
                 #endregion Find Extension Types
+        
             }    
+        
+        
+        
          } -Module $this
     )        
 }
