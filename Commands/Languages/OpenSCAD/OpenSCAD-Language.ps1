@@ -7,7 +7,9 @@ function Language.OpenSCAD {
     Allows PipeScript to generate OpenSCAD.
     
     Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
+
     Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
+
     The OpenSCAD Inline Transpiler will consider the following syntax to be empty:
     
     * ```"[^"]+"```
@@ -17,6 +19,7 @@ function Language.OpenSCAD {
         $OpenScadWithInlinePipeScript = @'
 Shape = "cube" /*{'"cube"', '"sphere"', '"circle"' | Get-Random}*/;
 Size  = 1 /*{Get-Random -Min 1 -Max 100}*/ ;
+
 if (Shape == "cube") {
     cube(Size);
 }
@@ -27,6 +30,7 @@ if (Shape == "circle") {
     circle(Size);
 }
 '@
+
         [OutputFile(".\RandomShapeAndSize.ps1.scad")]$OpenScadWithInlinePipeScript
     }
     
@@ -38,6 +42,8 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
+
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
