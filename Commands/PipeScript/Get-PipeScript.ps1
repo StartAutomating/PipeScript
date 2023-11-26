@@ -1,9 +1,13 @@
 function Get-PipeScript {
+
+
+
     <#
     .SYNOPSIS
         Gets PipeScript.
     .DESCRIPTION        
         Gets PipeScript and it's extended commands.
+
         Because 'Get' is the default verb in PowerShell,
         Get-PipeScript also allows you to run other commands in noun-oriented syntax.
     .EXAMPLE
@@ -31,27 +35,34 @@ function Get-PipeScript {
     [Alias('Fullname','FilePath','Source')]
     [string]
     $PipeScriptPath,
+
     # One or more PipeScript Command Types.    
     [Parameter(ValueFromPipelineByPropertyName)]
     [ValidateSet('Analyzer','Aspect','AutomaticVariable','BuildScript','Compiler','Interface','Language','Optimizer','Parser','Partial','PipeScriptNoun','PostProcessor','PreProcessor','Protocol','Route','Sentence','Template','Transform','Transpiler')]
     [string[]]
     $PipeScriptType,
+
     # Any positional arguments that are not directly bound.
     # This parameter primarily exists to allow Get-PipeScript to pass it down to other commands.
     [Parameter(ValueFromRemainingArguments)]
     [Alias('Args')]
     $Argument,
+
     # The InputObject.
     # This parameter primarily exists to allow Get-PipeScript to pass it down to other commands.
     [Parameter(ValueFromPipeline)]
     [Alias('Input','In')]    
     $InputObject,
+
     # If set, will force a refresh of the loaded Pipescripts.
     [switch]
     $Force
     )
+
     dynamicParam {
+
              
+
        
 $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
              $myCallStack[-1])
@@ -64,12 +75,16 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
                         $ast -is [Management.Automation.Language.CommandAst]
                 },$true)
             })
+
 $ModuleExtensionTypeAspect = { 
+                                                
+                                                
                                                     <#
                                                     .SYNOPSIS
                                                         Returns a module's extended commands
                                                     .DESCRIPTION
                                                         Returns the commands or scripts in a module that match the module command pattern.
+                                                
                                                         Each returned script will be decorated with the typename(s) that match,
                                                         so that the extended commands can be augmented by the extended types system.
                                                     .LINK
@@ -83,6 +98,7 @@ $ModuleExtensionTypeAspect = {
                                                     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
                                                     [ValidateScript({
                                                     $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                    
                                                     $thisType = $_.GetType()
                                                     $IsTypeOk =
                                                         $(@( foreach ($validType in $validTypeList) {
@@ -90,6 +106,7 @@ $ModuleExtensionTypeAspect = {
                                                                 $true;break
                                                             }
                                                         }))
+                                                    
                                                     if (-not $isTypeOk) {
                                                         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
                                                     }
@@ -103,37 +120,46 @@ $ModuleExtensionTypeAspect = {
                                                     [Parameter(ValueFromPipelineByPropertyName)]
                                                     [Management.Automation.CommandInfo[]]
                                                     $Commands,
+                                                
                                                     # The suffix to apply to each named capture.
                                                     # Defaults to '_Command'
                                                     [Parameter(ValueFromPipelineByPropertyName)]
                                                     [string]
                                                     $Suffix = '_Command',
+                                                
                                                     # The prefix to apply to each named capture. 
                                                     [Parameter(ValueFromPipelineByPropertyName)]
                                                     [string]
                                                     $Prefix,
+                                                
                                                     # The file path(s).  If provided, will look for commands within these paths.
                                                     [Parameter(ValueFromPipelineByPropertyName)]
                                                     [Alias('Fullname')]    
                                                     $FilePath,
+                                                
                                                     # The PowerShell command type.  If this is provided, will only get commands of this type.
                                                     [Parameter(ValueFromPipelineByPropertyName)]
                                                     [Management.Automation.CommandTypes]
                                                     $CommandType,
+                                                
                                                     # The base PSTypeName(s).
                                                     # If provided, any commands that match the pattern will apply these typenames, too.
                                                     [string[]]
                                                     $PSTypeName
                                                     )
+                                                
                                                     process {        
                                                         if ($Module -is [string]) {
                                                             $Module = Get-Module $Module
                                                         }
                                                         $ModuleInfo = $module
+                                                
                                                         if (-not $ModuleInfo) { return }
                                                         
                                                         $ModuleCommandPattern = # Aspect.ModuleExtensionPattern
                                                                                 & { 
+                                                                                
+                                                                                
                                                                                     <#
                                                                                     .SYNOPSIS
                                                                                         Outputs a module's extension pattern
@@ -148,6 +174,7 @@ $ModuleExtensionTypeAspect = {
                                                                                     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
                                                                                     [ValidateScript({
                                                                                     $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                                                    
                                                                                     $thisType = $_.GetType()
                                                                                     $IsTypeOk =
                                                                                         $(@( foreach ($validType in $validTypeList) {
@@ -155,6 +182,7 @@ $ModuleExtensionTypeAspect = {
                                                                                                 $true;break
                                                                                             }
                                                                                         }))
+                                                                                    
                                                                                     if (-not $isTypeOk) {
                                                                                         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
                                                                                     }
@@ -162,25 +190,32 @@ $ModuleExtensionTypeAspect = {
                                                                                     })]
                                                                                     
                                                                                     $Module,
+                                                                                
                                                                                     # The suffix to apply to each named capture.
                                                                                     # Defaults to '_Command'
                                                                                     [Parameter(ValueFromPipelineByPropertyName)]
                                                                                     [string]
                                                                                     $Suffix = '_Command',
+                                                                                
                                                                                     # The prefix to apply to each named capture. 
                                                                                     [Parameter(ValueFromPipelineByPropertyName)]
                                                                                     [string]
                                                                                     $Prefix
                                                                                     )
+                                                                                
                                                                                     process {
                                                                                         if ($Module -is [string]) {
                                                                                             $Module = Get-Module $Module
                                                                                         }
                                                                                         $ModuleInfo = $module
+                                                                                
+                                                                                
                                                                                         #region Search for Module Extension Types
                                                                                         if (-not $ModuleInfo) { return }
                                                                                         $ModuleExtensionTypes = # Aspect.ModuleExtensionTypes
                                                                                                                 & { 
+                                                                                                                
+                                                                                                                
                                                                                                                     <#
                                                                                                                     .SYNOPSIS
                                                                                                                         Outputs a module's extension types
@@ -198,6 +233,7 @@ $ModuleExtensionTypeAspect = {
                                                                                                                     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
                                                                                                                     [ValidateScript({
                                                                                                                     $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                                                                                    
                                                                                                                     $thisType = $_.GetType()
                                                                                                                     $IsTypeOk =
                                                                                                                         $(@( foreach ($validType in $validTypeList) {
@@ -205,6 +241,7 @@ $ModuleExtensionTypeAspect = {
                                                                                                                                 $true;break
                                                                                                                             }
                                                                                                                         }))
+                                                                                                                    
                                                                                                                     if (-not $isTypeOk) {
                                                                                                                         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
                                                                                                                     }
@@ -213,11 +250,13 @@ $ModuleExtensionTypeAspect = {
                                                                                                                     
                                                                                                                     $Module
                                                                                                                     )
+                                                                                                                
                                                                                                                     begin {
                                                                                                                         $ExtensionCollectionNames = 
                                                                                                                             "Extension", "Command", "Cmdlet", "Function", "Alias", "Script", "Application", "File","Configuration"
                                                                                                                         $ExtensionCollectionNames = @($ExtensionCollectionNames -replace '.+$','${0}Type') + @($ExtensionCollectionNames -replace '.+$','${0}Types')
                                                                                                                     }
+                                                                                                                
                                                                                                                     process {
                                                                                                                         #region Resolve Module Info
                                                                                                                         if ($Module -is [string]) {
@@ -226,6 +265,7 @@ $ModuleExtensionTypeAspect = {
                                                                                                                         $ModuleInfo = $module                
                                                                                                                         if (-not $ModuleInfo) { return }
                                                                                                                         #endregion Resolve Module Info
+                                                                                                                
                                                                                                                         #region Check Cache and Hopefully Return
                                                                                                                         if (-not $script:ModuleExtensionTypeCache) {
                                                                                                                             $script:ModuleExtensionTypeCache = @{}
@@ -235,8 +275,10 @@ $ModuleExtensionTypeAspect = {
                                                                                                                             return $script:ModuleExtensionTypeCache[$ModuleInfo]
                                                                                                                         }
                                                                                                                         #endregion Check Cache and Hopefully Return
+                                                                                                                
                                                                                                                         #region Find Extension Types
                                                                                                                         $modulePrivateData  = $ModuleInfo.PrivateData
+                                                                                                                
                                                                                                                         $SortedExtensionTypes = [Ordered]@{}
                                                                                                                         foreach ($TypeOfExtensionCollection in $ExtensionCollectionNames) {
                                                                                                                             $moduleExtensionTypes = 
@@ -247,7 +289,9 @@ $ModuleExtensionTypeAspect = {
                                                                                                                                 } else {
                                                                                                                                     $null
                                                                                                                                 }
+                                                                                                                
                                                                                                                             if (-not $moduleExtensionTypes) { continue } 
+                                                                                                                
                                                                                                                             foreach ($commandType in @($ModuleExtensionTypes.GetEnumerator() | Sort-Object Key)) {
                                                                                                                                 if ($commandType.Value -is [Collections.IDictionary]) {
                                                                                                                                     if (-not $commandType.Value.Name) {
@@ -277,8 +321,13 @@ $ModuleExtensionTypeAspect = {
                                                                                                                         $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
                                                                                                                         $script:ModuleExtensionTypeCache[$ModuleInfo]
                                                                                                                         #endregion Find Extension Types
+                                                                                                                
                                                                                                                     }    
+                                                                                                                
+                                                                                                                
+                                                                                                                
                                                                                                                  } -Module $moduleInfo
+                                                                                
                                                                                         
                                                                                         if (-not $ModuleExtensionTypes) { return }
                                                                                             
@@ -291,18 +340,25 @@ $ModuleExtensionTypeAspect = {
                                                                                             $categoryPattern = $categoryExtensionTypeInfo.Value.Pattern                
                                                                                             # ( and skip anyone that does not have a pattern)
                                                                                             if (-not $categoryPattern) { continue } 
+                                                                                
                                                                                             '(?=' + # Start a lookahead
                                                                                                 '.{0,}' + # match any or no characters
                                                                                                 # followed by the command pattern
                                                                                                 "(?<$Prefix$($categoryExtensionTypeInfo.Name -replace '\p{P}', '_')$Suffix>$categoryPattern)" +
                                                                                                 ')?' # made optional                            
                                                                                         }) -join [Environment]::NewLine
+                                                                                
                                                                                         # Now that we've combined the whole thing, make it a Regex and output it.        
                                                                                         [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                                                                                     }
+                                                                                
+                                                                                
+                                                                                
                                                                                  } $ModuleInfo -Prefix $prefix -Suffix $Suffix
                                                         $ModuleCommandTypes   = # Aspect.ModuleExtensionType
                                                                                 & { 
+                                                                                
+                                                                                
                                                                                     <#
                                                                                     .SYNOPSIS
                                                                                         Outputs a module's extension types
@@ -320,6 +376,7 @@ $ModuleExtensionTypeAspect = {
                                                                                     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
                                                                                     [ValidateScript({
                                                                                     $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                                                    
                                                                                     $thisType = $_.GetType()
                                                                                     $IsTypeOk =
                                                                                         $(@( foreach ($validType in $validTypeList) {
@@ -327,6 +384,7 @@ $ModuleExtensionTypeAspect = {
                                                                                                 $true;break
                                                                                             }
                                                                                         }))
+                                                                                    
                                                                                     if (-not $isTypeOk) {
                                                                                         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
                                                                                     }
@@ -335,11 +393,13 @@ $ModuleExtensionTypeAspect = {
                                                                                     
                                                                                     $Module
                                                                                     )
+                                                                                
                                                                                     begin {
                                                                                         $ExtensionCollectionNames = 
                                                                                             "Extension", "Command", "Cmdlet", "Function", "Alias", "Script", "Application", "File","Configuration"
                                                                                         $ExtensionCollectionNames = @($ExtensionCollectionNames -replace '.+$','${0}Type') + @($ExtensionCollectionNames -replace '.+$','${0}Types')
                                                                                     }
+                                                                                
                                                                                     process {
                                                                                         #region Resolve Module Info
                                                                                         if ($Module -is [string]) {
@@ -348,6 +408,7 @@ $ModuleExtensionTypeAspect = {
                                                                                         $ModuleInfo = $module                
                                                                                         if (-not $ModuleInfo) { return }
                                                                                         #endregion Resolve Module Info
+                                                                                
                                                                                         #region Check Cache and Hopefully Return
                                                                                         if (-not $script:ModuleExtensionTypeCache) {
                                                                                             $script:ModuleExtensionTypeCache = @{}
@@ -357,8 +418,10 @@ $ModuleExtensionTypeAspect = {
                                                                                             return $script:ModuleExtensionTypeCache[$ModuleInfo]
                                                                                         }
                                                                                         #endregion Check Cache and Hopefully Return
+                                                                                
                                                                                         #region Find Extension Types
                                                                                         $modulePrivateData  = $ModuleInfo.PrivateData
+                                                                                
                                                                                         $SortedExtensionTypes = [Ordered]@{}
                                                                                         foreach ($TypeOfExtensionCollection in $ExtensionCollectionNames) {
                                                                                             $moduleExtensionTypes = 
@@ -369,7 +432,9 @@ $ModuleExtensionTypeAspect = {
                                                                                                 } else {
                                                                                                     $null
                                                                                                 }
+                                                                                
                                                                                             if (-not $moduleExtensionTypes) { continue } 
+                                                                                
                                                                                             foreach ($commandType in @($ModuleExtensionTypes.GetEnumerator() | Sort-Object Key)) {
                                                                                                 if ($commandType.Value -is [Collections.IDictionary]) {
                                                                                                     if (-not $commandType.Value.Name) {
@@ -399,7 +464,11 @@ $ModuleExtensionTypeAspect = {
                                                                                         $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
                                                                                         $script:ModuleExtensionTypeCache[$ModuleInfo]
                                                                                         #endregion Find Extension Types
+                                                                                
                                                                                     }    
+                                                                                
+                                                                                
+                                                                                
                                                                                  } $ModuleInfo
                                                         
                                                         $commands    =
@@ -423,6 +492,7 @@ $ModuleExtensionTypeAspect = {
                                                                 }
                                                                 $ExecutionContext.SessionState.InvokeCommand.GetCommands('*', $commandType, $true)
                                                             })
+                                                
                                                         :nextCommand foreach ($cmd in $commands) {            
                                                             $matched = $ModuleCommandPattern.Match("$cmd")
                                                             if (-not $matched.Success) { continue }
@@ -459,8 +529,13 @@ $ModuleExtensionTypeAspect = {
                                                             }
                                                         }
                                                     }
+                                                
+                                                
+                                                
                                                  }
         $ModuleCommandPatternAspect = { 
+                                                                                
+                                                                                
                                                                                     <#
                                                                                     .SYNOPSIS
                                                                                         Outputs a module's extension pattern
@@ -475,6 +550,7 @@ $ModuleExtensionTypeAspect = {
                                                                                     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
                                                                                     [ValidateScript({
                                                                                     $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                                                    
                                                                                     $thisType = $_.GetType()
                                                                                     $IsTypeOk =
                                                                                         $(@( foreach ($validType in $validTypeList) {
@@ -482,6 +558,7 @@ $ModuleExtensionTypeAspect = {
                                                                                                 $true;break
                                                                                             }
                                                                                         }))
+                                                                                    
                                                                                     if (-not $isTypeOk) {
                                                                                         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
                                                                                     }
@@ -489,25 +566,32 @@ $ModuleExtensionTypeAspect = {
                                                                                     })]
                                                                                     
                                                                                     $Module,
+                                                                                
                                                                                     # The suffix to apply to each named capture.
                                                                                     # Defaults to '_Command'
                                                                                     [Parameter(ValueFromPipelineByPropertyName)]
                                                                                     [string]
                                                                                     $Suffix = '_Command',
+                                                                                
                                                                                     # The prefix to apply to each named capture. 
                                                                                     [Parameter(ValueFromPipelineByPropertyName)]
                                                                                     [string]
                                                                                     $Prefix
                                                                                     )
+                                                                                
                                                                                     process {
                                                                                         if ($Module -is [string]) {
                                                                                             $Module = Get-Module $Module
                                                                                         }
                                                                                         $ModuleInfo = $module
+                                                                                
+                                                                                
                                                                                         #region Search for Module Extension Types
                                                                                         if (-not $ModuleInfo) { return }
                                                                                         $ModuleExtensionTypes = # Aspect.ModuleExtensionTypes
                                                                                                                 & { 
+                                                                                                                
+                                                                                                                
                                                                                                                     <#
                                                                                                                     .SYNOPSIS
                                                                                                                         Outputs a module's extension types
@@ -525,6 +609,7 @@ $ModuleExtensionTypeAspect = {
                                                                                                                     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
                                                                                                                     [ValidateScript({
                                                                                                                     $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                                                                                    
                                                                                                                     $thisType = $_.GetType()
                                                                                                                     $IsTypeOk =
                                                                                                                         $(@( foreach ($validType in $validTypeList) {
@@ -532,6 +617,7 @@ $ModuleExtensionTypeAspect = {
                                                                                                                                 $true;break
                                                                                                                             }
                                                                                                                         }))
+                                                                                                                    
                                                                                                                     if (-not $isTypeOk) {
                                                                                                                         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
                                                                                                                     }
@@ -540,11 +626,13 @@ $ModuleExtensionTypeAspect = {
                                                                                                                     
                                                                                                                     $Module
                                                                                                                     )
+                                                                                                                
                                                                                                                     begin {
                                                                                                                         $ExtensionCollectionNames = 
                                                                                                                             "Extension", "Command", "Cmdlet", "Function", "Alias", "Script", "Application", "File","Configuration"
                                                                                                                         $ExtensionCollectionNames = @($ExtensionCollectionNames -replace '.+$','${0}Type') + @($ExtensionCollectionNames -replace '.+$','${0}Types')
                                                                                                                     }
+                                                                                                                
                                                                                                                     process {
                                                                                                                         #region Resolve Module Info
                                                                                                                         if ($Module -is [string]) {
@@ -553,6 +641,7 @@ $ModuleExtensionTypeAspect = {
                                                                                                                         $ModuleInfo = $module                
                                                                                                                         if (-not $ModuleInfo) { return }
                                                                                                                         #endregion Resolve Module Info
+                                                                                                                
                                                                                                                         #region Check Cache and Hopefully Return
                                                                                                                         if (-not $script:ModuleExtensionTypeCache) {
                                                                                                                             $script:ModuleExtensionTypeCache = @{}
@@ -562,8 +651,10 @@ $ModuleExtensionTypeAspect = {
                                                                                                                             return $script:ModuleExtensionTypeCache[$ModuleInfo]
                                                                                                                         }
                                                                                                                         #endregion Check Cache and Hopefully Return
+                                                                                                                
                                                                                                                         #region Find Extension Types
                                                                                                                         $modulePrivateData  = $ModuleInfo.PrivateData
+                                                                                                                
                                                                                                                         $SortedExtensionTypes = [Ordered]@{}
                                                                                                                         foreach ($TypeOfExtensionCollection in $ExtensionCollectionNames) {
                                                                                                                             $moduleExtensionTypes = 
@@ -574,7 +665,9 @@ $ModuleExtensionTypeAspect = {
                                                                                                                                 } else {
                                                                                                                                     $null
                                                                                                                                 }
+                                                                                                                
                                                                                                                             if (-not $moduleExtensionTypes) { continue } 
+                                                                                                                
                                                                                                                             foreach ($commandType in @($ModuleExtensionTypes.GetEnumerator() | Sort-Object Key)) {
                                                                                                                                 if ($commandType.Value -is [Collections.IDictionary]) {
                                                                                                                                     if (-not $commandType.Value.Name) {
@@ -604,8 +697,13 @@ $ModuleExtensionTypeAspect = {
                                                                                                                         $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
                                                                                                                         $script:ModuleExtensionTypeCache[$ModuleInfo]
                                                                                                                         #endregion Find Extension Types
+                                                                                                                
                                                                                                                     }    
+                                                                                                                
+                                                                                                                
+                                                                                                                
                                                                                                                  } -Module $moduleInfo
+                                                                                
                                                                                         
                                                                                         if (-not $ModuleExtensionTypes) { return }
                                                                                             
@@ -618,15 +716,20 @@ $ModuleExtensionTypeAspect = {
                                                                                             $categoryPattern = $categoryExtensionTypeInfo.Value.Pattern                
                                                                                             # ( and skip anyone that does not have a pattern)
                                                                                             if (-not $categoryPattern) { continue } 
+                                                                                
                                                                                             '(?=' + # Start a lookahead
                                                                                                 '.{0,}' + # match any or no characters
                                                                                                 # followed by the command pattern
                                                                                                 "(?<$Prefix$($categoryExtensionTypeInfo.Name -replace '\p{P}', '_')$Suffix>$categoryPattern)" +
                                                                                                 ')?' # made optional                            
                                                                                         }) -join [Environment]::NewLine
+                                                                                
                                                                                         # Now that we've combined the whole thing, make it a Regex and output it.        
                                                                                         [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                                                                                     }
+                                                                                
+                                                                                
+                                                                                
                                                                                  }
  $myModule = Get-Module PipeScript
         $myInv    = $MyInvocation
@@ -645,6 +748,7 @@ $ModuleExtensionTypeAspect = {
                 } elseif ($matches) {
                     $matches.w1, $matches.w2
                 }
+
             # If the second word is a verb and the first is a noun
             if ($myModule.ExportedCommands["$SecondWord-$FirstWord"] -and # and we export the command
                 $myModule.ExportedCommands["$SecondWord-$FirstWord"] -ne $myInv.MyCommand # (and it's not this command)
@@ -653,11 +757,14 @@ $ModuleExtensionTypeAspect = {
                 $myModule.ExportedCommands["$SecondWord-$FirstWord"] |
                     # Aspect.DynamicParameter
                     & { 
+                    
+                    
                         <#
                         .SYNOPSIS
                             Dynamic Parameter Aspect
                         .DESCRIPTION
                             The Dynamic Parameter Aspect is used to add dynamic parameters, well, dynamically.
+                    
                             It can create dynamic parameters from one or more input objects or scripts.
                         .EXAMPLE
                             Get-Command Get-Command | 
@@ -675,36 +782,45 @@ $ModuleExtensionTypeAspect = {
                         # This can be anything, but will be ignored unless it is a `[ScriptBlock]` or `[Management.Automation.CommandInfo]`.    
                         [Parameter(ValueFromPipeline)]
                         $InputObject,
+                    
                         # The name of the parameter set the dynamic parameters will be placed into.    
                         [string]
                         $ParameterSetName,
+                    
                         # The positional offset.  If this is provided, all positional parameters will be shifted by this number.
                         # For example, if -PositionOffset is 1, the first parameter would become the second parameter (and so on)
                         [int]
                         $PositionOffset,
+                    
                         # If set, will make all dynamic parameters non-mandatory.
                         [switch]
                         $NoMandatory,
+                    
                         # If provided, will check that dynamic parameters are valid for a given command.
                         # If the [Management.Automation.CmdletAttribute]
                         [string[]]
                         $commandList,
+                    
                         # If provided, will include only these parameters from the input.
                         [string[]]
                         $IncludeParameter,
+                    
                         # If provided, will exclude these parameters from the input.
                         [string[]]
                         $ExcludeParameter,
+                    
                         # If provided, will make a blank parameter for every -PositionOffset.
                         # This is so, presumably, whatever has already been provided in these positions will bind correctly.
                         # The name of this parameter, by default, will be "ArgumentN" (for example, Argument1)
                         [switch]
                         $BlankParameter,
+                    
                         # The name of the blank parameter.
                         # If there is a -PositionOffset, this will make a blank parameter by this name for the position.    
                         [string[]]
                         $BlankParameterName = "Argument"
                         )
+                    
                         begin {
                             # We're going to accumulate all input into a queue, so we'll need to make a queue in begin.
                             $inputQueue = [Collections.Queue]::new()
@@ -712,16 +828,19 @@ $ModuleExtensionTypeAspect = {
                         process {
                             $inputQueue.Enqueue($InputObject) # In process, we just need to enqueue the input.
                         }
+                    
                         end {
                             # The dynamic parameters are created at the end of the pipeline.        
                             $DynamicParameters = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
                             
                             # We're going to want to track what aliases are assigned (to avoid conflicts)
                             $PendingAliasMap = [Ordered]@{}
+                    
                             # Before any dynamic parameters are bound, we need to create any blank requested parameters
                             if ($PositionOffset -and # (if we're offsetting position
                                 ($BlankParameter -or $PSBoundParameters['BlankParameterName']) # and we have a -BlankParameter)
                             ) {
+                    
                                 for ($pos =0; $pos -lt $PositionOffset; $pos++) {
                                     # If we have a name, use that
                                     $paramName = $BlankParameterName[$pos]
@@ -741,13 +860,16 @@ $ModuleExtensionTypeAspect = {
                                             )
                                         )
                                     )
+                    
                                     $PendingAliasMap[$paramName] = $DynamicParameters[$paramName]
                                 }
                             }
+                    
                             # After we've blank parameters, we move onto the input queue.        
                             while ($inputQueue.Count) {
                                 # and work our way thru it until it is empty.
                                 $InputObject = $inputQueue.Dequeue()
+                    
                                 # First up, we turn our input into [CommandMetaData]
                                 $inputCmdMetaData = 
                                     if ($inputObject -is [Management.Automation.CommandInfo]) {
@@ -759,6 +881,7 @@ $ModuleExtensionTypeAspect = {
                                         $function:TempFunction = $InputObject
                                         [Management.Automation.CommandMetaData]$ExecutionContext.SessionState.InvokeCommand.GetCommand('TempFunction','Function')
                                     }
+                    
                                 # If for any reason we couldn't get command metadata, continue.
                                 if (-not $inputCmdMetaData) { continue } 
                                                                        
@@ -775,6 +898,7 @@ $ModuleExtensionTypeAspect = {
                                             }
                                         if (-not $shouldInclude) { continue nextDynamicParameter }
                                     }
+                    
                                     $attrList = [Collections.Generic.List[Attribute]]::new()
                                     $validCommandNames = @()
                                     foreach ($attr in $inputCmdMetaData.Parameters[$paramName].attributes) {
@@ -814,6 +938,7 @@ $ModuleExtensionTypeAspect = {
                                                     $attrCopy.($prop.Name) = $attr.($prop.Name)
                                                 }
                                             }
+                    
                                             $attrCopy.ParameterSetName =
                                                 if ($ParameterSetName) {
                                                     $ParameterSetName
@@ -832,15 +957,18 @@ $ModuleExtensionTypeAspect = {
                                                         $this.Source
                                                     }
                                                 }
+                    
                                             if ($NoMandatory -and $attrCopy.Mandatory) {
                                                 $attrCopy.Mandatory = $false
                                             }
+                    
                                             if ($PositionOffset -and $attr.Position -ge 0) {
                                                 $attrCopy.Position += $PositionOffset
                                             }
                                             $attrList.Add($attrCopy)
                                         }
                                     }
+                    
                                     if ($commandList -and $validCommandNames) {
                                         :CheckCommandValidity do {
                                             foreach ($vc in $validCommandNames) {
@@ -866,14 +994,21 @@ $ModuleExtensionTypeAspect = {
                             }
                             $DynamicParameters
                         }
+                    
+                    
+                    
                      } -PositionOffset 1 -ExcludeParameter @($myInv.MyCommand.Parameters.Keys) -BlankParameterName Verb                                
             }                                    
         }
     }
+
     begin {
         #region Declare Internal Functions and Filters
         function SyncPipeScripts {
+        
+        
                     param($Path,$Force)
+        
                     # If we do not have a commands at path collection, create it.
                    
         $ModuleExtendedCommandAspect = $ModuleExtensionTypeAspect
@@ -881,6 +1016,7 @@ $ModuleExtensionTypeAspect = {
          if (-not $script:CachedCommandsAtPath) {
                         $script:CachedCommandsAtPath = @{}
                     }
+        
                     
                     if ($Force) { # If we are using -Force,                                
                         if ($path) { # Then check if a -Path was provided,
@@ -898,9 +1034,12 @@ $ModuleExtensionTypeAspect = {
                             # Find the extended commands for PipeScript
                             # Aspect.ModuleExtendedCommand
                             & $ModuleExtendedCommandAspect -Module $myModule -PSTypeName PipeScript
+        
                             # Determine the related modules for PipeScript.
                             $moduleRelationships = 
+                                                   
                                                    @(
+                                                   
                                                    $MyModuleName, $myModule = 
                                                        if ($myModule -is [string]) {
                                                            $myModule, (Get-Module $myModule)
@@ -909,6 +1048,8 @@ $ModuleExtensionTypeAspect = {
                                                        } else {
                                                            Write-Error "$myModule must be a [string] or [Management.Automation.PSModuleInfo]"    
                                                        }
+                                                   
+                                                   
                                                    #region Search for Module Relationships
                                                    if ($myModule -and $MyModuleName) {
                                                        foreach ($loadedModule in Get-Module) { # Walk over all modules.
@@ -935,7 +1076,9 @@ $ModuleExtensionTypeAspect = {
                                                        }
                                                    }
                                                    #endregion Search for Module Relationships
+                                                   
                                                    )
+                                                   
                                                    
                             $relatedPaths = @(foreach ($relationship in $moduleRelationships) {
                                 $relationship.RelatedModule.Path | Split-Path
@@ -946,6 +1089,7 @@ $ModuleExtensionTypeAspect = {
                             & $ModuleExtendedCommandAspect -Module PipeScript -FilePath $relatedPaths -PSTypeName PipeScript
                         )
                     }
+        
                     if ($path -and -not $script:CachedCommandsAtPath[$path]) {
                         $script:CachedCommandsAtPath[$path] = @(
                             # Aspect.ModuleExtendedCommand
@@ -953,8 +1097,13 @@ $ModuleExtensionTypeAspect = {
                         )
                     }
                 
+        
+        
         }
+
         filter CheckPipeScriptType {
+        
+        
                     if ($PipeScriptType) {
                         $OneOfTheseTypes = "(?>$($PipeScriptType -join '|'))"
                         $in = $_
@@ -964,9 +1113,15 @@ $ModuleExtensionTypeAspect = {
                     }
                     $_
                 
+        
+        
         }
+
         filter unroll {
+        
          $_ 
+        
+        
         }   
         #endregion Declare Internal Functions and Filters
         
@@ -1028,6 +1183,7 @@ $ModuleExtensionTypeAspect = {
             $steppablePipeline.Process($_)
             return
         }
+
         # If the invocation name is PipeScript (but we have no steppable pipeline or spaced in the name)
         if ($myInv.InvocationName -eq 'PipeScript' -and $myInv.Line -notmatch 'PipeScript\s[\S]+') {
             # return the module
@@ -1048,13 +1204,19 @@ $ModuleExtensionTypeAspect = {
             $script:CachedCommandsAtPath[$PipeScriptPath] | unroll | CheckPipeScriptType
         } else {            
             SyncPipeScripts -Force:$Force
+
             $script:CachedPipeScripts | unroll | CheckPipeScriptType
         }
     }
+
     end {
         if ($steppablePipeline) {
             $steppablePipeline.End()
         }
     }
+
+
+
+
 }
 
