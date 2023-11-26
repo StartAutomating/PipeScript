@@ -5,7 +5,9 @@ function Language.Markdown {
     Markdown Template Transpiler.
 .DESCRIPTION
     Allows PipeScript to generate Markdown.
+
     Because Markdown does not support comment blocks, PipeScript can be written inline inside of specialized Markdown code blocks.
+
     PipeScript can be included in a Markdown code block that has the Language ```PipeScript{```
     
     In Markdown, PipeScript can also be specified as the language using any two of the following characters ```.<>```
@@ -13,18 +15,24 @@ function Language.Markdown {
     .> {
         $markdownContent = @'
 # Thinking of a Number Between 1 and 100: `|{Get-Random -Min 1 -Max 100}|` is the number
+
 ### abc
+
 ~~~PipeScript{
     '* ' + @("a", "b", "c" -join ([Environment]::Newline + '* '))
 }
 ~~~
+
 #### Guess what, other code blocks are unaffected
 ~~~PowerShell
 1 + 1 -eq 2
 ~~~
+
+
 '@
         [OutputFile('.\HelloWorld.ps1.md')]$markdownContent
     }
+
     .> .\HelloWorld.ps1.md
 #>
 [ValidatePattern('\.(?>md|markdown|txt)$')]
@@ -33,9 +41,13 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
+
     # Note: Markdown is one of the more complicated templates.
+
     # This is because Markdown isn't _just_ Markdown.  Markdown allows inline HTML.  Inline HTML, in turn, allows inline JavaScript and CSS.
     # Also, Markdown code blocks can be provided a few different ways, and thus PipeScript can be embedded a few different ways.
+
     $StartConditions = 
         '# three ticks can start an inline code block
         (?>`{3})
@@ -53,6 +65,7 @@ $languageDefinition = New-Module {
         # Or a JavaScript/CSS comment start
         /\*
         '
+
     $endConditions = @(        
         '# Or a literal pipe, followed by a single tick
         \|`',
@@ -66,6 +79,8 @@ $languageDefinition = New-Module {
         \*/
         '
     )
+
+
     $startComment = "(?>
 $($StartConditions -join ([Environment]::NewLine + '  |' + [Environment]::NewLine))        
     )\s{0,}
