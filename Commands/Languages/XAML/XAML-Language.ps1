@@ -5,7 +5,9 @@ function Language.XAML {
     XAML Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate XAML.
+
     Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
+
     Executed output will be converted to XAML
 #>
 [ValidatePattern('\.xaml$')]
@@ -14,6 +16,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
