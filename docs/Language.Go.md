@@ -9,10 +9,15 @@ Go Template Transpiler.
 ### Description
 
 Allows PipeScript to Generate Go.
+
 Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
+
 Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
+
 This for Inline PipeScript to be used with operators, and still be valid Go syntax. 
+
 The Go Transpiler will consider the following syntax to be empty:
+
 * ```nil```
 * ```""```
 * ```''```
@@ -45,6 +50,7 @@ func main() {
     fmt.Println(`"/*{$helloWorld}*/`")
 }
 "
+
 $helloGo.Save()
 }
 ```
