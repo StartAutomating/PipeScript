@@ -9,6 +9,7 @@ Gets PipeScript.
 ### Description
 
 Gets PipeScript and it's extended commands.
+
 Because 'Get' is the default verb in PowerShell,
 Get-PipeScript also allows you to run other commands in noun-oriented syntax.
 
