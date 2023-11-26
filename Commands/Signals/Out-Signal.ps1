@@ -1,10 +1,14 @@
 
 function Signal.Out {
+
+
+
     <#
     .SYNOPSIS
         Outputs a Signal
     .DESCRIPTION
         Outputs a Signal with whatever name, arguments, input, and command.
+
         A signal is a PowerShell event.
     .EXAMPLE
         Out-Signal "hello"
@@ -32,5 +36,10 @@ $MyCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
         Input     = @($input)
         Command   = $MyCommandAst
     })
+
+
+
+
+
 }
 
