@@ -18,7 +18,7 @@ Consolidates any ScriptBlockExpressions with the same content into variables.
 ```PowerShell
 {        
     a.txt Template 'abc'
-    b.txt Template 'abc'
+b.txt Template 'abc'
 } | .>PipeScript
 ```
 > EXAMPLE 2
