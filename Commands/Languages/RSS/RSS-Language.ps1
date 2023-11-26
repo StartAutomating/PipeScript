@@ -5,6 +5,7 @@ function Language.RSS {
     RSS Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate RSS.
+
     Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
 #>
 [ValidatePattern('\.rss$')]
@@ -13,6 +14,8 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
+
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
