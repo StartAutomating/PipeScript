@@ -31,8 +31,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'Docker'
-    
+    param()
     $SingleLineCommentStart = '\#'
     # Any Language can be parsed with a series of regular expresssions.
     # For languages that only support single comments:
@@ -66,6 +65,7 @@ $languageDefinition = New-Module {
             }
         ) -replace '\\\s+' -join ''
     }
+    $LanguageName = 'Docker'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()

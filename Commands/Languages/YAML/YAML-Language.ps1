@@ -37,8 +37,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'YAML'
-        
+    param()    
     $ReplacePattern  = [Regex]::new('        
         (?<Indent>\s{0,})      # Capture the indentation level
         (?<InList>-\s)?        # Determine if we are in a list
@@ -103,6 +102,7 @@ $languageDefinition = New-Module {
             }) -join [Environment]::Newline
         }
     }
+    $LanguageName = 'YAML'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()

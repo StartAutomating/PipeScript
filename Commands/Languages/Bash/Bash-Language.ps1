@@ -31,8 +31,8 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'Bash'
-    
+    param(
+    )
     # We start off by declaring a number of regular expressions:
     $startComment = '(?>\<\<PipeScript\{\})' 
     $endComment   = '(?>PipeScript\{\})'    
@@ -40,6 +40,7 @@ $languageDefinition = New-Module {
     $StartPattern = "(?<PSStart>${startComment})"
     
     $EndPattern   = "(?<PSEnd>${endComment})"
+    $LanguageName = 'Bash'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()

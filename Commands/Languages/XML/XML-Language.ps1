@@ -12,8 +12,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'XML'
-    
+    param()
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
@@ -43,6 +42,7 @@ $languageDefinition = New-Module {
             }
         }
     }
+    $LanguageName = 'XML'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()

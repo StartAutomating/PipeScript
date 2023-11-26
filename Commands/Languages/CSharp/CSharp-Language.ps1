@@ -37,8 +37,8 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'CSharp'
-    
+    param(
+    )
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -51,6 +51,7 @@ $languageDefinition = New-Module {
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
     $Compiler = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('dotnet', 'Application'))[0], 'build'  # To compile C#, we'll use dotnet build 
     $Runner  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('dotnet', 'Application'))[0], 'run'
+    $LanguageName = 'CSharp'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()

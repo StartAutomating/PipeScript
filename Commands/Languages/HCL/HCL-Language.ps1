@@ -17,8 +17,8 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'HCL'
-    
+    param(
+    )
     
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
@@ -30,6 +30,7 @@ $languageDefinition = New-Module {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    $LanguageName = 'HCL'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()

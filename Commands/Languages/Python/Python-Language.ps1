@@ -29,8 +29,7 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'Python'
-    
+    param()
     # We start off by declaring a number of regular expressions:
     
     $startComment = '(?>"""\{)'
@@ -39,6 +38,7 @@ $languageDefinition = New-Module {
     $startPattern = "(?<PSStart>${startComment})"    
     $endPattern   = "(?<PSEnd>${endComment})"
     $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('python', 'Application'))[0]
+    $LanguageName = 'Python'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()

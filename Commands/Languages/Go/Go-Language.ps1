@@ -49,8 +49,8 @@ param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
-    $LanguageName = 'Go'
-    
+    param(
+    )
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -70,6 +70,7 @@ $languageDefinition = New-Module {
     $Interpret  = # To interpret go,
         $GoApplication, # we call 'go' in the path
         'run'
+    $LanguageName = 'Go'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
 $languageDefinition.pstypenames.clear()
