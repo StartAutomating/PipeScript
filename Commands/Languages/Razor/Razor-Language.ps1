@@ -5,8 +5,11 @@ function Language.Razor {
     Razor Template Transpiler.    
 .DESCRIPTION
     Allows PipeScript to generate Razor.
+
     Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
+
     JavaScript/CSS comment blocks like ```/*{}*/``` will also be treated as blocks of PipeScript.
+
     Razor comment blocks like ```@*{}*@``` will also be treated as blocks of PipeScript.
 #>
 [ValidatePattern('\.(cshtml|razor)$')]
@@ -16,6 +19,8 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
 )
+
+
     # We start off by declaring a number of regular expressions:
     $startComment = '(?><\!--|/\*|\@\*)' 
     $endComment   = '(?>-->|\*/|\*@)'
