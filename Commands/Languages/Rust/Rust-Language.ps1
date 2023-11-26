@@ -5,6 +5,7 @@ function Language.Rust {
         Rust Language Definition
     .DESCRIPTION
         Defines Rust within PipeScript.
+
         This allows Rust to be templated.
     .EXAMPLE
         Invoke-PipeScript -ScriptBlock {
@@ -37,6 +38,7 @@ function Language.Rust {
             println!("{}",msg);
         }
         ' | Set-Content .\HelloWorld_Rust.ps.rs
+
         Invoke-PipeScript .\HelloWorld_Rust.ps.rs
     .EXAMPLE
         $HelloWorld = {param([Alias('msg')]$message = "Hello world") "`"$message`""}
@@ -46,6 +48,7 @@ function Language.Rust {
             println!(`"{}`",msg);
         }
         " | Set-Content .\HelloWorld_Rust.ps1.rs
+
         Invoke-PipeScript .\HelloWorld_Rust.ps1.rs -Parameter @{message='hi'}
     #>
 [ValidatePattern('\.rs$')]
@@ -55,6 +58,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
