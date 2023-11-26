@@ -5,7 +5,9 @@ function Language.YAML {
     Yaml Template Transpiler.
 .DESCRIPTION
     Allows PipeScript to generate Yaml.
+
     Because Yaml does not support comment blocks, PipeScript can be written inline inside of specialized Yaml string.
+
     PipeScript can be included in a multiline Yaml string with the Key PipeScript and a Value surrounded by {}    
 .Example
     .> {
@@ -14,6 +16,7 @@ PipeScript: |
   {
     @{a='b'}
   }
+
 List:
   - PipeScript: |
       {
@@ -30,6 +33,7 @@ List:
 '@
         [OutputFile('.\HelloWorld.ps1.yaml')]$yamlContent
     }
+
     .> .\HelloWorld.ps1.yaml
 #>
 [ValidatePattern('\.(?>yml|yaml)$')]
@@ -76,6 +80,7 @@ $languageDefinition = New-Module {
     
             @(foreach ($yo in $yamlOut) {
                 if ($yo -is [string]) {
+
                 }
                 if ($yo -is [Collections.IDictionary]) {
                     $yo = [PSCustomObject]$yo
