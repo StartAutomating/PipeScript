@@ -5,10 +5,15 @@ function Language.Go {
         Go Template Transpiler.
     .DESCRIPTION
         Allows PipeScript to Generate Go.
+
         Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
+
         Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
+
         This for Inline PipeScript to be used with operators, and still be valid Go syntax. 
+
         The Go Transpiler will consider the following syntax to be empty:
+
         * ```nil```
         * ```""```
         * ```''```
@@ -16,6 +21,7 @@ function Language.Go {
         Invoke-PipeScript {    
             HelloWorld.go template '
         package main
+
         import "fmt"
         func main() {
             fmt.Println("/*{param($msg = "hello world") "`"$msg`""}*/")
@@ -27,11 +33,13 @@ function Language.Go {
         $HelloWorld = {param([Alias('msg')]$message = "Hello world") "`"$message`""}
         $helloGo = HelloWorld.go template "
         package main
+
         import `"fmt`"
         func main() {
             fmt.Println(`"/*{$helloWorld}*/`")
         }
         "
+
         $helloGo.Save()
         }
     .EXAMPLE
@@ -42,6 +50,7 @@ function Language.Go {
             fmt.Println("hello world")
         }
         ' | Set-Content .\HelloWorld.go
+
         Invoke-PipeScript .\HelloWorld.go
     #>
 [ValidatePattern('\.go$')]
@@ -51,6 +60,7 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
     )
+
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -61,8 +71,10 @@ $languageDefinition = New-Module {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+
     # Find Go in the path
     $GoApplication = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('go', 'Application'))[0]
+
     $Compiler = # To compile go
         $GoApplication, # we call 'go'
         'build' # followed by 'build'
