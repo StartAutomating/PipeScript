@@ -10,6 +10,7 @@
 * [Folder](Folder.md)
 * [GetDynamicParameters](GetDynamicParameters.md)
 * [get_CommandType](get_CommandType.md)
+* [get_Export](get_Export.md)
 * [get_Extension](get_Extension.md)
 * [get_Files](get_Files.md)
 * [get_Folders](get_Folders.md)
