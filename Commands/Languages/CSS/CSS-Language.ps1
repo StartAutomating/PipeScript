@@ -5,9 +5,13 @@ function Language.CSS {
         CSS Language Definition.
     .DESCRIPTION
         Allows PipeScript to generate CSS.
+
         Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
+
         Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
+
         The CSS Inline Transpiler will consider the following syntax to be empty:
+
         * ```(?<q>["'])\#[a-f0-9]{3}(\k<q>)```
         * ```\#[a-f0-9]{6}```
         * ```[\d\.](?>pt|px|em)```
@@ -23,6 +27,7 @@ function Language.CSS {
     '
             [Save(".\StyleSheet.ps1.css")]$StyleSheet
         }
+
         .> .\StyleSheet.ps1.css
     #>
 [ValidatePattern('\.s{0,1}css$')]
@@ -32,6 +37,8 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
     )
+
+
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -41,6 +48,7 @@ $languageDefinition = New-Module {
         '[\d\.]+(?>em|pt|px){0,1}',
         'auto',
         "''"
+
     $IgnoredContext = "(?<ignore>(?>$($ignoreEach -join '|'))\s{0,}){0,1}"
     # * StartRegex     ```$IgnoredContext + $StartComment + '{' + $Whitespace```
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
