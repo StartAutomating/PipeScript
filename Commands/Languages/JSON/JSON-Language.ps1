@@ -5,9 +5,13 @@ function Language.JSON {
         JSON PipeScript Transpiler.
     .DESCRIPTION
         Allows PipeScript to generate JSON.
+
         Multiline comments blocks like ```/*{}*/``` will be treated as blocks of PipeScript.
+
         String output from these blocks will be embedded directly.  All other output will be converted to JSON.
+
         Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
+
         * ```null```
         * ```""```
         * ```{}```
@@ -26,6 +30,7 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
     )
+
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -35,6 +40,7 @@ $languageDefinition = New-Module {
     
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"    
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+
     $ForeachObject = {
         $in = $_
         if (($in -is [string]) -or 
