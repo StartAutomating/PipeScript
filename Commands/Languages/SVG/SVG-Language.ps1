@@ -5,6 +5,7 @@ function Language.SVG {
     SVG Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate SVG.
+
     Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
 .EXAMPLE
     $starsTemplate = Invoke-PipeScript {
@@ -23,6 +24,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
