@@ -1,9 +1,12 @@
 function Search-PipeScript {
+
+
     <#
     .Synopsis
         Searches PowerShell and PipeScript ScriptBlocks
     .Description
         Searches the contents of PowerShell and PipeScript ScriptBlocks, files, and text.
+
         Search-PipeScript can search using an -ASTCondition -or -ASTType or with a -RegularExpression.
     .Example
         Search-PipeScript -ScriptBlock {
@@ -24,6 +27,7 @@ function Search-PipeScript {
     [Alias('ScriptBlock','Text')]
     [ValidateScript({
     $validTypeList = [System.String],[System.Management.Automation.ScriptBlock],[System.IO.FileInfo],[System.Management.Automation.Language.Ast]
+    
     $thisType = $_.GetType()
     $IsTypeOk =
         $(@( foreach ($validType in $validTypeList) {
@@ -31,6 +35,7 @@ function Search-PipeScript {
                 $true;break
             }
         }))
+    
     if (-not $isTypeOk) {
         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','scriptblock','System.IO.FileInfo','System.Management.Automation.Language.Ast'."
     }
@@ -38,16 +43,19 @@ function Search-PipeScript {
     })]
     
     $InputObject,
+
     # The AST Condition.
     # These conditions will apply when the input is a `[ScriptBlock]`, `[Ast]`, or PowerShell file.
     [Parameter(ValueFromPipelineByPropertyName)]
     [Alias('ASTDelegate')]
     [ScriptBlock[]]
     $AstCondition,
+
     # A shortname for the abstract syntax tree types.
     [Parameter(ValueFromPipelineByPropertyName)]
     [ValidateScript({
     $validTypeList = [System.String],[System.Text.RegularExpressions.Regex],[System.String[]],[System.Text.RegularExpressions.Regex[]]
+    
     $thisType = $_.GetType()
     $IsTypeOk =
         $(@( foreach ($validType in $validTypeList) {
@@ -55,6 +63,7 @@ function Search-PipeScript {
                 $true;break
             }
         }))
+    
     if (-not $isTypeOk) {
         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','regex','string[]','regex[]'."
     }
@@ -68,6 +77,7 @@ function Search-PipeScript {
     [Alias('RegEx','Regexes','RegularExpressions')]
     [ValidateScript({
     $validTypeList = [System.String],[System.Text.RegularExpressions.Regex],[System.String[]],[System.Text.RegularExpressions.Regex[]]
+    
     $thisType = $_.GetType()
     $IsTypeOk =
         $(@( foreach ($validType in $validTypeList) {
@@ -75,6 +85,7 @@ function Search-PipeScript {
                 $true;break
             }
         }))
+    
     if (-not $isTypeOk) {
         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','regex','string[]','regex[]'."
     }
@@ -82,14 +93,17 @@ function Search-PipeScript {
     })]
     
     $RegularExpression,
+
     # If set, will search nested script blocks.
     [Alias('SearchNestedScriptBlock')]    
     [switch]
     $Recurse
     )
+
     process {
         $ScriptBlock = $null
         $Text        = $null
+
         # If the input was a file
         if ($InputObject -is [IO.FileInfo]) {
             $inputCommand = # get the resolved command
@@ -117,7 +131,9 @@ function Search-PipeScript {
                 $text = [IO.File]::ReadAllText($inputCommand.Source)
             }
         }
+
         $ast = $null
+
         # If the inputObject was a [ScriptBlock]
         if ($InputObject -is [scriptblock]) {
             $scriptBlock = $InputObject # set $ScriptBlock
@@ -130,10 +146,12 @@ function Search-PipeScript {
             $ast = $InputObject
             $text = $ast.Extent.ToString()
         }        
+
         # If the InputObject is a string
         if ($InputObject -is [string]) {
             $Text = $InputObject # set $Text.
         }
+
         # If we have a ScriptBlock
         if ($ast) {            
             # If we have an ASTType to find
@@ -155,6 +173,7 @@ function Search-PipeScript {
                         Write-Error "'$astType' is not an AST type" # error and continue.
                         continue
                     }
+
                     # Set the search condition
                     $condition =
                         if ($realAstType) {
@@ -184,6 +203,7 @@ function Search-PipeScript {
                     $AstCondition += $condition
                 }
             }
+
             # If we have any AST conditions
             if ($AstCondition) {
                 foreach ($condition in $AstCondition) {
@@ -211,6 +231,7 @@ function Search-PipeScript {
                 }
             }
         }
+
         if ($text) {
             if ($RegularExpression) {
                 foreach ($regex in $RegularExpression) {
@@ -245,6 +266,9 @@ function Search-PipeScript {
             }
         }
     }
+
+
+
 }
 
 
