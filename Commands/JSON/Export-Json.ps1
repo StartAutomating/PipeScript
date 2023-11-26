@@ -1,4 +1,5 @@
 function Export-Json {
+
     <#
     
     .SYNOPSIS    
@@ -49,30 +50,38 @@ function Export-Json {
     #>
             
     [CmdletBinding(SupportsShouldProcess)]    
+
     param(
     # The delimiter between objects.    
     # If a delimiter is provided, it will be placed between each JSON object.    
     [string]
     $Delimiter,
+
     [ValidateRange(1, 2147483647)]
     [int]
     ${Depth},
+
     [Parameter(ParameterSetName='ByPath', Mandatory=$true, Position=0)]
     [string]
     ${Path},
+
     [Parameter(ParameterSetName='ByLiteralPath', Mandatory=$true)]
     [Alias('PSPath','LP')]
     [string]
     ${LiteralPath},
+
     [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
     [AllowNull()]
     [psobject]
     ${InputObject},
+
     [switch]
     ${Force},
+
     [Alias('NoOverwrite')]
     [switch]
     ${NoClobber},
+
     [ValidateNotNullOrEmpty()]
     [System.Text.Encoding]
     ${Encoding}
@@ -88,8 +97,10 @@ function Export-Json {
         }
     $IncludeParameter = @()
     $ExcludeParameter = @()
+
     }
     end {
+
    
     $ConvertToJsonParameters = [Ordered]@{}
     
@@ -100,6 +111,7 @@ function Export-Json {
     } else {
         $ConvertToJsonParameters.InputObject = $inputObjects
     }
+
     $FileSplat = [Ordered]@{}
     
     if ($path) { $FileSplat['Path'] = $path;}
@@ -115,6 +127,7 @@ function Export-Json {
     if ($encoding) {
         $fileSplat['Encoding'] = $encoding
     }
+
     if ($psCmdlet.ShouldProcess("$FileSplat")) {
         if ($Delimiter) {
             @(foreach ($inObj in $inputObjects) {
@@ -126,4 +139,6 @@ function Export-Json {
         }            
     }
     }
+
+
 }
