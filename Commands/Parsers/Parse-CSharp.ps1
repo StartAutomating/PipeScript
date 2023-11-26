@@ -1,5 +1,7 @@
 
 function Parse.CSharp {
+
+
     <#
     .SYNOPSIS
         Parses CSharp
@@ -15,6 +17,7 @@ function Parse.CSharp {
     [Parameter(ValueFromPipeline)]
     [ValidateScript({
     $validTypeList = [System.String],[System.IO.FileInfo]
+    
     $thisType = $_.GetType()
     $IsTypeOk =
         $(@( foreach ($validType in $validTypeList) {
@@ -22,6 +25,7 @@ function Parse.CSharp {
                 $true;break
             }
         }))
+    
     if (-not $isTypeOk) {
         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','System.IO.FileInfo'."
     }
@@ -31,16 +35,20 @@ function Parse.CSharp {
     [PSObject]    
     $Source
     )
+
     begin {        
         if (-not ('Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree' -as [type])) {
             Add-Type -AssemblyName Microsoft.CodeAnalysis.CSharp
         }
         $accumulate = [Collections.Queue]::new()
     }
+
     process {
         $accumulate.Enqueue([Ordered]@{psParameterSet=$psCmdlet.ParameterSetName} + $PSBoundParameters)
     }
+
     end {
+
         $count = 0
         $total = $accumulate.Count -as [double]
         if (-not $script:LastProgressID) { $script:LastProgressID = 1}
@@ -48,6 +56,7 @@ function Parse.CSharp {
         if (-not ('Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree' -as [type])) {
             return
         }
+
         while ($accumulate.Count) {
             $dequeue = $accumulate.Dequeue()
             if ($total -gt 1) {
@@ -56,9 +65,11 @@ function Parse.CSharp {
                     [Math]::Min($count / $total, 1) * 100
                 )
             }
+
             foreach ($kv in $dequeue.GetEnumerator()) {
                 $ExecutionContext.SessionState.PSVariable.Set($kv.Key, $kv.Value)
             }
+
             if ($Source -is [string]) {
                 [Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree]::ParseText($Source)
             }
@@ -70,6 +81,9 @@ function Parse.CSharp {
             }
         }
     }
+
+
+
 }
 
 
