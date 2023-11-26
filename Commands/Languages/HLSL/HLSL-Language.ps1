@@ -5,6 +5,7 @@ function Language.HLSL {
         HLSL Language Definition.
     .DESCRIPTION
         Allows PipeScript to generate HLSL.
+
         Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
     #>
 [ValidatePattern('\.hlsl$')]
@@ -14,6 +15,7 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
     )
+
     
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
