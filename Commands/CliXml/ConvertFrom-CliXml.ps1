@@ -1,4 +1,6 @@
 function ConvertFrom-CliXml {
+
+
     <#
     .Synopsis
         Converts CliXml into PowerShell objects
@@ -20,6 +22,7 @@ function ConvertFrom-CliXml {
     [Parameter(Mandatory,Position,ValueFromPipeline)]
     [ValidateScript({
     $validTypeList = [System.String],[System.Xml.XmlDocument]
+    
     $thisType = $_.GetType()
     $IsTypeOk =
         $(@( foreach ($validType in $validTypeList) {
@@ -27,6 +30,7 @@ function ConvertFrom-CliXml {
                 $true;break
             }
         }))
+    
     if (-not $isTypeOk) {
         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','xml'."
     }
@@ -36,6 +40,7 @@ function ConvertFrom-CliXml {
     [PSObject]
     $InputObject
     )
+
     process {                
         $inputAsXml = $InputObject -as [xml]
         [Management.Automation.PSSerializer]::Deserialize($(
@@ -46,6 +51,9 @@ function ConvertFrom-CliXml {
             }
         ))
     }
+
+
+
 } 
  
 
