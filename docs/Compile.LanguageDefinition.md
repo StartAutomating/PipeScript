@@ -53,11 +53,14 @@ A Language Function Definition
 
 ### Notes
 Language definitions are an open-ended object.
+
 By providing key properties or methods, a language can support a variety of scenarios.
+
 |Scenario|Required Properties|
 |-|-|
 |Templating    | `.StartPattern`, `.EndPattern`|
 |Interpretation| `.Interpreter`                |
+
 Language definitions should not contain named blocks.
 
 ---
