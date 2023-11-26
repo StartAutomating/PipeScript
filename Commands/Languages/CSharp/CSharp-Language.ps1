@@ -5,9 +5,13 @@ function Language.CSharp {
         C# Language Definition.
     .DESCRIPTION
         Allows PipeScript to Generate C#.
+
         Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
+
         Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
+
         The C# Inline Transpiler will consider the following syntax to be empty:
+
         * ```String.Empty```
         * ```null```
         * ```""```
@@ -26,8 +30,10 @@ function Language.CSharp {
         }
     }    
     '
+
             [OutputFile(".\HelloWorld.ps1.cs")]$CSharpLiteral
         }
+
         $AddedFile = .> .\HelloWorld.ps1.cs
         $addedType = Add-Type -TypeDefinition (Get-Content $addedFile.FullName -Raw) -PassThru
         $addedType::Main(@())    
@@ -39,6 +45,8 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
     )
+
+
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -49,7 +57,9 @@ $languageDefinition = New-Module {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndPattern       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+
     $Compiler = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('dotnet', 'Application'))[0], 'build'  # To compile C#, we'll use dotnet build 
+
     $Runner  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('dotnet', 'Application'))[0], 'run'
     $LanguageName = 'CSharp'
     Export-ModuleMember -Variable * -Function * -Alias *
