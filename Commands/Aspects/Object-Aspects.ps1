@@ -1,5 +1,7 @@
 
 function Aspect.GroupObjectByTypeName {
+
+
     <#
     .SYNOPSIS
         Groups objects by type name
@@ -10,6 +12,7 @@ function Aspect.GroupObjectByTypeName {
     #>
     [Alias('Aspect.GroupByTypeName')]
     param(<# One or More InputObjects #>[Parameter(ValueFromPipeline)][PSObject[]]$InputObject)
+
     begin {$groupedByTypeName = [Ordered]@{}}
     process {
         foreach ($inObj in $InputObject) {
@@ -21,12 +24,17 @@ function Aspect.GroupObjectByTypeName {
         }
     }
     end {$groupedByTypeName}        
+
+
+
 }
 
 
 
 
 function Aspect.GroupObjectByType {
+
+
     <#
     .SYNOPSIS
         Groups objects by types
@@ -37,6 +45,7 @@ function Aspect.GroupObjectByType {
     #>
     [Alias('Aspect.GroupByType')]
     param(<# One or More Input Objects #>[Parameter(ValueFromPipeline)][PSObject[]]$InputObject)
+
     begin {$groupedByType = [Ordered]@{}}
     process {
         foreach ($inObj in $InputObject) {
@@ -50,6 +59,9 @@ function Aspect.GroupObjectByType {
     end {
         $groupedByType
     }        
+
+
+
 }
 
 
