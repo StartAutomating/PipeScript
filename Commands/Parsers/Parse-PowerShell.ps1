@@ -1,5 +1,7 @@
 
 function Parse.PowerShell {
+
+
     <#
     .SYNOPSIS
         Parses PowerShell
@@ -19,6 +21,7 @@ function Parse.PowerShell {
     [Alias('Text','SourceText','SourceFile')]
     [ValidateScript({
     $validTypeList = [System.String],[System.IO.FileInfo]
+    
     $thisType = $_.GetType()
     $IsTypeOk =
         $(@( foreach ($validType in $validTypeList) {
@@ -26,6 +29,7 @@ function Parse.PowerShell {
                 $true;break
             }
         }))
+    
     if (-not $isTypeOk) {
         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','System.IO.FileInfo'."
     }
@@ -36,13 +40,17 @@ function Parse.PowerShell {
     $Source
     )
     
+
     begin {
         $accumulate = [Collections.Queue]::new()
     }
+
     process {
         $accumulate.Enqueue([Ordered]@{} + $PSBoundParameters)
     }
+
     end {
+
         $count = 0
         $total = $accumulate.Count -as [double]
         if (-not $script:LastProgressID) { $script:LastProgressID = 1}
@@ -55,6 +63,7 @@ function Parse.PowerShell {
                     [Math]::Min($count / $total, 1) * 100
                 )
             }
+
             foreach ($kv in $dequeue.GetEnumerator()) {
                 $ExecutionContext.SessionState.PSVariable.Set($kv.Key, $kv.Value)
             }
@@ -72,6 +81,9 @@ function Parse.PowerShell {
         }
         
     }
+
+
+
 }
 
 
