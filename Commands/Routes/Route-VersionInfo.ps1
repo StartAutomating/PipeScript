@@ -1,5 +1,7 @@
 
 function Route.VersionInfo {
+
+
     <#
     .SYNOPSIS
         Gets Version Information
@@ -21,6 +23,7 @@ function Route.VersionInfo {
         "max-age=86400"
     )]
     param()
+
     $versionInfo = [Ordered]@{PipeScriptVersion=(Get-Module PipeScript -ErrorAction Ignore).Version}
     foreach ($versionVariable in Get-Variable -Name *Version*) {
         if ($versionVariable.NAme  -notmatch '(?>VersionTable|Version)$') {
@@ -39,6 +42,9 @@ function Route.VersionInfo {
         }
     }
     [PSCustomObject]$versionInfo
+
+
+
 }
 
 
