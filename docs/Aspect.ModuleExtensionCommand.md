@@ -9,6 +9,7 @@ Returns a module's extended commands
 ### Description
 
 Returns the commands or scripts in a module that match the module command pattern.
+
 Each returned script will be decorated with the typename(s) that match,
 so that the extended commands can be augmented by the extended types system.
 
