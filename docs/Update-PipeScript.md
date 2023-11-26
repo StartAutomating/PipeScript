@@ -72,54 +72,60 @@ If set, will replace items based off of the abstract syntax tree.
 |---------------|--------|--------|-------------|------------------------------|
 |`[IDictionary]`|false   |4       |false        |AstReplacements<br/>ReplaceAST|
 
+#### **AstCondition**
+
+|Type           |Required|Position|PipelineInput|
+|---------------|--------|--------|-------------|
+|`[IDictionary]`|false   |5       |false        |
+
 #### **RegexReplacement**
 If provided, will replace regular expression matches.
 
 |Type           |Required|Position|PipelineInput|Aliases                           |
 |---------------|--------|--------|-------------|----------------------------------|
-|`[IDictionary]`|false   |5       |false        |ReplaceRegex<br/>RegexReplacements|
+|`[IDictionary]`|false   |6       |false        |ReplaceRegex<br/>RegexReplacements|
 
 #### **RegionReplacement**
 If provided, will replace regions.
 
 |Type           |Required|Position|PipelineInput|Aliases      |
 |---------------|--------|--------|-------------|-------------|
-|`[IDictionary]`|false   |6       |false        |ReplaceRegion|
+|`[IDictionary]`|false   |7       |false        |ReplaceRegion|
 
 #### **RemoveParameter**
 If provided, will remove one or more parameters from a ScriptBlock.
 
 |Type        |Required|Position|PipelineInput|
 |------------|--------|--------|-------------|
-|`[String[]]`|false   |7       |false        |
+|`[String[]]`|false   |8       |false        |
 
 #### **InsertBefore**
 If provided, will insert text before any regular epxression match.
 
 |Type           |Required|Position|PipelineInput|
 |---------------|--------|--------|-------------|
-|`[IDictionary]`|false   |8       |false        |
+|`[IDictionary]`|false   |9       |false        |
 
 #### **InsertAfter**
 If provided, will insert text after any regular expression match.
 
 |Type           |Required|Position|PipelineInput|
 |---------------|--------|--------|-------------|
-|`[IDictionary]`|false   |9       |false        |
+|`[IDictionary]`|false   |10      |false        |
 
 #### **InsertAfterAST**
 A dictionary of items to insert after an AST element.
 
 |Type           |Required|Position|PipelineInput|
 |---------------|--------|--------|-------------|
-|`[IDictionary]`|false   |10      |false        |
+|`[IDictionary]`|false   |11      |false        |
 
 #### **InsertBeforeAst**
 A dictionary of items to insert before an AST element.
 
 |Type           |Required|Position|PipelineInput|
 |---------------|--------|--------|-------------|
-|`[IDictionary]`|false   |11      |false        |
+|`[IDictionary]`|false   |12      |false        |
 
 #### **InsertBlockStart**
 A dictionary of items to insert at the start of another item's AST block.
@@ -128,7 +134,7 @@ The nearest block start will be the point that the item is inserted.
 
 |Type           |Required|Position|PipelineInput|
 |---------------|--------|--------|-------------|
-|`[IDictionary]`|false   |12      |false        |
+|`[IDictionary]`|false   |13      |false        |
 
 #### **InsertBlockEnd**
 A dictionary of items to insert at the start of another item's AST block.
@@ -137,7 +143,7 @@ The nearest block end will be the point that the item is inserted.
 
 |Type           |Required|Position|PipelineInput|
 |---------------|--------|--------|-------------|
-|`[IDictionary]`|false   |13      |false        |
+|`[IDictionary]`|false   |14      |false        |
 
 #### **TextInsertion**
 A dictionary of text insertions.
@@ -146,7 +152,7 @@ The value is the insertion.
 
 |Type           |Required|Position|PipelineInput|
 |---------------|--------|--------|-------------|
-|`[IDictionary]`|false   |14      |false        |
+|`[IDictionary]`|false   |15      |false        |
 
 #### **RegexInsertion**
 A dictionary of regex based insertions
@@ -154,14 +160,14 @@ This works similarly to -RegexReplacement.
 
 |Type           |Required|Position|PipelineInput|Aliases        |
 |---------------|--------|--------|-------------|---------------|
-|`[IDictionary]`|false   |15      |false        |RegexInsertions|
+|`[IDictionary]`|false   |16      |false        |RegexInsertions|
 
 #### **RenameVariable**
 A collection of variables to rename.
 
 |Type           |Required|Position|PipelineInput|Aliases        |
 |---------------|--------|--------|-------------|---------------|
-|`[IDictionary]`|false   |16      |false        |RenameParameter|
+|`[IDictionary]`|false   |17      |false        |RenameParameter|
 
 #### **Append**
 Content to append.
@@ -170,7 +176,7 @@ Appended Text will be added to the end.
 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
-|`[Object]`|false   |17      |false        |
+|`[Object]`|false   |18      |false        |
 
 #### **Prepend**
 Content to prepend
@@ -179,7 +185,7 @@ Prepended text will be added at the start.
 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
-|`[Object]`|false   |18      |false        |
+|`[Object]`|false   |19      |false        |
 
 #### **Transpile**
 If set, will transpile the updated script block.
@@ -192,5 +198,5 @@ If set, will transpile the updated script block.
 
 ### Syntax
 ```PowerShell
-Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-RegexReplacement] <IDictionary>] [[-RegionReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-InsertBefore] <IDictionary>] [[-InsertAfter] <IDictionary>] [[-InsertAfterAST] <IDictionary>] [[-InsertBeforeAst] <IDictionary>] [[-InsertBlockStart] <IDictionary>] [[-InsertBlockEnd] <IDictionary>] [[-TextInsertion] <IDictionary>] [[-RegexInsertion] <IDictionary>] [[-RenameVariable] <IDictionary>] [[-Append] <Object>] [[-Prepend] <Object>] [-Transpile] [<CommonParameters>]
+Update-PipeScript [[-ScriptBlock] <ScriptBlock>] [[-Text] <String>] [[-TextReplacement] <IDictionary>] [[-AstReplacement] <IDictionary>] [[-AstCondition] <IDictionary>] [[-RegexReplacement] <IDictionary>] [[-RegionReplacement] <IDictionary>] [[-RemoveParameter] <String[]>] [[-InsertBefore] <IDictionary>] [[-InsertAfter] <IDictionary>] [[-InsertAfterAST] <IDictionary>] [[-InsertBeforeAst] <IDictionary>] [[-InsertBlockStart] <IDictionary>] [[-InsertBlockEnd] <IDictionary>] [[-TextInsertion] <IDictionary>] [[-RegexInsertion] <IDictionary>] [[-RenameVariable] <IDictionary>] [[-Append] <Object>] [[-Prepend] <Object>] [-Transpile] [<CommonParameters>]
 ```
