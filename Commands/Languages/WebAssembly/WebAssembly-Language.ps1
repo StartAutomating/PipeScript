@@ -5,7 +5,9 @@ function Language.WebAssembly {
     WebAssembly Template Transpiler.
 .DESCRIPTION
     Allows PipeScript to generate WebAssembly.    
+
     Multiline comments blocks like this ```(;{
+
     };)``` will be treated as blocks of PipeScript.
 #>
 [ValidatePattern('\.wat$')]
@@ -14,6 +16,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
     # We start off by declaring a number of regular expressions:
     $startComment = '\(\;' # * Start Comments ```(;```
     $endComment   = '\;\)'   # * End Comments   ```;)```
