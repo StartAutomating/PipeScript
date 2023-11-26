@@ -24,7 +24,13 @@ Get-Command Get-Command |
 
 ```PowerShell
 Get-Command Get-Process | 
-    Aspect.DynamicParameter -IncludeParameter Name # Select -Expand Keys | Should -Be Name
+    Aspect.DynamicParameter -IncludeParameter Name # Select -Expand Keys # Should -Be Name
+```
+> EXAMPLE 3
+
+```PowerShell
+Get-Command Get-Command, Get-Help | 
+    Aspect.DynamicParameter
 ```
 
 ---
