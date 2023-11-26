@@ -9,6 +9,7 @@ Outputs a Signal
 ### Description
 
 Outputs a Signal with whatever name, arguments, input, and command.
+
 A signal is a PowerShell event.
 
 ---
