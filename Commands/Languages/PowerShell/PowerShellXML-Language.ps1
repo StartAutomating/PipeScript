@@ -5,20 +5,24 @@ function Language.PowerShellXML {
     PowerShellXML Language Definition
 .DESCRIPTION
     Allows PipeScript to generate PS1XML.
+
     Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
 .EXAMPLE
     $typesFile, $typeDefinition, $scriptMethod = Invoke-PipeScript {
+
         types.ps1xml template '
         <Types>
             <!--{param([Alias("TypeDefinition")]$TypeDefinitions) $TypeDefinitions }-->
         </Types>
         '
+
         typeDefinition.ps1xml template '
         <Type>
             <!--{param([Alias("PSTypeName")]$TypeName) "<Name>$($typename)</Name>" }-->
             <!--{param([Alias("PSMembers","Member")]$Members) "<Members>$($members)</Members>" }-->
         </Type>
         '
+
         scriptMethod.ps1xml template '
         <ScriptMethod>
             <!--{param([Alias("Name")]$MethodName) "<Name>$($MethodName)</Name>" }-->
@@ -26,6 +30,8 @@ function Language.PowerShellXML {
         </ScriptMethod>
         '
     }
+
+
     $typesFile.Save("Test.types.ps1xml",
         $typeDefinition.Evaluate(@{
             TypeName='foobar'
@@ -55,6 +61,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
 # We start off by declaring a number of regular expressions:
 $startComment = '<\!--' # * Start Comments ```<!--```
 $endComment   = '-->'   # * End Comments   ```-->```
