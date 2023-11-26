@@ -44,7 +44,15 @@ All of the current aspect examples are listed below:
 
 ~~~PowerShell
         Get-Command Get-Process | 
-            Aspect.DynamicParameter -IncludeParameter Name # Select -Expand Keys | Should -Be Name
+            Aspect.DynamicParameter -IncludeParameter Name # Select -Expand Keys # Should -Be Name
+~~~
+
+## Aspect.DynamicParameters -> Aspect.DynamicParameter Example 3
+
+
+~~~PowerShell
+        Get-Command Get-Command, Get-Help | 
+            Aspect.DynamicParameter
 ~~~
 
 ## Aspect.ModuleCommandTypes -> Aspect.ModuleExtensionType Example 1
@@ -118,7 +126,15 @@ All of the current aspect examples are listed below:
 
 ~~~PowerShell
         Get-Command Get-Process | 
-            Aspect.DynamicParameter -IncludeParameter Name # Select -Expand Keys | Should -Be Name
+            Aspect.DynamicParameter -IncludeParameter Name # Select -Expand Keys # Should -Be Name
+~~~
+
+##  Example 3
+
+
+~~~PowerShell
+        Get-Command Get-Command, Get-Help | 
+            Aspect.DynamicParameter
 ~~~
 
 ##  Example 1
