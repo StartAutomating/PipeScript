@@ -215,7 +215,7 @@
             )
 
             process {
-                $scriptBlockLines =@($scriptBlock -split '[\r\n]+')
+                $scriptBlockLines =@($scriptBlock -split '(?>\r\n|\n)')
                 if ($scriptBlockLines.Length -eq 1) { return $ScriptBlock }
                 $InHereDoc = $false
                 $IsFirstLine = $true
