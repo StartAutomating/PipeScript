@@ -9,7 +9,9 @@ Yaml Template Transpiler.
 ### Description
 
 Allows PipeScript to generate Yaml.
+
 Because Yaml does not support comment blocks, PipeScript can be written inline inside of specialized Yaml string.
+
 PipeScript can be included in a multiline Yaml string with the Key PipeScript and a Value surrounded by {}
 
 ---
@@ -40,6 +42,7 @@ List:
 '@
     [OutputFile('.\HelloWorld.ps1.yaml')]$yamlContent
 }
+
 .> .\HelloWorld.ps1.yaml
 ```
 
