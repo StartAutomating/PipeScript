@@ -5,8 +5,11 @@ function Language.PowerShellData {
     PSD1 Template Transpiler.
 .DESCRIPTION
     Allows PipeScript to generate PSD1.
+
     Multiline comments blocks enclosed with {} will be treated as Blocks of PipeScript.
+
     Multiline comments can be preceeded or followed by single-quoted strings, which will be ignored.
+
     * ```''```
     * ```{}```
 #>
@@ -16,6 +19,8 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
+
 # We start off by declaring a number of regular expressions:
 $startComment = '<\#' # * Start Comments ```\*```
 $endComment   = '\#>' # * End Comments   ```/*```
