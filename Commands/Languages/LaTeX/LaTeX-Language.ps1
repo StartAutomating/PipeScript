@@ -5,6 +5,7 @@ function Language.LaTeX {
         LaTeX Language Definition.
     .DESCRIPTION
         Allows PipeScript to generate Latex and Tex files.
+
         Multiline comments with %{}% will be treated as blocks of PipeScript.    
     #>
 [ValidatePattern('\.(?>latex|tex)$')]
@@ -13,6 +14,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
     # We start off by declaring a number of regular expressions:
     $startComment = '\%\{' # * Start Comments ```%{```
     $endComment   = '\}\%' # * End Comments   ```}%```
