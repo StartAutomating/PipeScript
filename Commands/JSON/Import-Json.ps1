@@ -1,4 +1,5 @@
 function Import-Json {
+
     <#
     
     .SYNOPSIS    
@@ -21,15 +22,18 @@ function Import-Json {
     #>
             
     [CmdletBinding(SupportsPaging)]    
+
     param(
     # The delimiter between objects.    
     # If a delimiter is provided, the content will be split by this delimeter.    
     [Parameter(ValueFromPipelineByPropertyName)]
     [string]
     $Delimiter,
+
     [Parameter(ParameterSetName='ByPath', Mandatory=$true, Position=0, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
     [string[]]
     ${Path},
+
     [Parameter(ParameterSetName='ByLiteralPath', Mandatory=$true, ValueFromPipelineByPropertyName=$true)]
     [Alias('PSPath','LP')]
     [string[]]
@@ -46,12 +50,14 @@ function Import-Json {
         }
     $IncludeParameter = @()
     $ExcludeParameter = 'IncludeTotalCount'
+
     }
         process {
         $FileSplat = [Ordered]@{}
     
         if ($path) { $FileSplat['Path'] = $path}
         elseif ($literalPath) { $FileSplat['LiteralPath'] = $path = $literalPath }
+
         $fileContent = Get-Content @FileSplat -Raw
         if (-not $fileContent) { return }
         
@@ -75,5 +81,7 @@ function Import-Json {
         }
     
     }
+
+
 }
 
