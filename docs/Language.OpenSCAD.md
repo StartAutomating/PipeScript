@@ -11,7 +11,9 @@ OpenSCAD Language Definition.
 Allows PipeScript to generate OpenSCAD.
 
 Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
+
 Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
+
 The OpenSCAD Inline Transpiler will consider the following syntax to be empty:
 
 * ```"[^"]+"```
@@ -37,8 +39,10 @@ if (Shape == "circle") {
 circle(Size);
 }
 '@
+
     [OutputFile(".\RandomShapeAndSize.ps1.scad")]$OpenScadWithInlinePipeScript
 }
+
 .> .\RandomShapeAndSize.ps1.scad
 ```
 
