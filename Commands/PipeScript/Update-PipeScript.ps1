@@ -422,7 +422,7 @@
                                     }
                                 }
                             } else {
-                                $conditionalReplacement
+                                $AstReplacement[$ast] = $conditionalReplacement
                             }
                         }
                                                 
