@@ -5,7 +5,9 @@ function Language.HTML {
     HTML PipeScript Transpiler.
 .DESCRIPTION
     Allows PipeScript to generate HTML.
+
     Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
+
     JavaScript/CSS comment blocks like ```/*{}*/``` will also be treated as blocks of PipeScript.
 .Example
     .> {
@@ -47,6 +49,7 @@ function Language.HTML {
                         }
                     }
             ) + "</div>"
+
             "<div class='Datestamp'>" + 
                 "Last Updated:" +
                 (Get-Date | Out-String) +
@@ -54,9 +57,12 @@ function Language.HTML {
         }-->
     </body>
 </html>
+
 '@
+
         [OutputFile(".\Index.ps.html")]$HtmlWithInlinePipeScript
     }
+
     $htmlFile = .> .\Index.ps.html
 #>
 [ValidatePattern('\.htm{0,1}')]
@@ -66,6 +72,8 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
 )
+
+
     # We start off by declaring a number of regular expressions:
     $startComment = '(?><\!--|/\*)' # * Start Comments ```<!--```
     $endComment   = '(?>-->|\*/)'   # * End Comments   ```-->```
