@@ -20,7 +20,7 @@
             1
             #endregion MyRegion
             2
-        } -RegionReplacement @{MyRegion=''}
+        } -RegionReplacement @{MyRegion=''}            
     #>
     [Alias('Update-ScriptBlock', 'ups')]
     param(
@@ -65,6 +65,9 @@
     })]
     [Collections.IDictionary]
     $AstReplacement = [Ordered]@{},
+
+    [Collections.IDictionary]
+    $AstCondition = [Ordered]@{},
 
     # If provided, will replace regular expression matches.
     [Alias('ReplaceRegex', 'RegexReplacements')]
@@ -297,6 +300,28 @@
             if ($RemoveParameter) {
                 
                 $index     = 0
+                $AstCondition[{param($ast)
+                    if ($ast -isnot [Management.Automation.Language.ParameterAst]) { return }
+                    foreach ($toRemove in $RemoveParameter) {
+                        if ($ast.name.variablePath -like $toRemove) {
+                            return $true
+                        }
+                    }
+                }] = {
+                    param($paramToRemove)
+                    # Determine where the parameter starts
+                    $myOffset = [Math]::Max($paramToRemove.Extent.StartOffset - $ScriptBlockOffset - 2,0)
+                    $start = $Text.IndexOf($paramToRemove.Extent.Text, $myOffset)
+                    $end   = $start + $paramToRemove.Extent.Text.Length
+                    if (([Collections.IList]$paramToRemove.Parent.Parameters).IndexOf($paramToRemove) -lt
+                        $paramToRemove.Parent.Parameters.Count - 1) {
+                        $end = $text.IndexOf(',', $end) + 1
+                    } else {
+                        $start = $text.LastIndexOf(",", $start)
+                    }
+                    @{"$start,$end" = ''}
+                }
+                <#
                 # find them within the AST.
                 $paramsToRemove = $ScriptBlock.Ast.FindAll({param($ast)
                     if ($ast -isnot [Management.Automation.Language.ParameterAst]) { return }
@@ -319,25 +344,22 @@
                     } else {
                         $start = $text.LastIndexOf(",", $start)
                     }
-                    $TextReplacement["$start,$end"] = ''                    
-                }
+                    $TextReplacement["$start,$end"] = ''
+                }#>
             }
             #endregion Remove Parameter
 
             #region Rename Variables
             # If we're renaming variables or parameters
             if ($RenameVariable) {
-                # Find all of the variable references
-                $variablesToRename = @($ScriptBlock.Ast.FindAll({
+                # this can be considered an -ASTCondition
+                $AstCondition[{
                     param($ast)
                     if ($ast -isnot [Management.Automation.Language.VariableExpressionast]) { return $false }
                     if ($RenameVariable.Contains("$($ast.VariablePath)")) { return $true}
-                    return $false
-                }, $true))
-
-                # Walk over each variable we have to rename.
-                foreach ($var in $variablesToRename) {
-                    #
+                    return $false   
+                }] = {
+                    param($var)
                     $renameToValue = $RenameVariable["$($var.VariablePath)"]
                     $replaceVariableText =
                         if ($var.Splatted) {
@@ -350,11 +372,64 @@
                     $replaceVariableText = [PSObject]::New($replaceVariableText)
                     # and add 'Inline' so that it renders correctly.
                     $replaceVariableText.PSObject.Properties.Add([PSNoteProperty]::New('Inline', $true))
-                    # then add our replacement to $astReplacement.
-                    $astReplacement[$var] = $replaceVariableText
-                }
+                    $replaceVariableText
+                }                                                
             }
             #endregion Rename Variables
+
+            #region AST Conditions
+            if ($AstCondition.Count) {
+                $ScriptBlock.Ast.FindAll({
+                    param($ast)
+                    $conditionalReplacements =
+                        @(if ($AstCondition.Contains($ast)) {                        
+                            if ($AstCondition[$ast] -is [scriptblock]) {
+                                & $AstCondition[$ast] $ast
+                            } else {
+                                $AstCondition[$ast]
+                            }
+                        }
+                        else {
+                            foreach ($astCond in $AstCondition.GetEnumerator()) {
+                                if ($astCond.Key -is [scriptblock] -and
+                                    (& $astCond.Key $ast)) {
+                                    if ($astCond.Value -is [scriptblock]) {
+                                        & $astCond.Value $ast
+                                    }
+                                    else {
+                                        $astCond.Value
+                                    }
+                                }
+                            }
+                        })
+
+                    # If there were any conditional replacement results
+                    if ($conditionalReplacements) {
+                        # we can interpret them two ways
+                        
+                        foreach ($conditionalReplacement in $conditionalReplacements) {
+                            # If they were a dictionary, we can
+                            if ($conditionalReplacement -is [Collections.IDictionary]) {                            
+                                foreach ($conditionalReplaceOutput in $conditionalReplacement.GetEnumerator()) {
+                                    if ($conditionalReplaceOutput.Key -is [Management.Automation.Language.Ast]) {
+                                        $AstReplacement[$conditionalReplaceOutput.Key] = $conditionalReplaceOutput.Value
+                                    }
+                                    elseif ($conditionalReplaceOutput.Key -is [regex]) {
+                                        $RegexReplacement[$conditionalReplaceOutput.Key] = $conditionalReplaceOutput.Value
+                                    }
+                                    elseif ($conditionalReplaceOutput.Key -match '^\d+,\d+$') {
+                                        $TextReplacement[$conditionalReplaceOutput.Key] = $conditionalReplaceOutput.Value
+                                    }
+                                }
+                            } else {
+                                $conditionalReplacement
+                            }
+                        }
+                                                
+                    }
+                }, $true)
+            }
+            #endregion AST Conditions
 
             #region Replace AST
             # If we had any AST replacements
