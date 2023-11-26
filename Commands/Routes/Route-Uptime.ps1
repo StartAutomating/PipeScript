@@ -1,5 +1,7 @@
 
 function Route.Uptime {
+
+
     <#
     .SYNOPSIS
         Gets Uptime
@@ -17,7 +19,11 @@ function Route.Uptime {
         ErrorMessage='$request.uri' # and this applies to $request.uri
         )]
     param()
+
     [DateTime]::Now - ((Get-Process -id $pid).StartTime)
+
+
+
 }
 
 
