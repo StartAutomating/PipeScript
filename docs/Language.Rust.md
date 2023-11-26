@@ -9,6 +9,7 @@ Rust Language Definition
 ### Description
 
 Defines Rust within PipeScript.
+
 This allows Rust to be templated.
 
 ---
