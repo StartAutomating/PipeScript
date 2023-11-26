@@ -23,11 +23,14 @@ if (-not $dynamicParametersFrom) { return }
 $dynamicParametersFrom | 
     # Aspect.DynamicParameter
     & { 
+    
+    
         <#
         .SYNOPSIS
             Dynamic Parameter Aspect
         .DESCRIPTION
             The Dynamic Parameter Aspect is used to add dynamic parameters, well, dynamically.
+    
             It can create dynamic parameters from one or more input objects or scripts.
         .EXAMPLE
             Get-Command Get-Command | 
@@ -45,36 +48,45 @@ $dynamicParametersFrom |
         # This can be anything, but will be ignored unless it is a `[ScriptBlock]` or `[Management.Automation.CommandInfo]`.    
         [Parameter(ValueFromPipeline)]
         $InputObject,
+    
         # The name of the parameter set the dynamic parameters will be placed into.    
         [string]
         $ParameterSetName,
+    
         # The positional offset.  If this is provided, all positional parameters will be shifted by this number.
         # For example, if -PositionOffset is 1, the first parameter would become the second parameter (and so on)
         [int]
         $PositionOffset,
+    
         # If set, will make all dynamic parameters non-mandatory.
         [switch]
         $NoMandatory,
+    
         # If provided, will check that dynamic parameters are valid for a given command.
         # If the [Management.Automation.CmdletAttribute]
         [string[]]
         $commandList,
+    
         # If provided, will include only these parameters from the input.
         [string[]]
         $IncludeParameter,
+    
         # If provided, will exclude these parameters from the input.
         [string[]]
         $ExcludeParameter,
+    
         # If provided, will make a blank parameter for every -PositionOffset.
         # This is so, presumably, whatever has already been provided in these positions will bind correctly.
         # The name of this parameter, by default, will be "ArgumentN" (for example, Argument1)
         [switch]
         $BlankParameter,
+    
         # The name of the blank parameter.
         # If there is a -PositionOffset, this will make a blank parameter by this name for the position.    
         [string[]]
         $BlankParameterName = "Argument"
         )
+    
         begin {
             # We're going to accumulate all input into a queue, so we'll need to make a queue in begin.
             $inputQueue = [Collections.Queue]::new()
@@ -82,16 +94,19 @@ $dynamicParametersFrom |
         process {
             $inputQueue.Enqueue($InputObject) # In process, we just need to enqueue the input.
         }
+    
         end {
             # The dynamic parameters are created at the end of the pipeline.        
             $DynamicParameters = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
             
             # We're going to want to track what aliases are assigned (to avoid conflicts)
             $PendingAliasMap = [Ordered]@{}
+    
             # Before any dynamic parameters are bound, we need to create any blank requested parameters
             if ($PositionOffset -and # (if we're offsetting position
                 ($BlankParameter -or $PSBoundParameters['BlankParameterName']) # and we have a -BlankParameter)
             ) {
+    
                 for ($pos =0; $pos -lt $PositionOffset; $pos++) {
                     # If we have a name, use that
                     $paramName = $BlankParameterName[$pos]
@@ -111,13 +126,16 @@ $dynamicParametersFrom |
                             )
                         )
                     )
+    
                     $PendingAliasMap[$paramName] = $DynamicParameters[$paramName]
                 }
             }
+    
             # After we've blank parameters, we move onto the input queue.        
             while ($inputQueue.Count) {
                 # and work our way thru it until it is empty.
                 $InputObject = $inputQueue.Dequeue()
+    
                 # First up, we turn our input into [CommandMetaData]
                 $inputCmdMetaData = 
                     if ($inputObject -is [Management.Automation.CommandInfo]) {
@@ -129,6 +147,7 @@ $dynamicParametersFrom |
                         $function:TempFunction = $InputObject
                         [Management.Automation.CommandMetaData]$ExecutionContext.SessionState.InvokeCommand.GetCommand('TempFunction','Function')
                     }
+    
                 # If for any reason we couldn't get command metadata, continue.
                 if (-not $inputCmdMetaData) { continue } 
                                                        
@@ -145,6 +164,7 @@ $dynamicParametersFrom |
                             }
                         if (-not $shouldInclude) { continue nextDynamicParameter }
                     }
+    
                     $attrList = [Collections.Generic.List[Attribute]]::new()
                     $validCommandNames = @()
                     foreach ($attr in $inputCmdMetaData.Parameters[$paramName].attributes) {
@@ -184,6 +204,7 @@ $dynamicParametersFrom |
                                     $attrCopy.($prop.Name) = $attr.($prop.Name)
                                 }
                             }
+    
                             $attrCopy.ParameterSetName =
                                 if ($ParameterSetName) {
                                     $ParameterSetName
@@ -202,15 +223,18 @@ $dynamicParametersFrom |
                                         $this.Source
                                     }
                                 }
+    
                             if ($NoMandatory -and $attrCopy.Mandatory) {
                                 $attrCopy.Mandatory = $false
                             }
+    
                             if ($PositionOffset -and $attr.Position -ge 0) {
                                 $attrCopy.Position += $PositionOffset
                             }
                             $attrList.Add($attrCopy)
                         }
                     }
+    
                     if ($commandList -and $validCommandNames) {
                         :CheckCommandValidity do {
                             foreach ($vc in $validCommandNames) {
@@ -236,4 +260,7 @@ $dynamicParametersFrom |
             }
             $DynamicParameters
         }
+    
+    
+    
      } @DyanmicParameterOption
