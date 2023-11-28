@@ -116,11 +116,14 @@ function Import-ModuleMember {
                 if ($ConvertMember) {
                     # see if it was a dictionary or not.                                        
                     if ($ConvertMember -is [Collections.IDictionary]) {
+
+
                         # For dictionaries we can check for a `[type]`, or a `[ScriptBlock]`, or a `[Regex]` or wildcard `[string]`,
                         # so we'll have to walk thru the dictionary
                         foreach ($convertKeyValue in $ConvertMember.GetEnumerator()) {
                             # (skipping anything that does not have a `[ScriptBlock]` value).
                             if ($convertKeyValue.Value -isnot [scriptblock]) { continue } 
+
 
                             # Do we have a match?
                             $GotAMatch = 
@@ -163,7 +166,7 @@ function Import-ModuleMember {
                                     }                                 
                         }
                     } else {
-                        # Otherwise, walk over each property
+                        # For regular conversion objects, we walk over each property.
                         switch ($ConvertMember.psobject.properties) {
                             {
                                 # If the value is a scriptblock and 
@@ -250,7 +253,7 @@ function Import-ModuleMember {
                 # The definition is straightforward enough,
                 foreach ($_ in @($args | & { process { $_.GetEnumerator() }})) {
                     # it just sets each argument with the providers
-                    $ExecutionContext.SessionState.InvokeProvider.Item.Set($_.Key, $_.Value, $true)
+                    $ExecutionContext.SessionState.InvokeProvider.Item.Set($_.Key, $_.Value, $true, $false)
                 }
                 # and exports everything.
                 Export-ModuleMember -Function * -Variable * -Cmdlet * -Alias *
@@ -272,7 +275,7 @@ function Import-ModuleMember {
                 # get a pointer to it's context.
                 $moduleContext = . $Module { $ExecutionContext }
                 # and use the providers to set the item (and we're good).
-                $moduleContext.SessionState.InvokeProvider.Item.Set($_.Key, $_.Value,$true)
+                $moduleContext.SessionState.InvokeProvider.Item.Set($_.Key, $_.Value,$true, $false)
                 # If -PassThru was provided
                 if ($PassThru) {
                     # Pass thru each command.                    
