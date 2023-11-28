@@ -51,6 +51,15 @@ function Import-ModuleMember {
     [Parameter(ValueFromPipelineByPropertyName)]
     $Module,
 
+    # Any custom member conversions.
+    # If these are provided, they can convert any type of object or value into a member.
+    # If this is a Dictionary, `[type]` and `[ScriptBlock]` keys can be used to constrain the type.
+    # If this is a PSObject, the property names will be treated as wildcards and the value should be a string or scriptblock that will make the function.
+    [Parameter(ValueFromPipelineByPropertyName)]
+    [Alias('ConvertProperty','TransformProperty','TransformMember')]
+    [PSObject]
+    $ConvertMember,
+
     # If set, will pass thru any imported members
     # If a new module is created, this will pass thru the created module.
     # If a -Module is provided, and has not yet been imported, then the created functions and aliases will be referenced instead.
@@ -67,22 +76,24 @@ function Import-ModuleMember {
             if ($fromObject -is [Collections.IDictionary]) { 
                 $fromObject = [PSCustomObject]$fromObject
             }
-            # We need to look at each potential member
+            
             :nextMember foreach ($member in $fromObject.PSObject.Members) {
+                #region -Including and -Excluding
+                # We need to look at each potential member
                 # and make sure it's not something we want to -Exclude.
                 if ($ExcludeProperty) {
                     foreach ($exProp in $ExcludeProperty) {
-                        # If it is, move onto the next member
+                        # If it is, move onto the next member.
                         if (($exProp -is [regex] -and $member.Name -match $exProp) -or 
                                                     ($exProp -isnot [regex] -and $member.Name -like $exProp)) { 
                                     continue nextMember                        
-                                }                         
+                                } 
                     }                    
                 }
                 # If we're whitelisting as well
                 if ($IncludeProperty) {
                     included :do {
-                        # make sure each item is in the whitelist
+                        # make sure each item is in the whitelist.
                         foreach ($inProp in $IncludeProperty) {
                             break included if (
                                 $inProp -is [Regex] -and $member.Name -match $inProp
@@ -94,24 +105,98 @@ function Import-ModuleMember {
                         continue nextMember
                     } while ($false)
                 }
+                #endregion -Including and -Excluding
 
-                # Now what we're sure we want this member, let's see if we can have it:                 
+                #region Convert Each Member to A Command
+
+                # Now what we're sure we want this member, let's see if we can have it:
+
+                #region Custom Member Conversions
+                # If there were custom conversions
+                if ($ConvertMember) {
+                    # see if it was a dictionary or not.                                        
+                    if ($ConvertMember -is [Collections.IDictionary]) {
+                        # For dictionaries we can check for a `[type]`, or a `[ScriptBlock]`, or a `[Regex]` or wildcard `[string]`,
+                        # so we'll have to walk thru the dictionary
+                        foreach ($convertKeyValue in $ConvertMember.GetEnumerator()) {
+                            # (skipping anything that does not have a `[ScriptBlock]` value).
+                            if ($convertKeyValue.Value -isnot [scriptblock]) { continue } 
+
+                            # Do we have a match?
+                            $GotAMatch = 
+                                # If the key is a [type]
+                                if ($convertKeyValue.Key -is [type] -and 
+                                    # and the member is that type,
+                                    $member.Value -is $convertKeyValue.Key) {
+                                    $true # we've got a match.
+                                }
+                                # If the key is `[Regex]`
+                                elseif ($convertKeyValue.Key -is [Regex] -and
+                                    # and the member name matches the pattern
+                                    $member.Name -match $convertKeyValue
+                                ) {
+                                    $true # we've got a match.
+                                }
+                                # If the key is a `[ScriptBlock]`
+                                elseif ($convertKeyValue.Key -is [scriptblock] -and 
+                                    # and it has a truthy result
+                                    $(& $convertKeyValue.Key $member)) {
+                                    $true # we've got a match.
+                                }
+                                elseif (
+                                    # As a last attempt, it's a member is a match if the pstypenames contains the key
+                                    $member.Value.pstypenames -contains $convertKeyValue.Key -or 
+                                    # or it's value is like the key.
+                                    $member.Value -like $convertKeyValue.Key
+                                ) {
+                                    $true
+                                }
+
+                            # If we have no match, continue
+                            if (-not $GotAMatch) { continue } 
+
+                            # Run the converter.
+                            $convertedScriptOutput = & $convertKeyValue.Value $member
+                            # If there's output, continue to the next member.
+                            if ($convertedScriptOutput) { 
+                                        @{"function:$($member.Name)" = $convertedScriptOutput};continue nextMember                        
+                                    }                                 
+                        }
+                    } else {
+                        # Otherwise, walk over each property
+                        switch ($ConvertMember.psobject.properties) {
+                            {
+                                # If the value is a scriptblock and 
+                                $_.Value -is [ScriptBlock] -and
+                                (
+                                    # the member's value's typenames contains the convert member name
+                                    $member.Value.pstypenames -contains $_.Name -or 
+                                    $member.Name -like $_.Name # (or the member's value is like the convert member name )
+                                )
+                            } {
+                                # Run the converter.
+                                $convertedScriptOutput = & $_.Value $member
+                                # If there's output, continue to the next member.
+                                if ($convertedScriptOutput) { 
+                                            @{"function:$($member.Name)" = $convertedScriptOutput};continue nextMember                        
+                                        } 
+                            }
+                        }
+                    }
+                }
+                #endregion Custom Member Conversions
+
+                #region Automatic Member Conversions
                 switch ($member.Value) {
                 {$_ -is [ScriptBlock]}
                 {
-                                        # If it's a [ScriptBlock], it can become a function
-                                        @{"function:$($member.Name)"= $member.Value}
+                                        # * If it's a `[ScriptBlock]`, it can become a function
+                                        @{"function:$($member.Name)"= $member.Value} # (just set it directly).
                                     }
                 {$_ -is [PSScriptMethod]}
                 {
-                                        # If it's a [PSScriptMethod], it can also become a function
-                                        @{"function:$($member.Name)"= $member.Value.Script}
-                                    }
-                {$_ -is [PSScriptProperty]}
-                {
-                                        # ScriptProperties can be functions, too
-                                        @{"function:$($member.Name)"= $member.Value.GetterScript}
-                                        
+                                        # * If it's a `[PSScriptMethod]`, it can also become a function
+                                        @{"function:$($member.Name)"= $member.Value.Script} # (just set it to the .Script property) (be aware, `$this` will not work without some additional work).
                                     }
                 {$_ -is [string]}
                 {
@@ -129,11 +214,13 @@ function Import-ModuleMember {
                                             # If the path exists
                                             if (Test-Path $absoluteItemPath) {
                                                 # alias it.
-                                                @{"alias:$($member.Name)" = "$absoluteItemPath"}    
+                                                @{"alias:$($member.Name)" = "$absoluteItemPath"}
                                             }
                                         }
                                     }
                 }
+                #endregion Automatic Member Conversions
+                #endregion Convert Each Member to A Command
             }
         }
         
