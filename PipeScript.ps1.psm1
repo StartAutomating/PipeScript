@@ -82,6 +82,7 @@ $PipeScript.Extensions |
 . { 
     begin {
         $LanguagesByName = [Ordered]@{}
+        $InterpretersByName = [Ordered]@{}        
     }
     process {
         if ($_.Name -notlike 'Language*') { return }
@@ -90,11 +91,15 @@ $PipeScript.Extensions |
             return
         }
         $LanguagesByName[$languageObject.LanguageName] = $languageObject
+        if ($languageObject.Interpreter) {
+            $InterpretersByName[$languageObject.LanguageName] = $languageObject
+        }
     }
     end {        
         $PSLanguage = $PSLanguages = [PSCustomObject]$LanguagesByName
         $PSLanguage.pstypenames.insert(0,'PipeScript.Languages')
-        $PSLanguage
+        $PSInterpeter = $PSInterpreters = [PSCustomObject]$InterpretersByName
+        $PSInterpeter.pstypenames.insert(0,'PipeScript.Interpreters')
     } 
 }
 
