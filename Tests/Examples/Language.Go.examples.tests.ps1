@@ -4,6 +4,7 @@ describe 'Language.Go' {
         Invoke-PipeScript {    
             HelloWorld.go template '
         package main
+
         import "fmt"
         func main() {
             fmt.Println("/*{param($msg = "hello world") "`"$msg`""}*/")
@@ -16,11 +17,13 @@ describe 'Language.Go' {
         $HelloWorld = {param([Alias('msg')]$message = "Hello world") "`"$message`""}
         $helloGo = HelloWorld.go template "
         package main
+
         import `"fmt`"
         func main() {
             fmt.Println(`"/*{$helloWorld}*/`")
         }
         "
+
         $helloGo.Save()
         }
     }
@@ -32,6 +35,7 @@ describe 'Language.Go' {
             fmt.Println("hello world")
         }
         ' | Set-Content .\HelloWorld.go
+
         Invoke-PipeScript .\HelloWorld.go
     }
 }
