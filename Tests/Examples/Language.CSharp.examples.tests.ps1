@@ -14,8 +14,10 @@ describe 'Language.CSharp' {
         }
     }    
     '
+
             [OutputFile(".\HelloWorld.ps1.cs")]$CSharpLiteral
         }
+
         $AddedFile = .> .\HelloWorld.ps1.cs
         $addedType = Add-Type -TypeDefinition (Get-Content $addedFile.FullName -Raw) -PassThru
         $addedType::Main(@())
