@@ -40,6 +40,7 @@ describe 'Language.HTML' {
                         }
                     }
             ) + "</div>"
+
             "<div class='Datestamp'>" + 
                 "Last Updated:" +
                 (Get-Date | Out-String) +
@@ -47,9 +48,12 @@ describe 'Language.HTML' {
         }-->
     </body>
 </html>
+
 '@
+
         [OutputFile(".\Index.ps.html")]$HtmlWithInlinePipeScript
     }
+
     $htmlFile = .> .\Index.ps.html
     }
 }
