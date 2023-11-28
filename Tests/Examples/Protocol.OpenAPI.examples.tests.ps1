@@ -10,6 +10,7 @@ describe 'Protocol.OpenAPI' {
                 param()
             }
         }
+
         Get-GitHubIssue -Owner StartAutomating -Repo PipeScript
     }
     it 'Protocol.OpenAPI Example 2' {
@@ -21,6 +22,7 @@ describe 'Protocol.OpenAPI' {
                 param()
             }
         }
+
         GitHubApi '/zen'
     }
     it 'Protocol.OpenAPI Example 3' {
