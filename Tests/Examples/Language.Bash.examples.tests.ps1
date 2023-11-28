@@ -4,6 +4,7 @@ describe 'Language.Bash' {
         Invoke-PipeScript {
             $bashScript = '
             echo ''hello world''
+
             <<PipeScript{}
                 "echo ''$(''hi'',''yo'',''sup'' | Get-Random)''"
             PipeScript{}
@@ -11,6 +12,7 @@ describe 'Language.Bash' {
         
             [OutputFile('.\HelloWorld.ps1.sh')]$bashScript
         }
+
         Invoke-PipeScript .\HelloWorld.ps1.sh
     }
 }
