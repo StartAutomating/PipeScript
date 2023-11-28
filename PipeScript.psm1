@@ -122,12 +122,13 @@ foreach ($typesXmlNoteProperty in $typesXmlNoteProperties){
     }    
 }
 
-Get-PipeScript -PipeScriptType Language | 
+$PipeScript.Extensions | 
 . { 
     begin {
         $LanguagesByName = [Ordered]@{}
     }
     process {
+        if ($_.Name -notlike 'Language*') { return }
         $languageObject = & $_
         if (-not $languageObject.LanguageName) {
             return
