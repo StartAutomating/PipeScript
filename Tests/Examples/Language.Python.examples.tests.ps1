@@ -12,6 +12,7 @@ print("$msg")
 '@
         [OutputFile('.\HelloWorld.ps1.py')]$PythonContent
     }
+
     .> .\HelloWorld.ps1.py
     }
     it 'Language.Python Example 2' {
