@@ -101,7 +101,11 @@ How It Works
  Now what we're sure we want this member, let's see if we can have it:
 
 ###### Custom Member Conversions
- If there were custom conversions see if it was a dictionary or not.  For dictionaries we can check for a `[type]`, or a `[ScriptBlock]`, or a `[Regex]` or wildcard `[string]`, so we'll have to walk thru the dictionary (skipping anything that does not have a `[ScriptBlock]` value).  Do we have a match? If the key is a [type] and the member is that type, we've got a match.  If the key is `[Regex]` and the member name matches the pattern we've got a match.  If the key is a `[ScriptBlock]` and it has a truthy result we've got a match.  As a last attempt, it's a member is a match if the pstypenames contains the key or it's value is like the key.  If we have no match, continue Run the converter.  If there's output, continue to the next member.  Otherwise, walk over each property If the value is a scriptblock and the member's value's typenames contains the convert member name (or the member's value is like the convert member name ) Run the converter.  If there's output, continue to the next member.
+ If there were custom conversions see if it was a dictionary or not.
+
+ For dictionaries we can check for a `[type]`, or a `[ScriptBlock]`, or a `[Regex]` or wildcard `[string]`, so we'll have to walk thru the dictionary (skipping anything that does not have a `[ScriptBlock]` value).
+
+ Do we have a match? If the key is a [type] and the member is that type, we've got a match.  If the key is `[Regex]` and the member name matches the pattern we've got a match.  If the key is a `[ScriptBlock]` and it has a truthy result we've got a match.  As a last attempt, it's a member is a match if the pstypenames contains the key or it's value is like the key.  If we have no match, continue Run the converter.  If there's output, continue to the next member.  For regular conversion objects, we walk over each property.  If the value is a scriptblock and the member's value's typenames contains the convert member name (or the member's value is like the convert member name ) Run the converter.  If there's output, continue to the next member.
 
 ###### Automatic Member Conversions
  
