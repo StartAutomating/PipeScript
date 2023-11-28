@@ -12,6 +12,16 @@ function Import-ModuleMember
         * A Property with a relative path
          
         Each of these can easily be turned into a function or alias.
+    .EXAMPLE        
+        $importedMembers = [PSCustomObject]@{
+            "Did you know you PowerShell can have commands with spaces" = {
+                "It's a pretty unique feature of the PowerShell language"
+            }
+        } | Import-ModuleMember -PassThru
+
+        $importedMembers # Should -BeOfType ([Management.Automation.PSModuleInfo]) 
+
+        & "Did you know you PowerShell can have commands with spaces" # Should -BeLike '*PowerShell*'
     #>
     [CmdletBinding(PositionalBinding=$false)]
     param(
@@ -126,7 +136,7 @@ function Import-ModuleMember
             $MyInvocationName = $MyInvocation.InvocationName
             $newModule = New-Module -ScriptBlock {
                 foreach ($_ in @($args | & { process { $_.GetEnumerator() }})) {
-                    $ExecutionContext.SessionState.PSVariable.Set($_.Key, $_.Value)
+                    $ExecutionContext.SessionState.InvokeProvider.Item.Set($_.Key, $_.Value)
                 }
                 Export-ModuleMember -Function * -Variable * -Cmdlet *                
             } -ArgumentList $importMembers -Name "$(if ($module) { "$($module.Name)@$timestamp" } else { "$MyInvocationName@$timestamp"})"
@@ -134,7 +144,7 @@ function Import-ModuleMember
         } elseif ($module -and $module.Version -eq '0.0') {
             foreach ($_ in @($importMembers | & { process { $_.GetEnumerator() }})) {
                 $moduleContext = . $Module { $ExecutionContext }
-                $moduleContext.SessionState.PSVariable.Set($_.Key, $_.Value)
+                $ExecutionContext.SessionState.InvokeProvider.Item.Set($_.Key, $_.Value)
                 if ($PassThru) {
                     $commandType, $commandName = $_.Key -split ':', 2
                     $ExecutionContext.SessionState.InvokeCommand.GetCommand($commandName, $commandType)
