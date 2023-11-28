@@ -7,6 +7,7 @@ PipeScript: |
   {
     @{a='b'}
   }
+
 List:
   - PipeScript: |
       {
@@ -23,6 +24,7 @@ List:
 '@
         [OutputFile('.\HelloWorld.ps1.yaml')]$yamlContent
     }
+
     .> .\HelloWorld.ps1.yaml
     }
 }
