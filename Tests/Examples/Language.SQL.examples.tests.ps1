@@ -4,7 +4,9 @@ describe 'Language.SQL' {
     Invoke-PipeScript {
         $SQLScript = '    
     -- {
+
     Uncommented lines between these two points will be ignored
+
     --  # Commented lines will become PipeScript / PowerShell.
     -- param($message = "hello world")
     -- "-- $message"
@@ -13,6 +15,7 @@ describe 'Language.SQL' {
     
         [OutputFile('.\HelloWorld.ps1.sql')]$SQLScript
     }
+
     Invoke-PipeScript .\HelloWorld.ps1.sql
     }
 }
