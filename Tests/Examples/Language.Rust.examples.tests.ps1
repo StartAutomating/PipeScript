@@ -33,6 +33,7 @@ describe 'Language.Rust' {
             println!("{}",msg);
         }
         ' | Set-Content .\HelloWorld_Rust.ps.rs
+
         Invoke-PipeScript .\HelloWorld_Rust.ps.rs
     }
     it 'Language.Rust Example 4' {
@@ -43,6 +44,7 @@ describe 'Language.Rust' {
             println!(`"{}`",msg);
         }
         " | Set-Content .\HelloWorld_Rust.ps1.rs
+
         Invoke-PipeScript .\HelloWorld_Rust.ps1.rs -Parameter @{message='hi'}
     }
 }
