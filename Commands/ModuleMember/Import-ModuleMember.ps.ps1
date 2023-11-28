@@ -24,6 +24,8 @@ function Import-ModuleMember
         & "Did you know you PowerShell can have commands with spaces" # Should -BeLike '*PowerShell*'
     #>
     [CmdletBinding(PositionalBinding=$false)]
+    [Reflection.AssemblyMetadata("HelpOut.TellStory", $true)]
+    [Reflection.AssemblyMetadata("HelpOut.Story.Process", "For Each Input")]
     param(
     # The Source of additional module members
     [vfp()]
@@ -57,6 +59,7 @@ function Import-ModuleMember
     )
 
     process {
+        #region Convert Members to Commands
         # First up, we need to take our input and turn it into something to import        
         $importMembers = :nextObject foreach ($fromObject in $from) {
             # (we turn any dictionary into a psuedo-object, for consistency).
@@ -111,16 +114,20 @@ function Import-ModuleMember
                     }
                     [string]
                     {
-                        if ($module.Path) {                            
-                            $absoluteItemPath = 
-                                $module | 
-                                    Split-Path | 
+                        # For strings, we can see if they are a relative path to the module
+                        # (assuming there is a module)
+                        if ($module.Path) {
+                            $absoluteItemPath =
+                                $module |
+                                    Split-Path |
                                     Join-Path -ChildPath (
                                         $member.Value -replace '[\\/]',
                                             [IO.Path]::DirectorySeparatorChar
                                     )
 
+                            # If the path exists
                             if (Test-Path $absoluteItemPath) {
+                                # alias it.
                                 @{"alias:$($member.Name)" = "$absoluteItemPath"}    
                             }
                         }
@@ -128,28 +135,64 @@ function Import-ModuleMember
                 }
             }
         }
+        
 
+        # If we have no properties we can import, now is the time to return.
         return if -not $importMembers        
+        #endregion Convert Members to Commands
 
-        if ((-not $module) -or ($module.Version -ge '0.0')) {
+        # Now we have to determine how we're declaring and importing these functions.
+
+        # We're either going to be Generating a New Module.
+        # or Importing into a Loading Module.
+        
+        # In these two scenarios we will want to generate a new module:
+        if (
+            (-not $module) -or # If we did not provide a module (because how else should we import it?)
+            ($module.Version -ge '0.0') # or if the module has a version (because during load, a module has no version)
+        ) {
+            
+
+            #region Generating a New Module
+            # To start off, we'll want to timestamp the module
             $timestamp = $([Datetime]::now.ToString('s'))
+            # and might want to use our own invocation name to name the module.
             $MyInvocationName = $MyInvocation.InvocationName
-            $newModule = New-Module -ScriptBlock {
+            New-Module -ScriptBlock {
+                # The definition is straightforward enough,
                 foreach ($_ in @($args | & { process { $_.GetEnumerator() }})) {
-                    $ExecutionContext.SessionState.InvokeProvider.Item.Set($_.Key, $_.Value)
+                    # it just sets each argument with the providers
+                    $ExecutionContext.SessionState.InvokeProvider.Item.Set($_.Key, $_.Value, $true)
                 }
-                Export-ModuleMember -Function * -Variable * -Cmdlet *                
-            } -ArgumentList $importMembers -Name "$(if ($module) { "$($module.Name)@$timestamp" } else { "$MyInvocationName@$timestamp"})"
-            $newModule | Import-Module -Global -PassThru:$PassThru -Force
-        } elseif ($module -and $module.Version -eq '0.0') {
+                # and exports everything.
+                Export-ModuleMember -Function * -Variable * -Cmdlet * -Alias *
+            } -Name "$(
+                # We name the new module based off of the module (if present)
+                if ($module) { "$($module.Name)@$timestamp" }
+                # or the command name (if not)
+                else { "$MyInvocationName@$timestamp"}
+            )" -ArgumentList $importMembers | # We pass our ImportMembers as the argument to make it all work
+                Import-Module -Global -PassThru:$PassThru -Force # and import the module globally.
+
+            #endregion Generating a New Module
+        } 
+        elseif ($module -and $module.Version -eq '0.0') 
+        {
+            #region Importing into a Loading Module
             foreach ($_ in @($importMembers | & { process { $_.GetEnumerator() }})) {
+                # If we're importing into a module that hasn't finished loading
+                # get a pointer to it's context.
                 $moduleContext = . $Module { $ExecutionContext }
-                $ExecutionContext.SessionState.InvokeProvider.Item.Set($_.Key, $_.Value)
+                # and use the providers to set the item (and we're good).
+                $moduleContext.SessionState.InvokeProvider.Item.Set($_.Key, $_.Value,$true)
+                # If -PassThru was provided
                 if ($PassThru) {
+                    # Pass thru each command.                    
                     $commandType, $commandName = $_.Key -split ':', 2
-                    $ExecutionContext.SessionState.InvokeCommand.GetCommand($commandName, $commandType)
+                    $moduleContext.SessionState.InvokeCommand.GetCommand($commandName, $commandType)
                 }
             }
+            #endregion Importing into a Loading Module
         }
     }
 }
