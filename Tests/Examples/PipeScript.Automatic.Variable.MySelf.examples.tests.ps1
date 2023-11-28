@@ -9,6 +9,7 @@ describe 'PipeScript.Automatic.Variable.MySelf' {
         # By using $Myself, we can write an anonymously recursive fibonacci sequence.
         Invoke-PipeScript {
             param([int]$n = 1)
+
             if ($n -lt 2) {
                 $n
             } else {
