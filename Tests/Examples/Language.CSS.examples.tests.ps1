@@ -11,6 +11,7 @@ describe 'Language.CSS' {
     '
             [Save(".\StyleSheet.ps1.css")]$StyleSheet
         }
+
         .> .\StyleSheet.ps1.css
     }
 }
