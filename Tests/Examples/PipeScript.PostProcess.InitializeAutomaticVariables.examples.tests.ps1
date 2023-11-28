@@ -7,6 +7,7 @@ describe 'PipeScript.PostProcess.InitializeAutomaticVariables' {
                 Get-PSCallstack
             }
         }
+
         # Now we can use $MyCallstack as-is.
         # It will be initialized at the beginning of the script
         {
