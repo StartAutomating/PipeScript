@@ -122,9 +122,26 @@ foreach ($typesXmlNoteProperty in $typesXmlNoteProperties){
     }    
 }
 
+Get-PipeScript -PipeScriptType Language | 
+. { 
+    begin {
+        $LanguagesByName = [Ordered]@{}
+    }
+    process {
+        $languageObject = & $_
+        if (-not $languageObject.LanguageName) {
+            return
+        }
+        $LanguagesByName[$languageObject.LanguageName] = $languageObject
+    }
+    end {        
+        $PSLanguage = $PSLanguages = [PSCustomObject]$LanguagesByName
+        $PSLanguage.pstypenames.insert(0,'PipeScript.Languages')
+        $PSLanguage
+    } 
+}
 
-
-Export-ModuleMember -Function * -Alias * -Variable $MyInvocation.MyCommand.ScriptBlock.Module.Name
+Export-ModuleMember -Function * -Alias * -Variable $MyInvocation.MyCommand.ScriptBlock.Module.Name, 'PSLanguage', 'PSLanguages'
 
 
 $CommandNotFoundAction = {
