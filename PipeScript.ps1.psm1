@@ -103,7 +103,7 @@ $PipeScript.Extensions |
     } 
 }
 
-Export-ModuleMember -Function * -Alias * -Variable $MyInvocation.MyCommand.ScriptBlock.Module.Name, 'PSLanguage', 'PSLanguages'
+Export-ModuleMember -Function * -Alias * -Variable $MyInvocation.MyCommand.ScriptBlock.Module.Name, 'PSLanguage', 'PSLanguages', 'PSInterpreter', 'PSInterpreters'
 
 
 $CommandNotFoundAction = {
