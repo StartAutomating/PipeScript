@@ -9,7 +9,7 @@ Language function XML {
 #>
 [ValidatePattern('\.xml$')]
 param()
-
+    $FilePattern = '\.xml$'
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
