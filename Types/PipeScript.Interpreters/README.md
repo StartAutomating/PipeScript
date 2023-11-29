@@ -13,6 +13,7 @@ The following languages support interpreters.
 * XML
 * RSS
 * Ruby
+* PowerShellData
 * SVG
 * JavaScript
 * Python
