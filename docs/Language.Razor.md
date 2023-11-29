@@ -2,7 +2,7 @@ Language.Razor
 --------------
 
 ### Synopsis
-Razor Template Transpiler.
+Razor PipeScript Language Definition.
 
 ---
 
