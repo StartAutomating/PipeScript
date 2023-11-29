@@ -2,7 +2,7 @@ Language.PowerShellData
 -----------------------
 
 ### Synopsis
-PSD1 Template Transpiler.
+PSD1 PipeScript Language Definition.
 
 ---
 
