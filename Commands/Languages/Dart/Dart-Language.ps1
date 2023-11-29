@@ -16,13 +16,15 @@ function Language.Dart {
         * ```""```
         * ```''```
     #>
-[ValidatePattern('\.(?>dart)$')]
+[ValidatePattern('\.dart$')]
 param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
     )
+
+    $FilePattern = '\.dart$'
     
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
@@ -34,6 +36,9 @@ $languageDefinition = New-Module {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    $DartApplication = $ExecutionContext.SessionState.InvokeCommand.GetCommand('dart','Application')
+    $interpreter = $DartApplication, "run"
+    $Compiler    = $DartApplication, "compile"
     $LanguageName = 'Dart'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
