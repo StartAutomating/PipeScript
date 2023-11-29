@@ -47,6 +47,9 @@ $languageDefinition = New-Module {
     param(
 )
 
+# Batch files are named .cmd
+$FilePattern = '\.cmd$'
+
 # We start off by declaring a number of regular expressions:
 $startComment = '(?>(?>\:\:|rem)\s{0,}(?:PipeScript)?\s{0,}\{)'
 $endComment   = '(?>(?>\:\:|rem)\s{0,}(?:PipeScript)?\s{0,}\})'        
@@ -55,6 +58,11 @@ $EndPattern   = "(?<PSEnd>${endComment})"
 
 # Using -LinePattern will skip any inline code not starting with :: or rem.
 $LinePattern   = "^\s{0,}(?>\:\:|rem)\s{0,}"
+
+# If we're on windows, we can run cmd as the batch interpreter
+$interpreter   = if ($IsWindows) {
+    @($ExecutionContext.SessionState.InvokeCommand.GetCommand('cmd', 'Application'))[0], "/c"
+}
     $LanguageName = 'Batch'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
