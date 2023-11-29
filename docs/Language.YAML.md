@@ -2,7 +2,7 @@ Language.YAML
 -------------
 
 ### Synopsis
-Yaml Template Transpiler.
+Yaml PipeScript Language Definition.
 
 ---
 
