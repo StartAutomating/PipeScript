@@ -21,6 +21,7 @@ $languageDefinition = New-Module {
     param(
     )
 
+    $FilePattern  = '\.bicep$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
@@ -32,6 +33,8 @@ $languageDefinition = New-Module {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+
+    $compiler = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('az', 'Application'))[0], "bicep", "build"
     $LanguageName = 'Bicep'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
