@@ -2,7 +2,7 @@ Language.R
 ----------
 
 ### Synopsis
-R Language Definition.
+R PipeScript Language Definition.
 
 ---
 
