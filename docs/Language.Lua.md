@@ -2,7 +2,7 @@ Language.Lua
 ------------
 
 ### Synopsis
-LUA Template Transpiler.
+LUA PipeScript Language Definition.
 
 ---
 
