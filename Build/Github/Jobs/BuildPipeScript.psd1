@@ -7,6 +7,11 @@
             uses = 'actions/checkout@v2'
         },
         @{
+            name = 'GitLogger'
+            uses = 'GitLogging/GitLoggerAction@main'
+            id = 'GitLogger'
+        },
+        @{
             name = 'Use PSSVG Action'
             uses = 'StartAutomating/PSSVG@main'
             id = 'PSSVG'
@@ -23,7 +28,7 @@
             if   = '${{github.ref_name != ''main''}}'
             uses = './'
             id = 'PipeScriptBranch'
-        }
+        },
         'RunEZOut',
         'RunHelpOut'
     )
