@@ -1,7 +1,7 @@
 Language function WebAssembly {
 <#
 .SYNOPSIS
-    WebAssembly Template Transpiler.
+    WebAssembly PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate WebAssembly.    
 
@@ -11,7 +11,7 @@ Language function WebAssembly {
 #>
 [ValidatePattern('\.wat$')]
 param()
-
+    $FilePattern = '\.wat$'
     # We start off by declaring a number of regular expressions:
     $startComment = '\(\;' # * Start Comments ```(;```
     $endComment   = '\;\)'   # * End Comments   ```;)```

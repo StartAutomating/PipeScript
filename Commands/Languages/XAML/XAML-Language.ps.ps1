@@ -1,7 +1,7 @@
 Language function XAML {
 <#
 .SYNOPSIS
-    XAML Language Definition.
+    XAML PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate XAML.
 
@@ -11,7 +11,7 @@ Language function XAML {
 #>
 [ValidatePattern('\.xaml$')]
 param()
-
+    $FilePattern = '\.xaml$'
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
@@ -20,4 +20,6 @@ param()
     $startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
     # * EndPattern       ```$whitespace + '}' + $EndComment```
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
+
+
 }

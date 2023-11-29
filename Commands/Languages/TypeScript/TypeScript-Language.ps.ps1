@@ -1,7 +1,7 @@
 Language function TypeScript {
 <#
 .SYNOPSIS
-    TypeScript Language Definition.
+    TypeScript PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate TypeScript.
 
@@ -20,7 +20,7 @@ Language function TypeScript {
 #>
 [ValidatePattern('\.tsx{0,1}')]
 param()
-
+    $FilePattern = '\.tsx{0,1}'
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -31,4 +31,7 @@ param()
     $startPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndPattern       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+
+    # TypeScript is a Compiler for JavaScript.  If we can find the application tsc, we can compile TypeScript
+    $Compiler     = $ExecutionContext.SessionState.InvokeCommand.GetCommand('tsc', 'Application')
 }
