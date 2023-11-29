@@ -16,6 +16,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+    
     # PHP's file pattern is simply ".php"
     $FilePattern = '\.php$'
     # We start off by declaring a number of regular expressions:
