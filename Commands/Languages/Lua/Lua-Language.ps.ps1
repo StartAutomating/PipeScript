@@ -6,7 +6,8 @@ Language function Lua {
         Allows PipeScript to generate LUA.
 
         Multiline comments like ```--{[[```  ```--}]]``` will be treated as blocks of PipeScript.    
-    #>    
+    #>
+    [ValidatePattern('\.lua$')]    
     param()
 
     $FilePattern  = '\.lua$'

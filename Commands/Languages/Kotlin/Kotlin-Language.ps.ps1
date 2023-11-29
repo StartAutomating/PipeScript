@@ -1,7 +1,7 @@
 Language function Kotlin {
 <#
 .SYNOPSIS
-    Kotlin Language Definition.
+    Kotlin PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate Kotlin.
 
@@ -17,6 +17,8 @@ Language function Kotlin {
 #>
 [ValidatePattern('\.kt$')]
 param()
+
+$FilePattern = '\.kt$'
 
 # We start off by declaring a number of regular expressions:
 $startComment = '/\*' # * Start Comments ```\*```

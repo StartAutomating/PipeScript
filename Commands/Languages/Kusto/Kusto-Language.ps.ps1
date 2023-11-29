@@ -1,7 +1,7 @@
 Language function Kusto {
     <#
     .SYNOPSIS
-        Kusto Template Transpiler.
+        Kusto PipeScript Language Defintion.
     .DESCRIPTION
         Allows PipeScript to generate Kusto files.
 
@@ -17,7 +17,7 @@ Language function Kusto {
     #>
     [ValidatePattern('\.kql$')]
     param()
-
+    $FilePattern = '\.kql'
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```

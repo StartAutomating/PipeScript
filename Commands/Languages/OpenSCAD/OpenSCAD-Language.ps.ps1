@@ -37,7 +37,7 @@ if (Shape == "circle") {
 #>
 [ValidatePattern('\.scad$')]
 param()
-
+    $FilePattern = '\.scad$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
