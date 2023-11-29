@@ -1,13 +1,13 @@
 This directory contains Template transpilers for several languages.
 
-PipeScript can be used to generate 1 languages or file types.
+PipeScript can be used to generate 0 languages or file types.
 
 ### Supported Languages
 
 
-|Language                         |Synopsis                   |Pattern    |
-|---------------------------------|---------------------------|-----------|
-|[Python](Python.Template.psx.ps1)|Python Template Transpiler.|```\.py$```|
+|Table|
+|-----|
+||
 
 
 
