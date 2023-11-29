@@ -2,7 +2,7 @@ Language.XML
 ------------
 
 ### Synopsis
-XML Template Transpiler.
+XML PipeScript Language Definition.
 
 ---
 
