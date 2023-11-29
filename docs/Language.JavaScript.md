@@ -2,7 +2,7 @@ Language.JavaScript
 -------------------
 
 ### Synopsis
-JavaScript Language Definition.
+JavaScript PipeScript Language Definition.
 
 ---
 
