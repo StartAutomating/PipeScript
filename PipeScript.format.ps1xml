@@ -2373,5 +2373,28 @@ $BackgroundColor
         </TableRowEntries>
       </TableControl>
     </View>
+    <View>
+      <Name>PipeScript.Languages</Name>
+      <ViewSelectedBy>
+        <TypeName>PipeScript.Languages</TypeName>
+      </ViewSelectedBy>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+            <CustomItem>
+              <ExpressionBinding>
+                <ScriptBlock>
+    if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('Show-Markdown', 'Cmdlet')) {
+        Show-Markdown -InputObject $_.'README'
+    } else {
+        $_.'README'
+    }   
+</ScriptBlock>
+              </ExpressionBinding>
+            </CustomItem>
+          </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </View>
   </ViewDefinitions>
 </Configuration>
