@@ -165,6 +165,37 @@ $this.'.ByType'
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>IsEmpty</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Determines if a PowerShell AST is empty
+.DESCRIPTION
+    Determines if a PowerShell Abstract Syntax Tree is empty.
+
+    It will be considered empty if is a ScriptBlockExpression with no parameters or statements in any blocks.
+#&gt;
+param()
+$ast = $this
+if ($ast.Body) {
+    $ast = $ast.Body
+}
+
+if ($ast -isnot [Management.Automation.Language.ScriptBlockExpressionAST]) {
+    return $false
+}
+
+foreach ($property in $ast.psobject.Properties) {
+    if ($property.Name -notmatch 'Block$') { continue }
+    if ($property.Value.Statements.Count) { return $false }
+    if ($property.Value.Parameters.Count) { return $false }
+}
+
+return $true
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Tokens</Name>
         <GetScriptBlock>
                         $text = $this.Extent.ToString()
