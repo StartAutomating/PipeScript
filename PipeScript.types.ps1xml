@@ -2326,11 +2326,14 @@ The following languages support interpreters.
 * RSS
 * JSON
 * Ruby
+* ATOM
 * R
 * Dart
 * PowerShellData
 * Go
+* Batch
 * SVG
+* Bash
 * PHP
 * JavaScript
 * Python
@@ -2394,7 +2397,7 @@ return $count
 
 A Language is defined a function named Language.NameOfLanguage.
 
-PipeScript presently ships with 49 languages:
+PipeScript presently ships with 50 languages:
 
 * SQL
 * Bicep
