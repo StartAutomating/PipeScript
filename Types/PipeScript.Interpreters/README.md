@@ -10,21 +10,21 @@ If they do, that language can be interpretered within PipeScript.
 
 The following languages support interpreters.
 
-* Lua
-* XML
-* RSS
-* JSON
-* Ruby
 * ATOM
-* R
-* Dart
-* PowerShellData
-* Go
-* Batch
-* SVG
 * Bash
-* PHP
+* Batch
+* Dart
+* Go
 * JavaScript
+* JSON
+* Lua
+* PHP
+* PowerShellData
 * Python
+* R
+* RSS
+* Ruby
+* SVG
+* XML
 
 Note: Interpreters may require commands to be installed.
