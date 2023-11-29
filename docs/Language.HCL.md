@@ -2,13 +2,13 @@ Language.HCL
 ------------
 
 ### Synopsis
-HCL Template Transpiler.
+HCL PipeScript Language Definition.
 
 ---
 
 ### Description
 
-Allows PipeScript to generate HCL.
+Allows PipeScript to generate HCL (Hashicorp Commmand Language).
 
 Multiline comments blocks like ```/*{}*/``` will be treated as blocks of PipeScript.
 
