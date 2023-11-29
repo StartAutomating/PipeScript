@@ -2,7 +2,7 @@ Language.Docker
 ---------------
 
 ### Synopsis
-Docker language definition
+Docker PipeScript language definition
 
 ---
 
