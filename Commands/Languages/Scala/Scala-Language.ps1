@@ -2,7 +2,7 @@
 function Language.Scala {
 <#
 .SYNOPSIS
-    Scala Template Transpiler.
+    Scala PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate Scala.
 
@@ -22,7 +22,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-
+    $FilePattern = '\.(?>scala|sc)$'
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
