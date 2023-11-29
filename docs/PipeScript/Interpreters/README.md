@@ -22,3 +22,4 @@ Note: Interpreters may require commands to be installed.
 
 
 * [get_Count](get_Count.md)
+* [get_LanguageName](get_LanguageName.md)
