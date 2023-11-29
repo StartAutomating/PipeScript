@@ -1,17 +1,17 @@
-Language function HLSL {
+Language function GLSL {
     <#
     .SYNOPSIS
-        HLSL PipeScript Language Definition.
+        GLSL PipeScript Language Definition.
     .DESCRIPTION
-        Allows PipeScript to generate HLSL (High Level Shader Language).
+        Allows PipeScript to generate GLSL (OpenGL Shader Language).
 
         Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
     #>
-    [ValidatePattern('\.(?>hlsl|effect)$')]
+    [ValidatePattern('\.glsl$')]
     param(
     )
 
-    $FilePattern = '\.(?>hlsl|effect)$'
+    $FilePattern = '\.glsl$'
     
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
