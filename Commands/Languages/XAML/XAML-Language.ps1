@@ -2,7 +2,7 @@
 function Language.XAML {
 <#
 .SYNOPSIS
-    XAML Language Definition.
+    XAML PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate XAML.
 
@@ -16,7 +16,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-
+    $FilePattern = '\.xaml$'
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
