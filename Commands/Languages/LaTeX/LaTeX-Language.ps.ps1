@@ -1,7 +1,7 @@
 Language function LaTeX {
     <#
     .SYNOPSIS
-        LaTeX Language Definition.
+        LaTeX PipeScript Language Definition.
     .DESCRIPTION
         Allows PipeScript to generate Latex and Tex files.
 
@@ -9,6 +9,8 @@ Language function LaTeX {
     #>
     [ValidatePattern('\.(?>latex|tex)$')]
     param()
+    
+    $FilePattern = '\.(?>latex|tex)$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '\%\{' # * Start Comments ```%{```

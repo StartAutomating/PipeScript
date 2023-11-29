@@ -11,6 +11,7 @@ Language function PHP {
 #>
     [ValidatePattern('\.php$')]
     param()
+    
     # PHP's file pattern is simply ".php"
     $FilePattern = '\.php$'
     # We start off by declaring a number of regular expressions:

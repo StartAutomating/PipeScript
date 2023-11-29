@@ -1,7 +1,7 @@
 Language function Razor {
 <#
 .SYNOPSIS
-    Razor Template Transpiler.    
+    Razor PipeScript Language Definition.    
 .DESCRIPTION
     Allows PipeScript to generate Razor.
 
@@ -14,7 +14,7 @@ Language function Razor {
 [ValidatePattern('\.(cshtml|razor)$')]
 param(
 )
-
+    $FilePattern = '\.(cshtml|razor)$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '(?><\!--|/\*|\@\*)' 

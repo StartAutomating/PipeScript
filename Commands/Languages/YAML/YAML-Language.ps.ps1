@@ -37,7 +37,7 @@ List:
 #>
     [ValidatePattern('\.(?>yml|yaml)$')]
     param()
-    
+
     $FilePattern     = '\.(?>yml|yaml)$'
     $ReplacePattern  = [Regex]::new('        
         (?<Indent>\s{0,})      # Capture the indentation level
@@ -60,7 +60,10 @@ List:
         (?(InList)\s{2})
         \}
         ', 'IgnorePatternWhitespace,IgnoreCase')
-    
+
+    # YAML is a Data Language
+    $IsDataLanguage = $true
+
     $ForeachObject = {
         begin {
             $yamlOut = [Collections.Queue]::new()

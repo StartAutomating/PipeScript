@@ -35,7 +35,7 @@
     $AssignmentStatementAST.Right -match '^=' -and
     $AssignmentStatementAST.Parent.ToString() -match "$(
         [Regex]::Escape($AssignmentStatementAST.Left.ToString())
-    )\s{0,}==[^=]"    
+    )\s{0,}==[^=]"
 })]
 param(
 # The original assignment statement.

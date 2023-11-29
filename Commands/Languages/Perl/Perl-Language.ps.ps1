@@ -24,9 +24,9 @@ $msg = "hello", "hi", "hey", "howdy" | Get-Random
 #>
 [ValidatePattern('\.(?>pl|pod)$')]
 param()
-
-    # We start off by declaring a number of regular expressions:
-    
+    # Perl files are either .pl or .pod
+    $FilePattern = '\.(?>pl|pod)$'
+        
     $startComment = '(?>
         (?>^|\[\r\n]{1,2})\s{0,}
         =begin
@@ -44,4 +44,6 @@ param()
     $startPattern = "(?<PSStart>${startComment})"    
     $endPattern   = "(?<PSEnd>${endComment})"
 
+    # If Perl is in the Path, we'll use it as the interpreter.
+    $Interpreter = $ExecutionContext.SessionState.InvokeCommand.GetCommand('perl','Application')
 }

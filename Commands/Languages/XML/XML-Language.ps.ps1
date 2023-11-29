@@ -22,6 +22,7 @@ param()
     # XML Is a Data Language.  It declares information, but does not run code.
     $IsDataLanguage =  $true
 
+    # The "interpreter" for XML simply reads each of the files.
     $Interpreter = {        
         $xmlFiles = @(foreach ($arg in $args) {
             if (Test-path $arg) {                

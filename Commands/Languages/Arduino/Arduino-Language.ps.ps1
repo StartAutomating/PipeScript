@@ -20,6 +20,7 @@ Language function Arduino {
     [ValidatePattern('\.(?>ino)$')]
     param()
 
+    $FilePattern  = '\.(?>ino)$'
     # Any Language can be parsed with a series of regular expresssions.
 
     $startComment = '/\*' # * Start Comments ```\*```
