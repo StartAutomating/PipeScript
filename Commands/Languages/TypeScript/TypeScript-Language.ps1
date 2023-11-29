@@ -2,7 +2,7 @@
 function Language.TypeScript {
 <#
 .SYNOPSIS
-    TypeScript Language Definition.
+    TypeScript PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate TypeScript.
 
@@ -25,7 +25,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-
+    $FilePattern = '\.tsx{0,1}'
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -36,6 +36,9 @@ $languageDefinition = New-Module {
     $startPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndPattern       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+
+    # TypeScript is a Compiler for JavaScript.  If we can find the application tsc, we can compile TypeScript
+    $Compiler     = $ExecutionContext.SessionState.InvokeCommand.GetCommand('tsc', 'Application')
     $LanguageName = 'TypeScript'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
