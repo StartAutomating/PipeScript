@@ -31,9 +31,9 @@ Parse-PowerShell "'hello world'"
 #### **Source**
 The source.  Can be a string or a file.
 
-|Type        |Required|Position|PipelineInput |Aliases                           |
-|------------|--------|--------|--------------|----------------------------------|
-|`[PSObject]`|false   |1       |true (ByValue)|Text<br/>SourceText<br/>SourceFile|
+|Type        |Required|Position|PipelineInput |Aliases                                           |
+|------------|--------|--------|--------------|--------------------------------------------------|
+|`[PSObject]`|false   |1       |true (ByValue)|Text<br/>SourceText<br/>SourceFile<br/>InputObject|
 
 ---
 
