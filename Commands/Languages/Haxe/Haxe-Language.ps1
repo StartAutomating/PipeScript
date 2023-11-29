@@ -24,6 +24,8 @@ $languageDefinition = New-Module {
     param(
     )
 
+    $FilePattern = '\.hx$'
+
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
