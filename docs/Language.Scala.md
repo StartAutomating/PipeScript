@@ -2,7 +2,7 @@ Language.Scala
 --------------
 
 ### Synopsis
-Scala Template Transpiler.
+Scala PipeScript Language Definition.
 
 ---
 
