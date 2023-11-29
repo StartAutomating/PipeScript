@@ -42,7 +42,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-
+    $FilePattern = '\.scad$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
