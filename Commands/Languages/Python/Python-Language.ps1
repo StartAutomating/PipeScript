@@ -33,16 +33,19 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-
-
-    # We start off by declaring a number of regular expressions:
+    # The File Pattern for Python is any `.py` files.
+    $FilePattern = '\.py$'
     
+    # Python doesn't have multi-line comments per se, but it does have ignored block strings.
+    # So any `"""{` will start a block    
     $startComment = '(?>"""\{)'
+    # and any `}###` will end a block.
     $endComment   = '(?>\}""")'
     
     $startPattern = "(?<PSStart>${startComment})"    
     $endPattern   = "(?<PSEnd>${endComment})"
 
+    # The interpreter for Python is just "python" (if present)
     $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('python', 'Application'))[0]
     $LanguageName = 'Python'
     Export-ModuleMember -Variable * -Function * -Alias *
