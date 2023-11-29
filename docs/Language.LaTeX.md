@@ -2,7 +2,7 @@ Language.LaTeX
 --------------
 
 ### Synopsis
-LaTeX Language Definition.
+LaTeX PipeScript Language Definition.
 
 ---
 
