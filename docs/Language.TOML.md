@@ -2,7 +2,7 @@ Language.TOML
 -------------
 
 ### Synopsis
-TOML Language Definition.
+TOML PipeScript Language Definition.
 
 ---
 

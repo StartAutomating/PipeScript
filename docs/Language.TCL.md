@@ -2,7 +2,7 @@ Language.TCL
 ------------
 
 ### Synopsis
-TCL/TK Language Definition.
+TCL/TK PipeScript Language Definition.
 
 ---
 

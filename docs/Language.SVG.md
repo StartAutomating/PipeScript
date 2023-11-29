@@ -2,7 +2,7 @@ Language.SVG
 ------------
 
 ### Synopsis
-SVG Language Definition.
+SVG PipeScript Language Definition.
 
 ---
 
