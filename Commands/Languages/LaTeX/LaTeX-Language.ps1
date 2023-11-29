@@ -2,7 +2,7 @@
 function Language.LaTeX {
 <#
     .SYNOPSIS
-        LaTeX Language Definition.
+        LaTeX PipeScript Language Definition.
     .DESCRIPTION
         Allows PipeScript to generate Latex and Tex files.
 
@@ -14,6 +14,8 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+    
+    $FilePattern = '\.(?>latex|tex)$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '\%\{' # * Start Comments ```%{```
