@@ -34,12 +34,15 @@ Language function Bash {
     [ValidatePattern('\.sh$')]
     param(
     )
+    $FilePattern  = '\.sh$'
     # We start off by declaring a number of regular expressions:
     $startComment = '(?>\<\<PipeScript\{\})' 
     $endComment   = '(?>PipeScript\{\})'    
     
     $StartPattern = "(?<PSStart>${startComment})"
     
-    $EndPattern   = "(?<PSEnd>${endComment})"    
+    $EndPattern   = "(?<PSEnd>${endComment})"
+
+    $Interpreter = $ExecutionContext.SessionState.InvokeCommand.GetCommand('bash','Application')
 }
 

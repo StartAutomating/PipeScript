@@ -44,6 +44,7 @@ Invoke-PipeScript .\HelloWorld.ps1.vbs
 [ValidatePattern('\.(?>bas|vbs{0,1})$')]
 param(
 )
+$FilePattern = '\.(?>bas|vbs{0,1})$'
 
 # We start off by declaring a number of regular expressions:
 $SingleLineCommentStart = '(?>''|rem)'
@@ -52,4 +53,8 @@ $endComment   = "(?>$SingleLineCommentStart\s{0,}(?:PipeScript)?\s{0,}\})"
 $StartPattern = "(?<PSStart>${startComment})"
 $EndPattern   = "(?<PSEnd>${endComment})" 
 $LinePattern   = "^\s{0,}$SingleLineCommentStart\s{0,}"
+
+$Compiler = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('dotnet', 'Application'))[0], 'build'  # To compile VB.Net, we'll use dotnet build 
+
+$Runner  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('dotnet', 'Application'))[0], 'run' # Get the first dotnet, if present
 }

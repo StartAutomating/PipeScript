@@ -19,4 +19,20 @@ Language function ATOM {
     # To support templates, a language has to declare `$StartPattern` and `$EndPattern`:
     $StartPattern = "(?<PSStart>${startComment}\{$Whitespace)"
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
+
+    $IsDataLanguage = $true
+
+    $Interpreter = {        
+        $xmlFiles = @(foreach ($arg in $args) {
+            if (Test-path $arg) {                
+                [IO.File]::ReadAllText($arg) -as [xml]
+            }
+            else {
+                $otherArgs += $arg
+            }
+        })
+        
+        $xmlFiles
+    }
+
 }

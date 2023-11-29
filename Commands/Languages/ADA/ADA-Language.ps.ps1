@@ -38,6 +38,7 @@ Language function ADA {
     [ValidatePattern('\.ad[bs]$')]
     param()
 
+    $FilePattern  = '\.ad[bs]$'
     # Any Language can be parsed with a series of regular expresssions.
     $startComment = '(?>(?<IsSingleLine>--)\s{0,}(?:PipeScript)?\s{0,}\{)'
     $endComment   = '(?>--\s{0,}\}\s{0,}(?:PipeScript)?\s{0,})'
