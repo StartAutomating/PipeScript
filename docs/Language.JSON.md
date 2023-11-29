@@ -2,7 +2,7 @@ Language.JSON
 -------------
 
 ### Synopsis
-JSON PipeScript Transpiler.
+JSON PipeScript Language Definition.
 
 ---
 
