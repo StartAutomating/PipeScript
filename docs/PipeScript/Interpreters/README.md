@@ -18,11 +18,14 @@ The following languages support interpreters.
 * RSS
 * JSON
 * Ruby
+* ATOM
 * R
 * Dart
 * PowerShellData
 * Go
+* Batch
 * SVG
+* Bash
 * PHP
 * JavaScript
 * Python
