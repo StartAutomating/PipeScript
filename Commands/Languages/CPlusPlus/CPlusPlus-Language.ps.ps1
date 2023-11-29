@@ -19,6 +19,8 @@ Language function CPlusPlus {
     param(
     )
 
+    $FilePattern = '\.(?>c|cpp|h|swig)$'
+
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -28,5 +30,8 @@ Language function CPlusPlus {
     # * StartRegex     ```$IgnoredContext + $StartComment + '{' + $Whitespace```
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
-    $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"   
+    $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    
+    # The default compiler for C++ is GCC (if present)
+    $Compiler = $ExecutionContext.SessionState.InvokeCommand.GetCommand('gcc', 'Application')
 }

@@ -16,6 +16,7 @@ Language function Bicep {
     param(
     )
 
+    $FilePattern  = '\.bicep$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
@@ -27,4 +28,6 @@ Language function Bicep {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+
+    $compiler = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('az', 'Application'))[0], "bicep", "build"
 }
