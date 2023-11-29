@@ -368,7 +368,10 @@
                             }
                         }
                     } 
-                    elseif($matchingPipeScriptLanguage) {
+                    elseif (
+                        $matchingPipeScriptLanguage.StartPattern -and 
+                        $matchingPipeScriptLanguage.EndPattern
+                    ) {
                         $templateName = ($command.Source | Split-Path -Leaf) -replace '[\s\p{Ps}]\(\)]' -replace '\.ps1?'
 
                         $CoreTemplateTranspilerSplat = [Ordered]@{SourceText=[IO.File]::ReadAllText($command.Source)}
