@@ -2,7 +2,7 @@
 function Language.Racket {
 <#
 .SYNOPSIS
-    Racket Template Transpiler.
+    Racket PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate Racket.
 
@@ -19,7 +19,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-
+    $FilePattern = '\.rkt$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '\#\|' # * Start Comments ```#|```
