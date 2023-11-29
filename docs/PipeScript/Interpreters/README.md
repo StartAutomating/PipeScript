@@ -19,7 +19,9 @@ The following languages support interpreters.
 * JSON
 * Ruby
 * R
+* Dart
 * PowerShellData
+* Go
 * SVG
 * PHP
 * JavaScript
