@@ -2,7 +2,7 @@
 function Language.Kotlin {
 <#
 .SYNOPSIS
-    Kotlin Language Definition.
+    Kotlin PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate Kotlin.
 
@@ -22,6 +22,8 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
+$FilePattern = '\.kt$'
 
 # We start off by declaring a number of regular expressions:
 $startComment = '/\*' # * Start Comments ```\*```
