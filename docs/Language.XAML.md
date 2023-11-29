@@ -2,7 +2,7 @@ Language.XAML
 -------------
 
 ### Synopsis
-XAML Language Definition.
+XAML PipeScript Language Definition.
 
 ---
 
