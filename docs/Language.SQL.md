@@ -2,7 +2,7 @@ Language.SQL
 ------------
 
 ### Synopsis
-SQL Template Transpiler.
+SQL PipeScript Language Definition.
 
 ---
 
