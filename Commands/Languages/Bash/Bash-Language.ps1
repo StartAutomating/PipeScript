@@ -39,6 +39,7 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
     )
+    $FilePattern  = '\.sh$'
     # We start off by declaring a number of regular expressions:
     $startComment = '(?>\<\<PipeScript\{\})' 
     $endComment   = '(?>PipeScript\{\})'    
@@ -46,6 +47,8 @@ $languageDefinition = New-Module {
     $StartPattern = "(?<PSStart>${startComment})"
     
     $EndPattern   = "(?<PSEnd>${endComment})"
+
+    $Interpreter = $ExecutionContext.SessionState.InvokeCommand.GetCommand('bash','Application')
     $LanguageName = 'Bash'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
