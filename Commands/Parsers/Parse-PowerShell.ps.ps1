@@ -15,7 +15,7 @@ Parse function PowerShell {
     param(
     # The source.  Can be a string or a file. 
     [Parameter(ValueFromPipeline)]
-    [Alias('Text','SourceText','SourceFile')]
+    [Alias('Text','SourceText','SourceFile','InputObject')]
     [ValidateTypes(TypeName={[string], [IO.FileInfo]})]
     [PSObject]    
     $Source
