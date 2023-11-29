@@ -2,7 +2,7 @@ Language.Eiffel
 ---------------
 
 ### Synopsis
-Eiffel Template Transpiler.
+Eiffel PipeScript Language Definition.
 
 ---
 
