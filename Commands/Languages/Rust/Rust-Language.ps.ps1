@@ -1,7 +1,7 @@
 Language function Rust {
     <#
     .SYNOPSIS
-        Rust Language Definition
+        Rust PipeScript Language Definition
     .DESCRIPTION
         Defines Rust within PipeScript.
 
@@ -53,6 +53,7 @@ Language function Rust {
     [ValidatePattern('\.rs$')]
     param()
 
+    $FilePattern  = '\.rs$'
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -61,4 +62,6 @@ Language function Rust {
     $StartPattern = "(?<PSStart>${startComment}\{$Whitespace)"
     # * EndPattern    ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment})"
+
+    $compiler = $ExecutionContext.SessionState.InvokeCommand.GetCommand("rustc","application")
 }

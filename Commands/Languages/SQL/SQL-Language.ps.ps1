@@ -1,7 +1,7 @@
 Language function SQL {
 <#
 .SYNOPSIS
-    SQL Template Transpiler.
+    SQL PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate SQL.
 
@@ -45,7 +45,7 @@ Language function SQL {
 #>
 [ValidatePattern('\.sql$')]
 param()
-    
+    $FilePattern = '\.sql$'
     # We start off by declaring a number of regular expressions:
     $startComment = '(?>
         (?>
@@ -63,7 +63,7 @@ param()
 
     # Create a splat containing arguments to the core inline transpiler
     
-         # Using -LinePattern will skip any inline code not starting with --
-    $LinePattern   = "^\s{0,}--\s{0,}"    
+    # Using -LinePattern will skip any inline code not starting with --
+    $LinePattern   = "^\s{0,}--\s{0,}"
 }
 

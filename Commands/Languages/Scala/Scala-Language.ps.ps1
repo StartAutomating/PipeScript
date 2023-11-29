@@ -1,7 +1,7 @@
 Language function Scala {
 <#
 .SYNOPSIS
-    Scala Template Transpiler.
+    Scala PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate Scala.
 
@@ -17,7 +17,7 @@ Language function Scala {
 #>
 [ValidatePattern('\.(?>scala|sc)$')]
 param()
-
+    $FilePattern = '\.(?>scala|sc)$'
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
