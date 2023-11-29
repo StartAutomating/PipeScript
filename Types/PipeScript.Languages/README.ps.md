@@ -6,13 +6,13 @@ PipeScript presently ships with `|{(Get-PipeScript -PipeScriptType Language).Len
 
 ~~~PipeScript{
 "* $(
-    @(
+    @(@(
         foreach ($prop in $psLanguages.psobject.properties) {
             if ($prop.IsInstance) {
                 $prop.Name
             }
         }
-    ) -join "$(
+    ) | Sort-Object) -join "$(
         [Environment]::newLine)* "
 )"
 }

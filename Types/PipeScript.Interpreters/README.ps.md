@@ -12,13 +12,13 @@ The following languages support interpreters.
 
 ~~~PipeScript{
 "* $(
-    @(
+    @(@(
         foreach ($prop in $psLanguages.psobject.properties) {
             continue if -not $prop.IsInstance
             continue if -not $prop.Value.PSObject.Properties["Interpreter"]
             $prop.Name            
         }
-    ) -join "$(
+    ) | Sort-Object) -join "$(
         [Environment]::newLine)* "
 )"
 }
