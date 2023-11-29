@@ -2,7 +2,7 @@
 function Language.RSS {
 <#
 .SYNOPSIS
-    RSS Language Definition.
+    RSS PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate RSS.
 
@@ -14,7 +14,10 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+    $FilePattern = '\.rss'
 
+    # RSS is a really simple data language (it's just XML, really)
+    $IsDataLanguage = $true
 
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
@@ -24,6 +27,20 @@ $languageDefinition = New-Module {
     $startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
     # * EndPattern       ```$whitespace + '}' + $EndComment```
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
+    
+    # The "interpreter" for SVG simply reads each of the files.
+    $Interpreter = {        
+        $xmlFiles = @(foreach ($arg in $args) {
+            if (Test-path $arg) {                
+                [IO.File]::ReadAllText($arg) -as [xml]
+            }
+            else {
+                $otherArgs += $arg
+            }
+        })
+        
+        $xmlFiles
+    }
     $LanguageName = 'RSS'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
