@@ -2,7 +2,7 @@ Language.Kusto
 --------------
 
 ### Synopsis
-Kusto Template Transpiler.
+Kusto PipeScript Language Defintion.
 
 ---
 
