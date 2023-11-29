@@ -2,7 +2,7 @@ Language.TypeScript
 -------------------
 
 ### Synopsis
-TypeScript Language Definition.
+TypeScript PipeScript Language Definition.
 
 ---
 
