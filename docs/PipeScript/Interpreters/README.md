@@ -13,6 +13,7 @@ If they do, that language can be interpretered within PipeScript.
 
 The following languages support interpreters.
 
+* XML
 * Ruby
 * JavaScript
 * Python
