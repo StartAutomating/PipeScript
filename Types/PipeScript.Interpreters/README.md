@@ -13,6 +13,7 @@ The following languages support interpreters.
 * Lua
 * XML
 * RSS
+* JSON
 * Ruby
 * R
 * PowerShellData
