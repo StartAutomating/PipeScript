@@ -8,7 +8,7 @@ Gets all Definitions within an AST
 
 ### Description
 
-Gets all Function and Type Definitions within a PowerShell Abstract Syntax Tree
+Gets all Function and Type Definitions and Parameters within a PowerShell Abstract Syntax Tree
 
 ---
 
