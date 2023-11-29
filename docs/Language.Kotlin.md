@@ -2,7 +2,7 @@ Language.Kotlin
 ---------------
 
 ### Synopsis
-Kotlin Language Definition.
+Kotlin PipeScript Language Definition.
 
 ---
 
