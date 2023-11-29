@@ -2,7 +2,7 @@
 function Language.XML {
 <#
 .SYNOPSIS
-    XML Template Transpiler.
+    XML PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate XML.
 
@@ -14,7 +14,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-
+    $FilePattern = '\.xml$'
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
@@ -23,7 +23,23 @@ $languageDefinition = New-Module {
     $startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
     # * EndPattern       ```$whitespace + '}' + $EndComment```
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
-    
+
+    # XML Is a Data Language.  It declares information, but does not run code.
+    $IsDataLanguage =  $true
+
+    $Interpreter = {        
+        $xmlFiles = @(foreach ($arg in $args) {
+            if (Test-path $arg) {                
+                [IO.File]::ReadAllText($arg) -as [xml]
+            }
+            else {
+                $otherArgs += $arg
+            }
+        })
+        
+        $xmlFiles
+    }
+        
     $ForeachObject = {
         $in = $_
         if (($in -is [string]) -or 
