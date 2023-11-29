@@ -2,7 +2,7 @@
 function Language.Java {
 <#
     .SYNOPSIS
-        Java Template Transpiler.
+        Java PipeScript Language Definition.
     .DESCRIPTION
         Allows PipeScript to generate Java.
 
@@ -23,6 +23,7 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
 
+    $FilePattern = '\.(?>java)$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
@@ -33,6 +34,9 @@ $languageDefinition = New-Module {
     
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"    
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+
+    # Java's compiler is "javac" (if found)
+    $Compiler = $ExecutionContext.SessionState.InvokeCommand.GetCommand('javac','Application')
     $LanguageName = 'Java'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
