@@ -2,7 +2,7 @@
 function Language.WebAssembly {
 <#
 .SYNOPSIS
-    WebAssembly Template Transpiler.
+    WebAssembly PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate WebAssembly.    
 
@@ -16,7 +16,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-
+    $FilePattern = '\.wat$'
     # We start off by declaring a number of regular expressions:
     $startComment = '\(\;' # * Start Comments ```(;```
     $endComment   = '\;\)'   # * End Comments   ```;)```
