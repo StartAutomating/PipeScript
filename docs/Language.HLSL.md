@@ -2,13 +2,13 @@ Language.HLSL
 -------------
 
 ### Synopsis
-HLSL Language Definition.
+HLSL PipeScript Language Definition.
 
 ---
 
 ### Description
 
-Allows PipeScript to generate HLSL.
+Allows PipeScript to generate HLSL (High Level Shader Language).
 
 Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
