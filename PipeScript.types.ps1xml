@@ -147,7 +147,7 @@ $this.'.ByType'
 .SYNOPSIS
     Gets all Definitions within an AST
 .DESCRIPTION
-    Gets all Function and Type Definitions within a PowerShell Abstract Syntax Tree
+    Gets all Function and Type Definitions and Parameters within a PowerShell Abstract Syntax Tree
 .EXAMPLE
     {function foo() { "foo"} class bar { $bar = "none"} }.Ast.Defines
 #&gt;
@@ -156,6 +156,7 @@ $this.'.ByType'
     foreach ($node in $this.ByType[@(
         [Management.Automation.Language.FunctionDefinitionAst]
         [Management.Automation.Language.TypeDefinitionAst]
+        [Management.Automation.Language.ParameterAst]
     )]) {
         $node
     }
@@ -2230,6 +2231,10 @@ foreach ($potentialTemplatePath in $potentialTemplatePaths ) {
   <Type>
     <Name>PipeScript.Interpreters</Name>
     <Members>
+      <AliasProperty>
+        <Name>LanguageNames</Name>
+        <ReferencedMemberName>LanguageName</ReferencedMemberName>
+      </AliasProperty>
       <ScriptProperty>
         <Name>Count</Name>
         <GetScriptBlock>
@@ -2249,6 +2254,26 @@ foreach ($prop in $this.psobject.properties) {
     }
 }
 return $count
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>LanguageName</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the loaded interpreter names.
+.DESCRIPTION
+    Gets the names of languages within PipeScript that define an `.Interpreter`.
+.EXAMPLE
+    $PSLanguage.LanguageName
+#&gt;
+
+,@(foreach ($prop in $this.psobject.properties) {
+    if ($prop -is [psscriptproperty]) { continue }
+    if ($prop.IsInstance -and $prop.Value.LanguageName) {
+        $prop.Value.LanguageName
+    }
+})
                     </GetScriptBlock>
       </ScriptProperty>
       <NoteProperty>
