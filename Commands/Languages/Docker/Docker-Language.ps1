@@ -2,7 +2,7 @@
 function Language.Docker {
 <#
     .SYNOPSIS
-        Docker language definition
+        Docker PipeScript language definition
     .DESCRIPTION
         Defines the Docker language within PipeScript.
 
@@ -39,6 +39,9 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+
+    $FilePattern = '\.?Dockerfile$'
+
     $SingleLineCommentStart = '\#'
     # Any Language can be parsed with a series of regular expresssions.
     # For languages that only support single comments:
