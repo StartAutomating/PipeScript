@@ -18,7 +18,8 @@ Language function ObjectiveC {
 #>
 [ValidatePattern('\.(?>m|mm)$')]
 param()
-# We start off by declaring a number of regular expressions:
+    $FilePattern = '\.(?>m|mm)$'
+    # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
     $Whitespace   = '[\s\n\r]{0,}'
