@@ -23,7 +23,8 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-# We start off by declaring a number of regular expressions:
+    $FilePattern = '\.(?>m|mm)$'
+    # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
     $Whitespace   = '[\s\n\r]{0,}'
