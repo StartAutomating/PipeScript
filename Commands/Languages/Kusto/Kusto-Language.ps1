@@ -2,7 +2,7 @@
 function Language.Kusto {
 <#
     .SYNOPSIS
-        Kusto Template Transpiler.
+        Kusto PipeScript Language Defintion.
     .DESCRIPTION
         Allows PipeScript to generate Kusto files.
 
@@ -22,7 +22,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-
+    $FilePattern = '\.kql'
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
