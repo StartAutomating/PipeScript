@@ -42,7 +42,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-    
+
     $FilePattern     = '\.(?>yml|yaml)$'
     $ReplacePattern  = [Regex]::new('        
         (?<Indent>\s{0,})      # Capture the indentation level
@@ -65,7 +65,10 @@ $languageDefinition = New-Module {
         (?(InList)\s{2})
         \}
         ', 'IgnorePatternWhitespace,IgnoreCase')
-    
+
+    # YAML is a Data Language
+    $IsDataLanguage = $true
+
     $ForeachObject = {
         begin {
             $yamlOut = [Collections.Queue]::new()
