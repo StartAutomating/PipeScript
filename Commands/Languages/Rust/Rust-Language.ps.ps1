@@ -51,7 +51,6 @@ Language function Rust {
         Invoke-PipeScript .\HelloWorld_Rust.ps1.rs -Parameter @{message='hi'}
     #>
     [ValidatePattern('\.rs$')]
-    [Alias('Rust-Language','Language-Rust')]
     param()
 
     # We start off by declaring a number of regular expressions:
