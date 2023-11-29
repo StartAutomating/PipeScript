@@ -2,7 +2,7 @@ Language.Java
 -------------
 
 ### Synopsis
-Java Template Transpiler.
+Java PipeScript Language Definition.
 
 ---
 
