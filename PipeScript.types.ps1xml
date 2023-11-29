@@ -2256,6 +2256,27 @@ Note: Interpreters may require commands to be installed.
   <Type>
     <Name>PipeScript.Languages</Name>
     <Members>
+      <ScriptProperty>
+        <Name>Count</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the number of loaded languages.
+.DESCRIPTION
+    Gets the number of language definitions loaded by PipeScript.
+.EXAMPLE
+    $PSLanguage.Count
+#&gt;
+$count= 0
+foreach ($prop in $this.psobject.properties) {
+    if ($prop -is [psscriptproperty]) { continue }
+    if ($prop.IsInstance -and $prop.Value.LanguageName) {
+        $count++
+    }
+}
+return $count
+                    </GetScriptBlock>
+      </ScriptProperty>
       <NoteProperty>
         <Name>README</Name>
         <Value>PipeScript works with a number of Languages.
