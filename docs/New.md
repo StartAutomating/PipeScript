@@ -18,8 +18,6 @@ It creates an instance of an object.
 
 If 'new' is followed by a single string, and the type has a ::Parse method, new will parse the value.
 
-If 'new'
-
 ---
 
 ### Examples
