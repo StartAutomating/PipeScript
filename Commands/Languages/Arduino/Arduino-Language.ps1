@@ -25,6 +25,7 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
 
+    $FilePattern  = '\.(?>ino)$'
     # Any Language can be parsed with a series of regular expresssions.
 
     $startComment = '/\*' # * Start Comments ```\*```
