@@ -8,7 +8,7 @@ function Language.Lua {
 
         Multiline comments like ```--{[[```  ```--}]]``` will be treated as blocks of PipeScript.    
     #>
-
+[ValidatePattern('\.lua$')]
 param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
