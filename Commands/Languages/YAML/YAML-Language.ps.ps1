@@ -1,7 +1,7 @@
 Language function YAML {
 <#
 .SYNOPSIS
-    Yaml Template Transpiler.
+    Yaml PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate Yaml.
 
@@ -35,8 +35,10 @@ List:
 
     .> .\HelloWorld.ps1.yaml
 #>
-[ValidatePattern('\.(?>yml|yaml)$')]
-    param()    
+    [ValidatePattern('\.(?>yml|yaml)$')]
+    param()
+    
+    $FilePattern     = '\.(?>yml|yaml)$'
     $ReplacePattern  = [Regex]::new('        
         (?<Indent>\s{0,})      # Capture the indentation level
         (?<InList>-\s)?        # Determine if we are in a list
