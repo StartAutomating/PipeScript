@@ -72,7 +72,7 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
 )
-
+    $FilePattern = '\.htm{0,1}'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '(?><\!--|/\*)' # * Start Comments ```<!--```
