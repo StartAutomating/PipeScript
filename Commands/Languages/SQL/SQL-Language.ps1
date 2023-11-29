@@ -2,7 +2,7 @@
 function Language.SQL {
 <#
 .SYNOPSIS
-    SQL Template Transpiler.
+    SQL PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate SQL.
 
@@ -50,7 +50,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-    
+    $FilePattern = '\.sql$'
     # We start off by declaring a number of regular expressions:
     $startComment = '(?>
         (?>
@@ -68,7 +68,7 @@ $languageDefinition = New-Module {
 
     # Create a splat containing arguments to the core inline transpiler
     
-         # Using -LinePattern will skip any inline code not starting with --
+    # Using -LinePattern will skip any inline code not starting with --
     $LinePattern   = "^\s{0,}--\s{0,}"
     $LanguageName = 'SQL'
     Export-ModuleMember -Variable * -Function * -Alias *
