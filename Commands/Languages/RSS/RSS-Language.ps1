@@ -28,7 +28,7 @@ $languageDefinition = New-Module {
     # * EndPattern       ```$whitespace + '}' + $EndComment```
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
     
-    # The "interpreter" for SVG simply reads each of the files.
+    # The "interpreter" for RSS simply reads each of the files.
     $Interpreter = {        
         $xmlFiles = @(foreach ($arg in $args) {
             if (Test-path $arg) {                
