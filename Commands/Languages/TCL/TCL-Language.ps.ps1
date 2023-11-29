@@ -1,7 +1,7 @@
 Language function TCL {
 <#
 .SYNOPSIS
-    TCL/TK Language Definition.
+    TCL/TK PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate TCL or TK.
 
@@ -43,7 +43,7 @@ Language function TCL {
 #>
 [ValidatePattern('\.t(?>cl|k)$')]
 param()
-
+    $FilePattern = '\.t(?>cl|k)$'
     # We start off by declaring a number of regular expressions:
     $startComment = '(?>\#\s{0,}(?:PipeScript)?\s{0,}\{)'
     $endComment   = '(?>\#\s{0,}\}\s{0,}(?:PipeScript)?\s{0,})'        

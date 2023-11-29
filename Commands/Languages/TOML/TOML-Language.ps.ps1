@@ -1,7 +1,7 @@
 Language function TOML {
 <#
 .SYNOPSIS
-    TOML Language Definition.
+    TOML PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate TOML.
 
@@ -21,7 +21,7 @@ RandomNumber = """{Get-Random}"""
 #>
 [ValidatePattern('\.toml$')]
 param()
-
+    $FilePattern = '\.toml$'
     # We start off by declaring a number of regular expressions:
     
     $startComment = '(?>"""\{)'
@@ -29,4 +29,7 @@ param()
     
     $startPattern = "(?<PSStart>${startComment})"    
     $endPattern   = "(?<PSEnd>${endComment})"
+
+    # TOML is a DataLanguage
+    $IsDataLanguage = $true
 }

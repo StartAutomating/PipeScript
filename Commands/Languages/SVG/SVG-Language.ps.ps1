@@ -1,7 +1,7 @@
 Language function SVG {
 <#
 .SYNOPSIS
-    SVG Language Definition.
+    SVG PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate SVG.
 
@@ -19,7 +19,7 @@ Language function SVG {
 #>
 [ValidatePattern('\.svg$')]
 param()
-
+    $FilePattern  = '\.svg$'
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
@@ -50,5 +50,21 @@ param()
         }
     }
     
+    # SVG is a data language (event attributes only auto-wire within a browser)
+    $IsDataLanguage = $true
+
+    # The "interpreter" for SVG simply reads each of the files.
+    $Interpreter = {        
+        $xmlFiles = @(foreach ($arg in $args) {
+            if (Test-path $arg) {                
+                [IO.File]::ReadAllText($arg) -as [xml]
+            }
+            else {
+                $otherArgs += $arg
+            }
+        })
+        
+        $xmlFiles
+    }
 
 }
