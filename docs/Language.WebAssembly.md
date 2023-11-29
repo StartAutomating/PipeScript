@@ -2,7 +2,7 @@ Language.WebAssembly
 --------------------
 
 ### Synopsis
-WebAssembly Template Transpiler.
+WebAssembly PipeScript Language Definition.
 
 ---
 
