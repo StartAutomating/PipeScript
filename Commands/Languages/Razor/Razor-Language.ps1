@@ -2,7 +2,7 @@
 function Language.Razor {
 <#
 .SYNOPSIS
-    Razor Template Transpiler.    
+    Razor PipeScript Language Definition.    
 .DESCRIPTION
     Allows PipeScript to generate Razor.
 
@@ -19,7 +19,7 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
 )
-
+    $FilePattern = '\.(cshtml|razor)$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '(?><\!--|/\*|\@\*)' 
