@@ -2,7 +2,7 @@
 function Language.Rust {
 <#
     .SYNOPSIS
-        Rust Language Definition
+        Rust PipeScript Language Definition
     .DESCRIPTION
         Defines Rust within PipeScript.
 
@@ -58,6 +58,7 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
 
+    $FilePattern  = '\.rs$'
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -66,6 +67,8 @@ $languageDefinition = New-Module {
     $StartPattern = "(?<PSStart>${startComment}\{$Whitespace)"
     # * EndPattern    ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment})"
+
+    $compiler = $ExecutionContext.SessionState.InvokeCommand.GetCommand("rustc","application")
     $LanguageName = 'Rust'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
