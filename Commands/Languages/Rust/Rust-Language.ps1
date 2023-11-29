@@ -52,7 +52,6 @@ function Language.Rust {
         Invoke-PipeScript .\HelloWorld_Rust.ps1.rs -Parameter @{message='hi'}
     #>
 [ValidatePattern('\.rs$')]
-[Alias('Rust-Language','Language-Rust')]
 param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
