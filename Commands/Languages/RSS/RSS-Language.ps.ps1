@@ -1,7 +1,7 @@
 Language function RSS {
 <#
 .SYNOPSIS
-    RSS Language Definition.
+    RSS PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate RSS.
 
@@ -9,7 +9,10 @@ Language function RSS {
 #>
 [ValidatePattern('\.rss$')]
 param()
+    $FilePattern = '\.rss'
 
+    # RSS is a really simple data language (it's just XML, really)
+    $IsDataLanguage = $true
 
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
@@ -20,4 +23,17 @@ param()
     # * EndPattern       ```$whitespace + '}' + $EndComment```
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
     
+    # The "interpreter" for SVG simply reads each of the files.
+    $Interpreter = {        
+        $xmlFiles = @(foreach ($arg in $args) {
+            if (Test-path $arg) {                
+                [IO.File]::ReadAllText($arg) -as [xml]
+            }
+            else {
+                $otherArgs += $arg
+            }
+        })
+        
+        $xmlFiles
+    }
 }

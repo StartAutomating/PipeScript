@@ -9,7 +9,7 @@ Language function Ruby {
 #>
 [ValidatePattern('\.rb$')]
 param()
-
+    $FilePattern = '\.rb$'
 
     # We start off by declaring a number of regular expressions:
     

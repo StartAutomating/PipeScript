@@ -1,7 +1,7 @@
 Language function Racket {
 <#
 .SYNOPSIS
-    Racket Template Transpiler.
+    Racket PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate Racket.
 
@@ -14,7 +14,7 @@ Language function Racket {
 #>
 [ValidatePattern('\.rkt$')]
 param()
-
+    $FilePattern = '\.rkt$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '\#\|' # * Start Comments ```#|```
