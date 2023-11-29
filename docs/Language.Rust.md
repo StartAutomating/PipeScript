@@ -2,7 +2,7 @@ Language.Rust
 -------------
 
 ### Synopsis
-Rust Language Definition
+Rust PipeScript Language Definition
 
 ---
 
