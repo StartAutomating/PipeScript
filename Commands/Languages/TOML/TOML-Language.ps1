@@ -2,7 +2,7 @@
 function Language.TOML {
 <#
 .SYNOPSIS
-    TOML Language Definition.
+    TOML PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate TOML.
 
@@ -26,7 +26,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-
+    $FilePattern = '\.toml$'
     # We start off by declaring a number of regular expressions:
     
     $startComment = '(?>"""\{)'
@@ -34,6 +34,9 @@ $languageDefinition = New-Module {
     
     $startPattern = "(?<PSStart>${startComment})"    
     $endPattern   = "(?<PSEnd>${endComment})"
+
+    # TOML is a DataLanguage
+    $IsDataLanguage = $true
     $LanguageName = 'TOML'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
