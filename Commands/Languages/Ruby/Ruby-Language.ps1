@@ -14,7 +14,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-
+    $FilePattern = '\.rb$'
 
     # We start off by declaring a number of regular expressions:
     
