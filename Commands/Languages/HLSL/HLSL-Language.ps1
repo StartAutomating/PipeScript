@@ -8,7 +8,7 @@ function Language.HLSL {
 
         Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
     #>
-[ValidatePattern('\.hlsl$')]
+[ValidatePattern('\.(?>hlsl|effect)$')]
 param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
@@ -16,8 +16,7 @@ $languageDefinition = New-Module {
     param(
     )
 
-    $FilePattern = '\.hlsl$'
-
+    $FilePattern = '\.(?>hlsl|effect)$'
     
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
