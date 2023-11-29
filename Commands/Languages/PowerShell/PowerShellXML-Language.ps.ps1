@@ -56,7 +56,7 @@ Language function PowerShellXML {
 #>
 [ValidatePattern('\.ps1xml$')]
 param()
-
+$FilePattern = '\.ps1xml$'
 # We start off by declaring a number of regular expressions:
 $startComment = '<\!--' # * Start Comments ```<!--```
 $endComment   = '-->'   # * End Comments   ```-->```
