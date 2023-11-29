@@ -2,9 +2,9 @@
 function Language.HLSL {
 <#
     .SYNOPSIS
-        HLSL Language Definition.
+        HLSL PipeScript Language Definition.
     .DESCRIPTION
-        Allows PipeScript to generate HLSL.
+        Allows PipeScript to generate HLSL (High Level Shader Language).
 
         Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
     #>
@@ -15,6 +15,8 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
     )
+
+    $FilePattern = '\.hlsl$'
 
     
     # We start off by declaring a number of regular expressions:
