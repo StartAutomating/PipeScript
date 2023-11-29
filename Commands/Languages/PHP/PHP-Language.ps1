@@ -16,6 +16,8 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+    # PHP's file pattern is simply ".php"
+    $FilePattern = '\.php$'
     # We start off by declaring a number of regular expressions:
     $startComment = '(?><\!--|/\*)' # * Start Comments ```<!--```
     $endComment   = '(?>-->|\*/)'   # * End Comments   ```-->```
@@ -24,6 +26,9 @@ $languageDefinition = New-Module {
     $startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
     # * EndPattern       ```$whitespace + '}' + $EndComment```
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
+
+    # If the application PHP is in the path, we'll use it as the interpreter.
+    $Interpreter = $ExecutionContext.SessionState.InvokeCommand.GetCommand('php','Application')
     $LanguageName = 'PHP'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
