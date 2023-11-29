@@ -2,7 +2,7 @@
 function Language.JSON {
 <#
     .SYNOPSIS
-        JSON PipeScript Transpiler.
+        JSON PipeScript Language Definition.
     .DESCRIPTION
         Allows PipeScript to generate JSON.
 
@@ -31,6 +31,8 @@ $languageDefinition = New-Module {
     param(
     )
 
+    $FilePattern = '\.json$'
+
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -50,6 +52,11 @@ $languageDefinition = New-Module {
             ConvertTo-Json -Depth 100 -InputObject $in
         }
     }
+
+    # The interpreter for a JSON file is Import-JSON (a function in PipeScript)
+    $Interpreter = $(
+        $ExecutionContext.SessionState.InvokeCommand.GetCommand('Import-JSON', 'Function')
+    )
     $LanguageName = 'JSON'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
