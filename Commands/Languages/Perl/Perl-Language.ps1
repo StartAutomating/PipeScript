@@ -29,9 +29,9 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-
-    # We start off by declaring a number of regular expressions:
-    
+    # Perl files are either .pl or .pod
+    $FilePattern = '\.(?>pl|pod)$'
+        
     $startComment = '(?>
         (?>^|\[\r\n]{1,2})\s{0,}
         =begin
@@ -48,6 +48,9 @@ $languageDefinition = New-Module {
     
     $startPattern = "(?<PSStart>${startComment})"    
     $endPattern   = "(?<PSEnd>${endComment})"
+
+    # If Perl is in the Path, we'll use it as the interpreter.
+    $Interpreter = $ExecutionContext.SessionState.InvokeCommand.GetCommand('perl','Application')
     $LanguageName = 'Perl'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
