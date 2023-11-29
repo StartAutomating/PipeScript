@@ -61,7 +61,7 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
-
+$FilePattern = '\.ps1xml$'
 # We start off by declaring a number of regular expressions:
 $startComment = '<\!--' # * Start Comments ```<!--```
 $endComment   = '-->'   # * End Comments   ```-->```
