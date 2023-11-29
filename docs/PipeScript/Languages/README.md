@@ -5,13 +5,14 @@ PipeScript works with a number of Languages.
 
 A Language is defined a function named Language.NameOfLanguage.
 
-PipeScript presently ships with 50 languages:
+PipeScript presently ships with 51 languages:
 
 * SQL
 * Bicep
 * Lua
 * Kusto
 * Markdown
+* GLSL
 * Rust
 * WebAssembly
 * XML
