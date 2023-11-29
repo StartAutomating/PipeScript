@@ -11,8 +11,6 @@
     'new' can be followed by a typename and any number of arguments or hashtables.
 
     If 'new' is followed by a single string, and the type has a ::Parse method, new will parse the value.
-
-    If 'new' 
 .EXAMPLE
     .> { new DateTime }
 .EXAMPLE
@@ -145,7 +143,7 @@ process {
             "[PSCustomObject][Ordered]$propertiesToCreate"
         } elseif ($newTypeNameAst -is [Management.Automation.Language.StringConstantExpressionAst]) {
             if ($propertiesToCreate) {
-                "[PSCustomObject]([Ordered]@{PSTypeName='$newTypeNameAst'} + ([Ordered]$propertiesToCreate))"
+                "[PSCustomObject]([Ordered]@{PSTypeName='$newTypeNameAst'} + $propertiesToCreate)"
             } else {
                 "[PSCustomObject][Ordered]@{PSTypeName='$newTypeNameAst'}"
             }
