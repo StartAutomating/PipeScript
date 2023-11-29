@@ -1,7 +1,7 @@
 Language function JavaScript {
 <#
 .SYNOPSIS
-    JavaScript Language Definition.
+    JavaScript PipeScript Language Definition.
 .DESCRIPTION
     Allows PipeScript to generate JavaScript.
 

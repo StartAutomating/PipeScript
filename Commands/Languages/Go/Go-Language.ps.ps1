@@ -56,6 +56,8 @@ Language function Go {
     param(
     )
 
+    $FilePattern = '\.go$'
+
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -74,8 +76,9 @@ Language function Go {
         $GoApplication, # we call 'go'
         'build' # followed by 'build'
     
-    $Interpret  = # To interpret go,
+    $Interpreter  = # To interpret go,
         $GoApplication, # we call 'go' in the path
-        'run' # and always pass it run
+        'run' # and always pass it run.
+        # (despite the name, this is an interpreter, not a runner, because it is passed the go file path)
     
 }

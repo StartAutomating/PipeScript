@@ -1,7 +1,7 @@
 Language function Java {
     <#
     .SYNOPSIS
-        Java Template Transpiler.
+        Java PipeScript Language Definition.
     .DESCRIPTION
         Allows PipeScript to generate Java.
 
@@ -18,6 +18,7 @@ Language function Java {
     [ValidatePattern('\.(?>java)$')]
     param()
 
+    $FilePattern = '\.(?>java)$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
@@ -28,4 +29,7 @@ Language function Java {
     
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"    
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+
+    # Java's compiler is "javac" (if found)
+    $Compiler = $ExecutionContext.SessionState.InvokeCommand.GetCommand('javac','Application')
 }

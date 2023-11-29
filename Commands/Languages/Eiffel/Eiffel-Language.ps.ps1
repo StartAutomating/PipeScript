@@ -1,7 +1,7 @@
 Language function Eiffel {
     <#
     .SYNOPSIS
-        Eiffel Template Transpiler.
+        Eiffel PipeScript Language Definition.
     .DESCRIPTION
         Allows PipeScript to be used to generate Eiffel.
         
@@ -14,6 +14,8 @@ Language function Eiffel {
     [ValidatePattern('\.e$')]
     param(
     )
+
+    $FilePattern = '\.e$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '(?>(?<IsSingleLine>--)\s{0,}(?:PipeScript)?\s{0,}\{)'

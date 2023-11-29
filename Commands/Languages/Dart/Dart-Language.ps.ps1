@@ -15,9 +15,11 @@ Language function Dart {
         * ```""```
         * ```''```
     #>
-    [ValidatePattern('\.(?>dart)$')]
+    [ValidatePattern('\.dart$')]
     param(
     )
+
+    $FilePattern = '\.dart$'
     
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
@@ -29,4 +31,7 @@ Language function Dart {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+    $DartApplication = $ExecutionContext.SessionState.InvokeCommand.GetCommand('dart','Application')
+    $interpreter = $DartApplication, "run"
+    $Compiler    = $DartApplication, "compile"
 }

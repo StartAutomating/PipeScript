@@ -67,7 +67,7 @@ Language function HTML {
 [ValidatePattern('\.htm{0,1}')]
 param(
 )
-
+    $FilePattern = '\.htm{0,1}'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '(?><\!--|/\*)' # * Start Comments ```<!--```
