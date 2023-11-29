@@ -2,7 +2,7 @@ Language.RSS
 ------------
 
 ### Synopsis
-RSS Language Definition.
+RSS PipeScript Language Definition.
 
 ---
 
