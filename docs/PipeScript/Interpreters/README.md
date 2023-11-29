@@ -13,11 +13,14 @@ If they do, that language can be interpretered within PipeScript.
 
 The following languages support interpreters.
 
+* Lua
 * XML
 * RSS
 * Ruby
+* R
 * PowerShellData
 * SVG
+* PHP
 * JavaScript
 * Python
 
