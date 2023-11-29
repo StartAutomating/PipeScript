@@ -2,7 +2,7 @@
 function Language.Eiffel {
 <#
     .SYNOPSIS
-        Eiffel Template Transpiler.
+        Eiffel PipeScript Language Definition.
     .DESCRIPTION
         Allows PipeScript to be used to generate Eiffel.
         
@@ -19,6 +19,8 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
     )
+
+    $FilePattern = '\.e$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '(?>(?<IsSingleLine>--)\s{0,}(?:PipeScript)?\s{0,}\{)'
