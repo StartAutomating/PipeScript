@@ -12,6 +12,7 @@ The following languages support interpreters.
 
 * XML
 * Ruby
+* SVG
 * JavaScript
 * Python
 
