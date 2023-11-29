@@ -2,9 +2,9 @@
 function Language.HCL {
 <#
     .SYNOPSIS
-        HCL Template Transpiler.
+        HCL PipeScript Language Definition.
     .DESCRIPTION
-        Allows PipeScript to generate HCL.
+        Allows PipeScript to generate HCL (Hashicorp Commmand Language).
 
         Multiline comments blocks like ```/*{}*/``` will be treated as blocks of PipeScript.
 
@@ -23,6 +23,7 @@ $languageDefinition = New-Module {
     param(
     )
 
+    $FilePattern = '.\hcl$'
     
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
