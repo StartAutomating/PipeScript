@@ -38,6 +38,8 @@ $languageDefinition = New-Module {
     param(
     )
 
+    $FilePattern = '\.s{0,1}css$'
+
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
