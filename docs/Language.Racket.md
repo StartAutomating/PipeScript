@@ -2,7 +2,7 @@ Language.Racket
 ---------------
 
 ### Synopsis
-Racket Template Transpiler.
+Racket PipeScript Language Definition.
 
 ---
 
