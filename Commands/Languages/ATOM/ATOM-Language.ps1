@@ -17,6 +17,7 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
 
+    $FilePattern = '\.atom$'
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
