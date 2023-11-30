@@ -1,3 +1,0 @@
-@{
-    LanguageNames = 'LanguageName'
-}
