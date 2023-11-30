@@ -87,6 +87,11 @@ $                        # string end.
 '@, Options='IgnoreCase,IgnorePatternWhitespace, RightToLeft')]
 [ValidateScript({    
     $validating = $_
+    if ($validating -isnot [Management.Automation.Language.Ast]) { return $false }
+    if (
+        $validating -isnot [Management.Automation.Language.StringConstantExpressionAST] -and
+        $validating -isnot [Management.Automation.Language.ExpandableStringExpressionAst]
+    ) { return $false}
     if ($validating.Parent -is [Management.Automation.Language.AttributeAST]) {
         return $false
     }
@@ -97,10 +102,7 @@ $                        # string end.
         return $false
     }
 
-    # If we're a command parameter
-    if ($validating.Parent -is [Management.Automation.Language.CommandAst]) {
-        return $false # return false
-    }
+    
 
     # If we're validating a command
     if ($validating -is [Management.Automation.Language.CommandAst]) {
@@ -108,14 +110,19 @@ $                        # string end.
         return $false
     }
 
-    # If the parent is an array or subexpression
-    if (
-        $validating.Parent -is [Management.Automation.Language.ArrayLiteralAst] -or 
-        $validating.Parent -is [Management.Automation.Language.SubexpressionAst] -or 
-        $validating.Parent -is [Management.Automation.Language.ArrayExpressionAst]
-    ) {
-        return $false # return false.
+    # If the lineage is an array or subexpression, command, or hashtable
+    foreach ($parent in $validating.GetLineage()) {
+        if (
+            $Parent -is [Management.Automation.Language.ArrayLiteralAst] -or 
+            $Parent -is [Management.Automation.Language.SubexpressionAst] -or 
+            $Parent -is [Management.Automation.Language.ArrayExpressionAst] -or 
+            $Parent -is [Management.Automation.Language.CommandAst] -or
+            $parent -is [Management.Automation.Language.HashtableAst]
+        ) {
+            return $false # return false.
+        }
     }
+        
     return $true
 })]
 param(
