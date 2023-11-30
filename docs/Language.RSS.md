@@ -1,22 +1,20 @@
-Invoke-Interpreter
-------------------
+Language.RSS
+------------
 
 ### Synopsis
-Invokes Interpreters
+RSS PipeScript Language Definition.
 
 ---
 
 ### Description
 
-Invokes an Interpreter.
+Allows PipeScript to generate RSS.
 
-This command is not used directly, it is used by creating an alias to invoke-interpreter.
-
-This will happen automatically as you attempt to use commands that have an associated interpreter
+Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
 
 ---
 
 ### Syntax
 ```PowerShell
-Invoke-Interpreter [<CommonParameters>]
+Language.RSS [<CommonParameters>]
 ```
