@@ -1,20 +1,20 @@
 This directory and it's subdirectories contain syntax changes that enable common programming scenarios in PowerShell and PipeScript.
 
 
-|DisplayName                                             |Synopsis                                                          |
-|--------------------------------------------------------|------------------------------------------------------------------|
-|[NamespacedAlias](NamespacedAlias.psx.ps1)              |[Declares a namespaced alias](NamespacedAlias.psx.ps1)            |
-|[NamespacedFunction](NamespacedFunction.psx.ps1)        |[Namespaced functions](NamespacedFunction.psx.ps1)                |
-|[ArrowOperator](ArrowOperator.psx.ps1)                  |[Arrow Operator](ArrowOperator.psx.ps1)                           |
-|[ConditionalKeyword](ConditionalKeyword.psx.ps1)        |[Conditional Keyword Expansion](ConditionalKeyword.psx.ps1)       |
-|[Dot](Dot.psx.ps1)                                      |[Dot Notation](Dot.psx.ps1)                                       |
-|[DoubleDotting](DoubleDotting.psx.ps1)                  |[Supports "Double Dotted" location changes](DoubleDotting.psx.ps1)|
-|[EqualityComparison](EqualityComparison.psx.ps1)        |[Allows equality comparison.](EqualityComparison.psx.ps1)         |
-|[EqualityTypeComparison](EqualityTypeComparison.psx.ps1)|[Allows equality type comparison.](EqualityTypeComparison.psx.ps1)|
-|[PipedAssignment](PipedAssignment.psx.ps1)              |[Piped Assignment Transpiler](PipedAssignment.psx.ps1)            |
-|[RegexLiteral](RegexLiteral.psx.ps1)                    |[Regex Literal Transpiler](RegexLiteral.psx.ps1)                  |
-|[SwitchAsIs](SwitchAsIs.psx.ps1)                        |[Switches based off of type, using as or is](SwitchAsIs.psx.ps1)  |
-|[WhereMethod](WhereMethod.psx.ps1)                      |[Where Method](WhereMethod.psx.ps1)                               |
+|DisplayName                                             |Synopsis                                                             |
+|--------------------------------------------------------|---------------------------------------------------------------------|
+|[NamespacedAlias](NamespacedAlias.psx.ps1)              |[Declares a namespaced alias](NamespacedAlias.psx.ps1)               |
+|[NamespacedFunction](NamespacedFunction.psx.ps1)        |[Namespaced functions](NamespacedFunction.psx.ps1)                   |
+|[ArrowOperator](ArrowOperator.psx.ps1)                  |[Arrow Operator](ArrowOperator.psx.ps1)                              |
+|[ConditionalKeyword](ConditionalKeyword.psx.ps1)        |[Conditional Keyword Expansion](ConditionalKeyword.psx.ps1)          |
+|[Dot](Dot.psx.ps1)                                      |[Dot Notation](Dot.psx.ps1)                                          |
+|[DoubleDotting](DoubleDotting.psx.ps1)                  |[Supports "Double Dotted" location changes](DoubleDotting.psx.ps1)   |
+|[EqualityComparison](EqualityComparison.psx.ps1)        |[Allows equality comparison.](EqualityComparison.psx.ps1)            |
+|[EqualityTypeComparison](EqualityTypeComparison.psx.ps1)|[Allows equality type comparison.](EqualityTypeComparison.psx.ps1)   |
+|[PipedAssignment](PipedAssignment.psx.ps1)              |[Piped Assignment Transpiler](PipedAssignment.psx.ps1)               |
+|[RegexLiteral](RegexLiteral.psx.ps1)                    |[Regex Literal Transpiler (currently disabled)](RegexLiteral.psx.ps1)|
+|[SwitchAsIs](SwitchAsIs.psx.ps1)                        |[Switches based off of type, using as or is](SwitchAsIs.psx.ps1)     |
+|[WhereMethod](WhereMethod.psx.ps1)                      |[Where Method](WhereMethod.psx.ps1)                                  |
 
 
 
