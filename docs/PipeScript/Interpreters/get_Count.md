@@ -2,13 +2,13 @@ PipeScript.Interpreters.get_Count()
 -----------------------------------
 
 ### Synopsis
-Gets the number of loaded interpreters.
+Gets the number of loaded languages.
 
 ---
 
 ### Description
 
-Gets the number of PipeScript language definitions that have an interpeter.
+Gets the number of language definitions loaded by PipeScript.
 
 ---
 
@@ -16,7 +16,7 @@ Gets the number of PipeScript language definitions that have an interpeter.
 > EXAMPLE 1
 
 ```PowerShell
-$PSInterpreter.Count
+$PSLanguage.Count
 ```
 
 ---
