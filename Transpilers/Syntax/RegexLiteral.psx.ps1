@@ -99,6 +99,12 @@ $                        # string end.
 
     # If we're a command parameter
     if ($validating.Parent -is [Management.Automation.Language.CommandAst]) {
+        return $false # return false
+    }
+
+    # If we're validating a command
+    if ($validating -is [Management.Automation.Language.CommandAst]) {
+        # return false.
         return $false
     }
     return $true
