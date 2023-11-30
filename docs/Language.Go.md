@@ -1,22 +1,75 @@
-Invoke-Interpreter
-------------------
+Language.Go
+-----------
 
 ### Synopsis
-Invokes Interpreters
+Go Template Transpiler.
 
 ---
 
 ### Description
 
-Invokes an Interpreter.
+Allows PipeScript to Generate Go.
 
-This command is not used directly, it is used by creating an alias to invoke-interpreter.
+Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
-This will happen automatically as you attempt to use commands that have an associated interpreter
+Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
+
+This for Inline PipeScript to be used with operators, and still be valid Go syntax. 
+
+The Go Transpiler will consider the following syntax to be empty:
+
+* ```nil```
+* ```""```
+* ```''```
+
+---
+
+### Examples
+> EXAMPLE 1
+
+```PowerShell
+Invoke-PipeScript {    
+    HelloWorld.go template '
+package main
+import "fmt"
+func main() {
+    fmt.Println("/*{param($msg = "hello world") "`"$msg`""}*/")
+}
+'
+}
+```
+> EXAMPLE 2
+
+```PowerShell
+Invoke-PipeScript {
+$HelloWorld = {param([Alias('msg')]$message = "Hello world") "`"$message`""}
+$helloGo = HelloWorld.go template "
+package main
+import `"fmt`"
+func main() {
+    fmt.Println(`"/*{$helloWorld}*/`")
+}
+"
+
+$helloGo.Save()
+}
+```
+> EXAMPLE 3
+
+```PowerShell
+'
+package main
+import "fmt"
+func main() {
+    fmt.Println("hello world")
+}
+' | Set-Content .\HelloWorld.go
+Invoke-PipeScript .\HelloWorld.go
+```
 
 ---
 
 ### Syntax
 ```PowerShell
-Invoke-Interpreter [<CommonParameters>]
+Language.Go [<CommonParameters>]
 ```
