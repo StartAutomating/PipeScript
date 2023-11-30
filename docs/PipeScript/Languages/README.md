@@ -61,5 +61,6 @@ PipeScript presently ships with 51 languages:
 ### Script Methods
 
 
+* [ForFile](ForFile.md)
 * [get_Count](get_Count.md)
 * [get_LanguageName](get_LanguageName.md)
