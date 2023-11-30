@@ -1,36 +1,22 @@
-Language.SVG
-------------
+Invoke-Interpreter
+------------------
 
 ### Synopsis
-SVG PipeScript Language Definition.
+Invokes Interpreters
 
 ---
 
 ### Description
 
-Allows PipeScript to generate SVG.
+Invokes an Interpreter.
 
-Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
+This command is not used directly, it is used by creating an alias to invoke-interpreter.
 
----
-
-### Examples
-> EXAMPLE 1
-
-```PowerShell
-$starsTemplate = Invoke-PipeScript {
-    Stars.svg template '
-        <!--{
-            Invoke-RestMethod https://pssvg.start-automating.com/Examples/Stars.svg
-        }-->
-    '
-}
-$starsTemplate.Save("$pwd\Stars.svg")
-```
+This will happen automatically as you attempt to use commands that have an associated interpreter
 
 ---
 
 ### Syntax
 ```PowerShell
-Language.SVG [<CommonParameters>]
+Invoke-Interpreter [<CommonParameters>]
 ```
