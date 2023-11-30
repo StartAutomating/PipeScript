@@ -95,12 +95,12 @@ function Import-ModuleMember {
                     included :do {
                         # make sure each item is in the whitelist.
                         foreach ($inProp in $IncludeProperty) {
-                            break included if (
-                                $inProp -is [Regex] -and $member.Name -match $inProp
-                            ) {}
-                            break included if (
-                                $inProp -isnot [Regex] -and $member.Name -like $inProp
-                            ) {}
+                            if ($inProp -is [Regex] -and $member.Name -match $inProp) { 
+                                        break included                        
+                                    } 
+                            if ($inProp -isnot [Regex] -and $member.Name -like $inProp) { 
+                                        break included                        
+                                    } 
                         }
                         continue nextMember
                     } while ($false)
