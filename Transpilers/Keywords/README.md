@@ -13,6 +13,7 @@ This directory contains the implementations of PipeScript language keywords.
 |[Assert](Assert.psx.ps1)    |[Assert keyword](Assert.psx.ps1)                                      |
 |[Await](Await.psx.ps1)      |[awaits asynchronous operations](Await.psx.ps1)                       |
 |[New](New.psx.ps1)          |['new' keyword](New.psx.ps1)                                          |
+|[Object](Object.psx.ps1)    |[Object Keyword](Object.psx.ps1)                                      |
 |[Requires](Requires.psx.ps1)|[requires one or more modules, variables, or types.](Requires.psx.ps1)|
 |[Until](Until.psx.ps1)      |[until keyword](Until.psx.ps1)                                        |
 |[When](When.psx.ps1)        |[On / When keyword](When.psx.ps1)                                     |
@@ -207,6 +208,20 @@ This directory contains the implementations of PipeScript language keywords.
 
 ~~~PowerShell
     .> { new 'https://schema.org/Thing' }
+~~~
+
+## Object Example 1
+
+
+~~~PowerShell
+    Use-PipeScript { object { $x = 1; $y = 2 }}
+~~~
+
+## Object Example 2
+
+
+~~~PowerShell
+    Use-PipeScript { object @{ x = 1; y = 2 }}
 ~~~
 
 ## Requires Example 1
