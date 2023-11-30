@@ -21,6 +21,7 @@ The following languages support interpreters.
 * JavaScript
 * JSON
 * Lua
+* Perl
 * PHP
 * PowerShellData
 * Python
