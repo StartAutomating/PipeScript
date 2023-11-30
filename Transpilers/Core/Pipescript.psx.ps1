@@ -73,9 +73,9 @@ begin {
                 foreach ($paramSet in $parameterMetaData.ParameterSets.Values) {
                     if ($paramSet.ValueFromPipeline) {
                         if (-not $TranspilersByType[$parameterMetaData.ParameterType]) {
-                            $TranspilersByType[$parameterMetaData.ParameterType] = @()
+                            $TranspilersByType[$parameterMetaData.ParameterType] = [Collections.Generic.List[PSObject]]::new()
                         }
-                        $TranspilersByType[$parameterMetaData.ParameterType] += $PotentialTranspiler
+                        $TranspilersByType[$parameterMetaData.ParameterType].Add($PotentialTranspiler)
                         continue nextParameter
                     }                    
                 }
@@ -405,7 +405,7 @@ process {
                 if ($AstReplacements.Count) { 
                     # If there were replacements, we may need to compile them
                     foreach ($astReplacement in @($AstReplacements.GetEnumerator())) {
-                        if ($astReplacement.Value -is [scriptblock]) { # If the output was a [ScriptBlock]
+                        if ($astReplacement.Value -is [scriptblock] -and $astReplacement.Value.Transpilers) { # If the output was a [ScriptBlock] and it had Transpilers
                             # call ourself with the replacement, and update the replacement (if there was nothing to replace, this part of the if will be avoided)
                             $astReplacements[$astReplacement.Key] = & $MyInvocation.MyCommand.ScriptBlock -ScriptBlock $astReplacement.Value
                         }
