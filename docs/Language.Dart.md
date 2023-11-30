@@ -1,22 +1,28 @@
-Invoke-Interpreter
-------------------
+Language.Dart
+-------------
 
 ### Synopsis
-Invokes Interpreters
+Dart Language Definition.
 
 ---
 
 ### Description
 
-Invokes an Interpreter.
+Allows PipeScript to generate Dart.
 
-This command is not used directly, it is used by creating an alias to invoke-interpreter.
+Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
-This will happen automatically as you attempt to use commands that have an associated interpreter
+Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
+
+The Dart Template Transpiler will consider the following syntax to be empty:
+
+* ```null```
+* ```""```
+* ```''```
 
 ---
 
 ### Syntax
 ```PowerShell
-Invoke-Interpreter [<CommonParameters>]
+Language.Dart [<CommonParameters>]
 ```
