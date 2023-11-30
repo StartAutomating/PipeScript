@@ -105,12 +105,41 @@ $PipeScript.Extensions |
 
 Export-ModuleMember -Function * -Alias * -Variable $MyInvocation.MyCommand.ScriptBlock.Module.Name, 'PSLanguage', 'PSLanguages', 'PSInterpreter', 'PSInterpreters'
 
+$PreCommandAction = {
+    param($LookupArgs)
+
+    if (-not $global:NewModule -or -not $global:ImportModule) {
+        $global:ImportModule, $global:NewModule = 
+                $global:ExecutionContext.SessionState.InvokeCommand.GetCommands('*-Module', 'Cmdlet', $true) -match '^(?>New|Import)'
+    }        
+    
+    $invocationName = $LookupArgs
+    if ($PSInterpreters) {
+        $interpreterForName = $PSInterpreters.ForFile($invocationName)
+        if ($interpreterForName) {
+            foreach ($maybeInterprets in $interpreterForName) {                                    
+                $adHocModule = & $newModule -ScriptBlock (
+                    [ScriptBlock]::Create(
+                        @(
+                            "Set-Alias '$($invocationName -replace "'","''")' 'Invoke-Interpreter'"
+                            "Export-ModuleMember -Alias *"
+                        ) -join ';'
+                    )
+                ) -Name @($invocationName -split '[\\/]')[-1] | & $importModule -Global -PassThru
+                $null = New-Event -SourceIdentifier "PipeScript.Interpreter.Found" -Sender $maybeInterprets -EventArguments $adHocModule, $invocationName -MessageData $adHocModule, $invocationName
+                return $invocationName
+            }
+        }        
+    }
+}
+
+$global:ExecutionContext.InvokeCommand.PreCommandLookupAction = $PreCommandAction
 
 $CommandNotFoundAction = {
     param($sender, $eventArgs)
 
     # Rather than be the only thing that can handle command not found, we start by broadcasting an event.
-    $null = New-Event -SourceIdentifier "PowerShell.CommandNotFound"  -MessageData $notFoundArgs -Sender $global:ExecutionContext -EventArguments $notFoundArgs
+    $null = New-Event -SourceIdentifier "PowerShell.CommandNotFound"  -MessageData $eventArgs -Sender $sender -EventArguments $eventArgs
     
     # Then we determine our own script block.
     $myScriptBlock = $MyInvocation.MyCommand.ScriptBlock
@@ -208,4 +237,5 @@ $global:ExecutionContext.SessionState.InvokeCommand.CommandNotFoundAction = $Com
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
     
     $global:ExecutionContext.SessionState.InvokeCommand.CommandNotFoundAction = $null    
+    $global:ExecutionContext.SessionState.InvokeCommand.PreCommandLookupAction = $null
 }
