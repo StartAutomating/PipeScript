@@ -453,7 +453,7 @@ begin {
         Write-Verbose "Replacing REST Path Parameters in: $uri"
         $replacedUri = $pathVariable.Replace("$Uri", $ReplacePathVariable)
         # If these is no replace URI, return.
-        return if -not $replacedUri
+        if (-not $replacedUri) { return }
         # Write the replaced URI to verbose
         Write-Verbose "$replacedUri"
         # then add query parameters
@@ -576,7 +576,66 @@ process {
         }
         
     if ($schemaObject -is [string] -and $SchemaUri -like '*y*ml*') {
-        $requirePSYaml = Invoke-PipeScript { require latest powershell-yaml }
+        $requirePSYaml = Invoke-PipeScript {     
+                                             $ImportedRequirements = foreach ($moduleRequirement in 'powershell-yaml') {
+                                                 $requireLatest = $false
+                                                 $ModuleLoader  = $null
+                                             
+                                                 # If the module requirement was a string
+                                                 if ($moduleRequirement -is [string]) {
+                                                     # see if it's already loaded
+                                                     $foundModuleRequirement = Get-Module $moduleRequirement
+                                                     if (-not $foundModuleRequirement) {
+                                                         # If it wasn't,
+                                                         $foundModuleRequirement = try { # try loading it
+                                                             Import-Module -Name $moduleRequirement -PassThru -Global -ErrorAction 'Ignore'
+                                                         } catch {                
+                                                             $null
+                                                         }
+                                                     }
+                                             
+                                                     # If we found a version but require the latest version,
+                                                     if ($foundModuleRequirement -and $requireLatest) {
+                                                         # then find if there is a more recent version.
+                                                         Write-Verbose "Searching for a more recent version of $($foundModuleRequirement.Name)@$($foundModuleRequirement.Version)"
+                                             
+                                                         if (-not $script:FoundModuleVersions) {
+                                                             $script:FoundModuleVersions = @{}
+                                                         }
+                                             
+                                                         if (-not $script:FoundModuleVersions[$foundModuleRequirement.Name]) {
+                                                             $script:FoundModuleVersions[$foundModuleRequirement.Name] = Find-Module -Name $foundModuleRequirement.Name            
+                                                         }
+                                                         $foundModuleInGallery = $script:FoundModuleVersions[$foundModuleRequirement.Name]
+                                                         if ($foundModuleInGallery -and 
+                                                             ([Version]$foundModuleInGallery.Version -gt [Version]$foundModuleRequirement.Version)) {
+                                                             Write-Verbose "$($foundModuleInGallery.Name)@$($foundModuleInGallery.Version)"
+                                                             # If there was a more recent version, unload the one we already have
+                                                             $foundModuleRequirement | Remove-Module # Unload the existing module
+                                                             $foundModuleRequirement = $null
+                                                         } else {
+                                                             Write-Verbose "$($foundModuleRequirement.Name)@$($foundModuleRequirement.Version) is the latest"
+                                                         }
+                                                     }
+                                             
+                                                     # If we have no found the required module at this point
+                                                     if (-not $foundModuleRequirement) {
+                                                         if ($moduleLoader) { # load it using a -ModuleLoader (if provided)
+                                                             $foundModuleRequirement = . $moduleLoader $moduleRequirement
+                                                         } else {
+                                                             # or install it from the gallery.
+                                                             Install-Module -Name $moduleRequirement -Scope CurrentUser -Force -AllowClobber
+                                                             if ($?) {
+                                                                 # Provided the installation worked, try importing it
+                                                                 $foundModuleRequirement =
+                                                                     Import-Module -Name $moduleRequirement -PassThru -Global -ErrorAction 'Continue' -Force
+                                                             }
+                                                         }
+                                                     } else {
+                                                         $foundModuleRequirement
+                                                     }
+                                                 }
+                                             } }
         $schemaObject  = $schemaObject | ConvertFrom-Yaml -Ordered
     }
 
