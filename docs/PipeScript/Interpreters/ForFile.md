@@ -18,6 +18,11 @@ Gets the PipeScript language definitions for a file path.
 ```PowerShell
 $PSLanguage.ForFile("a.xml")
 ```
+> EXAMPLE 2
+
+```PowerShell
+$PSInterpreters.ForFile("a.js")
+```
 
 ---
 
