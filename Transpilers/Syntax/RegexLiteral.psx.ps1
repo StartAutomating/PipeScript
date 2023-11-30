@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Regex Literal Transpiler
+    Regex Literal Transpiler (currently disabled)
 .DESCRIPTION
     Allows for Regex Literals within PipeScript.
 
@@ -86,6 +86,7 @@ $($Keywords -join '|') # followed by keywords
 $                        # string end.     
 '@, Options='IgnoreCase,IgnorePatternWhitespace, RightToLeft')]
 [ValidateScript({
+    return $false # Currently disabled, as it has proven overproblematic and underused.
     $validating = $_
     if ($validating.Parent -is [Management.Automation.Language.AttributeAST]) {
         return $false
@@ -141,7 +142,7 @@ begin {
 }
 
 process {
-    
+    return # Currently disabled, as it has proven overproblematic and underused.
     $StringExpr, $stringType = 
         if ($StringConstantExpression ) {
             $StringConstantExpression.Extent.ToString(), $StringConstantExpression.StringConstantType
