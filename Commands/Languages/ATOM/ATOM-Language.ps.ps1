@@ -12,6 +12,7 @@ Language function ATOM {
     [ValidatePattern('\.atom$')]
     param()
 
+    $FilePattern = '\.atom$'
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
