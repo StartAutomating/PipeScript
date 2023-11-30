@@ -43,15 +43,25 @@ process {
         return ([scriptblock]::create("[Object]"))
     }
 
+    $ExportAll = "Export-ModuleMember -Variable * -Function * -Alias *"
     switch ($ObjectCommandAst.CommandElements[1]) {
-        { $_ -is [Management.Automation.Language.ScriptBlockExpressionAst]} {            
-            [ScriptBlock]::Create("New-Module -AsCustomObject $_")
+        { $_ -is [Management.Automation.Language.ScriptBlockExpressionAst]} {
+            # If it is an expression, we call `New-Module -AsCustomObject` (and export all the members)
+            [ScriptBlock]::Create("New-Module -AsCustomObject {$($_ -replace '^\{' -replace '\}$'); $ExportAll}")
         }
         { $_ -is [Management.Automation.Language.HashtableAst]} {
+            # If it is an hashtable ast, we cast to `[Ordered]`, then `[PSCustomObject]`.
             [ScriptBlock]::Create("[PSCustomObject][Ordered]$_")
         }
         { $_ -is [Management.Automation.Language.VariableExpressionAst]} {
-            [ScriptBlock]::Create("`$(if ($_ -is [Collections.IDictionary]) { [PSCustomObject][Ordered]@{} + $_ } elseif ($_ -is [ScriptBlock]) { New-Module -AsCustomObject $_ } else { $_ })")
-        }        
+            # If it is a variable, we try to make it an object.
+            [ScriptBlock]::Create(@"
+`$(
+    if ($_ -is [Collections.IDictionary]) { [PSCustomObject][Ordered]@{} + $_ }
+    elseif ($_ -is [ScriptBlock]) { New-Module -AsCustomObject ([ScriptBlock]::Create(`"$_ ; $ExportAll`")) }
+    else { $_ }
+)
+"@)
+        }
     }
 }
