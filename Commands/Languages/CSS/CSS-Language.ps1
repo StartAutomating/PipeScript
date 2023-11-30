@@ -57,50 +57,55 @@ $languageDefinition = New-Module {
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
     $begin = {
-        filter OutputCSS($depth) {
-            $in = $_ # Capture the input object into a variable.
-            if ($in -is [string]) { # If the input was a string
-                return $in # directly embed it.
-            } 
-            elseif ($in -is [object[]]) { # If the input was an array
-                # pipe back to ourself (increasing the depth)
-                @($in | & $MyInvocation.MyCommand.ScriptBlock -Depth ($depth + 1)) -join [Environment]::NewLine
-            }
-            else { # Otherwise
-                
-                # we want to treat everything as a dictionary
-                $inDictionary = [Ordered]@{}
-                # so take any object that isn't a dictionary
-                if ($in -isnot [Collections.IDictionary]) {
-                    # and make it one.
-                    foreach ($prop in $in.PSObject.properties) {
-                        $inDictionary[$prop.Name] = $prop.Value
-                    }                
-                } else {
-                    $inDictionary += $in
-                }
+        filter OutputCSS {
         
-                # Then walk over each key/valye in the dictionary
-                $innerCss = $(@(foreach ($kv in $inDictionary.GetEnumerator()) {                            
-                    if ($kv.Value -isnot [string]) {
-                        $kv.Key + ' ' + "$($kv.Value | 
-                            & $MyInvocation.MyCommand.ScriptBlock -Depth ($depth + 1))" 
+        
+                    $in = $_ # Capture the input object into a variable.
+                    if ($in -is [string]) { # If the input was a string
+                        return $in # directly embed it.
+                    } 
+                    elseif ($in -is [object[]]) { # If the input was an array
+                        # pipe back to ourself (increasing the depth)
+                        @($in | & $MyInvocation.MyCommand.ScriptBlock -Depth ($depth + 1)) -join [Environment]::NewLine
                     }
-                    else {
-                        $kv.Key + ':' + $kv.Value
-                    }                                                        
-                }) -join (
-                    ';' + [Environment]::NewLine + (' ' * 2 * ($depth))
-                ))
+                    else { # Otherwise
+                        
+                        # we want to treat everything as a dictionary
+                        $inDictionary = [Ordered]@{}
+                        # so take any object that isn't a dictionary
+                        if ($in -isnot [Collections.IDictionary]) {
+                            # and make it one.
+                            foreach ($prop in $in.PSObject.properties) {
+                                $inDictionary[$prop.Name] = $prop.Value
+                            }                
+                        } else {
+                            $inDictionary += $in
+                        }
+                
+                        # Then walk over each key/valye in the dictionary
+                        $innerCss = $(@(foreach ($kv in $inDictionary.GetEnumerator()) {                            
+                            if ($kv.Value -isnot [string]) {
+                                $kv.Key + ' ' + "$($kv.Value | 
+                                    & $MyInvocation.MyCommand.ScriptBlock -Depth ($depth + 1))" 
+                            }
+                            else {
+                                $kv.Key + ':' + $kv.Value
+                            }                                                        
+                        }) -join (
+                            ';' + [Environment]::NewLine + (' ' * 2 * ($depth))
+                        ))
+                
+                        $(if ($depth){'{'} else {''}) + 
+                            [Environment]::NewLine + 
+                            (' ' * 2 * ($depth)) + 
+                            $innerCss + 
+                            [Environment]::NewLine + 
+                            (' ' * 2 * ([Math]::max($depth - 1,0))) +
+                            $(if ($depth){'}'} else {''})
+                    }
+                
         
-                $(if ($depth){'{'} else {''}) + 
-                    [Environment]::NewLine + 
-                    (' ' * 2 * ($depth)) + 
-                    $innerCss + 
-                    [Environment]::NewLine + 
-                    (' ' * 2 * ([Math]::max($depth - 1,0))) +
-                    $(if ($depth){'}'} else {''})
-            }
+        
         }
     }
     
