@@ -1,22 +1,22 @@
-Language.ATOM
--------------
+Invoke-Interpreter
+------------------
 
 ### Synopsis
-ATOM Language Definition
+Invokes Interpreters
 
 ---
 
 ### Description
 
-Defines ATOM within PipeScript.
+Invokes an Interpreter.
 
-This allows ATOM to be templated.
+This command is not used directly, it is used by creating an alias to invoke-interpreter.
 
-Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
+This will happen automatically as you attempt to use commands that have an associated interpreter
 
 ---
 
 ### Syntax
 ```PowerShell
-Language.ATOM [<CommonParameters>]
+Invoke-Interpreter [<CommonParameters>]
 ```
