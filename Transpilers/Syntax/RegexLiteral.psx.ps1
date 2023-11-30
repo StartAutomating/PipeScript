@@ -85,8 +85,7 @@ $($Keywords -join '|') # followed by keywords
 (?<HereDoc>@){0,1}            # Optional heredoc end
 $                        # string end.     
 '@, Options='IgnoreCase,IgnorePatternWhitespace, RightToLeft')]
-[ValidateScript({
-    return $false # Currently disabled, as it has proven overproblematic and underused.
+[ValidateScript({    
     $validating = $_
     if ($validating.Parent -is [Management.Automation.Language.AttributeAST]) {
         return $false
