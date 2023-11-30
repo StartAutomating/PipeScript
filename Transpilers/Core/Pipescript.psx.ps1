@@ -61,7 +61,7 @@ begin {
 
     # Set up a global variable for all commands.
     # This will actually return an enumerable, which we can re-enumerate any number of times we want.
-    $global:AllCommands = $ExecutionContext.SessionState.InvokeCommand.GetCommands('*', 'Alias,Function,Cmdlet',$true)
+    $global:AllCommands = $ExecutionContext.SessionState.InvokeCommand.GetCommands('*', 'Alias,Function,Cmdlet',$true)    
 
     function RefreshTranspilers([switch]$Force) {
         $PotentialTranspilers = Get-Transpiler -Force:$Force
@@ -235,7 +235,7 @@ process {
             }
             
             # Find all AST elements within the script block.
-            $astList = @($scriptBlock.Ast.FindAll({$true}, $false))
+            $astList = @($scriptBlock.Ast.FindAll({$true}, $true))
             # Prepare to replace code by stringifying the -ScriptBlcok, 
             $scriptText = "$scriptBlock"
             # creating an ordered dictionary of replacements, 
@@ -402,7 +402,15 @@ process {
             }
             
             $newScript =            
-                if ($AstReplacements.Count) {
+                if ($AstReplacements.Count) { 
+                    # If there were replacements, we may need to compile them
+                    foreach ($astReplacement in @($AstReplacements.GetEnumerator())) {
+                        if ($astReplacement.Value -is [scriptblock]) { # If the output was a [ScriptBlock]
+                            # call ourself with the replacement, and update the replacement (if there was nothing to replace, this part of the if will be avoided)
+                            $astReplacements[$astReplacement.Key] = & $MyInvocation.MyCommand.ScriptBlock -ScriptBlock $astReplacement.Value
+                        }
+                    }
+                    # Call Update-PipeScript once with all of the changes.
                     Update-PipeScript -ScriptBlock $ScriptBlock -ScriptReplacement $replacements -AstReplacement $AstReplacements
                 } elseif ($updateSplats) {
                     foreach ($upSplat in $updateSplats) {
