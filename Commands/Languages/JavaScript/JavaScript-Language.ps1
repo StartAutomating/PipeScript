@@ -50,6 +50,7 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
 )
+    $FilePattern = '\.js$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
