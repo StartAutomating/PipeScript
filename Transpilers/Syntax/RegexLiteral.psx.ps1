@@ -107,6 +107,15 @@ $                        # string end.
         # return false.
         return $false
     }
+
+    # If the parent is an array or subexpression
+    if (
+        $validating.Parent -is [Management.Automation.Language.ArrayLiteralAst] -or 
+        $validating.Parent -is [Management.Automation.Language.SubexpressionAst] -or 
+        $validating.Parent -is [Management.Automation.Language.ArrayExpressionAst]
+    ) {
+        return $false # return false.
+    }
     return $true
 })]
 param(
