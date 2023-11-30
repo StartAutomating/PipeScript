@@ -45,6 +45,7 @@ Language function JavaScript {
 [ValidatePattern('\.js$')]
 param(
 )
+    $FilePattern = '\.js$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
