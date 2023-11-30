@@ -35,5 +35,8 @@ Note: Interpreters may require commands to be installed.
 ### Script Methods
 
 
+* [ForFile](ForFile.md)
 * [get_Count](get_Count.md)
+* [set_Count](set_Count.md)
 * [get_LanguageName](get_LanguageName.md)
+* [set_LanguageName](set_LanguageName.md)
