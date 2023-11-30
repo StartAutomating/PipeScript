@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Regex Literal Transpiler (currently disabled)
+    Regex Literal Transpiler
 .DESCRIPTION
     Allows for Regex Literals within PipeScript.
 
@@ -141,8 +141,7 @@ begin {
         }
 }
 
-process {
-    return # Currently disabled, as it has proven overproblematic and underused.
+process {    
     $StringExpr, $stringType = 
         if ($StringConstantExpression ) {
             $StringConstantExpression.Extent.ToString(), $StringConstantExpression.StringConstantType
@@ -150,6 +149,8 @@ process {
             $ExpandableStringExpression.Extent.ToString(), $ExpandableStringExpression.StringConstantType
         }
 
+    if ($StringExpr -notmatch $startRegex) { return }
+    if ($StringExpr -notmatch $endRegex) { return }
     
     $sparseStringExpr = $StringExpr -replace $endRegex -replace $startRegex
     if ($sparseStringExpr -match '^@{0,1}["'']') {
