@@ -2,13 +2,13 @@ PipeScript.Interpreters.get_LanguageName()
 ------------------------------------------
 
 ### Synopsis
-Gets the loaded interpreter names.
+Gets the loaded language names.
 
 ---
 
 ### Description
 
-Gets the names of languages within PipeScript that define an `.Interpreter`.
+Gets the names of language definitions loaded by PipeScript.
 
 ---
 
