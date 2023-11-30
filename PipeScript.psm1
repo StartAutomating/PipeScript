@@ -154,13 +154,20 @@ $PreCommandAction = {
 
     if (-not $global:NewModule -or -not $global:ImportModule) {
         $global:ImportModule, $global:NewModule = 
-                $global:ExecutionContext.SessionState.InvokeCommand.GetCommands('*-Module', 'Cmdlet', $true) -match '^(?>New|Import)'
-    }        
+            $global:ExecutionContext.SessionState.InvokeCommand.GetCommands('*-Module', 'Cmdlet', $true) -match '^(?>New|Import)'
+    }
+    
+    if (-not $global:AllFunctionsAndAliases) {
+        $global:AllFunctionsAndAliases =
+            $global:ExecutionContext.SessionState.InvokeCommand.GetCommands('*', 'Alias,Function', $true)
+    }
     
     $invocationName = $LookupArgs
     if ($PSInterpreters) {
         $interpreterForName = $PSInterpreters.ForFile($invocationName)
-        if ($interpreterForName) {
+        
+        if ($interpreterForName -and 
+            -not ($global:AllFunctionsAndAliases -match $([Regex]::Escape($invocationName)))) {
             foreach ($maybeInterprets in $interpreterForName) {                                    
                 $adHocModule = & $newModule -ScriptBlock (
                     [ScriptBlock]::Create(
