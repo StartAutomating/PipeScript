@@ -42,8 +42,10 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
 
+    $FilePattern = '\.(?>md|markdown|txt)$'
 
-    # Note: Markdown is one of the more complicated templates.
+
+    # Note: Markdown is one of the more complicated templates (at least from a Regex perspective)
 
     # This is because Markdown isn't _just_ Markdown.  Markdown allows inline HTML.  Inline HTML, in turn, allows inline JavaScript and CSS.
     # Also, Markdown code blocks can be provided a few different ways, and thus PipeScript can be embedded a few different ways.
