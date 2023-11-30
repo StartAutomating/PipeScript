@@ -1,22 +1,20 @@
-Invoke-Interpreter
-------------------
+Language.XML
+------------
 
 ### Synopsis
-Invokes Interpreters
+XML PipeScript Language Definition.
 
 ---
 
 ### Description
 
-Invokes an Interpreter.
+Allows PipeScript to generate XML.
 
-This command is not used directly, it is used by creating an alias to invoke-interpreter.
-
-This will happen automatically as you attempt to use commands that have an associated interpreter
+Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
 
 ---
 
 ### Syntax
 ```PowerShell
-Invoke-Interpreter [<CommonParameters>]
+Language.XML [<CommonParameters>]
 ```
