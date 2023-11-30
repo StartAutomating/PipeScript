@@ -2,7 +2,7 @@ RegexLiteral
 ------------
 
 ### Synopsis
-Regex Literal Transpiler
+Regex Literal Transpiler (currently disabled)
 
 ---
 
