@@ -224,6 +224,13 @@ This directory contains the implementations of PipeScript language keywords.
     Use-PipeScript { object @{ x = 1; y = 2 }}
 ~~~
 
+## Object Example 3
+
+
+~~~PowerShell
+    Use-PipeScript { Object }
+~~~
+
 ## Requires Example 1
 
 
