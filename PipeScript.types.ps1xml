@@ -2266,16 +2266,44 @@ foreach ($potentialTemplatePath in $potentialTemplatePaths ) {
         <Name>LanguageNames</Name>
         <ReferencedMemberName>LanguageName</ReferencedMemberName>
       </AliasProperty>
+      <ScriptMethod>
+        <Name>ForFile</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Gets the language for a file.
+.DESCRIPTION
+    Gets the PipeScript language definitions for a file path.
+.EXAMPLE
+    $PSLanguage.ForFile("a.xml")
+#&gt;
+param(
+[string]
+$FilePath
+)
+
+
+foreach ($prop in $this.psobject.properties) {
+    if ($prop -is [psscriptproperty]) { continue }
+    if ($prop.IsInstance -and 
+        $prop.Value.LanguageName -and
+        $filePath -match $prop.Value.FilePattern) {
+        $prop.Value
+    }
+}
+
+                    </Script>
+      </ScriptMethod>
       <ScriptProperty>
         <Name>Count</Name>
         <GetScriptBlock>
                         &lt;#
 .SYNOPSIS
-    Gets the number of loaded interpreters.
+    Gets the number of loaded languages.
 .DESCRIPTION
-    Gets the number of PipeScript language definitions that have an interpeter.
+    Gets the number of language definitions loaded by PipeScript.
 .EXAMPLE
-    $PSInterpreter.Count
+    $PSLanguage.Count
 #&gt;
 $count= 0
 foreach ($prop in $this.psobject.properties) {
@@ -2286,15 +2314,33 @@ foreach ($prop in $this.psobject.properties) {
 }
 return $count
                     </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the number of loaded languages.
+.DESCRIPTION
+    Gets the number of language definitions loaded by PipeScript.
+.EXAMPLE
+    $PSLanguage.Count
+#&gt;
+$count= 0
+foreach ($prop in $this.psobject.properties) {
+    if ($prop -is [psscriptproperty]) { continue }
+    if ($prop.IsInstance -and $prop.Value.LanguageName) {
+        $count++
+    }
+}
+return $count
+                    </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>LanguageName</Name>
         <GetScriptBlock>
                         &lt;#
 .SYNOPSIS
-    Gets the loaded interpreter names.
+    Gets the loaded language names.
 .DESCRIPTION
-    Gets the names of languages within PipeScript that define an `.Interpreter`.
+    Gets the names of language definitions loaded by PipeScript.
 .EXAMPLE
     $PSLanguage.LanguageName
 #&gt;
@@ -2306,6 +2352,23 @@ return $count
     }
 })
                     </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the loaded language names.
+.DESCRIPTION
+    Gets the names of language definitions loaded by PipeScript.
+.EXAMPLE
+    $PSLanguage.LanguageName
+#&gt;
+
+,@(foreach ($prop in $this.psobject.properties) {
+    if ($prop -is [psscriptproperty]) { continue }
+    if ($prop.IsInstance -and $prop.Value.LanguageName) {
+        $prop.Value.LanguageName
+    }
+})
+                    </SetScriptBlock>
       </ScriptProperty>
       <NoteProperty>
         <Name>README</Name>
@@ -2351,6 +2414,34 @@ Note: Interpreters may require commands to be installed.
         <Name>LanguageNames</Name>
         <ReferencedMemberName>LanguageName</ReferencedMemberName>
       </AliasProperty>
+      <ScriptMethod>
+        <Name>ForFile</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Gets the language for a file.
+.DESCRIPTION
+    Gets the PipeScript language definitions for a file path.
+.EXAMPLE
+    $PSLanguage.ForFile("a.xml")
+#&gt;
+param(
+[string]
+$FilePath
+)
+
+
+foreach ($prop in $this.psobject.properties) {
+    if ($prop -is [psscriptproperty]) { continue }
+    if ($prop.IsInstance -and 
+        $prop.Value.LanguageName -and
+        $filePath -match $prop.Value.FilePattern) {
+        $prop.Value
+    }
+}
+
+                    </Script>
+      </ScriptMethod>
       <ScriptProperty>
         <Name>Count</Name>
         <GetScriptBlock>
