@@ -1,22 +1,22 @@
-Language.PHP
-------------
+Invoke-Interpreter
+------------------
 
 ### Synopsis
-PHP Template Transpiler.
+Invokes Interpreters
 
 ---
 
 ### Description
 
-Allows PipeScript to generate PHP.
+Invokes an Interpreter.
 
-Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
+This command is not used directly, it is used by creating an alias to invoke-interpreter.
 
-JavaScript/CSS/PHP comment blocks like ```/*{}*/``` will also be treated as blocks of PipeScript.
+This will happen automatically as you attempt to use commands that have an associated interpreter
 
 ---
 
 ### Syntax
 ```PowerShell
-Language.PHP [<CommonParameters>]
+Invoke-Interpreter [<CommonParameters>]
 ```
