@@ -23,7 +23,6 @@ function Route.Uptime {
     [DateTime]::Now - ((Get-Process -id $pid).StartTime)
 
 
-
 }
 
 
