@@ -2420,7 +2420,6 @@ foreach ($module in $targetModules) {
     # Aspect.ModuleExtendedCommand
     &amp; { 
     
-    
         &lt;#
         .SYNOPSIS
             Returns a module's extended commands
@@ -2501,7 +2500,6 @@ foreach ($module in $targetModules) {
             $ModuleCommandPattern = # Aspect.ModuleExtensionPattern
                                     &amp; { 
                                     
-                                    
                                         &lt;#
                                         .SYNOPSIS
                                             Outputs a module's extension pattern
@@ -2556,7 +2554,6 @@ foreach ($module in $targetModules) {
                                             if (-not $ModuleInfo) { return }
                                             $ModuleExtensionTypes = # Aspect.ModuleExtensionTypes
                                                                     &amp; { 
-                                                                    
                                                                     
                                                                         &lt;#
                                                                         .SYNOPSIS
@@ -2666,7 +2663,6 @@ foreach ($module in $targetModules) {
                                                                     
                                                                         }    
                                                                     
-                                                                    
                                                                      } -Module $moduleInfo
                                     
                                             
@@ -2693,11 +2689,9 @@ foreach ($module in $targetModules) {
                                             [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                                         }
                                     
-                                    
                                      } $ModuleInfo -Prefix $prefix -Suffix $Suffix
             $ModuleCommandTypes   = # Aspect.ModuleExtensionType
                                     &amp; { 
-                                    
                                     
                                         &lt;#
                                         .SYNOPSIS
@@ -2807,7 +2801,6 @@ foreach ($module in $targetModules) {
                                     
                                         }    
                                     
-                                    
                                      } $ModuleInfo
             
             $commands    =
@@ -2869,7 +2862,6 @@ foreach ($module in $targetModules) {
             }
         }
     
-    
      } -Module $module @Splat
 }
 
@@ -2924,7 +2916,6 @@ if (-not $dynamicParametersFrom) { return }
 $dynamicParametersFrom | 
     # Aspect.DynamicParameter
     &amp; { 
-    
     
         &lt;#
         .SYNOPSIS
@@ -3162,7 +3153,6 @@ $dynamicParametersFrom |
             $DynamicParameters
         }
     
-    
      } @DyanmicParameterOption
 
                     </Script>
@@ -3184,7 +3174,6 @@ if (-not $this.'.CommandTypes') {
     Add-Member -InputObject $this -MemberType NoteProperty -Force -Name '.CommandTypes' (
         # Aspect.ModuleCommandType
         &amp; { 
-        
         
             &lt;#
             .SYNOPSIS
@@ -3293,7 +3282,6 @@ if (-not $this.'.CommandTypes') {
                 #endregion Find Extension Types
         
             }    
-        
         
          } -Module $this
     )        
