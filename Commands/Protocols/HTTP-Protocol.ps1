@@ -1,7 +1,6 @@
 
 function Protocol.HTTP {
 
-
     <#
     .SYNOPSIS
         HTTP protocol
@@ -254,7 +253,6 @@ function Protocol.HTTP {
             & $Invoker $commandUri @ArgumentList @Parameter
         }
     }
-
 
 
 }
