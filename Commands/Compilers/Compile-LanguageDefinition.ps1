@@ -1,7 +1,6 @@
 
 function Compile.LanguageDefinition {
 
-
     <#
     .SYNOPSIS
         Compiles a language definition 
@@ -110,7 +109,6 @@ function Compile.LanguageDefinition {
         }
         
     }
-
 
 }
 
