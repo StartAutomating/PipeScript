@@ -1,7 +1,6 @@
 
 function Parse.CSharp {
 
-
     <#
     .SYNOPSIS
         Parses CSharp
@@ -82,7 +81,6 @@ function Parse.CSharp {
             }
         }
     }
-
 
 }
 
