@@ -212,7 +212,6 @@ function PipeScript.Optimizer.ConsolidateAspects {
     }
 
 
-
 }
 
 
