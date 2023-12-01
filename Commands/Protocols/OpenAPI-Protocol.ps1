@@ -1,7 +1,6 @@
 
 function Protocol.OpenAPI {
 
-
     <#
     .SYNOPSIS
         OpenAPI protocol
@@ -126,7 +125,6 @@ begin {
 
     filter resolvePathDefinition {
     
-    
             $in = $_.'paths'
     
             $schemaPath = $args -replace '^#' -replace '^/' -replace '^\$defs' -split '[/\.]' -ne ''        
@@ -135,12 +133,10 @@ begin {
             }
             $in
         
-    
     }
 
     # Another converts property names into schema parameter names.
     filter getSchemaParameterName {
-    
     
             $parameterName = $_
             # If we had any prefixes we wished to remove, now is the time.
@@ -158,11 +154,9 @@ begin {
             # And we should force the first letter to be uppercase.
             $parameterName.Substring(0,1).ToUpper() + $parameterName.Substring(1)
         
-    
     }
 
     filter resolveSchemaDefinition {
-    
     
             $in = $_
             $schemaPath = $args -replace '^#' -replace '^/' -split '[/\.]' -ne ''
@@ -171,11 +165,9 @@ begin {
             }
             $in
         
-    
     }
 
     filter PropertiesToParameters {
-    
     
             param(
                 [ValidateSet('Query','Body','Path')]
@@ -319,7 +311,6 @@ begin {
             }
             $newPipeScriptParameters
         
-    
     }
 
     # If we have not cached the schema uris, create a collection for it.
@@ -882,7 +873,6 @@ $(New-PipeScript @newPipeScriptSplat)
         New-PipeScript @newPipeScriptSplat
     }    
 }
-
 
 }
 
