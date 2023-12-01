@@ -89,7 +89,6 @@ function Protocol.JSONSchema {
                     $in
                 
         
-        
         }
 
         # Another converts property names into schema parameter names.
@@ -112,7 +111,6 @@ function Protocol.JSONSchema {
                     # And we should force the first letter to be uppercase.
                     $parameterName.Substring(0,1).ToUpper() + $parameterName.Substring(1)
                 
-        
         
         }
 
@@ -389,7 +387,6 @@ function Protocol.JSONSchema {
             New-PipeScript @newPipeScriptSplat
         }    
     }
-
 
 
 }
