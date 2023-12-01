@@ -38,6 +38,28 @@ function Export-Pipescript {
                     }
 
                 if ($simpleRequirements) {
+                    if ($env:GITHUB_WORKSPACE) {
+                        $ManifestsInWorkspace = Get-ChildItem -Recurse -Filter *.psd1 |
+                            Where-Object {
+                                $_.Name -match "^(?>$(@(
+                                    foreach ($simplyRequires in $simpleRequirements) {
+                                        [Regex]::Escape($simplyRequires)
+                                    }
+                                ) -join '|')).psd1$"
+                            } | Select-String "ModuleVersion"
+
+                        $simpleRequirements = @(
+                            foreach ($simplyRequires in $simpleRequirements) {
+                                if ($ManifestsInWorkspace.Path -match "^$([Regex]::Escape($simplyRequires))\.psd1$") {
+                                    $importedRequirement = Import-Module -Path $ManifestsInWorkspace.Path -Global -PassThru
+                                    if ($importedRequirement) {
+                                        continue
+                                    }
+                                }
+                                $simplyRequires
+                            }
+                        )
+                    }
                     Invoke-PipeScript "require latest $($simpleRequirements)"
                 }                
             }
