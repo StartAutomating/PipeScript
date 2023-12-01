@@ -1,7 +1,6 @@
 
 function Protocol.UDP {
 
-
 <#
 .SYNOPSIS
     UDP protocol
@@ -307,7 +306,6 @@ if ((-not `$JobExists) -or (`$jobExists.State -ne 'Running')) {
         }
     }    
 }
-
 
 
 
