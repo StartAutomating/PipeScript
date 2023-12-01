@@ -100,6 +100,11 @@ HTTP Accept indicates what content types the web request will accept as a respon
     [Alias('Parameters','Property','Properties')]
     $Parameter,
 
+    # If provided, will output to this path instead of returning a new script block.
+    [Parameter(ValueFromPipelineByPropertyName)]
+    [string]
+    $OutputPath,
+
     # The dynamic parameter block.
     [Parameter(ValueFromPipelineByPropertyName)]
     [ValidateScript({
@@ -175,16 +180,19 @@ HTTP Accept indicates what content types the web request will accept as a respon
 
     # If provided, will automatically create parameters.
     # Parameters will be automatically created for any unassigned variables.
+    [Parameter(ValueFromPipelineByPropertyName)]
     [Alias('AutoParameterize','AutoParameters')]
     [switch]
     $AutoParameter,
 
     # The type used for automatically generated parameters.
     # By default, ```[PSObject]```.
+    [Parameter(ValueFromPipelineByPropertyName)]
     [type]
     $AutoParameterType = [PSObject],
 
     # If provided, will add inline help to parameters.
+    [Parameter(ValueFromPipelineByPropertyName)]
     [Collections.IDictionary]
     $ParameterHelp,
 
@@ -196,6 +204,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
     3. Booleans should be made into [switch]es
     4. All other parameter types should be [PSObject]
     #>
+    [Parameter(ValueFromPipelineByPropertyName)]
     [Alias('WeakType', 'WeakParameters', 'WeaklyTypedParameters', 'WeakProperties', 'WeaklyTypedProperties')]
     [switch]
     $WeaklyTyped,
@@ -1023,10 +1032,20 @@ $(if ($functionDeclaration) { '}'})
         $createdScriptBlock = [scriptblock]::Create($ScriptToBe)
 
         # If -NoTranspile was passed, 
-        if ($createdScriptBlock -and $NoTranspile) {
-            $createdScriptBlock # output the script as-is
-        } elseif ($createdScriptBlock) { # otherwise            
-            $createdScriptBlock | .>PipeScript # output the transpiled script.
+        $newPipeScriptOutput = 
+            if ($createdScriptBlock -and $NoTranspile) {
+                $createdScriptBlock # output the script as-is
+            } elseif ($createdScriptBlock) { # otherwise            
+                $createdScriptBlock | .>PipeScript # output the transpiled script.
+            }
+
+        if ($OutputPath) {
+            "$newPipeScriptOutput" | Set-Content -Path $OutputPath
+            if ($?) {
+                Get-Item -Path $OutputPath
+            }
+        } else {
+            $newPipeScriptOutput
         }
     }
 
