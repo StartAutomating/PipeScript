@@ -325,7 +325,6 @@ $ModuleExtensionTypeAspect = {
                                                                                                                     }    
                                                                                                                 
                                                                                                                 
-                                                                                                                
                                                                                                                  } -Module $moduleInfo
                                                                                 
                                                                                         
@@ -351,7 +350,6 @@ $ModuleExtensionTypeAspect = {
                                                                                         # Now that we've combined the whole thing, make it a Regex and output it.        
                                                                                         [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                                                                                     }
-                                                                                
                                                                                 
                                                                                 
                                                                                  } $ModuleInfo -Prefix $prefix -Suffix $Suffix
@@ -468,7 +466,6 @@ $ModuleExtensionTypeAspect = {
                                                                                     }    
                                                                                 
                                                                                 
-                                                                                
                                                                                  } $ModuleInfo
                                                         
                                                         $commands    =
@@ -529,7 +526,6 @@ $ModuleExtensionTypeAspect = {
                                                             }
                                                         }
                                                     }
-                                                
                                                 
                                                 
                                                  }
@@ -701,7 +697,6 @@ $ModuleExtensionTypeAspect = {
                                                                                                                     }    
                                                                                                                 
                                                                                                                 
-                                                                                                                
                                                                                                                  } -Module $moduleInfo
                                                                                 
                                                                                         
@@ -727,7 +722,6 @@ $ModuleExtensionTypeAspect = {
                                                                                         # Now that we've combined the whole thing, make it a Regex and output it.        
                                                                                         [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                                                                                     }
-                                                                                
                                                                                 
                                                                                 
                                                                                  }
@@ -996,7 +990,6 @@ $ModuleExtensionTypeAspect = {
                         }
                     
                     
-                    
                      } -PositionOffset 1 -ExcludeParameter @($myInv.MyCommand.Parameters.Keys) -BlankParameterName Verb                                
             }                                    
         }
@@ -1098,7 +1091,6 @@ $ModuleExtensionTypeAspect = {
                     }
                 
         
-        
         }
 
         filter CheckPipeScriptType {
@@ -1114,13 +1106,11 @@ $ModuleExtensionTypeAspect = {
                     $_
                 
         
-        
         }
 
         filter unroll {
         
          $_ 
-        
         
         }   
         #endregion Declare Internal Functions and Filters
@@ -1214,7 +1204,6 @@ $ModuleExtensionTypeAspect = {
             $steppablePipeline.End()
         }
     }
-
 
 
 
