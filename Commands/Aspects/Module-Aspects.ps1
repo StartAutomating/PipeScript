@@ -111,7 +111,6 @@ function Aspect.ModuleExtensionType {
     }    
 
 
-
 }
 
 
@@ -284,7 +283,6 @@ function Aspect.ModuleExtensionPattern {
                                     }    
                                 
                                 
-                                
                                  } -Module $moduleInfo
 
         
@@ -310,7 +308,6 @@ function Aspect.ModuleExtensionPattern {
         # Now that we've combined the whole thing, make it a Regex and output it.        
         [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
     }
-
 
 
 }
@@ -566,7 +563,6 @@ function Aspect.ModuleExtensionCommand {
                                                                     }    
                                                                 
                                                                 
-                                                                
                                                                  } -Module $moduleInfo
                                 
                                         
@@ -592,7 +588,6 @@ function Aspect.ModuleExtensionCommand {
                                         # Now that we've combined the whole thing, make it a Regex and output it.        
                                         [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                                     }
-                                
                                 
                                 
                                  } $ModuleInfo -Prefix $prefix -Suffix $Suffix
@@ -709,7 +704,6 @@ function Aspect.ModuleExtensionCommand {
                                     }    
                                 
                                 
-                                
                                  } $ModuleInfo
         
         $commands    =
@@ -770,7 +764,6 @@ function Aspect.ModuleExtensionCommand {
             }
         }
     }
-
 
 
 }
