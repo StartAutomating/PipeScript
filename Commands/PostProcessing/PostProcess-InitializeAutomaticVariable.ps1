@@ -88,7 +88,6 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
                     }
                 
         
-        
         }
     }
 
@@ -180,7 +179,6 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
             }
         }
     }
-
 
 
 }
