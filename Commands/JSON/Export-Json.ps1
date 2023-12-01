@@ -1,5 +1,4 @@
 function Export-Json {
-
     <#
     
     .SYNOPSIS    
@@ -139,5 +138,4 @@ function Export-Json {
         }            
     }
     }
-
 }
