@@ -2,7 +2,6 @@
 function Signal.Out {
 
 
-
     <#
     .SYNOPSIS
         Outputs a Signal
@@ -36,7 +35,6 @@ $MyCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
         Input     = @($input)
         Command   = $MyCommandAst
     })
-
 
 
 
