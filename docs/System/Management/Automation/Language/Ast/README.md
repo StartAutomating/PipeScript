@@ -5,6 +5,7 @@
 
 
 * [GetLineage](GetLineage.md)
+* [IsEquivalentTo](IsEquivalentTo.md)
 * [get_ByType](get_ByType.md)
 * [get_Commands](get_Commands.md)
 * [get_Defines](get_Defines.md)
