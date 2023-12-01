@@ -289,7 +289,6 @@ foreach ($module in $targetModules) {
                                                                         }    
                                                                     
                                                                     
-                                                                    
                                                                      } -Module $moduleInfo
                                     
                                             
@@ -315,7 +314,6 @@ foreach ($module in $targetModules) {
                                             # Now that we've combined the whole thing, make it a Regex and output it.        
                                             [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                                         }
-                                    
                                     
                                     
                                      } $ModuleInfo -Prefix $prefix -Suffix $Suffix
@@ -432,7 +430,6 @@ foreach ($module in $targetModules) {
                                         }    
                                     
                                     
-                                    
                                      } $ModuleInfo
             
             $commands    =
@@ -493,7 +490,6 @@ foreach ($module in $targetModules) {
                 }
             }
         }
-    
     
     
      } -Module $module @Splat
