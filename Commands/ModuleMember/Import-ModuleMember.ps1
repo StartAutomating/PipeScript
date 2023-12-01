@@ -1,6 +1,5 @@
 function Import-ModuleMember {
 
-
     <#
     .SYNOPSIS
         Imports members into a module
@@ -286,7 +285,6 @@ function Import-ModuleMember {
             #endregion Importing into a Loading Module
         }
     }
-
 
 }
 
