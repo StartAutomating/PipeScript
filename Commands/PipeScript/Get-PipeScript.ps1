@@ -78,7 +78,6 @@ $myCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
 
 $ModuleExtensionTypeAspect = { 
                                                 
-                                                
                                                     <#
                                                     .SYNOPSIS
                                                         Returns a module's extended commands
@@ -159,7 +158,6 @@ $ModuleExtensionTypeAspect = {
                                                         $ModuleCommandPattern = # Aspect.ModuleExtensionPattern
                                                                                 & { 
                                                                                 
-                                                                                
                                                                                     <#
                                                                                     .SYNOPSIS
                                                                                         Outputs a module's extension pattern
@@ -214,7 +212,6 @@ $ModuleExtensionTypeAspect = {
                                                                                         if (-not $ModuleInfo) { return }
                                                                                         $ModuleExtensionTypes = # Aspect.ModuleExtensionTypes
                                                                                                                 & { 
-                                                                                                                
                                                                                                                 
                                                                                                                     <#
                                                                                                                     .SYNOPSIS
@@ -324,7 +321,6 @@ $ModuleExtensionTypeAspect = {
                                                                                                                 
                                                                                                                     }    
                                                                                                                 
-                                                                                                                
                                                                                                                  } -Module $moduleInfo
                                                                                 
                                                                                         
@@ -351,11 +347,9 @@ $ModuleExtensionTypeAspect = {
                                                                                         [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                                                                                     }
                                                                                 
-                                                                                
                                                                                  } $ModuleInfo -Prefix $prefix -Suffix $Suffix
                                                         $ModuleCommandTypes   = # Aspect.ModuleExtensionType
                                                                                 & { 
-                                                                                
                                                                                 
                                                                                     <#
                                                                                     .SYNOPSIS
@@ -465,7 +459,6 @@ $ModuleExtensionTypeAspect = {
                                                                                 
                                                                                     }    
                                                                                 
-                                                                                
                                                                                  } $ModuleInfo
                                                         
                                                         $commands    =
@@ -527,10 +520,8 @@ $ModuleExtensionTypeAspect = {
                                                         }
                                                     }
                                                 
-                                                
                                                  }
         $ModuleCommandPatternAspect = { 
-                                                                                
                                                                                 
                                                                                     <#
                                                                                     .SYNOPSIS
@@ -586,7 +577,6 @@ $ModuleExtensionTypeAspect = {
                                                                                         if (-not $ModuleInfo) { return }
                                                                                         $ModuleExtensionTypes = # Aspect.ModuleExtensionTypes
                                                                                                                 & { 
-                                                                                                                
                                                                                                                 
                                                                                                                     <#
                                                                                                                     .SYNOPSIS
@@ -696,7 +686,6 @@ $ModuleExtensionTypeAspect = {
                                                                                                                 
                                                                                                                     }    
                                                                                                                 
-                                                                                                                
                                                                                                                  } -Module $moduleInfo
                                                                                 
                                                                                         
@@ -722,7 +711,6 @@ $ModuleExtensionTypeAspect = {
                                                                                         # Now that we've combined the whole thing, make it a Regex and output it.        
                                                                                         [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                                                                                     }
-                                                                                
                                                                                 
                                                                                  }
  $myModule = Get-Module PipeScript
@@ -751,7 +739,6 @@ $ModuleExtensionTypeAspect = {
                 $myModule.ExportedCommands["$SecondWord-$FirstWord"] |
                     # Aspect.DynamicParameter
                     & { 
-                    
                     
                         <#
                         .SYNOPSIS
@@ -989,7 +976,6 @@ $ModuleExtensionTypeAspect = {
                             $DynamicParameters
                         }
                     
-                    
                      } -PositionOffset 1 -ExcludeParameter @($myInv.MyCommand.Parameters.Keys) -BlankParameterName Verb                                
             }                                    
         }
@@ -1095,7 +1081,6 @@ $ModuleExtensionTypeAspect = {
 
         filter CheckPipeScriptType {
         
-        
                     if ($PipeScriptType) {
                         $OneOfTheseTypes = "(?>$($PipeScriptType -join '|'))"
                         $in = $_
@@ -1105,13 +1090,10 @@ $ModuleExtensionTypeAspect = {
                     }
                     $_
                 
-        
         }
 
         filter unroll {
-        
          $_ 
-        
         }   
         #endregion Declare Internal Functions and Filters
         
