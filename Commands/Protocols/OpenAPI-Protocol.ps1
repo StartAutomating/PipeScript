@@ -136,7 +136,6 @@ begin {
             $in
         
     
-    
     }
 
     # Another converts property names into schema parameter names.
@@ -160,7 +159,6 @@ begin {
             $parameterName.Substring(0,1).ToUpper() + $parameterName.Substring(1)
         
     
-    
     }
 
     filter resolveSchemaDefinition {
@@ -173,7 +171,6 @@ begin {
             }
             $in
         
-    
     
     }
 
@@ -322,7 +319,6 @@ begin {
             }
             $newPipeScriptParameters
         
-    
     
     }
 
@@ -886,7 +882,6 @@ $(New-PipeScript @newPipeScriptSplat)
         New-PipeScript @newPipeScriptSplat
     }    
 }
-
 
 
 }
