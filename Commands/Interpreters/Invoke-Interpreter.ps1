@@ -1,7 +1,6 @@
 
 function Invoke-Interpreter {
 
-
     <#
     .SYNOPSIS
         Invokes Interpreters
@@ -35,6 +34,5 @@ function Invoke-Interpreter {
     } else {
         & $interpreterCommand @leadingArgs $invocationName @args
     }    
-
 
 }
