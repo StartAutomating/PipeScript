@@ -26,7 +26,6 @@ function Aspect.GroupObjectByTypeName {
     end {$groupedByTypeName}        
 
 
-
 }
 
 
@@ -59,7 +58,6 @@ function Aspect.GroupObjectByType {
     end {
         $groupedByType
     }        
-
 
 
 }
