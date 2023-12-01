@@ -123,7 +123,6 @@ if (-not $this.'.CommandTypes') {
             }    
         
         
-        
          } -Module $this
     )        
 }
