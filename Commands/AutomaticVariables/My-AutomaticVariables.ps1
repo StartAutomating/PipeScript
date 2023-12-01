@@ -2,7 +2,6 @@
 
 function PipeScript.Automatic.Variable.MyCallstack {
 
-
     <#
     .SYNOPSIS
         $MyCallStack
@@ -11,13 +10,11 @@ function PipeScript.Automatic.Variable.MyCallstack {
     #>
     @(Get-PSCallstack) # Set $MyCallstack
 
-
 }
 
 
 
 function PipeScript.Automatic.Variable.MySelf {
-
 
     <#
     .SYNOPSIS
@@ -44,13 +41,11 @@ function PipeScript.Automatic.Variable.MySelf {
     #>    
     $MyInvocation.MyCommand.ScriptBlock # Set $mySelf
 
-
 }
 
 
 
 function PipeScript.Automatic.Variable.MyParameters {
-
 
     <#
     .SYNOPSIS
@@ -66,13 +61,11 @@ function PipeScript.Automatic.Variable.MyParameters {
     #>
     [Ordered]@{} + $PSBoundParameters
 
-
 }
 
 
 
 function PipeScript.Automatic.Variable.MyCaller {
-
 
 
     <#
@@ -90,13 +83,11 @@ $myCallStack=@(Get-PSCallstack)
  $myCallStack[-1] # Initialize MyCaller
 
 
-
 }
 
 
 
 function PipeScript.Automatic.Variable.MyCommandAst {
-
 
 
     <#
@@ -120,7 +111,6 @@ $MyCaller=$($myCallStack=@(Get-PSCallstack)
                 $ast -is [Management.Automation.Language.CommandAst]
         },$true)
     }
-
 
 
 }
