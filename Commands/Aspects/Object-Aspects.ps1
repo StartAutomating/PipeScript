@@ -1,7 +1,6 @@
 
 function Aspect.GroupObjectByTypeName {
 
-
     <#
     .SYNOPSIS
         Groups objects by type name
@@ -25,14 +24,12 @@ function Aspect.GroupObjectByTypeName {
     }
     end {$groupedByTypeName}        
 
-
 }
 
 
 
 
 function Aspect.GroupObjectByType {
-
 
     <#
     .SYNOPSIS
@@ -58,7 +55,6 @@ function Aspect.GroupObjectByType {
     end {
         $groupedByType
     }        
-
 
 }
 
