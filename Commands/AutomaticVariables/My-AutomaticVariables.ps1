@@ -12,7 +12,6 @@ function PipeScript.Automatic.Variable.MyCallstack {
     @(Get-PSCallstack) # Set $MyCallstack
 
 
-
 }
 
 
@@ -46,7 +45,6 @@ function PipeScript.Automatic.Variable.MySelf {
     $MyInvocation.MyCommand.ScriptBlock # Set $mySelf
 
 
-
 }
 
 
@@ -67,7 +65,6 @@ function PipeScript.Automatic.Variable.MyParameters {
         }
     #>
     [Ordered]@{} + $PSBoundParameters
-
 
 
 }
@@ -91,7 +88,6 @@ function PipeScript.Automatic.Variable.MyCaller {
    
 $myCallStack=@(Get-PSCallstack)
  $myCallStack[-1] # Initialize MyCaller
-
 
 
 
@@ -124,7 +120,6 @@ $MyCaller=$($myCallStack=@(Get-PSCallstack)
                 $ast -is [Management.Automation.Language.CommandAst]
         },$true)
     }
-
 
 
 
