@@ -1,7 +1,6 @@
 
 function Protocol.JSONSchema {
 
-
     <#
     .SYNOPSIS
         JSON Schema protocol
@@ -78,40 +77,33 @@ function Protocol.JSONSchema {
         # One resolves schema definitions.
         # The inputObject is the schema.
         # The arguments are the path within the schema.
-        filter resolveSchemaDefinition {
-        
-        
-                    $in = $_.'$defs'
-                    $schemaPath = $args -replace '^#' -replace '^/' -replace '^\$defs' -split '[/\.]' -ne ''
-                    foreach ($sp in $schemaPath) {
-                        $in = $in.$sp
-                    }
-                    $in
-                
-        
+        filter resolveSchemaDefinition
+        {
+            $in = $_.'$defs'
+            $schemaPath = $args -replace '^#' -replace '^/' -replace '^\$defs' -split '[/\.]' -ne ''
+            foreach ($sp in $schemaPath) {
+                $in = $in.$sp
+            }
+            $in
         }
 
         # Another converts property names into schema parameter names.
         filter getSchemaParameterName {
-        
-        
-                    $parameterName = $_
-                    # If we had any prefixes we wished to remove, now is the time.
-                    if ($RemovePropertyPrefix) {            
-                        $parameterName = $parameterName -replace "^(?>$(@($RemovePropertyPrefix) -join '|'))"
-                        if ($property.Name -like 'Experimental.*') {
-                            $null = $null
-                        }                                
-                    }
-                    # Any punctuation followed by a letter should be removed and replaced with an Uppercase letter.
-                    $parameterName = [regex]::Replace($parameterName, "\p{P}(\p{L})", {
-                        param($match)
-                        $match.Groups[1].Value.ToUpper()
-                    }) -replace '\p{P}'
-                    # And we should force the first letter to be uppercase.
-                    $parameterName.Substring(0,1).ToUpper() + $parameterName.Substring(1)
-                
-        
+            $parameterName = $_
+            # If we had any prefixes we wished to remove, now is the time.
+            if ($RemovePropertyPrefix) {            
+                $parameterName = $parameterName -replace "^(?>$(@($RemovePropertyPrefix) -join '|'))"
+                if ($property.Name -like 'Experimental.*') {
+                    $null = $null
+                }                                
+            }
+            # Any punctuation followed by a letter should be removed and replaced with an Uppercase letter.
+            $parameterName = [regex]::Replace($parameterName, "\p{P}(\p{L})", {
+                param($match)
+                $match.Groups[1].Value.ToUpper()
+            }) -replace '\p{P}'
+            # And we should force the first letter to be uppercase.
+            $parameterName.Substring(0,1).ToUpper() + $parameterName.Substring(1)
         }
 
         # If we have not cached the schema uris, create a collection for it.
@@ -387,7 +379,6 @@ function Protocol.JSONSchema {
             New-PipeScript @newPipeScriptSplat
         }    
     }
-
 
 }
 
