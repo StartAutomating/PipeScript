@@ -87,7 +87,7 @@ process {
         
         $transpiledFunctionBody = $FunctionBodyScriptBlock |
             .>Pipescript -Transpiler $transpilerSteps
-        if ("$transpiledFunctionBody".Length -ne "$FunctionBodyScriptBlock".Length) {
+        if (-not $transpiledFunctionBody.IsEquivalentTo($FunctionBodyScriptBlock)) {        
             $FunctionHasChanged = $true
             $transpiledFunctionBody
         } else {
@@ -112,7 +112,10 @@ process {
                 InputObject = $transpiledFunctionAst
                 Duration = ($postProcessEnd - $postProcessStart)
             })
-            if ($postOut -and $postOut -is [Management.Automation.Language.FunctionDefinitionAst]) {
+            if ($postOut -and 
+                $postOut -is [Management.Automation.Language.FunctionDefinitionAst] -and
+                -not $postOut.IsEquivalentTo($transpiledFunctionAst)
+            ) {
                 $transpiledFunctionAst = $postOut
                 $FunctionHasChanged = $true
             }
@@ -136,7 +139,7 @@ process {
     }
 
     else {
-        [ScriptBlock]::Create("$FunctionDefinitionAst")
+        [ScriptBlock]::Create("$FunctionDefinition")
     }
     
 }
