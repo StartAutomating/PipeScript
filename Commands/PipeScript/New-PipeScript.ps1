@@ -1,6 +1,5 @@
 function New-PipeScript {
 
-
     <#
     .Synopsis
         Creates new PipeScript.
@@ -280,7 +279,6 @@ HTTP Accept indicates what content types the web request will accept as a respon
 
         filter embedParameterHelp {
         
-        
                     if ($_ -notmatch '^\s\<\#' -and $_ -notmatch '^\s\#') {
                         $commentLines = @($_ -split '(?>\r\n|\n)')
                         if ($commentLines.Count -gt 1) {
@@ -292,11 +290,9 @@ HTTP Accept indicates what content types the web request will accept as a respon
                         $_
                     }
                 
-        
         }
 
         filter psuedoTypeToRealType {
-        
         
                     switch ($_) {
                         string { [string] }
@@ -312,17 +308,14 @@ HTTP Accept indicates what content types the web request will accept as a respon
                         }
                     }
                 
-        
         }
 
         filter oneOfTheseProperties {
-        
         
                     foreach ($arg in $args) {
                         if ($_.$arg) { return $_.$arg }
                     }
                 
-        
         }
 
         # Default 'NoEnd' to false.
@@ -448,12 +441,10 @@ HTTP Accept indicates what content types the web request will accept as a respon
             if (-not $Description) { $Description = $Synopsis }
             function indentHelpLine {
             
-            
                             foreach ($line in $args -split '(?>\r\n|\n)') {
                                 (' ' * 4) + $line.TrimEnd()
                             }
                         
-            
             }
 
             $helpHeader = @(
@@ -1038,7 +1029,6 @@ $(if ($functionDeclaration) { '}'})
             $createdScriptBlock | .>PipeScript # output the transpiled script.
         }
     }
-
 
 }
 
