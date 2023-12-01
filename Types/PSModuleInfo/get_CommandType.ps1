@@ -13,7 +13,6 @@ if (-not $this.'.CommandTypes') {
         # Aspect.ModuleCommandType
         & { 
         
-        
             <#
             .SYNOPSIS
                 Outputs a module's extension types
@@ -121,7 +120,6 @@ if (-not $this.'.CommandTypes') {
                 #endregion Find Extension Types
         
             }    
-        
         
          } -Module $this
     )        
