@@ -32,12 +32,14 @@ begin {
 }
 
 process {
+    $FunctionHasChanged = $false
     #region PreCommands
     if ($preCommands) {
         foreach ($pre in $preCommands) {
             $preOut = $FunctionDefinition | & $pre
             if ($preOut -and $preOut -is [Management.Automation.Language.FunctionDefinitionAst]) {
                 $FunctionDefinition = $preOut
+                $FunctionHasChanged = $true
             }
         }
     }
@@ -81,10 +83,17 @@ process {
             "function", $realFunctionName, $inlineParameters, '{' -ne '' -join ' '
         }
         # containing the transpiled funciton body.
-        [ScriptBlock]::Create(($functionDefinition.Body.Extent -replace '^{' -replace '}$')) |
-            .>Pipescript -Transpiler $transpilerSteps        
-                
-        $transpiledFunctionBody                
+        $FunctionBodyScriptBlock = [ScriptBlock]::Create(($functionDefinition.Body.Extent -replace '^{' -replace '}$'))
+        
+        $transpiledFunctionBody = $FunctionBodyScriptBlock |
+            .>Pipescript -Transpiler $transpilerSteps
+        if ("$transpiledFunctionBody".Length -ne "$FunctionBodyScriptBlock".Length) {
+            $FunctionHasChanged = $true
+            $transpiledFunctionBody
+        } else {
+            $FunctionBodyScriptBlock
+        }        
+        
         "}"
     )
     # Create a new script block
@@ -96,7 +105,7 @@ process {
         
         foreach ($post in $postCommands) {
             $postProcessStart = [DateTime]::now
-            $postOut = $transpiledFunctionAst | & $post
+            $postOut = $transpiledFunctionAst | & $post            
             $postProcessEnd = [DateTime]::now
             $null = New-Event -SourceIdentifier "PipeScript.PostProcess.Complete" -Sender $FunctionDefinition -EventArguments $post -MessageData ([PSCustomObject][Ordered]@{
                 Command = $post
@@ -105,20 +114,29 @@ process {
             })
             if ($postOut -and $postOut -is [Management.Automation.Language.FunctionDefinitionAst]) {
                 $transpiledFunctionAst = $postOut
+                $FunctionHasChanged = $true
             }
         }
         
         $transpiledFunction = [scriptblock]::Create("$transpiledFunctionAst")
+        
     }
 
-    Import-PipeScript -ScriptBlock $transpiledFunction -NoTranspile
-    # Create an event indicating that a function has been transpiled.
-    $null = New-Event -SourceIdentifier PipeScript.Function.Transpiled -MessageData ([PSCustomObject][Ordered]@{
-        PSTypeName = 'PipeScript.Function.Transpiled'
-        FunctionDefinition = $FunctionDefinition
-        ScriptBlock = $transpiledFunction
-    })
+    if ($FunctionHasChanged) {
+        Import-PipeScript -ScriptBlock $transpiledFunction -NoTranspile
+        # Create an event indicating that a function has been transpiled.
+        $null = New-Event -SourceIdentifier PipeScript.Function.Transpiled -MessageData ([PSCustomObject][Ordered]@{
+            PSTypeName = 'PipeScript.Function.Transpiled'
+            FunctionDefinition = $FunctionDefinition
+            ScriptBlock = $transpiledFunction
+        })
+    
+        # Output the transpiled function.
+        $transpiledFunction
+    }
 
-    # Output the transpiled function.
-    $transpiledFunction
+    else {
+        [ScriptBlock]::Create("$FunctionDefinitionAst")
+    }
+    
 }
