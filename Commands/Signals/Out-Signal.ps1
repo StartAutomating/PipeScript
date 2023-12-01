@@ -40,6 +40,5 @@ $MyCommandAst=$($MyCaller=$($myCallStack=@(Get-PSCallstack)
 
 
 
-
 }
 
