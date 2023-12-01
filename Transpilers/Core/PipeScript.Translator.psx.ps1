@@ -108,10 +108,11 @@ process {
         # Running the language command will give us it's definition.
         $definedLanguage = & $definedLanguageCommand
         # Now we look over each potential method for a translator
-        switch -regex ($definedLanguage.PSObject.Methods) {
-            # It's name can start with Translate or TranslateFrom
-            "${translationPrefix}${translationSuffix}" {
-                $translationMethod = $_
+        switch -regex ($definedLanguage.PSObject.Members.Name) {
+            # It's name could be the prefix and the suffix
+            "^${translationPrefix}${translationSuffix}" {
+                
+                $translationMethod = $definedLanguage.$_
                 # If we found a matching translation method, run it
                 $translationOutput = $translationMethod.Invoke($previousStatement)
                 if ($translationOutput) { 
@@ -119,6 +120,30 @@ process {
                     $translationOutput
                     break
                 }
+            }
+            "^$translationPrefix" {
+                $translationMember = $definedLanguage.$_
+
+                if ($translationMember -isnot [Management.Automation.PSMethodInfo]) {
+                    switch -regex (@($translationMember.PSObject.Methods.Name)) {
+                        "^$TranslationSuffix" {
+                            $in = $_
+                            $translationMember = $translationMember."$_"
+                            break
+                        }
+                    }
+                }
+                
+                if ($translationMember -is [Management.Automation.PSMethodInfo]) {
+                    # If we found a matching translation method, run it
+                    $translationOutput = $translationMember.Invoke($previousStatement)
+                    if ($translationOutput) { 
+                        # If it had output, that's our translation result, and we can stop now.
+                        $translationOutput
+                        break
+                    }
+                }
+           
             }
             default {}
         }
