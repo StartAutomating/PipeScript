@@ -42,7 +42,6 @@ foreach ($module in $targetModules) {
     # Aspect.ModuleExtendedCommand
     & { 
     
-    
         <#
         .SYNOPSIS
             Returns a module's extended commands
@@ -123,7 +122,6 @@ foreach ($module in $targetModules) {
             $ModuleCommandPattern = # Aspect.ModuleExtensionPattern
                                     & { 
                                     
-                                    
                                         <#
                                         .SYNOPSIS
                                             Outputs a module's extension pattern
@@ -178,7 +176,6 @@ foreach ($module in $targetModules) {
                                             if (-not $ModuleInfo) { return }
                                             $ModuleExtensionTypes = # Aspect.ModuleExtensionTypes
                                                                     & { 
-                                                                    
                                                                     
                                                                         <#
                                                                         .SYNOPSIS
@@ -288,7 +285,6 @@ foreach ($module in $targetModules) {
                                                                     
                                                                         }    
                                                                     
-                                                                    
                                                                      } -Module $moduleInfo
                                     
                                             
@@ -315,11 +311,9 @@ foreach ($module in $targetModules) {
                                             [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                                         }
                                     
-                                    
                                      } $ModuleInfo -Prefix $prefix -Suffix $Suffix
             $ModuleCommandTypes   = # Aspect.ModuleExtensionType
                                     & { 
-                                    
                                     
                                         <#
                                         .SYNOPSIS
@@ -429,7 +423,6 @@ foreach ($module in $targetModules) {
                                     
                                         }    
                                     
-                                    
                                      } $ModuleInfo
             
             $commands    =
@@ -490,7 +483,6 @@ foreach ($module in $targetModules) {
                 }
             }
         }
-    
     
      } -Module $module @Splat
 }
