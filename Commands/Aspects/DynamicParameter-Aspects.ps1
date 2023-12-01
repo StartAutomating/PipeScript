@@ -1,7 +1,6 @@
 
 function Aspect.DynamicParameter {
 
-
     <#
     .SYNOPSIS
         Dynamic Parameter Aspect
@@ -237,7 +236,6 @@ function Aspect.DynamicParameter {
         }
         $DynamicParameters
     }
-
 
 }
 
