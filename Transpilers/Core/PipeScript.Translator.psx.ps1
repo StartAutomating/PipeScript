@@ -76,8 +76,33 @@ process {
     
     # Determine the type of the previous statement
     $previousStatementType = $previousStatement.GetType()
-    
 
+    # Translation methods can have a few different prefixes to their names
+    # * TranslateFrom
+    # * ConvertFrom
+    # * Convert
+    # * Translate
+    # * From
+    # * Visit
+
+    $translationPrefix = "(?>$("TranslateFrom", "ConvertFrom", "Convert", "Translate", "From", "Visit" -join '|'))"
+
+    # The typename will make up the next portion of the method name.
+    # It can be one of three things:
+    # * The fullname of the type
+    # * The name of the type
+    # * The name of the type, minus the suffixes 'Ast' or 'Syntax'
+    $translationSuffix = "(?>$(
+        @(
+            $previousStatementType.FullName
+            # Or followed by the name 
+            $previousStatementType.Name -replace '(?>Ast|Syntax)$'
+
+            $previousStatementType.Name -replace '\.'
+        ) -join '|'
+    ))"
+
+    
     # And attempt to translate to each potential matching language
     $translationResult = foreach ($definedLanguageCommand in $languageIsDefined) {
         # Running the language command will give us it's definition.
@@ -85,15 +110,7 @@ process {
         # Now we look over each potential method for a translator
         switch -regex ($definedLanguage.PSObject.Methods) {
             # It's name can start with Translate or TranslateFrom
-            "Translate(?>From)?(?>$(@(
-                # Followed by the fullname (minus periods)                
-                $previousStatementType.FullName -replace '\.'
-                # Or followed by the name 
-                $previousStatementType.Name -replace '\.'
-                # Or simple "TranslatePowerShell"
-                'PowerShell'
-            ) -join '|'
-            ))" {                
+            "${translationPrefix}${translationSuffix}" {
                 $translationMethod = $_
                 # If we found a matching translation method, run it
                 $translationOutput = $translationMethod.Invoke($previousStatement)
