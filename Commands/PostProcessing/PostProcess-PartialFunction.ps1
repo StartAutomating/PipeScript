@@ -1,7 +1,6 @@
 
 function PipeScript.PostProcess.PartialFunction {
 
-
     <#
     .SYNOPSIS
         Expands partial functions
@@ -126,7 +125,6 @@ function PipeScript.PostProcess.PartialFunction {
         $joinedFunction = [scriptblock]::Create($joinedFunction)
         $joinedFunction.Ast.EndBlock.Statements[0]        
     }
-
 
 }
 
