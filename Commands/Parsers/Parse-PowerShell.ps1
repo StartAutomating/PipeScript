@@ -1,7 +1,6 @@
 
 function Parse.PowerShell {
 
-
     <#
     .SYNOPSIS
         Parses PowerShell
@@ -81,7 +80,6 @@ function Parse.PowerShell {
         }
         
     }
-
 
 }
 
