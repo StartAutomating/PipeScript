@@ -1,6 +1,5 @@
 function Start-PSNode {
 
-
     <#
     .SYNOPSIS
         Starts a PSNode Job
@@ -320,7 +319,6 @@ Add-Member -InputObject $request -MemberType ScriptProperty -Name Params -Value 
             $psNodeJobInstance
         }
     }
-
 
 }
 
