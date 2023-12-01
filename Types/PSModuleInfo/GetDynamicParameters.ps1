@@ -24,7 +24,6 @@ $dynamicParametersFrom |
     # Aspect.DynamicParameter
     & { 
     
-    
         <#
         .SYNOPSIS
             Dynamic Parameter Aspect
@@ -260,6 +259,5 @@ $dynamicParametersFrom |
             }
             $DynamicParameters
         }
-    
     
      } @DyanmicParameterOption
