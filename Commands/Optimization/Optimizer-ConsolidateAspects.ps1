@@ -1,7 +1,6 @@
 
 function PipeScript.Optimizer.ConsolidateAspects {
 
-
     <#
     .SYNOPSIS
         Consolidates Code Aspects
@@ -210,7 +209,6 @@ function PipeScript.Optimizer.ConsolidateAspects {
             }
         }
     }
-
 
 }
 
