@@ -96,19 +96,24 @@ HTTP Accept indicates what content types the web request will accept as a respon
     # * As a ```[Collections.Dictionary]``` of Parameters
     # * As the ```[string]``` name of an untyped parameter.
     # * As a ```[ScriptBlock]``` containing only parameters.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [Alias('Parameters','Property','Properties')]
     $Parameter,
 
+    # If provided, will output to this path instead of returning a new script block.
+    [vbn()]
+    [string]
+    $OutputPath,
+
     # The dynamic parameter block.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [ValidateScriptBlock(NoBlocks, NoParameters)]
     [Alias('DynamicParameterBlock')]
     [ScriptBlock]
     $DynamicParameter,
 
     # The begin block.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [ValidateScriptBlock(NoBlocks, NoParameters)]
     [Alias('BeginBlock')]
     [ScriptBlock]
@@ -117,35 +122,38 @@ HTTP Accept indicates what content types the web request will accept as a respon
     # The process block.
     # If a [ScriptBlock] is piped in and this has not been provided,
     # -Process will be mapped to that script.
-    [Parameter(ValueFromPipelineByPropertyName)]    
+    [vbn()]    
     [Alias('ProcessBlock','ScriptBlock')]
     [ScriptBlock]
     $Process,
 
     # The end block.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [ValidateScriptBlock(NoBlocks, NoParameters)]
     [Alias('EndBlock')]
     [ScriptBlock]
     $End,
 
     # The script header.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $Header,
 
     # If provided, will automatically create parameters.
     # Parameters will be automatically created for any unassigned variables.
+    [vbn()]
     [Alias('AutoParameterize','AutoParameters')]
     [switch]
     $AutoParameter,
 
     # The type used for automatically generated parameters.
     # By default, ```[PSObject]```.
+    [vbn()]
     [type]
     $AutoParameterType = [PSObject],
 
     # If provided, will add inline help to parameters.
+    [vbn()]
     [Collections.IDictionary]
     $ParameterHelp,
 
@@ -157,6 +165,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
     3. Booleans should be made into [switch]es
     4. All other parameter types should be [PSObject]
     #>
+    [vbn()]
     [Alias('WeakType', 'WeakParameters', 'WeaklyTypedParameters', 'WeakProperties', 'WeaklyTypedProperties')]
     [switch]
     $WeaklyTyped,
@@ -977,10 +986,20 @@ $(if ($functionDeclaration) { '}'})
         $createdScriptBlock = [scriptblock]::Create($ScriptToBe)
 
         # If -NoTranspile was passed, 
-        if ($createdScriptBlock -and $NoTranspile) {
-            $createdScriptBlock # output the script as-is
-        } elseif ($createdScriptBlock) { # otherwise            
-            $createdScriptBlock | .>PipeScript # output the transpiled script.
+        $newPipeScriptOutput = 
+            if ($createdScriptBlock -and $NoTranspile) {
+                $createdScriptBlock # output the script as-is
+            } elseif ($createdScriptBlock) { # otherwise            
+                $createdScriptBlock | .>PipeScript # output the transpiled script.
+            }
+
+        if ($OutputPath) {
+            "$newPipeScriptOutput" | Set-Content -Path $OutputPath
+            if ($?) {
+                Get-Item -Path $OutputPath
+            }
+        } else {
+            $newPipeScriptOutput
         }
     }
 }
