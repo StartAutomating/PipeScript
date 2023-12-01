@@ -1,6 +1,5 @@
 function ConvertFrom-CliXml {
 
-
     <#
     .Synopsis
         Converts CliXml into PowerShell objects
@@ -51,7 +50,6 @@ function ConvertFrom-CliXml {
             }
         ))
     }
-
 
 } 
  
