@@ -760,7 +760,7 @@ process {
 
     
     # If there was no scriptblock, or it was nothing but an empty param()
-    if ($ScriptBlock -match '^[\s\r\n]{0,}(?:param\(\))?[\s\r\n]{0,}$') {
+    if ($ScriptBlock.IsEmpty -or $ScriptBlock -match '^[\s\r\n]{0,}(?:param\(\))?[\s\r\n]{0,}$') {
         $absoluteUri = "$($schemaObject.servers.url)"
         $newPipeScriptSplat.Begin = 
         [ScriptBlock]::create(
