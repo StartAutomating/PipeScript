@@ -1,6 +1,5 @@
 function Search-PipeScript {
 
-
     <#
     .Synopsis
         Searches PowerShell and PipeScript ScriptBlocks
@@ -266,7 +265,6 @@ function Search-PipeScript {
             }
         }
     }
-
 
 }
 
