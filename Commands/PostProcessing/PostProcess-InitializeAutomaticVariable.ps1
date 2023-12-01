@@ -1,7 +1,6 @@
 
 function PipeScript.PostProcess.InitializeAutomaticVariables {
 
-
     <#
     .SYNOPSIS
         Initializes any automatic variables
@@ -58,7 +57,6 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
         # Declare a quick filter to get the definition of the automatic variable
         filter GetAutomaticVariableDefinition {
         
-        
                     $automaticVariableCommand = $_
                     if (-not $automaticVariableCommand) {
                         $automaticVariableCommand = $args
@@ -87,7 +85,6 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
                         "$($automaticVariableCommand)"
                     }
                 
-        
         }
     }
 
@@ -179,7 +176,6 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
             }
         }
     }
-
 
 }
 
