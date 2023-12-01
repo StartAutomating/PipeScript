@@ -125,21 +125,17 @@ process {
         
     }
 
-    if ($FunctionHasChanged) {
-        Import-PipeScript -ScriptBlock $transpiledFunction -NoTranspile
-        # Create an event indicating that a function has been transpiled.
-        $null = New-Event -SourceIdentifier PipeScript.Function.Transpiled -MessageData ([PSCustomObject][Ordered]@{
-            PSTypeName = 'PipeScript.Function.Transpiled'
-            FunctionDefinition = $FunctionDefinition
-            ScriptBlock = $transpiledFunction
-        })
     
-        # Output the transpiled function.
-        $transpiledFunction
-    }
+    Import-PipeScript -ScriptBlock $transpiledFunction -NoTranspile
+    # Create an event indicating that a function has been transpiled.
+    $null = New-Event -SourceIdentifier PipeScript.Function.Transpiled -MessageData ([PSCustomObject][Ordered]@{
+        PSTypeName = 'PipeScript.Function.Transpiled'
+        FunctionDefinition = $FunctionDefinition
+        ScriptBlock = $transpiledFunction
+    })
 
-    else {
-        [ScriptBlock]::Create("$FunctionDefinition")
-    }
+    # Output the transpiled function.
+    $transpiledFunction
+
     
 }
