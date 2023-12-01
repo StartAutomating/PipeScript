@@ -293,7 +293,6 @@ HTTP Accept indicates what content types the web request will accept as a respon
                     }
                 
         
-        
         }
 
         filter psuedoTypeToRealType {
@@ -314,7 +313,6 @@ HTTP Accept indicates what content types the web request will accept as a respon
                     }
                 
         
-        
         }
 
         filter oneOfTheseProperties {
@@ -324,7 +322,6 @@ HTTP Accept indicates what content types the web request will accept as a respon
                         if ($_.$arg) { return $_.$arg }
                     }
                 
-        
         
         }
 
@@ -456,7 +453,6 @@ HTTP Accept indicates what content types the web request will accept as a respon
                                 (' ' * 4) + $line.TrimEnd()
                             }
                         
-            
             
             }
 
@@ -1042,7 +1038,6 @@ $(if ($functionDeclaration) { '}'})
             $createdScriptBlock | .>PipeScript # output the transpiled script.
         }
     }
-
 
 
 }
