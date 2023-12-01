@@ -1,7 +1,6 @@
 
 function Aspect.ModuleExtensionType {
 
-
     <#
     .SYNOPSIS
         Outputs a module's extension types
@@ -110,13 +109,11 @@ function Aspect.ModuleExtensionType {
 
     }    
 
-
 }
 
 
 
 function Aspect.ModuleExtensionPattern {
-
 
     <#
     .SYNOPSIS
@@ -172,7 +169,6 @@ function Aspect.ModuleExtensionPattern {
         if (-not $ModuleInfo) { return }
         $ModuleExtensionTypes = # Aspect.ModuleExtensionTypes
                                 & { 
-                                
                                 
                                     <#
                                     .SYNOPSIS
@@ -282,7 +278,6 @@ function Aspect.ModuleExtensionPattern {
                                 
                                     }    
                                 
-                                
                                  } -Module $moduleInfo
 
         
@@ -309,13 +304,11 @@ function Aspect.ModuleExtensionPattern {
         [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
     }
 
-
 }
 
 
 
 function Aspect.ModuleExtensionCommand {
-
 
     <#
     .SYNOPSIS
@@ -397,7 +390,6 @@ function Aspect.ModuleExtensionCommand {
         $ModuleCommandPattern = # Aspect.ModuleExtensionPattern
                                 & { 
                                 
-                                
                                     <#
                                     .SYNOPSIS
                                         Outputs a module's extension pattern
@@ -452,7 +444,6 @@ function Aspect.ModuleExtensionCommand {
                                         if (-not $ModuleInfo) { return }
                                         $ModuleExtensionTypes = # Aspect.ModuleExtensionTypes
                                                                 & { 
-                                                                
                                                                 
                                                                     <#
                                                                     .SYNOPSIS
@@ -562,7 +553,6 @@ function Aspect.ModuleExtensionCommand {
                                                                 
                                                                     }    
                                                                 
-                                                                
                                                                  } -Module $moduleInfo
                                 
                                         
@@ -589,11 +579,9 @@ function Aspect.ModuleExtensionCommand {
                                         [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                                     }
                                 
-                                
                                  } $ModuleInfo -Prefix $prefix -Suffix $Suffix
         $ModuleCommandTypes   = # Aspect.ModuleExtensionType
                                 & { 
-                                
                                 
                                     <#
                                     .SYNOPSIS
@@ -703,7 +691,6 @@ function Aspect.ModuleExtensionCommand {
                                 
                                     }    
                                 
-                                
                                  } $ModuleInfo
         
         $commands    =
@@ -764,7 +751,6 @@ function Aspect.ModuleExtensionCommand {
             }
         }
     }
-
 
 }
 
