@@ -1,7 +1,6 @@
 
 function Route.VersionInfo {
 
-
     <#
     .SYNOPSIS
         Gets Version Information
@@ -42,7 +41,6 @@ function Route.VersionInfo {
         }
     }
     [PSCustomObject]$versionInfo
-
 
 }
 
