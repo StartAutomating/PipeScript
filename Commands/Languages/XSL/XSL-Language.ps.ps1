@@ -63,6 +63,9 @@ param()
                     if (Test-path $arg) { # (that exist)
                         (Get-Item $arg).FullName # to their fullname.
                     }
+                    else {
+                        "$($ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($arg))"
+                    }
                 }
                 elseif ($arg -as [xml]) { # * Cast as xml 
                     $arg -as [xml] # if we can
@@ -107,6 +110,28 @@ param()
             $assignmentStatement.Operator -eq 'Equals') {
             "<xsl:variable name=`"$($assignmentStatement.Left)`">$($assignmentStatement.Right.Expression.Value)</xsl:variable>"
         }
+    }
+
+    function TranslateSwitchStatement {
+        param($switchStatement)
+
+@"
+<xsl:variable name='`$_'>$($this.TranslateFromPowerShell($switchStatement.Condition))</xsl:variable>
+<xsl:choose>$(
+    @(
+    foreach ($switchClause in $switchStatement.Clauses) {
+        "<xsl:when test=`"$(
+            $this.TranslateFromPowerShell($switchClause.Item1) -replace '"', '\"'
+        )`">
+        $($this.TranslateFromPowerShell($switchClause.Item2) -replace '"', '\"')
+        </xsl:when>"
+    }
+    if ($switchStatement.Default) {
+        "<xsl:otherwise>$($this.TranslateFromPowerShell($switchStatement.Default) -replace '"', '\"')</xsl:otherwise>"
+    }
+    ) -join ((' ' * 4) + [Environment]::NewLine)
+)</xsl:choose>
+"@
     }
 
     function TranslateIfStatement {
@@ -154,5 +179,61 @@ $($this.TranslateFromPowerShell($ForeachStatementAst.Body) -replace '"', '\"')
 </xsl:for-each>
 "@
 
+    }
+
+    function TranslateFromPowerShell {
+        <#
+        .SYNOPSIS
+            Performs Limited PowerShell to XSL Translation
+        .DESCRIPTION
+            Performs Limited PowerShell to XSL Translation.
+
+            While XSL is a much more restricted language than PowerShell, certain statements translate fairly cleanly:
+
+            |Powershell|XSL|
+            |-|-|
+            |`foreach`|`<xsl:for-each />`/`<xsl:variable />`|
+            |`if|`<xsl:if />`/`<xls:choose />`/`<xsl:otherwise />|
+            |`switch`|`<xsl:choose>`|
+            |`Sort-Object|`<xsl:sort/>`|
+            
+            String Constants can be embedded inline.            
+
+        .EXAMPLE
+            $PSLanguage.XSL.TranslateFromPowerShell({if($x -eq "true") { "y" })            
+        #>
+        param($inputObject)
+
+        if (-not $inputObject) { return }
+
+        switch ($inputObject) {
+            [Management.Automation.Language.CommandExpressionAst] {
+                $this.TranslateFromPowerShell($inputObject.Expression)
+            }
+            [Management.Automation.Language.CommandAst] {
+
+            }
+            [Management.Automation.Language.PipelineAst] {
+                foreach ($element in $inputObject.PipelineElements) {
+                    $this.TranslateFromPowerShell($element)
+                }
+            }
+            [Management.Automation.Language.StatementBlockAst] {
+                foreach ($statement in $inputObject.Statements) {
+                    $this.TranslateFromPowerShell($statement)
+                }
+            }
+            [Management.Automation.Language.ForeachStatementAst] {
+                $foreachStatement = $_
+                $this.TranslateForeachStatement($foreachStatement)
+            }
+            [Management.Automation.Language.IfStatementAst] {
+                $ifStatement = $_
+                $this.TranslateIfStatement($ifStatement)
+            }
+            [Management.Automation.Language.StringConstantExpressionAst] {
+                $_.Value
+            }
+        }
     }
 }
