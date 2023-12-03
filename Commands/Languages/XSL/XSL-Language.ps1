@@ -97,11 +97,11 @@ $languageDefinition = New-Module {
             $xmlWriter = [Xml.XmlWriter]::create($stringBuilder)            
             $xslTransformer.Transform($otherArgs[0], $xmlWriter)
             $xmlWriter.Close()
-            "$stringBuilder"
+            return "$stringBuilder"            
         }
 
         # Invoke the transformer (if this fails, the error will bubble up)
-        $xslTransformer.Transform.Invoke($xslFriendlyArgs)    
+        $xslTransformer.Transform.Invoke($otherArgs)    
         
     }
 
@@ -145,6 +145,20 @@ $($this.TranslateFromPowerShell($ifStatement.Clauses.Item2) -replace '"', '\"')
 )</xsl:choose>
 "@
         }
+    }
+
+    function TranslateForeachStatement {
+        param($ForeachStatementAst)
+
+        @"
+<xsl:for-each select="$(
+    $this.TranslateFromPowerShell($ForeachStatementAst.Condition) -replace '"', '\"'
+)">
+<xsl:variable name='$($ForeachStatementAst.Variable.VariablePath.UserPath)' select='.' />
+$($this.TranslateFromPowerShell($ForeachStatementAst.Body) -replace '"', '\"')
+</xsl:for-each>
+"@
+
     }
     $LanguageName = 'XSL'
     Export-ModuleMember -Variable * -Function * -Alias *
