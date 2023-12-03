@@ -50,6 +50,59 @@ $languageDefinition = New-Module {
             }
         }
     }
+
+    $Interpreter = {
+        param()
+
+        # Remove any empty arguments
+        $argList = @($args -ne $null)        
+        # And create a transform object
+        $xslTransformer = [xml.Xsl.XslCompiledTransform]::new()
+        $xslTransformer | Add-Member XslFile $xslFileInfo -Force
+        $xslTransformer | Add-Member Arguments $argList -Force
+
+        # Attempt to turn args into XSL-friendly arguments:
+        $xslFriendlyArgs = 
+            @(foreach ($arg in $argList) {
+                if ($arg -match '^\.[\\/]') { # * Resolve relative paths
+                    if (Test-path $arg) { # (that exist)
+                        (Get-Item $arg).FullName # to their fullname.
+                    }
+                }
+                elseif ($arg -as [xml]) { # * Cast as xml 
+                    $arg -as [xml] # if we can
+                } else {
+                    $arg # or return directly
+                }
+            })
+    
+        # The first arg should be the file/xml document
+        $xslFile, $otherArgs = $xslFriendlyArgs # the rest should be transform options
+        
+        try { $xslTransformer.Load($xslFile) }
+        catch { 
+            $xslTransformer | Add-Member Error $_ -Force
+
+            return $xslTransformer
+        }        
+        # If we only had the XSL, return the "ready-to-go" transform.
+        if ($xslFriendlyArgs.Length -eq 1) {
+            return $xslTransformer
+        }        
+
+        # If we had one other argument, return a string
+        if ($otherArgs.Length -eq 1) {            
+            $stringBuilder = [Text.StringBuilder]::new()
+            $xmlWriter = [Xml.XmlWriter]::create($stringBuilder)            
+            $xslTransformer.Transform($otherArgs[0], $xmlWriter)
+            $xmlWriter.Close()
+            "$stringBuilder"
+        }
+
+        # Invoke the transformer (if this fails, the error will bubble up)
+        $xslTransformer.Transform.Invoke($xslFriendlyArgs)    
+        
+    }
     $LanguageName = 'XSL'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
