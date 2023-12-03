@@ -25,6 +25,31 @@ $languageDefinition = New-Module {
     $startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
     # * EndPattern       ```$whitespace + '}' + $EndComment```
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
+
+    # XSL will render each output similarily to XML
+    $ForeachObject = {
+        $in = $_
+        # Strings or primitive types are rendered inline
+        if (($in -is [string]) -or 
+            ($in.GetType -and $in.GetType().IsPrimitive)) {
+            $in 
+        } elseif ($in.ChildNodes) { # If there were child nodes
+            foreach ($inChildNode in $in.ChildNodes) {                
+                # output them (unless they were declarations)
+                if ($inChildNode.NodeType -ne 'XmlDeclaration') {                    
+                    $inChildNode.OuterXml
+                }
+            }
+        } else {
+            # otherwise, we attempt to conver the object to xml
+            $inXml = (ConvertTo-Xml -Depth 100 -InputObject $in)
+            foreach ($inChildNode in $inXml.ChildNodes) {                
+                if ($inChildNode.NodeType -ne 'XmlDeclaration') {
+                    $inChildNode.OuterXml 
+                }
+            }
+        }
+    }
     $LanguageName = 'XSL'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
