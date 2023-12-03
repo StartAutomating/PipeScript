@@ -54,5 +54,6 @@ PipeScript presently ships with 53 languages:
 * WebAssembly
 * XAML
 * XML
+* XSL
 * YAML
 
