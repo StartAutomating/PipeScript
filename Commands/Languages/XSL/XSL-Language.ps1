@@ -58,7 +58,7 @@ $languageDefinition = New-Module {
         $argList = @($args -ne $null)        
         # And create a transform object
         $xslTransformer = [xml.Xsl.XslCompiledTransform]::new()
-        $xslTransformer | Add-Member XslFile $xslFileInfo -Force
+        
         $xslTransformer | Add-Member Arguments $argList -Force
 
         # Attempt to turn args into XSL-friendly arguments:
@@ -78,6 +78,7 @@ $languageDefinition = New-Module {
     
         # The first arg should be the file/xml document
         $xslFile, $otherArgs = $xslFriendlyArgs # the rest should be transform options
+        $xslTransformer | Add-Member XslFile $xslFile -Force
         $otherArgs = @($otherArgs)
         try { $xslTransformer.Load($xslFile) }
         catch { 
@@ -110,6 +111,39 @@ $languageDefinition = New-Module {
         if ($assignmentStatement.Right.Expression -is [Management.Automation.Language.StringConstantExpressionAst] -and 
             $assignmentStatement.Operator -eq 'Equals') {
             "<xsl:variable name=`"$($assignmentStatement.Left)`">$($assignmentStatement.Right.Expression.Value)</xsl:variable>"
+        }
+    }
+
+    function TranslateIfStatement {
+        param($ifStatement)
+
+        if ($ifStatement.Clauses.Count -eq 1 -and -not $ifStatement.ElseClause){
+@"
+<xsl:if test="$(
+    $this.TranslateFromPowerShell($ifStatement.Clauses.Item1) -replace '"', '\"'
+)">
+$($this.TranslateFromPowerShell($ifStatement.Clauses.Item2) -replace '"', '\"')
+</xsl:if>
+"@
+        }
+        else 
+        {
+@"
+<xsl:choose>$(
+    @(
+    foreach ($ifClause in $ifStatement.Clauses) {
+        "<xsl:when test=`"$(
+            $this.TranslateFromPowerShell($ifClause.Item1) -replace '"', '\"'
+        )`">
+        $($this.TranslateFromPowerShell($ifClause.Item2) -replace '"', '\"')
+        </xsl:when>"
+    }
+    if ($ifStatement.ElseClause) {
+        "<xsl:otherwise>$($this.TranslateFromPowerShell($ifClause.Item2) -replace '"', '\"')</xsl:otherwise>"
+    }
+    ) -join ((' ' * 4) + [Environment]::NewLine)
+)</xsl:choose>
+"@
         }
     }
     $LanguageName = 'XSL'
