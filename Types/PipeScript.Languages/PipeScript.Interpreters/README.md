@@ -27,5 +27,6 @@ The following languages support interpreters.
 * Ruby
 * SVG
 * XML
+* XSL
 
 Note: Interpreters may require commands to be installed.
