@@ -73,7 +73,7 @@ param()
     
         # The first arg should be the file/xml document
         $xslFile, $otherArgs = $xslFriendlyArgs # the rest should be transform options
-        
+        $otherArgs = @($otherArgs)
         try { $xslTransformer.Load($xslFile) }
         catch { 
             $xslTransformer | Add-Member Error $_ -Force
@@ -97,5 +97,14 @@ param()
         # Invoke the transformer (if this fails, the error will bubble up)
         $xslTransformer.Transform.Invoke($xslFriendlyArgs)    
         
+    }
+
+    function TranslateAssignmentStatement {
+        param($assignmentStatement)
+
+        if ($assignmentStatement.Right.Expression -is [Management.Automation.Language.StringConstantExpressionAst] -and 
+            $assignmentStatement.Operator -eq 'Equals') {
+            "<xsl:variable name=`"$($assignmentStatement.Left)`">$($assignmentStatement.Right.Expression.Value)</xsl:variable>"
+        }
     }
 }
