@@ -1,3 +1,9 @@
+<#
+.SYNOPSIS
+    Gets module routes
+.DESCRIPTION
+    Gets information about potential module routes
+#>
 param()
 
 foreach ($place in $this.PrivateData, $this.PrivateData.PSData) {
