@@ -211,6 +211,10 @@
                     Pattern = '\.ps1{0,1}\.(?<ext>[^\.]+$)'
                 }                        
         }
+
+        Server = 'pipescript.dev', 'pipescript.info', 'pipescript.io'
+        Servers = 'pipescript.startautomating.com','pipescript.start-automating.com'
+
         PSData = @{
             ProjectURI = 'https://github.com/StartAutomating/PipeScript'
             LicenseURI = 'https://github.com/StartAutomating/PipeScript/blob/main/LICENSE'
