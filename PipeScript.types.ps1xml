@@ -3654,6 +3654,14 @@ else {
         <ReferencedMemberName>Folder</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>Domain</Name>
+        <ReferencedMemberName>Server</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Domains</Name>
+        <ReferencedMemberName>Server</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>Exports</Name>
         <ReferencedMemberName>Export</ReferencedMemberName>
       </AliasProperty>
@@ -3668,6 +3676,10 @@ else {
       <AliasProperty>
         <Name>Extensions</Name>
         <ReferencedMemberName>Extension</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Servers</Name>
+        <ReferencedMemberName>Server</ReferencedMemberName>
       </AliasProperty>
       <ScriptMethod>
         <Name>ExtensionsForName</Name>
@@ -4736,6 +4748,46 @@ $this | Split-Path | Get-ChildItem -File -Recurse
 param()
 $this | Split-Path | Get-ChildItem -Directory -Recurse
 
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Server</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Module Servers
+.DESCRIPTION
+    Gets any servers associated with a module.
+
+    Servers can be defined within a module's `.PrivateData` or `.PrivateData.PSData`
+
+    Servers are defined within the `.Server','.Servers','.Domain','.Domains','.HostHeader','.HostHeaders' sections of the manifest.    
+#&gt;
+param()
+
+, @(foreach ($place in $this.PrivateData, $this.PrivateData.PSData) {
+    foreach ($potentialName in 'Server', 'Servers','Domain','Domains','HostHeader','HostHeaders') {
+        $potentialServers = $place.$potentialName
+        if (-not $potentialServers) { continue }
+
+        foreach ($potentialServer in $potentialServers) {
+            $potentialServer = 
+                if ($potentialServer -is [hashtable]) {                
+                    $serverObject = [Ordered]@{}
+                    foreach ($sortedKeyValue in $place.$potentialName.GetEnumerator() | Sort-Object Key) {
+                        $serverObject[$sortedKeyValue.Key]= $sortedKeyValue.Value
+                    }
+                    $serverObject = [PSCustomObject]$serverObject                    
+                } elseif ($potentialServer) {
+                    [PSObject]::new($potentialServer)
+                }
+            $potentialServer.pstypenames.clear()
+            $potentialServer.pstypenames.add("$this.Server")
+            $potentialServer.pstypenames.add('PipeScript.Module.Server')
+            $potentialServer
+        }
+    }
+})
                     </GetScriptBlock>
       </ScriptProperty>
     </Members>
