@@ -7,5 +7,8 @@
     ExtendedCommands = 'Extension'
     Servers = 'Server'
     Domain  = 'Server'
-    Domains = 'Server'    
+    Domains = 'Server'
+    Routes  = 'Route'
+    Router  = 'Route'    
+    Routers = 'Route'
 }
