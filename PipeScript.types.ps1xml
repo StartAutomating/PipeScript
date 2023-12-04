@@ -3678,6 +3678,18 @@ else {
         <ReferencedMemberName>Extension</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>Router</Name>
+        <ReferencedMemberName>Route</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Routers</Name>
+        <ReferencedMemberName>Route</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Routes</Name>
+        <ReferencedMemberName>Route</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>Servers</Name>
         <ReferencedMemberName>Server</ReferencedMemberName>
       </AliasProperty>
@@ -4748,6 +4760,36 @@ $this | Split-Path | Get-ChildItem -File -Recurse
 param()
 $this | Split-Path | Get-ChildItem -Directory -Recurse
 
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Route</Name>
+        <GetScriptBlock>
+                        param()
+
+foreach ($place in $this.PrivateData, $this.PrivateData.PSData) {
+    foreach ($potentialName in 'Route', 'Routes','Router','Routers') {
+        $potentialRoutes = $place.$potentialName
+        if (-not $potentialRoutes) { continue }
+
+        foreach ($potentialRoute in $potentialRoutes) {
+            $potentialRoute = 
+                if ($potentialRoute -is [hashtable]) {                
+                    $RouteObject = [Ordered]@{}
+                    foreach ($sortedKeyValue in $place.$potentialName.GetEnumerator() | Sort-Object Key) {
+                        $RouteObject[$sortedKeyValue.Key]= $sortedKeyValue.Value
+                    }
+                    $RouteObject = [PSCustomObject]$RouteObject                    
+                } elseif ($potentialRoute) {
+                    [PSObject]::new($potentialRoute)
+                }
+            $potentialRoute.pstypenames.clear()
+            $potentialRoute.pstypenames.add("$this.Route")
+            $potentialRoute.pstypenames.add('PipeScript.Module.Route')
+            $potentialRoute
+        }
+    }
+}
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
