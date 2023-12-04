@@ -3417,7 +3417,13 @@ $this | Split-Path | Get-ChildItem -Directory -Recurse
       <ScriptProperty>
         <Name>Route</Name>
         <GetScriptBlock>
-                        param()
+                        &lt;#
+.SYNOPSIS
+    Gets module routes
+.DESCRIPTION
+    Gets information about potential module routes
+#&gt;
+param()
 
 foreach ($place in $this.PrivateData, $this.PrivateData.PSData) {
     foreach ($potentialName in 'Route', 'Routes','Router','Routers') {
