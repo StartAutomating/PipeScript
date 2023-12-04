@@ -14,3 +14,4 @@
 * [get_Extension](get_Extension.md)
 * [get_Files](get_Files.md)
 * [get_Folders](get_Folders.md)
+* [get_Server](get_Server.md)
