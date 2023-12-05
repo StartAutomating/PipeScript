@@ -180,10 +180,7 @@ process {
     #region Finding Template Transpiler 
     if ($CommandAst) {
         # Get command transpilers
-        $commandInfoTranspilers = @(
-            Get-PipeScript -PipeScriptType Language    
-            Get-Transpiler -CouldPipe $MyInvocation.MyCommand        
-        )
+        $LanguageCommands = @(Get-PipeScript -PipeScriptType Language)
 
         # Collect all of the bareword arguments
         $barewords = 
@@ -198,54 +195,58 @@ process {
         
         # Find a matching template transpiler.
         $foundTemplateTranspiler = 
-            :nextTranspiler foreach ($cmdTranspiler in $commandInfoTranspilers) {
-                
-
-                $langName = if ($cmdTranspiler.pstypenames -contains 'Language.Command') {
-                    $cmdTranspiler.Name -replace 'Language\p{P}' -replace 'ps1$'
-                } else {
-                    $cmdTranspiler.ExtensionCommand.DisplayName -replace '^(?>Inline|Template)\.'
-                }                
+            :nextTranspiler foreach ($LanguageCommand in $LanguageCommands) {            
+                $langName = $LanguageCommand.Name -replace 'Language\p{P}' -replace 'ps1$'
+                                
                 if (-not $langName) { continue }
                 if ($barewords -contains $langName) {
-                    $cmdTranspiler.ExtensionCommand
+                    $LanguageCommand
                     continue
                 }
                 if ($CommandAst.CommandElements[1] -is [Management.Automation.Language.MemberExpressionAst] -and 
                     $CommandAst.CommandElements[1].Member.Value -eq $langName) {
-                    $cmdTranspiler.ExtensionCommand
+                    $LanguageCommand
                     continue
                 }
                 $attrList = 
-                    if ($cmdTranspiler.ExtensionCommand.Attributes) {
-                        $cmdTranspiler.ExtensionCommand.Attributes
-                    } elseif ($cmdTranspiler.ScriptBlock.Attributes) {
-                        $cmdTranspiler.ScriptBlock.Attributes
+                    if ($LanguageCommand.ScriptBlock.Attributes) {
+                        $LanguageCommand.ScriptBlock.Attributes
                     }
 
-                $languageCmd = 
-                    if ($cmdTranspiler.ExtensionCommand) {
-                        $cmdTranspiler.ExtensionCommand
-                    } else {
-                        $cmdTranspiler
-                    }
+                $languageCmd = $LanguageCommand                
 
                 if (-not $ReplaceTimeout) {
                     $ReplaceTimeout = [timespan]"00:00:15"
                 }
+
+                $languageDefinition = & $languageCmd
+                if ($languageDefinition.FilePattern) {
+                    $regexPattern = [Regex]::new($languageDefinition.FilePattern, "IgnoreCase,IgnorePatternWhitespace", $ReplaceTimeout)
+                    for ($barewordIndex = 0 ; $barewordIndex -lt 3; $barewordIndex++) {
+                        if (-not $barewords[$barewordIndex]) { continue }
+                        if ($regexPattern.Match($barewords[$barewordIndex]).Success) {
+                            $templateName = $barewords[$barewordIndex]
+                            $LanguageCmd
+                            continue nextTranspiler
+                        }
+                        
+                    }
+                }
+                
                 foreach ($attr in $attrList) {
                     if ($attr -isnot [Management.Automation.ValidatePatternAttribute]) { continue }                    
                     
                     $regexPattern = [Regex]::new($attr.RegexPattern, $attr.Options, $ReplaceTimeout)
-                    if ($regexPattern.Match($barewords[0]).Success) {
-                        $TemplateName = $barewords[0]
-                        $languageCmd
-                        continue nextTranspiler
-                    } elseif ($barewords[1] -and $regexPattern.Match($barewords[1]).Success) {
-                        $TemplateName = $barewords[1]
-                        $languageCmd
-                        continue nextTranspiler
+                    break
+                    for ($barewordIndex = 0 ; $barewordIndex -lt 3; $barewordIndex++) {
+                        if (-not $barewords[$barewordIndex]) { continue }
+                        if ($regexPattern.Match($barewords[$barewordIndex]).Success) {
+                            $templateName = $barewords[$barewordIndex]
+                            $languageCmd
+                            continue nextTranspiler
+                        }                        
                     }
+                    
 
                     if ($CommandAst.CommandElements[1] -is [Management.Automation.Language.MemberExpressionAst] -and 
                         $regexPattern.Match(('.' + $CommandAst.CommandElements[1].Member)).Success) {
