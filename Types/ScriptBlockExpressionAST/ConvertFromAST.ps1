@@ -1,1 +1,1 @@
-$this.GetScriptBlock()
+$this.AsScriptBlock()

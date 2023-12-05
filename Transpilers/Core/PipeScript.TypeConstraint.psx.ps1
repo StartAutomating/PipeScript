@@ -47,7 +47,7 @@ process {
             $inputObject =
                 # And it's child was a script block
                 if ($TypeConstraintAST.Parent.Child -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
-                    $TypeConstraintAST.Parent.Child.ScriptBlock.GetScriptBlock()
+                    $TypeConstraintAST.Parent.Child.ScriptBlock.AsScriptBlock()
                 }
             if ($inputObject) {
                 Invoke-PipeScript -TypeConstraint $TypeConstraintAST -InputObject $inputObject |
