@@ -21,6 +21,7 @@ Aspect function DynamicParameter {
     # The InputObject.
     # This can be anything, but will be ignored unless it is a `[ScriptBlock]` or `[Management.Automation.CommandInfo]`.    
     [vfp()]
+    [PSObject]
     $InputObject,
 
     # The name of the parameter set the dynamic parameters will be placed into.    
