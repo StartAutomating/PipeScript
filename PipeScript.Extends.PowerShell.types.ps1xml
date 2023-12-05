@@ -3864,16 +3864,16 @@ return $true
     <Name>System.Management.Automation.Language.ScriptBlockExpressionAst</Name>
     <Members>
       <ScriptMethod>
-        <Name>ConvertFromAST</Name>
+        <Name>AsScriptBlock</Name>
         <Script>
-                        $this.GetScriptBlock()
+                        [ScriptBlock]::create($this -replace '^\{' -replace '\}$')
 
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
-        <Name>GetScriptBlock</Name>
+        <Name>ConvertFromAST</Name>
         <Script>
-                        [ScriptBlock]::create($this -replace '^\{' -replace '\}$')
+                        $this.AsScriptBlock()
 
                     </Script>
       </ScriptMethod>
@@ -3908,16 +3908,16 @@ return $true
     <Name>System.Management.Automation.Language.ScriptBlockAst</Name>
     <Members>
       <ScriptMethod>
-        <Name>ConvertFromAST</Name>
+        <Name>AsScriptBlock</Name>
         <Script>
-                        $this.GetScriptBlock()
+                        [ScriptBlock]::create($this -replace '^\{' -replace '\}$')
 
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
-        <Name>GetScriptBlock</Name>
+        <Name>ConvertFromAST</Name>
         <Script>
-                        [ScriptBlock]::create($this -replace '^\{' -replace '\}$')
+                        $this.AsScriptBlock()
 
                     </Script>
       </ScriptMethod>
