@@ -8,7 +8,7 @@ param()
 
 $DynamicParameterSplat = [Ordered]@{}
 $dynamicParametersFrom =@(foreach ($arg in $args | & { process{ $_ } } ) {
-    if ($arg -is [CommandInfo] -or $arg -is [ScriptBlock]) {
+    if ($arg -is [Management.Automation.CommandInfo] -or $arg -is [ScriptBlock]) {
         $arg
     }
     if ($arg -is [Collections.IDictionary]) {
