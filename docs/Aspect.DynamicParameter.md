@@ -41,9 +41,9 @@ Get-Command Get-Command, Get-Help |
 The InputObject.
 This can be anything, but will be ignored unless it is a `[ScriptBlock]` or `[Management.Automation.CommandInfo]`.
 
-|Type      |Required|Position|PipelineInput |
-|----------|--------|--------|--------------|
-|`[Object]`|false   |1       |true (ByValue)|
+|Type        |Required|Position|PipelineInput |
+|------------|--------|--------|--------------|
+|`[PSObject]`|false   |1       |true (ByValue)|
 
 #### **ParameterSetName**
 The name of the parameter set the dynamic parameters will be placed into.
@@ -110,5 +110,5 @@ If there is a -PositionOffset, this will make a blank parameter by this name for
 
 ### Syntax
 ```PowerShell
-Aspect.DynamicParameter [[-InputObject] <Object>] [[-ParameterSetName] <String>] [[-PositionOffset] <Int32>] [-NoMandatory] [[-commandList] <String[]>] [[-IncludeParameter] <String[]>] [[-ExcludeParameter] <String[]>] [-BlankParameter] [[-BlankParameterName] <String[]>] [<CommonParameters>]
+Aspect.DynamicParameter [[-InputObject] <PSObject>] [[-ParameterSetName] <String>] [[-PositionOffset] <Int32>] [-NoMandatory] [[-commandList] <String[]>] [[-IncludeParameter] <String[]>] [[-ExcludeParameter] <String[]>] [-BlankParameter] [[-BlankParameterName] <String[]>] [<CommonParameters>]
 ```
