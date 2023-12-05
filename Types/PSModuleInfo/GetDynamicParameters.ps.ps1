@@ -6,8 +6,9 @@
 #>
 param()
 
+$unrolledArgs = $args | . { process{ $_ } }
 $DynamicParameterSplat = [Ordered]@{}
-$dynamicParametersFrom =@(foreach ($arg in $args | & { process{ $_ } } ) {
+$dynamicParametersFrom =@(foreach ($arg in $unrolledArgs) {
     if ($arg -is [Management.Automation.CommandInfo] -or $arg -is [ScriptBlock]) {
         $arg
     }
@@ -21,4 +22,4 @@ $dynamicParametersFrom =@(foreach ($arg in $args | & { process{ $_ } } ) {
 if (-not $dynamicParametersFrom) { return }
 
 $dynamicParametersFrom | 
-    Aspect.DynamicParameter @DyanmicParameterOption
+    Aspect.DynamicParameter @DynamicParameterSplat
