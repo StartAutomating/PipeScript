@@ -18,7 +18,7 @@ Language function HCL {
     param(
     )
 
-    $FilePattern = '.\hcl$'
+    $FilePattern = '\.hcl$'
     
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
