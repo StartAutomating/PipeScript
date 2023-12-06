@@ -5,6 +5,7 @@ This directory and it's subdirectories contain syntax changes that enable common
 |--------------------------------------------------------|------------------------------------------------------------------|
 |[NamespacedAlias](NamespacedAlias.psx.ps1)              |[Declares a namespaced alias](NamespacedAlias.psx.ps1)            |
 |[NamespacedFunction](NamespacedFunction.psx.ps1)        |[Namespaced functions](NamespacedFunction.psx.ps1)                |
+|[NamespacedObject](NamespacedObject.psx.ps1)            |[Namespaced functions](NamespacedObject.psx.ps1)                  |
 |[ArrowOperator](ArrowOperator.psx.ps1)                  |[Arrow Operator](ArrowOperator.psx.ps1)                           |
 |[ConditionalKeyword](ConditionalKeyword.psx.ps1)        |[Conditional Keyword Expansion](ConditionalKeyword.psx.ps1)       |
 |[Dot](Dot.psx.ps1)                                      |[Dot Notation](Dot.psx.ps1)                                       |
@@ -89,6 +90,16 @@ This directory and it's subdirectories contain syntax changes that enable common
             
         }
     }.Transpile()
+~~~
+
+## NamespacedObject Example 1
+
+
+~~~PowerShell
+    Invoke-PipeScript {
+        My Object Precious { $IsARing = $true; $BindsThemAll = $true }
+        My.Precious
+    }
 ~~~
 
 ## ArrowOperator Example 1
