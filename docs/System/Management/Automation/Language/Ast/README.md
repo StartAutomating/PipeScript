@@ -4,6 +4,7 @@
 ### Script Methods
 
 
+* [FirstElements](FirstElements.md)
 * [GetLineage](GetLineage.md)
 * [IsEquivalentTo](IsEquivalentTo.md)
 * [get_ByType](get_ByType.md)
