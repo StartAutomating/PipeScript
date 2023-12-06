@@ -1932,6 +1932,44 @@ $this.'.Root'
     </Members>
   </Type>
   <Type>
+    <Name>Language</Name>
+    <Members>
+      <AliasProperty>
+        <Name>Templates</Name>
+        <ReferencedMemberName>Template</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptProperty>
+        <Name>Template</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Language Templates
+.DESCRIPTION
+    Gets Templates related to a language.
+#&gt;
+if (-not $global:AllFunctionsAndAliases) {
+    $global:AllFunctionsAndAliases = $global:ExecutionContext.SessionState.InvokeCommand.GetCommand('*','Alias,Function',$true)
+}
+$templateCommands = $global:AllFunctionsAndAliases -match '^Template\p{P}'
+$thisLanguagesTemplates = [Ordered]@{}
+if ($this.FilePattern) {    
+    foreach ($templateForThisLanguage in $templateCommands -match $this.FilePattern) {
+        $thisLanguagesTemplates[$templateForThisLanguage -replace '^Template\p{P}' -replace $this.FilePattern] = $templateForThisLanguage
+    }    
+}
+if ($this.LanguageName) {
+    foreach ($templateForThisLanguage in $templateCommands -match $this.LanguageName) {
+        $thisLanguagesTemplates[$templateForThisLanguage -replace '^Template\p{P}' -replace ([Regex]::Escape($this.LanguageName))] = $templateForThisLanguage
+    }
+}
+$thisLanguagesTemplates
+
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
     <Name>Language.Command</Name>
     <Members>
       <ScriptMethod>
@@ -2625,7 +2663,7 @@ return $count
 
 A Language is defined a function named Language.NameOfLanguage.
 
-PipeScript presently ships with 53 languages:
+PipeScript presently ships with 54 languages:
 
 * ADA
 * Arduino
