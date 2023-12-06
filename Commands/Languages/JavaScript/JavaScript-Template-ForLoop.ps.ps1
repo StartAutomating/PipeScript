@@ -1,11 +1,9 @@
-
-function Template.ForLoop.js {
-
+Template function ForLoop.js {
     <#
     .SYNOPSIS
-        Template for a JavaScript ForLoop
+        Template for a JavaScript `for` Loop
     .DESCRIPTION
-        Template for a for loop in JavaScript
+        Template for a `for` loop in JavaScript.
     .EXAMPLE
         Template.ForLoop.js "let step = 0" "step < 5" "step++" 'console.log("walking east one step")'
     .EXAMPLE
@@ -16,25 +14,25 @@ function Template.ForLoop.js {
     param(
     # The For Loop's Initialization.
     # This initializes the loop.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [Alias('Initializer')]
     [string]
     $Initialization,
 
     # The For Loop's Condition.
     # This determine if the loop should continue running.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $Condition,
     # The For Loop's Iterator, or Afterthought.
     # This occurs after each iteration of the loop
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [Alias('Iterator')]
     [string]
     $Afterthought,
 
     # The body of the loop
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $Body
     )
@@ -55,7 +53,4 @@ for ($Initialization;$Condition;$Afterthought) {
 }
 "@
     }
-
 }
-
-
