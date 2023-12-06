@@ -17,6 +17,10 @@ foreach ($foundElement in $this.FindAll({$true}, $true)) {
         $foundElementCount++
         continue
     }
+    # We want to skip named blocks in this case, as we're really after the first "real" element.
+    if ($foundElement -is [Management.Automation.Language.NamedBlockAst]) {
+        continue
+    }
     if ($foundElementCount -le $NumberOfElements) {
         $foundElementCount++
         $foundElement        
