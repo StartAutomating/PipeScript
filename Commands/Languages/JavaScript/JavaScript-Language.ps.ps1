@@ -45,7 +45,11 @@ Language function JavaScript {
 [ValidatePattern('\.js$')]
 param(
 )
+    # JavaScript's file Pattern is `\.js$`
     $FilePattern = '\.js$'
+
+    # and JavaScript is a case sensitive language.
+    $CaseSensitive = $true
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
@@ -67,5 +71,5 @@ param(
         } else {
             "$(ConvertTo-Json -Depth 100 -InputObject $in)"
         }
-    }
+    }   
 }

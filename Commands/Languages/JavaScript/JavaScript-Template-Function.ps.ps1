@@ -6,8 +6,7 @@ Template function Function.js {
         Template for a `function` in JavaScript.
     .EXAMPLE
         Template.Function.js -Name "Hello" -Body "return 'hello'"
-    #>
-    [Alias('Template.ForInLoop.js')]
+    #>    
     param(    
     # The name of the function.
     [vbn()]

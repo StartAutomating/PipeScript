@@ -6,8 +6,7 @@ Template function DoLoop.js {
         Template for a `do` loop in JavaScript.
     .EXAMPLE
         Template.DoLoop.js -Condition "false" -Body "console.log('This happens once')"
-    #>
-    [Alias('Template.ForInLoop.js')]
+    #>    
     param(    
     # The Loop's Condition.
     # This determines if the loop should continue running.
