@@ -88,6 +88,10 @@ foreach ($foundElement in $this.FindAll({$true}, $true)) {
         $foundElementCount++
         continue
     }
+    # We want to skip named blocks in this case, as we're really after the first "real" element.
+    if ($foundElement -is [Management.Automation.Language.NamedBlockAst]) {
+        continue
+    }
     if ($foundElementCount -le $NumberOfElements) {
         $foundElementCount++
         $foundElement        
@@ -240,6 +244,24 @@ $this.'.ByType'
         $node
     }
 )
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>First</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the first nested AST
+.DESCRIPTION
+    Gets the first nested element of this AST
+.EXAMPLE
+    {
+        do { } while ($false)
+    }.First
+#&gt;
+param()
+$this.FirstElements(1)
 
                     </GetScriptBlock>
       </ScriptProperty>
