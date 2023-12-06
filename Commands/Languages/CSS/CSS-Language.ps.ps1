@@ -52,14 +52,14 @@ Language function CSS {
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
     $begin = {
-        filter OutputCSS($depth) {
+        filter OutputCSS([int]$CssDepth=0) {
             $in = $_ # Capture the input object into a variable.
             if ($in -is [string]) { # If the input was a string
                 return $in # directly embed it.
             } 
             elseif ($in -is [object[]]) { # If the input was an array
                 # pipe back to ourself (increasing the depth)
-                @($in | & $MyInvocation.MyCommand.ScriptBlock -Depth ($depth + 1)) -join [Environment]::NewLine
+                @($in | & $MyInvocation.MyCommand.ScriptBlock -CssDepth $CssDepth) -join [Environment]::NewLine
             }
             else { # Otherwise
                 
@@ -78,28 +78,28 @@ Language function CSS {
                 # Then walk over each key/valye in the dictionary
                 $innerCss = $(@(foreach ($kv in $inDictionary.GetEnumerator()) {                            
                     if ($kv.Value -isnot [string]) {
-                        $kv.Key + ' ' + "$($kv.Value | 
-                            & $MyInvocation.MyCommand.ScriptBlock -Depth ($depth + 1))" 
+                        $kv.Key + ' ' + "$([Environment]::newLine){$($kv.Value | 
+                            & $MyInvocation.MyCommand.ScriptBlock -CssDepth ($cssDepth + 1))}$([Environment]::newLine)" 
                     }
                     else {
                         $kv.Key + ':' + $kv.Value
                     }                                                        
                 }) -join (
-                    ';' + [Environment]::NewLine + (' ' * 2 * ($depth))
+                    ';' + [Environment]::NewLine + (' ' * 2 * ($cssDepth))
                 ))
         
-                $(if ($depth){'{'} else {''}) + 
+                $(if ($cssDepth){'{'} else {''}) + 
                     [Environment]::NewLine + 
-                    (' ' * 2 * ($depth)) + 
+                    (' ' * 2 * ($cssDepth)) + 
                     $innerCss + 
                     [Environment]::NewLine + 
-                    (' ' * 2 * ([Math]::max($depth - 1,0))) +
-                    $(if ($depth){'}'} else {''})
+                    (' ' * 2 * ([Math]::max($cssDepth - 1,0))) +
+                    $(if ($cssDepth){'}'} else {''})
             }
         }
     }
     
     $ForeachObject = {
         $_ | OutputCSS        
-    }
+    }    
 }
