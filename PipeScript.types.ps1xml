@@ -67,6 +67,38 @@ return $this
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>FirstElements</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Gets the First N elements in an AST
+.DESCRIPTION
+    Gets the First N elements within an AST, excluding this element.
+#&gt;
+param(
+# The number of elements to get.  By default, one.
+[int]
+$NumberOfElements = 1
+)
+
+
+$foundElementCount = 0
+foreach ($foundElement in $this.FindAll({$true}, $true)) {
+    if (-not $foundElementCount) {
+        $foundElementCount++
+        continue
+    }
+    if ($foundElementCount -le $NumberOfElements) {
+        $foundElementCount++
+        $foundElement        
+    } else {
+        break
+    }    
+}
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>GetLineage</Name>
         <Script>
                         &lt;#
