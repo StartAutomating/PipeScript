@@ -50,7 +50,11 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param(
 )
+    # JavaScript's file Pattern is `\.js$`
     $FilePattern = '\.js$'
+
+    # and JavaScript is a case sensitive language.
+    $CaseSensitive = $true
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
