@@ -56,6 +56,7 @@ $languageDefinition = New-Module {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
+
     $begin = {
         filter OutputCSS {
         
@@ -83,10 +84,16 @@ $languageDefinition = New-Module {
                         }
                 
                         # Then walk over each key/valye in the dictionary
-                        $innerCss = $(@(foreach ($kv in $inDictionary.GetEnumerator()) {                            
-                            if ($kv.Value -isnot [string]) {
-                                $kv.Key + ' ' + "$([Environment]::newLine){$($kv.Value | 
-                                    & $MyInvocation.MyCommand.ScriptBlock -CssDepth ($cssDepth + 1))}$([Environment]::newLine)" 
+                        $innerCss = $(@(foreach ($kv in $inDictionary.GetEnumerator()) {
+                            if (-not $kv.Value.GetType()) { continue }
+                            $cssRuleValueType = $kv.Value.GetType()
+                            if ($cssRuleValueType -notin [string],[double],[int]) {
+                                $innerDepth = $CssDepth + 1
+                                $kv.Key + ' ' + "{$([Environment]::Newline + (' ' * 2 * $innerDepth))$(@($kv.Value | 
+                                            & $MyInvocation.MyCommand.ScriptBlock -CssDepth $innerDepth) -replace '^\s{0,}' -replace '\s{0,}$' -join (
+                                                '; '
+                                            )
+                                        )$([Environment]::NewLine)}" 
                             }
                             else {
                                 $kv.Key + ':' + $kv.Value
@@ -100,7 +107,7 @@ $languageDefinition = New-Module {
                             (' ' * 2 * ($cssDepth)) + 
                             $innerCss + 
                             [Environment]::NewLine + 
-                            (' ' * 2 * ([Math]::max($cssDepth - 1,0))) +
+                            (' ' * 2 * ([Math]::max($cssDepth - 1,1))) +
                             $(if ($cssDepth){'}'} else {''})
                     }
                 
