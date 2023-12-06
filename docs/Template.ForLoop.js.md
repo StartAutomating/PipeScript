@@ -2,13 +2,13 @@ Template.ForLoop.js
 -------------------
 
 ### Synopsis
-Template for a JavaScript ForLoop
+Template for a JavaScript `for` Loop
 
 ---
 
 ### Description
 
-Template for a for loop in JavaScript
+Template for a `for` loop in JavaScript.
 
 ---
 
