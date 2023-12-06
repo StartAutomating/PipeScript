@@ -8,8 +8,7 @@ function Template.WhileLoop.js {
         Template for a `while` loop in JavaScript.
     .EXAMPLE
         Template.WhileLoop.js -Condition "false" -Body "console.log('This never happens')"
-    #>
-    [Alias('Template.ForInLoop.js')]
+    #>    
     param(    
     # The Loop's Condition.
     # This determines if the loop should continue running.
