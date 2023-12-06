@@ -281,6 +281,9 @@ process {
     }
     #endregion Finding Template Transpiler
 
+    if ($barewords -contains 'function') {
+        $AsScriptBlock = $true        
+    }
     
     if ($StartPattern -and $EndPattern) {
         if (-not $ReplaceTimeout) {
@@ -500,9 +503,10 @@ process {
             }            
         }
         $null, $templateElements = foreach ($sentenceArg in $mySentence.ArgumentList) {
-            if ($sentenceArg.StringConstantType -eq 'Bareword' -and $sentenceArg.Value -eq 'template') {
+            if ($sentenceArg.StringConstantType -eq 'Bareword' -and $sentenceArg.Value -in 'template', 'function') {
                 continue
             }
+            if ($sentenceArg -in 'template', 'function') { continue }
             $convertedAst = 
                 if ($sentenceArg.ConvertFromAst) {
                     $sentenceArg.ConvertFromAst()
@@ -588,9 +592,10 @@ $replacePattern
 )
 "@
 )
-        $createdSb
-        
-        return        
+        if (-not ($mySentence.ArgumentList -contains 'function')) {
+            $createdSb        
+            return        
+        }       
     }
     #endregion Template Keyword
 
@@ -602,7 +607,40 @@ $replacePattern
     # Or we can turn the whole thing into a `[ScriptBlock]`
     if ($AsScriptBlock) {
         $index = 0
-        $fileText      = $SourceText
+        $fileText      = $SourceText        
+        if ((-not $fileText) -and $CommandAst) {
+            $firstElement, $templateContent = $CommandAst.CommandElements -notmatch '^(?>template|function)$'
+            $OptimizedTemplateElement = $null
+            $fileText  = @(foreach ($contentElement in $templateContent) {
+                if ($contentElement -is [Management.Automation.Language.StringConstantExpressionAst]) {
+                    $contentElement.Value
+                }
+                elseif ($contentElement -is [Management.Automation.Language.ExpandableStringExpressionAst]) {
+                    $OptimizedTemplateElement = $contentElement
+                }
+                elseif ($contentElement -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
+                    $OptimizedTemplateElement = $contentElement
+                }
+            }) -join ' '            
+        }
+
+        if ($OptimizedTemplateElement) {
+            $templateScriptBlock = @(foreach ($optimizedElement in $OptimizedTemplateElement) {
+                if ($OptimizedTemplateElement -is [Management.Automation.Language.ExpandableStringExpressionAst]) {
+                    New-PipeScript -AutoParameter -Process ([scriptblock]::Create($OptimizedTemplateElements))
+                }
+                elseif ($optimizedElement -is [Management.Automation.Language.ScriptBlockExpressionAst]) {                    
+                    $optimizedElement.AsScriptBlock()
+                }
+            }) | Join-PipeScript
+            
+            $templatePreCompiledString = @("template function $TemplateName {", $templateScriptBlock,"}") -join [Environment]::newLine             
+            [ScriptBlock]::Create("$templatePreCompiledString") | Use-PipeScript
+            return
+        }
+
+        if (-not $fileText) { return }
+
         $hasParameters = $false
         $allInlineScripts = @()
         
@@ -666,8 +704,10 @@ $replacePattern
         if ($index -lt $fileText.Length) {
             "@'" + [Environment]::NewLine + (
                 $fileText.Substring($index) -replace "'@", "''@"
-            )  + "'@" + { -replace "''@", "'@" -replace "@''", "'@"} + [Environment]::NewLine
-            
+            )  + [Environment]::NewLine + 
+            "'@" + 
+            { -replace "''@", "'@" -replace "@''", "'@"} + 
+            [Environment]::NewLine            
         }
         )
 
@@ -680,10 +720,14 @@ $replacePattern
                 ([ScriptBlock]::Create($newContent -join [Environment]::NewLine))
             }
 
-        
+        if ($templateScriptBlock -and $barewords -contains "function") {
+            $templatePreCompiledString = @("template function $TemplateName {", $templateScriptBlock,"}") -join [Environment]::newLine             
+            [ScriptBlock]::Create("$templatePreCompiledString") | Use-PipeScript
+            return
+        }
 
         $null = $null
-        # return
+        
     }
 
     # If the parameter set was SourceTextReplace
