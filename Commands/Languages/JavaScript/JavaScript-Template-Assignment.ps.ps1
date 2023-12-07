@@ -1,11 +1,13 @@
-Template function RegexLiteral.js {
+Template function Assignment.js {
     <#
     .SYNOPSIS
         Template for a JavaScript assignment
     .DESCRIPTION
-        Template for regex literal in JavaScript.
+        Template for JavaScript assignment statements.
     .EXAMPLE
-        Template.RegexLiteral.js -Pattern "\d+" 
+        Template.Assignment.js -Left "a" -Right 1
+    .EXAMPLE
+        Template.Const.js -VariableName "MyConstant" -Expression 42
     #>
     [Alias('Template.Const.js','Template.Var.js', 'Template.Let.js')]    
     param(    
