@@ -1,13 +1,13 @@
-Template function Method.js {
+Template function InvokeMethod.js {
     <#
     .SYNOPSIS
-        Template for a JavaScript method
+        Template for a JavaScript method invocation
     .DESCRIPTION
-        Template for a method in JavaScript.
+        Template for invocing a method in JavaScript.
     .EXAMPLE
-        Template.Method.js -Name "then" -Argument "(result)=>doSomethingElse(result)"
+        Template.InvokeMethod.js -Name "then" -Argument "(result)=>doSomethingElse(result)"
     .EXAMPLE
-        "doSomething()" |Template.Method.js -Name "then" -Argument "(result)=>doSomethingElse(result)"
+        "doSomething()" |Template.InvokeMethod.js -Name "then" -Argument "(result)=>doSomethingElse(result)"
     #>    
     param(        
     # The name of the method.
@@ -36,5 +36,3 @@ Template function Method.js {
         "$(if ($await) { "await"}) $(if ($inputObject -is [string]) { $InputObject })$(if ($name) { $name -replace "^\.{0,1}", "." })($($argument -join ','))"
     }
 }
-
-
