@@ -7,7 +7,7 @@ Template function Function.js {
     .EXAMPLE
         Template.Function.js -Name "Hello" -Body "return 'hello'"
     #>
-    [Alias('Template.Method.js','Template.Generator.js')]    
+    [Alias('Template.Method.js','Template.Generator.js')]
     param(    
     # The name of the function.
     [vbn()]
@@ -32,7 +32,8 @@ Template function Function.js {
     [switch]
     $Static,
 
-    # If set, the function will be marked as a generator
+    # If set, the function will be marked as a generator.
+    # This can be implied by calling this with the alias Template.Generator.js
     [switch]
     $Generator
     )
@@ -41,13 +42,18 @@ Template function Function.js {
         if ($body -match '^\{') {
             $body = $body -replace '^\s{0,}\{' -replace '\}\s{0,}$'
         }
+        
         switch -Regex ($MyInvocation.InvocationName) {
+            "generator" {
+                $generator = $true
+            }            
             "function" {
 @"
 $(if ($async) { "async "}$(if ($static) {"static "}))function$(if ($generator) { '*'}) $(if ($name) { $name})($($argument -join ',')) {
     $($Body -join (';' + [Environment]::newLine + '    '))
 } 
 "@
+break
             }
             default {
 @"
