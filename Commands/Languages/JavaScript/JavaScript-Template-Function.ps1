@@ -23,7 +23,11 @@ function Template.Function.js {
     # The body of the function.
     [Parameter(ValueFromPipelineByPropertyName)]
     [string[]]
-    $Body
+    $Body,
+
+    # If set, the function will be marked as async
+    [switch]
+    $Async
     )
 
     process {
@@ -31,7 +35,7 @@ function Template.Function.js {
             $body = $body -replace '^\s{0,}\{' -replace '\}\s{0,}$'
         }                        
         @"
-function $(if ($name) { $name})($argument) {
+$(if ($async) { "async"}) function $(if ($name) { $name})($argument) {
     $($Body -join (';' + [Environment]::newLine + '    '))
 } 
 "@
