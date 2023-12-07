@@ -1,4 +1,4 @@
-Template function RegexLiteral.js {
+Template function TryCatch.js {
     <#
     .SYNOPSIS
         Template for a JavaScript try/catch block
@@ -11,7 +11,7 @@ Template function RegexLiteral.js {
     .EXAMPLE
         Template.TryCatch.js -Try "something that won't work"
     #>
-    [Alias('Template.Regex.js')]    
+    [Alias('Template.TryCatchFinally.js')]    
     param(    
     # The body of the try.    
     [vbn()]
