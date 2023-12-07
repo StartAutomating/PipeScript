@@ -49,9 +49,24 @@ If set, the function will be marked as async
 |----------|--------|--------|-------------|
 |`[Switch]`|false   |named   |false        |
 
+#### **Static**
+If set, the function will be marked as static
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
+#### **Generator**
+If set, the function will be marked as a generator.
+This can be implied by calling this with the alias Template.Generator.js
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
 ---
 
 ### Syntax
 ```PowerShell
-Template.Function.js [[-Name] <String>] [[-Argument] <String[]>] [[-Body] <String[]>] [-Async] [<CommonParameters>]
+Template.Function.js [[-Name] <String>] [[-Argument] <String[]>] [[-Body] <String[]>] [-Async] [-Static] [-Generator] [<CommonParameters>]
 ```
