@@ -2,13 +2,13 @@ Template.RegexLiteral.js
 ------------------------
 
 ### Synopsis
-Template for a JavaScript `function`
+Template for a JavaScript regex literal
 
 ---
 
 ### Description
 
-Template for a `function` in JavaScript.
+Template for regex literal in JavaScript.
 
 ---
 
