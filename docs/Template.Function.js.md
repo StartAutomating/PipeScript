@@ -42,9 +42,16 @@ The body of the function.
 |------------|--------|--------|---------------------|
 |`[String[]]`|false   |3       |true (ByPropertyName)|
 
+#### **Async**
+If set, the function will be marked as async
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
 ---
 
 ### Syntax
 ```PowerShell
-Template.Function.js [[-Name] <String>] [[-Argument] <String[]>] [[-Body] <String[]>] [<CommonParameters>]
+Template.Function.js [[-Name] <String>] [[-Argument] <String[]>] [[-Body] <String[]>] [-Async] [<CommonParameters>]
 ```
