@@ -3,9 +3,9 @@ function Template.RegexLiteral.js {
 
     <#
     .SYNOPSIS
-        Template for a JavaScript `function`
+        Template for a JavaScript regex literal
     .DESCRIPTION
-        Template for a `function` in JavaScript.
+        Template for regex literal in JavaScript.
     .EXAMPLE
         Template.RegexLiteral.js -Pattern "\d+" 
     #>
