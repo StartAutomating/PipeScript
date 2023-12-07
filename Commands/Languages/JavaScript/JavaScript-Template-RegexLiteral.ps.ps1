@@ -23,6 +23,7 @@ Template function RegexLiteral.js {
     )
 
     process {
+        if ($flag) {
 $flag = foreach ($FlagString in $Flag) {
     if ($FlagString.Length -gt 1) {
         $valueList = @($MyInvocation.MyCommand.Parameters.Flag.Attributes.ValidValues)
@@ -33,6 +34,7 @@ $flag = foreach ($FlagString in $Flag) {
         }
     }
 }
+        }
 @"
 /$pattern/$flag
 "@
