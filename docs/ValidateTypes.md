@@ -60,9 +60,9 @@ The name of one or more types.
 Types can either be a .NET types of .PSTypenames
 TypeNames will be treated first as real types, then as exact matches, then as wildcards, and then as regular expressions.
 
-|Type        |Required|Position|PipelineInput|
-|------------|--------|--------|-------------|
-|`[String[]]`|true    |1       |false        |
+|Type        |Required|Position|PipelineInput|Aliases                                                    |
+|------------|--------|--------|-------------|-----------------------------------------------------------|
+|`[String[]]`|true    |1       |false        |Type<br/>Types<br/>TypeNames<br/>PSTypeName<br/>PSTypeNames|
 
 #### **VariableAST**
 The variable that will be validated.
