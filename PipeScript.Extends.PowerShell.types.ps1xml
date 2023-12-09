@@ -4105,7 +4105,19 @@ $requirement = $this
       <ScriptProperty>
         <Name>ArgumentList</Name>
         <GetScriptBlock>
-                        if (-not $this.TypeName.IsGeneric) { return @() }
+                        &lt;#
+.SYNOPSIS
+    Gets arguments of a type constraint
+.DESCRIPTION
+    Gets the arguments from a type constraint.
+
+    This will treat any generic type specifiers as potential parameters, and other type specifiers as arguments.
+.EXAMPLE
+    {
+        [a[b[c],c]]'d'
+    }.Ast.EndBlock.Statements[0].PipelineElements[0].Expression.Type.ArgumentList
+#&gt;
+if (-not $this.TypeName.IsGeneric) { return @() }
 @(foreach ($typeName in $this.TypeName.GenericArguments ) {
     if ($TypeName.IsGeneric) { continue }
     if (-not $TypeName.IsArray) {
@@ -4119,7 +4131,18 @@ $requirement = $this
         <Name>Parameter</Name>
         <GetScriptBlock>
                         
+&lt;#
+.SYNOPSIS
+    Gets parameters to a type constraint
+.DESCRIPTION
+    Gets the parameters from a type constraint.
 
+    This will treat any generic type specifiers as potential parameters, and other type specifiers as arguments.
+.EXAMPLE
+    {
+        [a[b[c],c]]'d'
+    }.Ast.EndBlock.Statements[0].PipelineElements[0].Expression.Type.Parameters
+#&gt;
 function TypeConstraintToArguments (
     [Parameter(ValueFromPipeline)]
     $TypeName
