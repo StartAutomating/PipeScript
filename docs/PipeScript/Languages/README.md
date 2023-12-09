@@ -20,6 +20,7 @@ PipeScript presently ships with 56 languages:
 * Dart
 * Docker
 * Eiffel
+* FSharp
 * GLSL
 * Go
 * Haxe
@@ -55,6 +56,7 @@ PipeScript presently ships with 56 languages:
 * TypeScript
 * Vue
 * WebAssembly
+* Wren
 * XAML
 * XML
 * XSL
