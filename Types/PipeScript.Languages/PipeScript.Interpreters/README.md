@@ -26,6 +26,7 @@ The following languages support interpreters.
 * RSS
 * Ruby
 * SVG
+* Wren
 * XML
 * XSL
 
