@@ -27,10 +27,19 @@ function Invoke-Interpreter {
     # If there was no interpreter command, return.
     return if -not $interpreterCommand
     
-    $leadingArgs = @($leadingArgs)
-    if ($MyInvocation.ExpectingInput) {
-        $input | & $interpreterCommand @leadingArgs $invocationName @args
+    $leadingArgs = @($leadingArgs)    
+
+    if ($leadingArgs) {
+        if ($MyInvocation.ExpectingInput) {
+            $input | & $interpreterCommand @leadingArgs $invocationName @args
+        } else {
+            & $interpreterCommand @leadingArgs $invocationName @args
+        }
     } else {
-        & $interpreterCommand @leadingArgs $invocationName @args
-    }    
+        if ($MyInvocation.ExpectingInput) {
+            $input | & $interpreterCommand $invocationName @args
+        } else {
+            & $interpreterCommand $invocationName @args
+        }
+    }        
 }
