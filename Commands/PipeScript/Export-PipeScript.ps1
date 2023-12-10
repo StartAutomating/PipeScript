@@ -23,11 +23,11 @@ function Export-Pipescript {
 
     # The number of files to build in each batch.
     [int]
-    $BatchSize = 5,
+    $BatchSize = 7,
 
     # The throttle limit for parallel jobs.
     [int]
-    $ThrottleLimit = 7
+    $ThrottleLimit = 11
     )
 
     begin {
