@@ -4,7 +4,9 @@ function Language.Wren {
     .SYNOPSIS
         Wren PipeScript Language Definition
     .DESCRIPTION
-        Allows PipeScript to generate and interpret [Wren](https://wren.io/)
+        Allows PipeScript to generate and interpret [Wren](https://wren.io/).
+    .EXAMPLE
+        Template.HelloWorld.wren 
     #>
 
 param()
