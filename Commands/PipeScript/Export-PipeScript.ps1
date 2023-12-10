@@ -23,7 +23,7 @@ function Export-Pipescript {
 
     # The throttle limit for parallel jobs.
     [int]
-    $ThrottleLimit = 15 
+    $ThrottleLimit = 10 
     )
 
     begin {
@@ -86,7 +86,7 @@ function Export-Pipescript {
                     Invoke-PipeScript $buildFileTemplate.Source
                 } catch {
                     $ex = $_
-                    Write-Error -ErrorRecord $ex
+                    Write-Error -ErrorRecord $ex -TargetObject $buildFileInfo
                     if ($env:GITHUB_WORKSPACE -or ($host.Name -eq 'Default Host')) {
                         $fileAndLine = @(@($ex.ScriptStackTrace -split [Environment]::newLine)[-1] -split ',\s',2)[-1]
                         $file, $line = $fileAndLine -split ':\s\D+\s', 2
