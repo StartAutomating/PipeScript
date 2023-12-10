@@ -121,7 +121,10 @@ How It Works
  In these two scenarios we will want to generate a new module: If we did not provide a module (because how else should we import it?) or if the module has a version (because during load, a module has no version)
 
 #### Generating a New Module
- To start off, we'll want to timestamp the module and might want to use our own invocation name to name the module.  The definition is straightforward enough, it just sets each argument with the providers and exports everything.  We pass our ImportMembers as the argument to make it all work and import the module globally.
+
+ If the module has a version, we're postloading.  We'd still love for the functions we create to keep the same module scope, so they could access internal members.  to make this happen we walk over each member and recreate any `[ScriptBlock]` as a `[ScriptBlock]` from the `$Module`.  We'll want to timestamp the module and might want to use our own invocation name to name the module.
+
+ The definition is straightforward enough, it just sets each argument with the providers and exports everything.  We pass our ImportMembers as the argument to make it all work and import the module globally.
 
 #### Importing into a Loading Module
  If we're importing into a module that hasn't finished loading get a pointer to it's context.  and use the providers to set the item (and we're good).  If -PassThru was provided Pass thru each command.
