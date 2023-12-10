@@ -188,7 +188,7 @@ function Export-Pipescript {
                 if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('git', 'Alias')) {
                     $lastCommitMessage = ($buildFileInfo | git log -n 1 | Select-Object -ExpandProperty CommitMessage -First 1)
                     $buildOutput |
-                        Add-Member NoteProperty CommitMessage $lastCommitMessage -Force -PassThru
+                        Add-Member NoteProperty CommitMessage $lastCommitMessage -Force
                 }
                 
                 $buildOutput | 
@@ -286,42 +286,64 @@ function Export-Pipescript {
                     $threadKeyValue
                 }
             })
-            if ($completedBuilds) {
-                foreach ($completedBuild in $completedBuilds) {
-                    $buildSourceFile = $completedBuild.Key.Source -as [IO.FileInfo]
-                    $TotalInputFileLength += $buildSourceFile.Length
-                    $completedBuildOutput = $completedBuild.Value | Receive-Job *>&1
+            if (-not $completedBuilds) {
+                Start-Sleep -Milliseconds 7
+                continue
+            }
 
-                    if ($env:GITHUB_WORKSPACE -or ($host.Name -eq 'Default Host')) {
-                        $completedBuildOutput | Out-Host
-                    }
-                    $errorsByFile[$buildSourceFile] = @(foreach ($buildOutput in $completedBuildOutput) {
-                        if ($buildOutput -is [IO.FileInfo]) {
-                            $TotalOutputFileLength += $buildOutput.Length
+            foreach ($completedBuild in $completedBuilds) {
+
+                
+                $completedBuildOutput = $completedBuild.Value | Receive-Job *>&1
+                
+
+                if ($env:GITHUB_WORKSPACE -or ($host.Name -eq 'Default Host')) {
+                    $completedBuildOutput | Out-Host
+                }                     
+                $sourceFilesFromJob = @(foreach ($buildOutput in $completedBuildOutput) {
+                    
+                    if ($buildOutput -is [IO.FileInfo]) {
+                        $TotalOutputFileLength += $buildOutput.Length
+                        if ($buildOutput.BuildSourceFile) {
+                            $buildOutput.BuildSourceFile
                         }
-                        elseif ($buildOutput -as [IO.FileInfo[]]) {
-                            foreach ($_ in $buildOutput) {
-                                if ($_.Length) {
-                                    $TotalOutputFileLength += $_.Length
+                    }
+                    elseif ($buildOutput -as [IO.FileInfo[]]) {
+                        foreach ($_ in $buildOutput) {
+                            if ($_.Length) {
+                                $TotalOutputFileLength += $_.Length
+                                if ($_.BuildSourceFile) {
+                                    $_.BuildSourceFile
                                 }
                             }
                         }
-                        elseif ($buildOutput -is [Management.Automation.ErrorRecord]) {
-                            $buildOutput                            
-                        }
-                    })
+                    }
+                    elseif ($buildOutput -is [Management.Automation.ErrorRecord]) {
+                        $buildSourceFile = $buildOutput.TargetObject
+                        if ($buildSourceFile -is [IO.FileInfo]) {
+                            if (-not $errorsByFile[$buildSourceFile]) {
+                                $errorsByFile[$buildSourceFile] = @()
+                            }
+                            $errorsByFile[$buildSourceFile] += $buildOutput
+                            $buildSourceFile
+                        }                        
+                    }
+                })
+                
+                foreach ($buildSourceFile in $sourceFilesFromJob) {
+                    $TotalInputFileLength += $buildSourceFile.Length
                     if ($errorsByFile[$buildSourceFile]) {
                         $filesWithErrors += $buildSourceFile
                     }
-                    foreach ($buildOutput in $completedBuildOutput) {
-                        if ($buildOutput -is [IO.FileInfo]) {
-                            $buildOutput
-                        }
-                    }
-                    $buildThreadJobs.Remove($completedBuild.Key)
                 }
-            }
-            Start-Sleep -Milliseconds 1
+                
+                foreach ($buildOutput in $completedBuildOutput) {
+                    if ($buildOutput -is [IO.FileInfo]) {
+                        $buildOutput
+                    }
+                }
+                $buildThreadJobs.Remove($completedBuild.Key)
+            }            
         }
         
         $BuildTime = [DateTime]::Now - $buildStarted
