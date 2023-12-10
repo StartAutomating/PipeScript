@@ -9,7 +9,7 @@
 if (-not $global:AllFunctionsAndAliases) {
     $global:AllFunctionsAndAliases = $global:ExecutionContext.SessionState.InvokeCommand.GetCommand('*','Alias,Function',$true)
 }
-$FunctionsForThisLanguage = [Ordered]@{}
+$FunctionsForThisLanguage = [Ordered]@{PSTypeName='Language.Functions'}
 if ($this.FilePattern) {    
     foreach ($FunctionForLanguage in $global:AllFunctionsAndAliases -match $this.FilePattern) {
         $FunctionsForThisLanguage["$FunctionForLanguage"] = $FunctionForLanguage
@@ -20,5 +20,8 @@ if ($this.LanguageName) {
         $FunctionsForThisLanguage["$FunctionForLanguage"] = $FunctionForLanguage
     }
 }
+
+$FunctionsForThisLanguage = [PSCustomObject]$FunctionsForThisLanguage
+$FunctionsForThisLanguage.pstypenames.insert(0,"$($this.LanguageName).Functions")
 $FunctionsForThisLanguage
 
