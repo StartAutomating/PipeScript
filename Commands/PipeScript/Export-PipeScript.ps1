@@ -180,8 +180,15 @@ function Export-Pipescript {
                     $timingOfCommands | Out-Host
                     Get-Event -SourceIdentifier PipeScript.PostProcess.Complete -ErrorAction Ignore | Remove-Event
                 }
+
+                if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('git', 'Alias')) {
+                    $lastCommitMessage = $buildFileInfo | git log -n 1 | Select-Object -ExpandProperty CommitMessage
+                    $buildOutput |
+                        Add-Member NoteProperty CommitMessage $lastCommitMessage -Force -PassThru
+                }
                 
-                $buildOutput
+                $buildOutput | 
+                    Add-Member NoteProperty BuildSourceFile $buildFileInfo -Force -PassThru
             }
         }
 
@@ -191,8 +198,15 @@ function Export-Pipescript {
         $startThreadJob = $ExecutionContext.SessionState.InvokeCommand.GetCommand('Start-ThreadJob','Cmdlet')
 
         if ($startThreadJob) {
+            $ugitImported = @(Get-Module) -match '^ugit$'
+            $Psd1sToImport = @(
+                "'$($MyInvocation.MyCommand.Module.Path -replace '\.psm1', '.psd1')'"
+                if ($ugitImported) {
+                    "'$((Get-Module ugit).Path -replace '\.psm1', '.psd1')'"
+                }
+            ) -join ","
             $InitializationScript = [scriptblock]::Create("
-                Import-Module '$($MyInvocation.MyCommand.Module.Path -replace '\.psm1', '.psd1')'
+                Import-Module $Psd1sToImport
                 function AutoRequiresSimple {$function:AutoRequiresSimple}
                 filter BuildSingleFile {$function:BuildSingleFile}
             ")
