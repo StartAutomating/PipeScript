@@ -18,7 +18,7 @@ Any Source Generator Files Discovered by PipeScript will be run, which will conv
 > EXAMPLE 1
 
 ```PowerShell
-Export-PipeScript
+Export-PipeScript -Serial   # (PipeScript builds in parallel by default)
 ```
 
 ---
