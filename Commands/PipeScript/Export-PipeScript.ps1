@@ -19,7 +19,11 @@ function Export-Pipescript {
 
     # If set, will prefer to build in a series, rather than in parallel.
     [switch]
-    $Serial
+    $Serial,
+
+    # The throttle limit for parallel jobs.
+    [int]
+    $ThrottleLimit = 15 
     )
 
     begin {
@@ -249,8 +253,8 @@ function Export-Pipescript {
         [long]$TotalOutputFileLength = 0 
         
         if (-not $startThreadJob) { continue }
-        $buildThreadJobs = [Ordered]@{} 
-        foreach ($buildFile in $filesToBuild) {            
+        $buildThreadJobs = [Ordered]@{}         
+        foreach ($buildFile in $filesToBuild) {
             $ThisBuildStartedAt = [DateTime]::Now
             Write-Progress "Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" "$($buildFile.Source) " -PercentComplete $(
                 $FilesToBuildCount++
@@ -261,7 +265,7 @@ function Export-Pipescript {
             if ($alreadyBuilt[$buildFile.Source]) { continue }
             
             if ((-not $Serial) -and $startThreadJob) {
-                $buildThreadJobs[$buildFile]  = Start-ThreadJob -InitializationScript $InitializationScript -ScriptBlock $ThreadJobScript -ArgumentList $buildFile
+                $buildThreadJobs[$buildFile]  = Start-ThreadJob -InitializationScript $InitializationScript -ScriptBlock $ThreadJobScript -ArgumentList $buildFile -ThrottleLimit $ThrottleLimit
             } else {
                 $buildFile | . BuildSingleFile
             }            
