@@ -90,7 +90,9 @@ function Export-Pipescript {
                         "::error file=$($buildFile.FullName),line=$line::$($ex.Exception.Message)" | Out-Host
                     }
                 }
-                $alreadyBuilt[$buildFileTemplate.Source] = $true
+                if ($alreadyBuilt.Count) {
+                    $alreadyBuilt[$buildFileTemplate.Source] = $true
+                }
             }
 
             $EventsFromThisBuild = Get-Event |
@@ -293,7 +295,7 @@ function Export-Pipescript {
                         }
                     })
                     if ($errorsByFile[$buildSourceFile]) {
-                        $filesWithErrors[$buildSourceFile] = $errorsByFile[$buildSourceFile]
+                        $filesWithErrors += $buildSourceFile
                     }
                     foreach ($buildOutput in $completedBuildOutput) {
                         if ($buildOutput -is [IO.FileInfo]) {
