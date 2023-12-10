@@ -16,7 +16,6 @@ This is useful in circumstances where the valid set of values would be known at 
 
 ### Examples
 > EXAMPLE 1
-> EXAMPLE 2
 
 ```PowerShell
 {
