@@ -145,6 +145,8 @@ if (-not $branchName) {
     return
 }
 
+git fetch --unshallow | Out-Host
+
 $PipeScriptStart = [DateTime]::Now
 if ($Script) {
     Invoke-PipeScript -Command $Script |

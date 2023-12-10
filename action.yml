@@ -37,12 +37,12 @@ runs:
       id: PipeScriptAction
       shell: pwsh
       env: 
-        Script: ${{inputs.Script}}
-        CommitMessage: ${{inputs.CommitMessage}}
+        UserEmail: ${{inputs.UserEmail}}
+        InstallModule: ${{inputs.InstallModule}}
         UserName: ${{inputs.UserName}}
         SkipBuild: ${{inputs.SkipBuild}}
-        InstallModule: ${{inputs.InstallModule}}
-        UserEmail: ${{inputs.UserEmail}}
+        CommitMessage: ${{inputs.CommitMessage}}
+        Script: ${{inputs.Script}}
       run: |
         $Parameters = @{}
         $Parameters.Script = ${env:Script}
@@ -205,6 +205,8 @@ runs:
         if (-not $branchName) { 
             return
         }
+        
+        git fetch --unshallow | Out-Host
         
         $PipeScriptStart = [DateTime]::Now
         if ($Script) {
