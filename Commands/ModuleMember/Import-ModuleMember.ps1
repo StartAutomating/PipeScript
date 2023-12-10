@@ -244,10 +244,31 @@ function Import-ModuleMember {
             
 
             #region Generating a New Module
-            # To start off, we'll want to timestamp the module
+            
+            # If the module has a version, we're postloading.
+            # We'd still love for the functions we create to keep the same module scope, so they could access internal members.
+            if ($module.Version -ge '0.0') {
+                $importMembers = # to make this happen we walk over each member
+                    foreach ($dictionaryToImport in $importMembers) {
+                        $newDictionary = [Ordered]@{}
+                        foreach ($keyValueToImport in $dictionaryToImport.GetEnumerator()) {
+                            # and recreate any `[ScriptBlock]`
+                            if ($keyValueToImport.Value -is [scriptblock]) {
+                                # as a `[ScriptBlock]` from the `$Module`.
+                                $newDictionary[$keyValueToImport.Key] = . $module { [ScriptBlock]::Create("$args") } "$($keyValueToImport.Value)"
+                            } else {
+                                $newDictionary[$keyValueToImport.Key] = $keyValueToImport.Value
+                            }
+                        }
+                        $newDictionary
+                    }
+            }
+            
+            # We'll want to timestamp the module
             $timestamp = $([Datetime]::now.ToString('s'))
             # and might want to use our own invocation name to name the module.
             $MyInvocationName = $MyInvocation.InvocationName
+
             New-Module -ScriptBlock {
                 # The definition is straightforward enough,
                 foreach ($_ in @($args | & { process { $_.GetEnumerator() }})) {
