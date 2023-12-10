@@ -182,7 +182,7 @@ function Export-Pipescript {
                 }
 
                 if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('git', 'Alias')) {
-                    $lastCommitMessage = $buildFileInfo | git log -n 1 | Select-Object -ExpandProperty CommitMessage
+                    $lastCommitMessage = ($buildFileInfo | git log -n 1 | Select-Object -ExpandProperty CommitMessage -First 1)
                     $buildOutput |
                         Add-Member NoteProperty CommitMessage $lastCommitMessage -Force -PassThru
                 }
@@ -210,10 +210,8 @@ function Export-Pipescript {
                 function AutoRequiresSimple {$function:AutoRequiresSimple}
                 filter BuildSingleFile {$function:BuildSingleFile}
             ")
-            $ThreadJobScript = {
-                "Building $args" | Write-Information
+            $ThreadJobScript = {                
                 $args | BuildSingleFile
-                "Finished Building $args" | Write-Information
             }
         }
     }
@@ -263,7 +261,7 @@ function Export-Pipescript {
             if ($alreadyBuilt[$buildFile.Source]) { continue }
             
             if ((-not $Serial) -and $startThreadJob) {
-                $buildThreadJobs[$buildFile]  = Start-ThreadJob -InitializationScript $InitializationScript -ScriptBlock $ThreadJobScript -ArgumentList $buildFile                
+                $buildThreadJobs[$buildFile]  = Start-ThreadJob -InitializationScript $InitializationScript -ScriptBlock $ThreadJobScript -ArgumentList $buildFile
             } else {
                 $buildFile | . BuildSingleFile
             }            
@@ -323,15 +321,14 @@ function Export-Pipescript {
         }
         
         $BuildTime = [DateTime]::Now - $buildStarted
-        if ($env:GITHUB_WORKSPACE) {
+        if ($env:GITHUB_WORKSPACE -or $host.Name -eq 'Default Host') {
             "$filesToBuildTotal in $($BuildTime)" | Out-Host
             "::endgroup::Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal] : $($buildFile.Source)" | Out-Host
             if ($TotalInputFileLength) {
                 "$([Math]::Round($TotalInputFileLength / 1kb)) kb input"
                 "$([Math]::Round($TotalOutputFileLength / 1kb)) kb output",
                 "PipeScript Factor: X$([Math]::round([double]$TotalOutputFileLength/[double]$TotalInputFileLength,4))"
-            }
-            
+            }            
         }
 
         if ($filesWithErrors -and $env:GITHUB_WORKSPACE) {
