@@ -31,9 +31,16 @@ One or more input paths.  If no -InputPath is provided, will build all scripts b
 |------------|--------|--------|---------------------|--------|
 |`[String[]]`|false   |1       |true (ByPropertyName)|FullName|
 
+#### **Serial**
+If set, will prefer to build in a series, rather than in parallel.
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
 ---
 
 ### Syntax
 ```PowerShell
-Export-Pipescript [[-InputPath] <String[]>] [<CommonParameters>]
+Export-Pipescript [[-InputPath] <String[]>] [-Serial] [<CommonParameters>]
 ```
