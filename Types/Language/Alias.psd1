@@ -1,3 +1,4 @@
 @{
     Templates = 'Template'
+    Functions = 'Function'
 }
