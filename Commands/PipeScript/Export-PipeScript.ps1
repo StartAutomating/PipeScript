@@ -15,7 +15,11 @@ function Export-Pipescript {
     [Parameter(ValueFromPipelineByPropertyName)]
     [Alias('FullName')]
     [string[]]
-    $InputPath
+    $InputPath,
+
+    # If set, will prefer to build in a series, rather than in parallel.
+    [switch]
+    $Serial
     )
 
     begin {
@@ -65,52 +69,9 @@ function Export-Pipescript {
             }
         }
 
-        $filesWithErrors = @()
-        $errorsByFile = @{}
-    }
-
-    process {
-        if ($env:GITHUB_WORKSPACE) {
-            "::group::Discovering files", "from: $InputPath" | Out-Host
-        }
-        $filesToBuild = 
-            @(if (-not $InputPath) {
-                Get-PipeScript -PipeScriptPath $pwd |
-                    Where-Object PipeScriptType -Match '(?>Template|BuildScript)' |
-                    Sort-Object PipeScriptType, Source
-            } else {
-                foreach ($inPath in $InputPath) {
-                    Get-PipeScript -PipeScriptPath $inPath |
-                        Where-Object PipeScriptType -Match '(?>Template|BuildScript)' |
-                        Sort-Object PipeScriptType, Source
-                }
-            })
-
-        if ($env:GITHUB_WORKSPACE) {
-            "$($filesToBuild.Length) files to build:" | Out-Host
-            $filesToBuild.Source -join [Environment]::NewLine | Out-Host
-            "::endgroup::" | Out-Host
-        }
-        
-        $buildStarted = [DateTime]::Now
-        $alreadyBuilt = [Ordered]@{}
-        $filesToBuildCount, $filesToBuildTotal, $filesToBuildID  = 0, $filesToBuild.Length, $(Get-Random)
-
-        if ($env:GITHUB_WORKSPACE) {
-            "::group::Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" | Out-Host                
-        }
-        # Keep track of how much is input and output.
-        [long]$TotalInputFileLength  = 0 
-        [long]$TotalOutputFileLength = 0 
-        foreach ($buildFile in $filesToBuild) {            
-            $ThisBuildStartedAt = [DateTime]::Now
-            Write-Progress "Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" "$($buildFile.Source) " -PercentComplete $(
-                $FilesToBuildCount++
-                $FilesToBuildCount * 100 / $filesToBuildTotal 
-            ) -id $filesToBuildID
-            
-            if (-not $buildFile.Source) { continue }
-            if ($alreadyBuilt[$buildFile.Source]) { continue }
+        filter BuildSingleFile {
+            param($buildFile)
+            if ((-not $buildFile) -and $_) { $buildFile = $_}
             $buildFileInfo = $buildFile.Source -as [IO.FileInfo]
             $TotalInputFileLength += $buildFileInfo.Length
 
@@ -122,7 +83,7 @@ function Export-Pipescript {
                 } catch {
                     $ex = $_
                     Write-Error -ErrorRecord $ex
-                    if ($env:GITHUB_WORKSPACE) {
+                    if ($env:GITHUB_WORKSPACE -or $host.Name -eq 'Default Host') {
                         $fileAndLine = @(@($ex.ScriptStackTrace -split [Environment]::newLine)[-1] -split ',\s',2)[-1]
                         $file, $line = $fileAndLine -split ':\s\D+\s', 2
                         
@@ -177,7 +138,7 @@ function Export-Pipescript {
                     }
                 }
 
-                if ($env:GITHUB_WORKSPACE) {
+                if ($env:GITHUB_WORKSPACE -or $host.Name -eq 'Default Host') {
                     $FileBuildEnded = [DateTime]::now
                     "$($buildFile.Source)", "$('=' * $buildFile.Source.Length)", "Output:" -join [Environment]::newLine | Out-Host
                     if ($buildOutput -is [Management.Automation.ErrorRecord]) {
@@ -220,9 +181,131 @@ function Export-Pipescript {
                 
                 $buildOutput
             }
+        }
+
+        $filesWithErrors = @()
+        $errorsByFile = @{}
+
+        $startThreadJob = $ExecutionContext.SessionState.InvokeCommand.GetCommand('Start-ThreadJob','Cmdlet')
+
+        if ($startThreadJob) {
+            $InitializationScript = [scriptblock]::Create("
+                Import-Module '$($MyInvocation.MyCommand.Module.Path -replace '\.psm1', '.psd1')'
+                function AutoRequiresSimple {$function:AutoRequiresSimple}
+                filter BuildSingleFile {$function:BuildSingleFile}
+            ")
+            $ThreadJobScript = {
+                "Building $args" | Write-Information
+                $args | BuildSingleFile
+                "Finished Building $args" | Write-Information
+            }
+        }
+    }
+
+    process {       
+        if ($env:GITHUB_WORKSPACE) {
+            "::group::Discovering files", "from: $InputPath" | Out-Host
+        }
+        $filesToBuild = 
+            @(if (-not $InputPath) {
+                Get-PipeScript -PipeScriptPath $pwd |
+                    Where-Object PipeScriptType -Match '(?>Template|BuildScript)' |
+                    Sort-Object PipeScriptType, Order, Source
+            } else {
+                foreach ($inPath in $InputPath) {
+                    Get-PipeScript -PipeScriptPath $inPath |
+                        Where-Object PipeScriptType -Match '(?>Template|BuildScript)' |
+                        Sort-Object PipeScriptType, Order, Source
+                }
+            })
+
+        if ($env:GITHUB_WORKSPACE) {           
+            $filesToBuild.Source -join [Environment]::NewLine | Out-Host           
+        }
+        
+        $buildStarted = [DateTime]::Now
+        $alreadyBuilt = [Ordered]@{}
+        $filesToBuildCount, $filesToBuildTotal, $filesToBuildID  = 0, $filesToBuild.Length, $(Get-Random)
+
+        if ($env:GITHUB_WORKSPACE) {
+            "::group::Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" | Out-Host                
+        }
+        # Keep track of how much is input and output.
+        [long]$TotalInputFileLength  = 0 
+        [long]$TotalOutputFileLength = 0 
+        
+        if (-not $startThreadJob) { continue }
+        $buildThreadJobs = [Ordered]@{} 
+        foreach ($buildFile in $filesToBuild) {            
+            $ThisBuildStartedAt = [DateTime]::Now
+            Write-Progress "Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" "$($buildFile.Source) " -PercentComplete $(
+                $FilesToBuildCount++
+                $FilesToBuildCount * 100 / $filesToBuildTotal 
+            ) -id $filesToBuildID
+            
+            if (-not $buildFile.Source) { continue }
+            if ($alreadyBuilt[$buildFile.Source]) { continue }
+            
+            if ((-not $Serial) -and $startThreadJob) {
+                $buildThreadJobs[$buildFile]  = Start-ThreadJob -InitializationScript $InitializationScript -ScriptBlock $ThreadJobScript -ArgumentList $buildFile                
+            } else {
+                $buildFile | . BuildSingleFile
+            }            
             
             $alreadyBuilt[$buildFile.Source] = $true
         }
+
+        $OriginalJobCount = $buildThreadJobs.Count
+        
+
+        while ($buildThreadJobs.Count) {
+            $remainingJobCount = ($OriginalJobCount - $buildThreadJobs.Count)
+            Write-Progress "Waiting for Builds [$remainingJobCount / $originalJobCount]" " " -PercentComplete $(                
+                ($OriginalJobCount - $buildThreadJobs.Count) * 100 / $OriginalJobCount
+            ) -id $filesToBuildID
+            $completedBuilds = @(foreach ($threadKeyValue in $buildThreadJobs.GetEnumerator()) {
+                if ($threadKeyValue.Value.State -in 'Completed','Failed','Stopped') {
+                    $threadKeyValue
+                }
+            })
+            if ($completedBuilds) {
+                foreach ($completedBuild in $completedBuilds) {
+                    $buildSourceFile = $completedBuild.Key.Source -as [IO.FileInfo]
+                    $TotalInputFileLength += $buildSourceFile.Length
+                    $completedBuildOutput = $completedBuild.Value | Receive-Job *>&1
+
+                    if ($env:GITHUB_WORKSPACE -or $host.Name -eq 'Default Host') {
+                        $completedBuildOutput | Out-Host
+                    }
+                    $errorsByFile[$buildSourceFile] = @(foreach ($buildOutput in $completedBuildOutput) {
+                        if ($buildOutput -is [IO.FileInfo]) {
+                            $TotalOutputFileLength += $buildOutput.Length
+                        }
+                        elseif ($buildOutput -as [IO.FileInfo[]]) {
+                            foreach ($_ in $buildOutput) {
+                                if ($_.Length) {
+                                    $TotalOutputFileLength += $_.Length
+                                }
+                            }
+                        }
+                        elseif ($buildOutput -is [Management.Automation.ErrorRecord]) {
+                            $buildOutput                            
+                        }
+                    })
+                    if ($errorsByFile[$buildSourceFile]) {
+                        $filesWithErrors[$buildSourceFile] = $errorsByFile[$buildSourceFile]
+                    }
+                    foreach ($buildOutput in $completedBuildOutput) {
+                        if ($buildOutput -is [IO.FileInfo]) {
+                            $buildOutput
+                        }
+                    }
+                    $buildThreadJobs.Remove($completedBuild.Key)
+                }
+            }
+            Start-Sleep -Milliseconds 1
+        }
+        
         $BuildTime = [DateTime]::Now - $buildStarted
         if ($env:GITHUB_WORKSPACE) {
             "$filesToBuildTotal in $($BuildTime)" | Out-Host
