@@ -7,7 +7,7 @@ function Export-Pipescript {
         
         Any Source Generator Files Discovered by PipeScript will be run, which will convert them into source code.
     .EXAMPLE
-        Export-PipeScript
+        Export-PipeScript -Serial   # (PipeScript builds in parallel by default)
     #>
     [Alias('Build-PipeScript','bps','eps','psc')]
     param(
@@ -83,7 +83,7 @@ function Export-Pipescript {
                 } catch {
                     $ex = $_
                     Write-Error -ErrorRecord $ex
-                    if ($env:GITHUB_WORKSPACE -or $host.Name -eq 'Default Host') {
+                    if ($env:GITHUB_WORKSPACE -or ($host.Name -eq 'Default Host')) {
                         $fileAndLine = @(@($ex.ScriptStackTrace -split [Environment]::newLine)[-1] -split ',\s',2)[-1]
                         $file, $line = $fileAndLine -split ':\s\D+\s', 2
                         
@@ -140,7 +140,7 @@ function Export-Pipescript {
                     }
                 }
 
-                if ($env:GITHUB_WORKSPACE -or $host.Name -eq 'Default Host') {
+                if ($env:GITHUB_WORKSPACE -or ($host.Name -eq 'Default Host')) {
                     $FileBuildEnded = [DateTime]::now
                     "$($buildFile.Source)", "$('=' * $buildFile.Source.Length)", "Output:" -join [Environment]::newLine | Out-Host
                     if ($buildOutput -is [Management.Automation.ErrorRecord]) {
@@ -288,7 +288,7 @@ function Export-Pipescript {
                     $TotalInputFileLength += $buildSourceFile.Length
                     $completedBuildOutput = $completedBuild.Value | Receive-Job *>&1
 
-                    if ($env:GITHUB_WORKSPACE -or $host.Name -eq 'Default Host') {
+                    if ($env:GITHUB_WORKSPACE -or ($host.Name -eq 'Default Host')) {
                         $completedBuildOutput | Out-Host
                     }
                     $errorsByFile[$buildSourceFile] = @(foreach ($buildOutput in $completedBuildOutput) {
@@ -321,7 +321,7 @@ function Export-Pipescript {
         }
         
         $BuildTime = [DateTime]::Now - $buildStarted
-        if ($env:GITHUB_WORKSPACE -or $host.Name -eq 'Default Host') {
+        if ($env:GITHUB_WORKSPACE -or ($host.Name -eq 'Default Host')) {
             "$filesToBuildTotal in $($BuildTime)" | Out-Host
             "::endgroup::Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal] : $($buildFile.Source)" | Out-Host
             if ($TotalInputFileLength) {
