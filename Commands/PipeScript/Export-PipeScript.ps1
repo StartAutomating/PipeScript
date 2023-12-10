@@ -21,6 +21,10 @@ function Export-Pipescript {
     [switch]
     $Serial,
 
+    # The number of files to build in each batch.
+    [int]
+    $BatchSize = 3,
+
     # The throttle limit for parallel jobs.
     [int]
     $ThrottleLimit = 10 
@@ -75,8 +79,9 @@ function Export-Pipescript {
 
         filter BuildSingleFile {
             param($buildFile)
-            if ((-not $buildFile) -and $_) { $buildFile = $_}
+            if ((-not $PSBoundParameters['BuildFile']) -and $_) { $buildFile = $_}
             $buildFileInfo = $buildFile.Source -as [IO.FileInfo]
+            if (-not $buildFileInfo) { return }
             $TotalInputFileLength += $buildFileInfo.Length
 
             $buildFileTemplate = $buildFile.Template
@@ -254,6 +259,7 @@ function Export-Pipescript {
         
         if (-not $startThreadJob) { continue }
         $buildThreadJobs = [Ordered]@{}         
+        $pendingBatch = @()
         foreach ($buildFile in $filesToBuild) {
             $ThisBuildStartedAt = [DateTime]::Now
             Write-Progress "Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" "$($buildFile.Source) " -PercentComplete $(
@@ -265,7 +271,12 @@ function Export-Pipescript {
             if ($alreadyBuilt[$buildFile.Source]) { continue }
             
             if ((-not $Serial) -and $startThreadJob) {
-                $buildThreadJobs[$buildFile]  = Start-ThreadJob -InitializationScript $InitializationScript -ScriptBlock $ThreadJobScript -ArgumentList $buildFile -ThrottleLimit $ThrottleLimit
+                $pendingBatch += $buildFile
+                if ($pendingBatch.Length -ge $BatchSize) {
+                    $buildThreadJobs["$pendingBatch"]  = Start-ThreadJob -InitializationScript $InitializationScript -ScriptBlock $ThreadJobScript -ArgumentList $pendingBatch -ThrottleLimit $ThrottleLimit
+                    $pendingBatch = @()
+                }
+                
             } else {
                 $buildFile | . BuildSingleFile
             }            
@@ -273,6 +284,10 @@ function Export-Pipescript {
             $alreadyBuilt[$buildFile.Source] = $true
         }
 
+        if ($pendingBatch.Length) {
+            $buildThreadJobs["$pendingBatch"]  = Start-ThreadJob -InitializationScript $InitializationScript -ScriptBlock $ThreadJobScript -ArgumentList $pendingBatch -ThrottleLimit $ThrottleLimit
+            $pendingBatch = @()
+        }
         $OriginalJobCount = $buildThreadJobs.Count
         
 
