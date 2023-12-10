@@ -2730,7 +2730,7 @@ PipeScript presently ships with 56 languages:
     <Members>
       <NoteProperty>
         <Name>PSNodeJob.cs</Name>
-        <Value>namespace Pipescript.Net
+        <Value>namespace PipeScript.Net
 {
     using System;
     using System.ComponentModel;
@@ -3014,41 +3014,43 @@ PipeScript presently ships with 56 languages:
             }
         }
 
-        Dictionary&lt;string, Dictionary&lt;string, object&gt;&gt; UserSessions = new Dictionary&lt;string, Dictionary&lt;string, object&gt;&gt;();
-        Dictionary&lt;string, DateTime&gt; UserSessionTimes = new Dictionary&lt;string, DateTime&gt;();
+        Dictionary&lt;string, PSObject&gt; UserSessions = new Dictionary&lt;string, PSObject&gt;();
 
         Dictionary&lt;string, string&gt; ContentTypeCommands = new Dictionary&lt;string, string&gt;(StringComparer.OrdinalIgnoreCase);        
         
         System.Timers.Timer SessionTimer = null;        
         Dictionary&lt;string, Object&gt; Application = new Dictionary&lt;string, Object&gt;();
 
-        public void ServeScript(string powerShellScript,  HttpListenerContext context) {                
+        public Cookie NewSessionCookie() {
+            string sessionGuid = Guid.NewGuid().ToString();
+            Cookie sessionKey = new Cookie("SessionKey", sessionGuid);
+            sessionKey.Expires = DateTime.UtcNow.AddMinutes(15);                
+            UserSessions[sessionGuid] = new PSObject();
+            UserSessions[sessionGuid].Properties.Add(new PSNoteProperty("Expires", sessionKey.Expires), true);
+            UserSessions[sessionGuid].Properties.Add(new PSNoteProperty("SessionKey", sessionKey.Value), true);            
+            return sessionKey;
+        }
+
+        public void ServeScript(string powerShellScript,  HttpListenerContext context) {
             HttpListenerRequest request = context.Request;                
             HttpListenerResponse response = context.Response;
 
-            Dictionary&lt;string, object&gt; session = null;
+            PSObject session = null;
             
+            // If we're serving a script, we'll want a SessionKey, so we can have _some_ sense of Web Session State.
             if (request.Cookies["SessionKey"] == null) {
-                string sessionGuid = Guid.NewGuid().ToString();
-                Cookie sessionKey = new Cookie("SessionKey", sessionGuid);
-                sessionKey.Expires = DateTime.UtcNow.AddMinutes(15);
-                response.AppendCookie(sessionKey);
-                UserSessions[sessionGuid] = new Dictionary&lt;string, object&gt;();
-                session = UserSessions[sessionGuid];
-                UserSessionTimes[sessionGuid] = DateTime.Now;
+                Cookie sessionCookie = NewSessionCookie();
+                response.AppendCookie(sessionCookie);
+                session = UserSessions[sessionCookie.Value];
             } else {
                 string sessionKey = request.Cookies["SessionKey"].Value.ToString();
                 if (UserSessions.ContainsKey(sessionKey)) {
-                    session = UserSessions[sessionKey];    
-                    UserSessionTimes[sessionKey] = DateTime.Now;
+                    session = UserSessions[sessionKey];
+                    ((PSNoteProperty)UserSessions[sessionKey].Properties["Expires"]).Value = DateTime.UtcNow;
                 } else {
-                    string sessionGuid = Guid.NewGuid().ToString();
-                    Cookie sessionKeyCookie = new Cookie("SessionKey", sessionGuid);
-                    sessionKeyCookie.Expires = DateTime.UtcNow.AddMinutes(15);
-                    response.AppendCookie(sessionKeyCookie);
-                    UserSessions[sessionGuid] = new Dictionary&lt;string, object&gt;();
-                    UserSessionTimes[sessionGuid] = DateTime.Now;
-                    session = UserSessions[sessionGuid];                    
+                    Cookie sessionCookie = NewSessionCookie();
+                    response.AppendCookie(sessionCookie);
+                    session = UserSessions[sessionCookie.Value];
                 }
             }
             
@@ -3311,14 +3313,20 @@ param($PSNodeJob, $listener)
         void SessionTimerElapsed(object sender, ElapsedEventArgs e) {
             try {
                 List&lt;string&gt; toRemove = new List&lt;string&gt;();
-                foreach (var kv in UserSessionTimes) {
-                    if (DateTime.Now - kv.Value &gt;= sessionTimeout) {
-                        toRemove.Add(kv.Key);
-                    } 
+                foreach (PSObject sessionObject in UserSessions.Values) {
+                    try {
+                        DateTime sessionExpiresAt = (DateTime)sessionObject.Properties["Expires"].Value;
+                        if (sessionExpiresAt != null &amp;&amp; sessionExpiresAt &gt;= DateTime.UtcNow ) {
+                            string sessionKey = sessionObject.Properties["SessionKey"].Value as string;
+                            toRemove.Add(sessionKey);
+                        }
+                    }
+                    catch {
+
+                    }                                    
                 }
 
-                foreach (string tr in toRemove) {
-                    UserSessionTimes.Remove(tr);
+                foreach (string tr in toRemove) {                    
                     UserSessions.Remove(tr);
                 }
             } catch {
@@ -3372,10 +3380,7 @@ param($PSNodeJob, $listener)
         public override void StopJob()
         {                           
             try {                
-                powerShellCommand.BeginStop(null, null);
-                if (runspacePool.RunspacePoolStateInfo.State == RunspacePoolState.Opened) {
-                    runspacePool.BeginClose(null, null);
-                }                
+                powerShellCommand.BeginStop(null, null);                                
                 if (Listener != null) {
                     Listener.Stop();
                     Listener.Close();                    
