@@ -16,7 +16,7 @@ if ($this.FilePattern) {
     }    
 }
 if ($this.LanguageName) {
-    foreach ($templateForThisLanguage in $templateCommands -match "$([Regex]::Escape($this.LanguageName))\p{P}") {
+    foreach ($templateForThisLanguage in $templateCommands -match "(?<=(?>^|[\p{P}-[\\]]))$([Regex]::Escape($this.LanguageName))[\p{P}-[\\]]") {
         $thisLanguagesTemplates["$templateForThisLanguage" -replace $templatePrefix] = $templateForThisLanguage
     }
 }
