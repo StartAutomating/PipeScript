@@ -16,7 +16,7 @@ if ($this.FilePattern) {
     }    
 }
 if ($this.LanguageName) {
-    foreach ($FunctionForLanguage in $global:AllFunctionsAndAliases -match "^$([Regex]::Escape($this.LanguageName))\p{P}") {
+    foreach ($FunctionForLanguage in $global:AllFunctionsAndAliases -match "$([Regex]::Escape($this.LanguageName))\p{P}") {
         $FunctionsForThisLanguage["$FunctionForLanguage"] = $FunctionForLanguage
     }
 }

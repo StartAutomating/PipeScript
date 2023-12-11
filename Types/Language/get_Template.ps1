@@ -7,16 +7,17 @@
 if (-not $global:AllFunctionsAndAliases) {
     $global:AllFunctionsAndAliases = $global:ExecutionContext.SessionState.InvokeCommand.GetCommand('*','Alias,Function',$true)
 }
-$templateCommands = $global:AllFunctionsAndAliases -match '^Template\p{P}'
+$templatePrefix   = '^Template\p{P}'
+$templateCommands = $global:AllFunctionsAndAliases -match $templatePrefix
 $thisLanguagesTemplates = [Ordered]@{PSTypename='Language.Templates'}
 if ($this.FilePattern) {    
     foreach ($templateForThisLanguage in $templateCommands -match $this.FilePattern) {
-        $thisLanguagesTemplates[$templateForThisLanguage -replace '^Template\p{P}' -replace $this.FilePattern] = $templateForThisLanguage
+        $thisLanguagesTemplates["$templateForThisLanguage" -replace $templatePrefix] = $templateForThisLanguage
     }    
 }
 if ($this.LanguageName) {
-    foreach ($templateForThisLanguage in $templateCommands -match $this.LanguageName) {
-        $thisLanguagesTemplates[$templateForThisLanguage -replace '^Template\p{P}' -replace ([Regex]::Escape($this.LanguageName))] = $templateForThisLanguage
+    foreach ($templateForThisLanguage in $templateCommands -match "$([Regex]::Escape($this.LanguageName))\p{P}") {
+        $thisLanguagesTemplates["$templateForThisLanguage" -replace $templatePrefix] = $templateForThisLanguage
     }
 }
 $thisLanguagesTemplates = [PSCustomObject]$thisLanguagesTemplates
