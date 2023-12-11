@@ -1963,7 +1963,7 @@ if ($this.FilePattern) {
     }    
 }
 if ($this.LanguageName) {
-    foreach ($FunctionForLanguage in $global:AllFunctionsAndAliases -match "$([Regex]::Escape($this.LanguageName))\p{P}") {
+    foreach ($FunctionForLanguage in $global:AllFunctionsAndAliases -match "(?&lt;=(?&gt;^|[\p{P}-[\\]]))$([Regex]::Escape($this.LanguageName))[\p{P}-[\\]]") {
         $FunctionsForThisLanguage["$FunctionForLanguage"] = $FunctionForLanguage
     }
 }
@@ -1996,7 +1996,7 @@ if ($this.FilePattern) {
     }    
 }
 if ($this.LanguageName) {
-    foreach ($templateForThisLanguage in $templateCommands -match "$([Regex]::Escape($this.LanguageName))\p{P}") {
+    foreach ($templateForThisLanguage in $templateCommands -match "(?&lt;=(?&gt;^|[\p{P}-[\\]]))$([Regex]::Escape($this.LanguageName))[\p{P}-[\\]]") {
         $thisLanguagesTemplates["$templateForThisLanguage" -replace $templatePrefix] = $templateForThisLanguage
     }
 }
