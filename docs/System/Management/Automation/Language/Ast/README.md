@@ -13,4 +13,5 @@
 * [get_First](get_First.md)
 * [get_IsEmpty](get_IsEmpty.md)
 * [get_Types](get_Types.md)
+* [get_Unique](get_Unique.md)
 * [get_Variables](get_Variables.md)
