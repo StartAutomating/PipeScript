@@ -203,6 +203,7 @@ function Export-Pipescript {
 
         $filesWithErrors = @()
         $errorsByFile = @{}
+        $errorsOfUnknownOrigin = @()
 
         $startThreadJob = $ExecutionContext.SessionState.InvokeCommand.GetCommand('Start-ThreadJob','Cmdlet')
 
@@ -341,6 +342,8 @@ function Export-Pipescript {
                             }
                             $errorsByFile[$buildSourceFile] += $buildOutput
                             $buildSourceFile
+                        } else {
+                            $errorsOfUnknownOrigin += $buildOutput
                         }                        
                     }
                 })
@@ -371,13 +374,19 @@ function Export-Pipescript {
                 "PipeScript Factor: X$([Math]::round([double]$TotalOutputFileLength/[double]$TotalInputFileLength,4))"
             }            
         }
-
-        if ($filesWithErrors -and $env:GITHUB_WORKSPACE) {
+        
+        if ($filesWithErrors) {
             "$($filesWithErrors.Length) files with Errors" | Out-Host
             foreach ($fileWithError in $filesWithErrors) {
                 "$fileWithError : $($errorsByFile[$fileWithError.FullName] | Out-String)"| Out-Host
             }
         }
+
+        if ($errorsOfUnknownOrigin) {
+            "$($errorsOfUnknownOrigin) errors of unknown origin" | Out-Host            
+            $errorsOfUnknownOrigin| Out-Host            
+        }
+
         
         Write-Progress "Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal]" "Finished In $($BuildTime) " -Completed -id $filesToBuildID
     }
