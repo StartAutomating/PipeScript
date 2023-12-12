@@ -64,11 +64,23 @@ begin {
     $global:AllCommands = $ExecutionContext.SessionState.InvokeCommand.GetCommands('*', 'Alias,Function,Cmdlet',$true)    
 
     function RefreshTranspilers([switch]$Force) {
-        $PotentialTranspilers = Get-Transpiler -Force:$Force
+        $PotentialTranspilers = @(
+            $PSLanguage.PowerShell.Templates.All | Sort-Object Order, Name
+            Get-Transpiler -Force:$Force            
+        )        
 
         $TranspilersByType = [Ordered]@{}
         foreach ($PotentialTranspiler in $PotentialTranspilers) {
-            $potentialTranspilerCommandMetadata = $PotentialTranspiler -as [Management.Automation.CommandMetadata]
+
+            <#foreach ($stronglyPipedType in @($PotentialTranspiler.StrongPipeType)) {
+                if (-not $stronglyPipedType) { continue }
+                if (-not $TranspilersByType[$stronglyPipedType]) {
+                    $TranspilersByType[$stronglyPipedType] = [Collections.Generic.List[PSObject]]::new()
+                }
+                $TranspilersByType[$stronglyPipedType].Add($PotentialTranspiler)
+            }#>
+            
+            $potentialTranspilerCommandMetadata = $PotentialTranspiler -as [Management.Automation.CommandMetadata]    
             :nextParameter foreach ($parameterMetaData in $potentialTranspilerCommandMetadata.Parameters.Values) {
                 foreach ($paramSet in $parameterMetaData.ParameterSets.Values) {
                     if ($paramSet.ValueFromPipeline) {
@@ -405,7 +417,7 @@ process {
                 if ($AstReplacements.Count) { 
                     # If there were replacements, we may need to compile them
                     foreach ($astReplacement in @($AstReplacements.GetEnumerator())) {
-                        if ($astReplacement.Value -is [scriptblock] -and $astReplacement.Value.Transpilers) { # If the output was a [ScriptBlock] and it had Transpilers
+                        if ($astReplacement.Value -is [scriptblock] -and $astReplacement.Value.Transpilers) { # If the output was a [ScriptBlock]
                             # call ourself with the replacement, and update the replacement (if there was nothing to replace, this part of the if will be avoided)
                             $astReplacements[$astReplacement.Key] = & $MyInvocation.MyCommand.ScriptBlock -ScriptBlock $astReplacement.Value
                         }
