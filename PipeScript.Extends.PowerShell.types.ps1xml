@@ -393,6 +393,27 @@ $myOffset   = 0
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Unique</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets unique AST elements
+.DESCRIPTION
+    Gets unique AST elements.  Uniqueness is defined by being literally the same text.
+#&gt;
+$uniqueElements = [Ordered]@{}
+foreach ($foundElement in @($this.FindAll({$true},$true))) {    
+    if ($uniqueElements["$foundElement"]) {
+        continue
+    }
+    $uniqueElements["$foundElement"] = $foundElement
+}
+
+@($uniqueElements.Values)
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Variables</Name>
         <GetScriptBlock>
                         &lt;#
@@ -1700,11 +1721,12 @@ return $false
 .DESCRIPTION
     Determines if a command uses strong typing on at least one ValueFromPipeline parameter.
 #&gt;
+$weakTypeList = [string],[object],[psobject], [string[]],[object[]],[psobject[]]
 foreach ($parameterSet in $this.ParameterSets) {
     foreach ($parameterInSet in $parameterSet.Parameters) {
         if (-not $parameterInSet.ValueFromPipeline) { continue }
         if ((-not $parameterInSet.ParameterType.IsPrimitive) -and  
-            $parameterInSet.ParameterType -notin [string],[object],[psobject]) {
+            $parameterInSet.ParameterType -notin $weakTypeList) {
             return $true
         }        
     }
@@ -1817,11 +1839,12 @@ else
 .DESCRIPTION
     Gets the strong types that a given command can accept as a ValueFromPipeline parameter.
 #&gt;
+$weakTypeList = [string],[object],[psobject], [string[]],[object[]],[psobject[]]
 , @(foreach ($parameterSet in $this.ParameterSets) {
     foreach ($parameterInSet in $parameterSet.Parameters) {
         if (-not $parameterInSet.ValueFromPipeline) { continue }
         if ((-not $parameterInSet.ParameterType.IsPrimitive) -and  
-            $parameterInSet.ParameterType -notin [string],[object],[psobject]) {
+            $parameterInSet.ParameterType -notin $weakTypeList) {
             $parameterInSet.ParameterType
         }        
     }
