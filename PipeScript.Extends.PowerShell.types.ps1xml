@@ -1692,6 +1692,28 @@ return $false
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>IsStronglyPiped</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Determines if a command is strongly piped.
+.DESCRIPTION
+    Determines if a command uses strong typing on at least one ValueFromPipeline parameter.
+#&gt;
+foreach ($parameterSet in $this.ParameterSets) {
+    foreach ($parameterInSet in $parameterSet.Parameters) {
+        if (-not $parameterInSet.ValueFromPipeline) { continue }
+        if ((-not $parameterInSet.ParameterType.IsPrimitive) -and  
+            $parameterInSet.ParameterType -notin [string],[object],[psobject]) {
+            return $true
+        }        
+    }
+}
+return $false
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Links</Name>
         <GetScriptBlock>
                         $this.GetHelpField("Link")
@@ -1785,6 +1807,28 @@ else
                         $this | Add-Member NoteProperty ".Separator" $args -Force
 
                     </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>StrongPipeType</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets strongly piped types for a command.
+.DESCRIPTION
+    Gets the strong types that a given command can accept as a ValueFromPipeline parameter.
+#&gt;
+, @(foreach ($parameterSet in $this.ParameterSets) {
+    foreach ($parameterInSet in $parameterSet.Parameters) {
+        if (-not $parameterInSet.ValueFromPipeline) { continue }
+        if ((-not $parameterInSet.ParameterType.IsPrimitive) -and  
+            $parameterInSet.ParameterType -notin [string],[object],[psobject]) {
+            $parameterInSet.ParameterType
+        }        
+    }
+})
+
+
+                    </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>Synopsis</Name>
