@@ -46,6 +46,11 @@ $languageDefinition = New-Module {
     param(
     )
 
+    # C# Files end in `.cs`
+    $FilePattern = '\.cs$'
+
+    # C# Projects are `.csproj`
+    $ProjectFilePattern = '\.csproj$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
@@ -58,9 +63,56 @@ $languageDefinition = New-Module {
     # * EndPattern       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
 
-    $Compiler = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('dotnet', 'Application'))[0], 'build'  # To compile C#, we'll use dotnet build 
+    $Compiler = 'dotnet', 'build'  # To compile C#, we'll use dotnet build 
 
-    $Runner  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('dotnet', 'Application'))[0], 'run'
+    $Runner  = 'dotnet', 'run' # Get the first dotnet, if present
+
+    $From = New-Module -AsCustomObject {        
+                    function TypeDefinitionAst {
+                        param(
+                        $TypeDefinitionAst
+                        )
+            
+                        if ($TypeDefinitionAst -isnot [Management.Automation.Language.TypeDefinitionAst]) { return }
+            
+                        if ($TypeDefinitionAst.IsEnum -and 
+                            $this.Enum -is [Management.Automation.PSMethodInfo]) {
+                            $this.Enum($TypeDefinitionAst)
+                        }                    
+                    }        
+            
+                    function Enum {
+                        param(                
+                        $Enum,
+            
+                        [string]
+                        $accessModifier = 'public'
+                        )
+                        
+                        
+                        if ($enum -is [Enum]) {
+            
+                        }
+                        elseif ($enum -is [Management.Automation.Language.TypeDefinitionAst]) {
+                                @"
+$($enum.Attributes)
+$accessModifier enum $($enum.Name) {
+    $(@(
+        foreach ($member in $enum.Members) {
+            @(
+                $member.Name
+                if ($null -ne $member.InitialValue) {
+                    '='
+                    $member.InitialValue
+                }                
+            ) -join ' '
+        }
+    ) -join (',' + [Environment]::NewLine + (' ' * 4)))
+}
+"@
+                        }            
+                    }
+                ; Export-ModuleMember -Variable * -Function * -Alias *}
     $LanguageName = 'CSharp'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
