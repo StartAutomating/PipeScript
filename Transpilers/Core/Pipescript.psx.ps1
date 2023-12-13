@@ -65,9 +65,11 @@ begin {
 
     function RefreshTranspilers([switch]$Force) {
         $PotentialTranspilers = @(
-            $PSLanguage.PowerShell.Templates.All | Sort-Object Order, Name
+            $PSLanguage.PipeScript.Templates.All 
+            $PSLanguage.PowerShell.Templates.All
             Get-Transpiler -Force:$Force            
-        )        
+        ) | 
+            Sort-Object Order, Name
 
         $TranspilersByType = [Ordered]@{}
         foreach ($PotentialTranspiler in $PotentialTranspilers) {
