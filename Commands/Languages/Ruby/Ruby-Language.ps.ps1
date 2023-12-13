@@ -9,10 +9,13 @@ Language function Ruby {
 #>
 [ValidatePattern('\.rb$')]
 param()
+    # Ruby files end in .rb
     $FilePattern = '\.rb$'
-
-    # We start off by declaring a number of regular expressions:
     
+    # Ruby is Case-sensitive
+    $CaseSensitive = $true
+    
+    # Ruby "blocks" are `=begin` and `=end`
     $startComment = '(?>[\r\n]{1,3}\s{0,}=begin[\s\r\n]{0,}\{)'
     $endComment   = '(?>}[\r\n]{1,3}\s{0,}=end)'
 
@@ -22,8 +25,10 @@ param()
 
     $IgnoredContext = "(?<ignore>(?>$($ignoreEach -join '|'))\s{0,}){0,1}"
 
-    $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('ruby', 'Application'))[0] # Get the first python, if presentS
-    
+    # PipeScript source can be embedded within Ruby using `=begin{` `}=end`.
     $startPattern = "(?<PSStart>${IgnoredContext}${startComment})"    
     $endPattern   = "(?<PSEnd>${endComment}${IgnoredContext})"
+
+    # Ruby's interpreter is simply, ruby (if this is not installed, it will error)
+    $Interpreter  = 'ruby'    
 }
