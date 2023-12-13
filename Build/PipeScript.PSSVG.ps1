@@ -3,7 +3,7 @@
 $psChevron = Invoke-restMethod https://pssvg.start-automating.com/Examples/PowerShellChevron.svg
 $RotateEvery = [Timespan]'00:00:15'
 
-$Variants = '', 'animated'
+$Variants = '', '4-chevron','animated','4-chevron-animated'
 
 foreach ($variant in $variants) {
 
@@ -44,7 +44,11 @@ svg -ViewBox 1920,1080 @(
         $circleLeft   = ((1920/2) - $radius),((1080/2))
         $rotateEach   = $RotateEvery * (1 + $circleN)
 
-        if ((-not $variant) -and $circleN) { continue } 
+        if ($circleN) { 
+            if ($variant -in '', '4-chevron') {
+                continue 
+            }            
+        } 
 
         $strokeWidth  = 1.25 - ($circleN * .05)
         $Opacity = 1 - ($circleN * .05)
@@ -54,13 +58,14 @@ svg -ViewBox 1920,1080 @(
                     svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
                 }                
             ) -Opacity $Opacity
-
-        SVG.ArcPath -Start $circleRight -End $circleTop -Sweep -Radius $radius -Large -Opacity $Opacity |
-            SVG.ArcPath -Radius $radius -End $circleRight -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
-                if ($variant -match 'animated') {
-                    svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
-                }
-            ) -Opacity $Opacity
+       
+            SVG.ArcPath -Start $circleRight -End $circleTop -Sweep -Radius $radius -Large -Opacity $Opacity |
+                SVG.ArcPath -Radius $radius -End $circleRight -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
+                    if ($variant -match 'animated') {
+                        svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
+                    }
+                ) -Opacity $Opacity
+        if ($variant -match '4-chevron') {
 
         SVG.ArcPath -Start $circleTop -End $circleLeft -Sweep -Radius $radius -Large -Opacity $Opacity |
             SVG.ArcPath -Radius $radius -End $circleTop -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
@@ -75,6 +80,7 @@ svg -ViewBox 1920,1080 @(
                     svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
                 }
             )
+        }
     }     
 ) -OutputPath (
     Join-Path ($PSScriptRoot | Split-Path) Assets | Join-Path -ChildPath "PipeScript$(if ($variant) { "-$Variant"}).svg"
