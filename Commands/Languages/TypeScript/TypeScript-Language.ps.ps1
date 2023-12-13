@@ -21,6 +21,9 @@ Language function TypeScript {
 [ValidatePattern('\.tsx{0,1}')]
 param()
     $FilePattern = '\.tsx{0,1}'
+
+    $CaseSensitive = $true
+    
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
@@ -33,5 +36,5 @@ param()
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
 
     # TypeScript is a Compiler for JavaScript.  If we can find the application tsc, we can compile TypeScript
-    $Compiler     = $ExecutionContext.SessionState.InvokeCommand.GetCommand('tsc', 'Application')
+    $Compiler     = 'tsc'
 }
