@@ -146,7 +146,7 @@ $PipeScript.Extensions |
                 $InterpretersByName[$languageObject.LanguageName] = $languageObject
             }
         }
-        
+
         end {        
             $PSLanguage = $PSLanguages = [PSCustomObject]$LanguagesByName
             $PSLanguage.pstypenames.clear()
