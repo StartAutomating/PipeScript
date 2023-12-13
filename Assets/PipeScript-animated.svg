@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generated with PSSVG 0.2.10 <https://github.com/StartAutomating/PSSVG> -->
+<svg viewBox="0 0 1920 1080" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style type="text/css">@import url('https://fonts.googleapis.com/css?family=Roboto')</style>
+    <marker id="marker" viewBox="0 0 100 100" markerWidth="75" markerHeight="75" refX="50" refY="50" orient="auto-start-reverse">
+      <polygon points="30,0 35,0 60,50 15,100 12.5,100 55,50" fill="#4488ff" class="foreground-fill" />
+    </marker>
+  </defs>
+  <symbol id="psChevron" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="40,20 45,20 60,50 35,80 32.5,80 55,50" />
+  </symbol>
+  <text font-size="192" text-anchor="middle" dominant-baseline="middle" x="50%" y="50%" style="font-family: &quot;Roboto&quot;, sans-serif" fill="#4488ff" class="foreground-fill">
+    <tspan font-size=".9em">P</tspan>
+    <tspan font-size=".6em" dx="-.4em">|</tspan>
+    <tspan font-size="1em" dx="-.25em">peScr</tspan>
+    <tspan font-size=".6em" dx="-.4em">|</tspan>
+    <tspan font-size=".9em" dx="-.25em">pt</tspan>
+  </text>
+  <path stroke="#4488ff" class="foreground-stroke" fill="transparent" marker-end="url(#marker)" stroke-width="1.25" opacity="1" d="M 485 540 A 475 475 0 1 1 960 1015 A 475 475 0 0 1 485 540">
+    <animateTransform attributeName="transform" from="360 960 540" to="0 960 540" dur="15s" repeatCount="indefinite" attributeType="XML" type="rotate" />
+  </path>
+  <path stroke="#4488ff" class="foreground-stroke" fill="transparent" marker-end="url(#marker)" stroke-width="1.25" opacity="1" d="M 1435 540 A 475 475 0 1 1 960 65 A 475 475 0 0 1 1435 540">
+    <animateTransform attributeName="transform" from="360 960 540" to="0 960 540" dur="15s" repeatCount="indefinite" attributeType="XML" type="rotate" />
+  </path>
+  <path stroke="#4488ff" class="foreground-stroke" fill="transparent" marker-end="url(#marker)" stroke-width="1.25" opacity="1" d="M 960 65 A 475 475 0 1 1 485 540 A 475 475 0 0 1 960 65">
+    <animateTransform attributeName="transform" from="360 960 540" to="0 960 540" dur="15s" repeatCount="indefinite" attributeType="XML" type="rotate" />
+  </path>
+  <path stroke="#4488ff" class="foreground-stroke" fill="transparent" marker-end="url(#marker)" stroke-width="1.25" d="M 960 1015 A 475 475 0 1 1 1435 540 A 475 475 0 0 1 960 1015">
+    <animateTransform attributeName="transform" from="360 960 540" to="0 960 540" dur="15s" repeatCount="indefinite" attributeType="XML" type="rotate" />
+  </path>
+  <path stroke="#4488ff" class="foreground-stroke" fill="transparent" marker-end="url(#marker)" stroke-width="1.2" opacity="0.95" d="M 490 540 A 470 470 0 1 1 960 1010 A 470 470 0 0 1 490 540">
+    <animateTransform attributeName="transform" from="360 960 540" to="0 960 540" dur="30s" repeatCount="indefinite" attributeType="XML" type="rotate" />
+  </path>
+  <path stroke="#4488ff" class="foreground-stroke" fill="transparent" marker-end="url(#marker)" stroke-width="1.2" opacity="0.95" d="M 1430 540 A 470 470 0 1 1 960 70 A 470 470 0 0 1 1430 540">
+    <animateTransform attributeName="transform" from="360 960 540" to="0 960 540" dur="30s" repeatCount="indefinite" attributeType="XML" type="rotate" />
+  </path>
+  <path stroke="#4488ff" class="foreground-stroke" fill="transparent" marker-end="url(#marker)" stroke-width="1.2" opacity="0.95" d="M 960 70 A 470 470 0 1 1 490 540 A 470 470 0 0 1 960 70">
+    <animateTransform attributeName="transform" from="360 960 540" to="0 960 540" dur="30s" repeatCount="indefinite" attributeType="XML" type="rotate" />
+  </path>
+  <path stroke="#4488ff" class="foreground-stroke" fill="transparent" marker-end="url(#marker)" stroke-width="1.2" d="M 960 1010 A 470 470 0 1 1 1430 540 A 470 470 0 0 1 960 1010">
+    <animateTransform attributeName="transform" from="360 960 540" to="0 960 540" dur="30s" repeatCount="indefinite" attributeType="XML" type="rotate" />
+  </path>
+  <path stroke="#4488ff" class="foreground-stroke" fill="transparent" marker-end="url(#marker)" stroke-width="1.15" opacity="0.9" d="M 495 540 A 465 465 0 1 1 960 1005 A 465 465 0 0 1 495 540">
+    <animateTransform attributeName="transform" from="360 960 540" to="0 960 540" dur="45s" repeatCount="indefinite" attributeType="XML" type="rotate" />
+  </path>
+  <path stroke="#4488ff" class="foreground-stroke" fill="transparent" marker-end="url(#marker)" stroke-width="1.15" opacity="0.9" d="M 1425 540 A 465 465 0 1 1 960 75 A 465 465 0 0 1 1425 540">
+    <animateTransform attributeName="transform" from="360 960 540" to="0 960 540" dur="45s" repeatCount="indefinite" attributeType="XML" type="rotate" />
+  </path>
+  <path stroke="#4488ff" class="foreground-stroke" fill="transparent" marker-end="url(#marker)" stroke-width="1.15" opacity="0.9" d="M 960 75 A 465 465 0 1 1 495 540 A 465 465 0 0 1 960 75">
+    <animateTransform attributeName="transform" from="360 960 540" to="0 960 540" dur="45s" repeatCount="indefinite" attributeType="XML" type="rotate" />
+  </path>
+  <path stroke="#4488ff" class="foreground-stroke" fill="transparent" marker-end="url(#marker)" stroke-width="1.15" d="M 960 1005 A 465 465 0 1 1 1425 540 A 465 465 0 0 1 960 1005">
+    <animateTransform attributeName="transform" from="360 960 540" to="0 960 540" dur="45s" repeatCount="indefinite" attributeType="XML" type="rotate" />
+  </path>
+</svg>
