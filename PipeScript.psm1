@@ -155,9 +155,9 @@ $PipeScript.Extensions |
             $PSInterpeter.pstypenames.clear()
             $PSInterpeter.pstypenames.insert(0,'PipeScript.Interpreters')
 
-            $PSParser = $PSParsers = [PSCustomObject]
-            $PSInterpeter.pstypenames.clear()
-            $PSInterpeter.pstypenames.insert(0,'PipeScript.Parsers')
+            $PSParser = $PSParsers = [PSCustomObject]$ParsersByName
+            $PSParser.pstypenames.clear()
+            $PSParser.pstypenames.insert(0,'PipeScript.Parsers')
         }
     }
 
