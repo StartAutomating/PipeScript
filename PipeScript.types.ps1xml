@@ -3699,6 +3699,48 @@ param($PSNodeJob, $listener)
     </Members>
   </Type>
   <Type>
+    <Name>PipeScript.Parsers</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>All</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets all Parsers
+.DESCRIPTION
+    Gets all parsers loaded in PipeScript.
+#&gt;
+,@(foreach ($psProperty in $this.PSObject.properties) {
+    if ($psProperty -isnot [psnoteproperty]) { continue  }    
+    if ($psProperty.Value -isnot [Management.Automation.CommandInfo]) { continue }
+    $psProperty.Value
+})
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Count</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the number of loaded parsers.
+.DESCRIPTION
+    Gets the number of parsers loaded by PipeScript.
+.EXAMPLE
+    $PSParser.Count
+#&gt;
+$count= 0
+foreach ($prop in $this.psobject.properties) {
+    if ($prop -is [psscriptproperty]) { continue }
+    if ($prop.Value -is [Management.Automation.CommandInfo]) {
+        $count++
+    }
+}
+return $count
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
     <Name>PipeScript.Sentence</Name>
     <Members>
       <AliasProperty>
