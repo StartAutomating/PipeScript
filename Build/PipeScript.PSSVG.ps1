@@ -1,7 +1,11 @@
 #requires -Module PSSVG
 
 $psChevron = Invoke-restMethod https://pssvg.start-automating.com/Examples/PowerShellChevron.svg
-$RotateEvery = [Timespan]'00:01:30'
+$RotateEvery = [Timespan]'00:00:15'
+
+$Variants = '', 'animated'
+
+foreach ($variant in $variants) {
 
 svg -ViewBox 1920,1080 @(
     svg.defs @(
@@ -31,22 +35,48 @@ svg -ViewBox 1920,1080 @(
 
     
     
-    
-    $radius = 475
-    $circleTop    = (1920/2), ((1080/2)-$radius)
-    $circleMid    = (1920/2), (1080/2)
-    $circleRight  = ((1920/2) + $radius),((1080/2))
-    $circleBottom = (1920/2), ((1080/2)+$radius)
-    $circleLeft   = ((1920/2) - $radius),((1080/2))
-    SVG.ArcPath -Start $circleLeft -End $circleBottom -Sweep -Radius $radius -Large |
-        SVG.ArcPath -Radius $radius -End $circleLeft -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth 1.25 -Content @(
-            svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($RotateEvery.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
-        )
+    foreach ($circleN in 0..2) {
+        $radius = 475 - ($circleN * 5)
+        $circleTop    = (1920/2), ((1080/2)-$radius)
+        $circleMid    = (1920/2), (1080/2)
+        $circleRight  = ((1920/2) + $radius),((1080/2))
+        $circleBottom = (1920/2), ((1080/2)+$radius)
+        $circleLeft   = ((1920/2) - $radius),((1080/2))
+        $rotateEach   = $RotateEvery * (1 + $circleN)
 
-    SVG.ArcPath -Start $circleRight -End $circleTop -Sweep -Radius $radius -Large |
-        SVG.ArcPath -Radius $radius -End $circleRight -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth 1.25 -Content @(
-            svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($RotateEvery.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
-        )     
+        if ((-not $variant) -and $circleN) { continue } 
+
+        $strokeWidth  = 1.25 - ($circleN * .05)
+        $Opacity = 1 - ($circleN * .05)
+        SVG.ArcPath -Start $circleLeft -End $circleBottom -Sweep -Radius $radius -Large -Opacity $Opacity |
+            SVG.ArcPath -Radius $radius -End $circleLeft -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
+                if ($variant -match 'animated') {
+                    svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
+                }                
+            ) -Opacity $Opacity
+
+        SVG.ArcPath -Start $circleRight -End $circleTop -Sweep -Radius $radius -Large -Opacity $Opacity |
+            SVG.ArcPath -Radius $radius -End $circleRight -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
+                if ($variant -match 'animated') {
+                    svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
+                }
+            ) -Opacity $Opacity
+
+        SVG.ArcPath -Start $circleTop -End $circleLeft -Sweep -Radius $radius -Large -Opacity $Opacity |
+            SVG.ArcPath -Radius $radius -End $circleTop -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
+                if ($variant -match 'animated') {
+                    svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
+                }
+            ) -Opacity $Opacity
+
+        SVG.ArcPath -Start $circleBottom -End $circleRight -Sweep -Radius $radius -Large |
+            SVG.ArcPath -Radius $radius -End $circleBottom -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
+                if ($variant -match 'animated') {
+                    svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
+                }
+            )
+    }     
 ) -OutputPath (
-    Join-Path ($PSScriptRoot | Split-Path) Assets | Join-Path -ChildPath "PipeScript.svg"
+    Join-Path ($PSScriptRoot | Split-Path) Assets | Join-Path -ChildPath "PipeScript$(if ($variant) { "-$Variant"}).svg"
 )
+}
