@@ -1,4 +1,4 @@
-Template function PipeScript.ForEachLoop {
+Template function PipeScript.ForEach {
     <#
     .SYNOPSIS
         Template for a PipeScript `foreach` Loop
