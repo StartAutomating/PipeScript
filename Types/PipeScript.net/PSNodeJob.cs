@@ -154,34 +154,23 @@ namespace PipeScript.Net
 
         public PSNodeJob(string name, string command, ScriptBlock scriptBlock)
             : base(command, name)
-        {
-            
-            //Start(scriptBlock, null, null);
-        }
+        {}
 
         private PSNodeJob(ScriptBlock scriptBlock)
-        {
-            //Start(scriptBlock, null, null);
-        }
+        {}
         
         
         public PSNodeJob(string name, string command, ScriptBlock scriptBlock, Hashtable parameters)
             : base(command, name)
-        {
-            
-            //Start(scriptBlock, parameters, null);
-        }
+        {}
 
         public PSNodeJob(string name, string command, ScriptBlock scriptBlock, Hashtable parameters, PSObject[] argumentList)
             : base(command, name)
-        {               
-            //Start(scriptBlock, parameters, argumentList);
-        }
+        {}
 
         private PSNodeJob(string name, string command, ScriptBlock scriptBlock, Hashtable parameters, PSObject[] argumentList, bool isChildJob)
             : base(command, name)
-        {
-            
+        {            
             if (! isChildJob) {
                 PSNodeJob childJob = new PSNodeJob(name, command, scriptBlock, parameters, argumentList, true);
                 childJob.StateChanged += new EventHandler<JobStateEventArgs>(childJob_StateChanged);
@@ -203,22 +192,17 @@ namespace PipeScript.Net
         void powerShellCommand_InvocationStateChanged(object sender, PSInvocationStateChangedEventArgs e)
         {
             try
-            {
-                if (e.InvocationStateInfo.State == PSInvocationState.Completed)
-                {
-                    
-                }
+            {                
                 if (e.InvocationStateInfo.State == PSInvocationState.Failed)
                 {
                     ErrorRecord err = new ErrorRecord(e.InvocationStateInfo.Reason, "JobFailed", ErrorCategory.OperationStopped, this);
-                    Error.Add(err);
-                    
+                    Error.Add(err);                    
                 }
                 JobState js = (JobState)Enum.Parse(typeof(JobState), e.InvocationStateInfo.State.ToString(), true);
                 this.SetJobState(js);
             }
-            catch
-            {
+            catch (Exception ex) {
+                this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.Unknown, this));
             }
         }
 
@@ -361,11 +345,13 @@ namespace PipeScript.Net
                 {
                     foreach (PSObject psObject in command.Invoke<PSObject>())
                     {
-                        if (psObject.BaseObject == null) { continue; }
+                        if (psObject.BaseObject == null) { continue; }                        
                         byte[] buffer = null;
                         string stringified = psObject.ToString();                                            
-                        buffer = System.Text.Encoding.UTF8.GetBytes(stringified);                        
-                        response.OutputStream.Write(buffer, 0, buffer.Length);
+                        buffer = System.Text.Encoding.UTF8.GetBytes(stringified);
+                        if (response.OutputStream.CanWrite) {
+                            response.OutputStream.Write(buffer, 0, buffer.Length);
+                        }                        
                         offset += buffer.Length;
                         buffer = null;
                     }
@@ -373,7 +359,9 @@ namespace PipeScript.Net
                     foreach (ErrorRecord err in command.Streams.Error) {
                         string errorString = err.Exception.ToString() + ' ' + err.InvocationInfo.PositionMessage;
                         byte[] buffer = System.Text.Encoding.UTF8.GetBytes(errorString);
-                        response.OutputStream.Write(buffer, 0, buffer.Length);
+                        if (response.OutputStream.CanWrite) {
+                            response.OutputStream.Write(buffer, 0, buffer.Length);
+                        }
                         offset += buffer.Length;
                         buffer = null;
                     }                    
@@ -382,13 +370,19 @@ namespace PipeScript.Net
                 {
                     byte[] buffer = System.Text.Encoding.UTF8.GetBytes(ex.Message);
                     response.StatusCode = 500;
-                    response.OutputStream.Write(buffer, 0, buffer.Length);
+                    if (response.OutputStream.CanWrite) {
+                        response.OutputStream.Write(buffer, 0, buffer.Length);
+                    }
                     offset += buffer.Length;
                     buffer = null;
                 }
                 finally
                 {
-                    response.Close();
+                    try {                    
+                        response.Close();
+                    } catch (Exception ex) {
+                        this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.Unknown, this));
+                    }
                 }
             }
         }
@@ -589,15 +583,16 @@ param($PSNodeJob, $listener)
                             toRemove.Add(sessionKey);
                         }
                     }
-                    catch {
-
-                    }                                    
+                    catch (Exception ex) {
+                        this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.Unknown, this));
+                    }
                 }
 
                 foreach (string tr in toRemove) {                    
                     UserSessions.Remove(tr);
                 }
-            } catch {
+            } catch (Exception ex) {
+                this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.Unknown, this));
             }
         }
         
@@ -655,9 +650,7 @@ param($PSNodeJob, $listener)
                 }
 
             } catch (Exception ex) {
-                //if (! (ex is HttpListenerException)) { // Any last requests will be ignored
-                    this.Error.Add(new ErrorRecord(ex, "PSNode.StopJob.Error", ErrorCategory.CloseError, this));
-                //}
+                this.Error.Add(new ErrorRecord(ex, "PSNode.StopJob.Error", ErrorCategory.CloseError, this));
             }            
         }
 
