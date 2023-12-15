@@ -325,7 +325,7 @@ namespace PipeScript.Net
                     .AddArgument(this))
             {
                 if (String.IsNullOrEmpty(contentType) || contentType.ToLower() == "text/html") {
-                    // command.AddCommand("Out-Html");
+                    command.AddCommand("Out-Html");
                 } else if (request.ContentType != null && (contentType == "application/json" || contentType == "text/json")) {
                     command.AddCommand("ConvertTo-Json").AddParameter("Compress", true);                    
                 } else if (request.ContentType != null && contentType == "text/plain") {
