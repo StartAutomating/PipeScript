@@ -19,11 +19,15 @@ Language function TypeScript {
     * ```''```
 #>
 [ValidatePattern('\.tsx{0,1}')]
-param()
+param()    
+    # TypeScript Files are named `.ts` or `.tsx`
     $FilePattern = '\.tsx{0,1}'
+    
+    # TypeScript Project files are named `tsconfig.json`
+    $ProjectFilePattern = 'tsconfig.json$'
 
     $CaseSensitive = $true
-    
+
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
     $endComment   = '\*/' # * End Comments   ```/*```
