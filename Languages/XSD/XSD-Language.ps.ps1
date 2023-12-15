@@ -3,7 +3,7 @@ Language function XSD {
     .SYNOPSIS
         XSD PipeScript Language Definition.
     .DESCRIPTION
-        Allows PipeScript to generate XSD.
+        Allows PipeScript to generate and interpret XSD.
     
         Multiline comments blocks like this ```<!--{}-->``` will be treated as blocks of PipeScript.
     #>
@@ -31,7 +31,7 @@ Language function XSD {
                     $byteStream = Get-Content $arg -AsByteStream
                     # turn them into a memory stream
                     $memoryStream = [IO.MemoryStream]::new($byteStream)
-                    # and read the schema (if this fails, the error helpfully bubble up)
+                    # and read the schema (if this fails, the error will helpfully bubble up)
                     [Xml.Schema.XmlSchema]::Read($memoryStream)
                     # Don't forget to close and dispose of the memory stream
                     $memoryStream.Close()
