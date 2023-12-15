@@ -6,7 +6,7 @@
 #>
 param(
 # The command line to examine for a match.
-[Alias('InvocationName')]
+[Alias('InvocationName','CommandName')]
 [string]
 $CommandLine
 )
@@ -27,7 +27,7 @@ foreach ($parserCommand in $this.All) {
         if ($parserAttribute -isnot [ValidatePattern]) { continue }
         
         $pattern = [Regex]::new($parserAttribute.RegexPattern, $parserAttribute.Options, '00:00:01')
-        if ($pattern.IsMatch($CommandName)) {
+        if ($pattern.IsMatch($CommandLine)) {
             $parserCommand
             break
         }
