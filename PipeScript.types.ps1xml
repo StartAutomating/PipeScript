@@ -1999,6 +1999,11 @@ $this.'.Root'
     </Members>
   </Type>
   <Type>
+    <Name>Hashtable</Name>
+    <Members>
+    </Members>
+  </Type>
+  <Type>
     <Name>Language</Name>
     <Members>
       <AliasProperty>
@@ -2172,6 +2177,11 @@ return $false
 }).Length
                     </GetScriptBlock>
       </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
+    <Name>Markdown</Name>
+    <Members>
     </Members>
   </Type>
   <Type>
@@ -3865,6 +3875,16 @@ else {
 
                     </Script>
       </ScriptMethod>
+    </Members>
+  </Type>
+  <Type>
+    <Name>PipeScript.Template</Name>
+    <Members>
+    </Members>
+  </Type>
+  <Type>
+    <Name>PipeScript.Transpiler</Name>
+    <Members>
     </Members>
   </Type>
   <Type>
@@ -5792,6 +5812,11 @@ $requirement = $this
     </Members>
   </Type>
   <Type>
+    <Name>Search.PipeScript.Result</Name>
+    <Members>
+    </Members>
+  </Type>
+  <Type>
     <Name>Microsoft.CodeAnalysis.SyntaxNode</Name>
     <Members>
       <ScriptMethod>
@@ -6598,6 +6623,11 @@ if ($closestAssignment.Right -is [Management.Automation.Language.PipelineAst]) {
 return
                     </Script>
       </ScriptMethod>
+    </Members>
+  </Type>
+  <Type>
+    <Name>YAML</Name>
+    <Members>
     </Members>
   </Type>
 </Types>
