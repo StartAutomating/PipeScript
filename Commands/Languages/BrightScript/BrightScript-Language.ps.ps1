@@ -11,7 +11,7 @@ Language function BrightScript {
         `'}` marks the end of a PipeScript block
         
     #>
-    [ValidatePattern('\.(?>gx|gcode|nc)$')]
+    [ValidatePattern('\.brs$')]
     param()
 
     # BrightScript files end in `.brs`.
