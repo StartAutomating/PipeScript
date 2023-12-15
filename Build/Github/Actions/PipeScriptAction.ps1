@@ -30,8 +30,22 @@ $SkipBuild,
 $CommitMessage,
 
 # A list of modules to be installed from the PowerShell gallery before scripts run.
+# Note: If ugit is not installed, commit messages will not be carried properly with multiple commits.
 [string[]]
 $InstallModule = 'ugit',
+
+# If set, will build files one-by-one, instead of in parallel.
+[switch]
+$Serial,
+
+# The number of files to build in each batch.
+[int]
+$BatchSize = 11,
+
+# The throttle limit for parallel jobs.
+# If too many jobs are running at once, errors may occur.
+[int]
+$ThrottleLimit = 7,
 
 # The user email associated with a git commit.
 [string]
@@ -145,7 +159,7 @@ if (-not $branchName) {
     return
 }
 
-git fetch --unshallow | Out-Host
+try { git fetch --unshallow } catch { $_ | Out-Host } 
 
 $PipeScriptStart = [DateTime]::Now
 if ($Script) {
@@ -161,7 +175,7 @@ $BuildPipeScriptStart = [DateTime]::Now
 $pipeScriptBuildErrors = $null
 if (-not $SkipBuild) {
     
-    $buildOutputFiles = @(Build-Pipescript -InputPath $env:GITHUB_WORKSPACE -ErrorVariable pipeScriptBuildErrors)
+    $buildOutputFiles = @(Build-Pipescript -Serial:$Serial -BatchSize:$BatchSize -ThrottleLimit:$ThrottleLimit -InputPath $env:GITHUB_WORKSPACE -ErrorVariable pipeScriptBuildErrors)
     if ($buildOutputFiles) {
         "::notice:: $($buildOutputFiles.Length) files outputted" | Out-Host        
         "$($buildOutputFiles.FullName -join [Environment]::newLine)" | Out-Host
@@ -176,9 +190,7 @@ if ($pipeScriptBuildErrors) {
     "::error::$($pipeScriptBuildErrors | Out-String)" | Out-Host
     $pipeScriptBuildErrors
     exit 1
-} 
-
-
+}
 
 $BuildPipeScriptEnd = [DateTime]::Now
 $BuildPipeScriptTook = $BuildPipeScriptEnd - $BuildPipeScriptStart

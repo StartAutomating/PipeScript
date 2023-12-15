@@ -20,7 +20,22 @@ inputs:
   InstallModule: 
     required: false
     default: 'ugit'
-    description: A list of modules to be installed from the PowerShell gallery before scripts run.
+    description: |
+      A list of modules to be installed from the PowerShell gallery before scripts run.
+      Note: If ugit is not installed, commit messages will not be carried properly with multiple commits.
+  Serial: 
+    required: false
+    description: If set, will build files one-by-one, instead of in parallel.
+  BatchSize: 
+    required: false
+    default: 11
+    description: The number of files to build in each batch.
+  ThrottleLimit: 
+    required: false
+    default: 7
+    description: |
+      The throttle limit for parallel jobs.
+      If too many jobs are running at once, errors may occur.
   UserEmail: 
     required: false
     description: The user email associated with a git commit.
@@ -37,12 +52,15 @@ runs:
       id: PipeScriptAction
       shell: pwsh
       env: 
-        UserEmail: ${{inputs.UserEmail}}
         InstallModule: ${{inputs.InstallModule}}
+        UserEmail: ${{inputs.UserEmail}}
+        CommitMessage: ${{inputs.CommitMessage}}
+        Serial: ${{inputs.Serial}}
+        Script: ${{inputs.Script}}
         UserName: ${{inputs.UserName}}
         SkipBuild: ${{inputs.SkipBuild}}
-        CommitMessage: ${{inputs.CommitMessage}}
-        Script: ${{inputs.Script}}
+        ThrottleLimit: ${{inputs.ThrottleLimit}}
+        BatchSize: ${{inputs.BatchSize}}
       run: |
         $Parameters = @{}
         $Parameters.Script = ${env:Script}
@@ -51,6 +69,10 @@ runs:
         $Parameters.CommitMessage = ${env:CommitMessage}
         $Parameters.InstallModule = ${env:InstallModule}
         $Parameters.InstallModule = $parameters.InstallModule -split ';' -replace '^[''"]' -replace  '[''"]$'
+        $Parameters.Serial = ${env:Serial}
+        $Parameters.Serial = $parameters.Serial -match 'true';
+        $Parameters.BatchSize = ${env:BatchSize}
+        $Parameters.ThrottleLimit = ${env:ThrottleLimit}
         $Parameters.UserEmail = ${env:UserEmail}
         $Parameters.UserName = ${env:UserName}
         foreach ($k in @($parameters.Keys)) {
@@ -91,8 +113,22 @@ runs:
         $CommitMessage,
         
         # A list of modules to be installed from the PowerShell gallery before scripts run.
+        # Note: If ugit is not installed, commit messages will not be carried properly with multiple commits.
         [string[]]
         $InstallModule = 'ugit',
+        
+        # If set, will build files one-by-one, instead of in parallel.
+        [switch]
+        $Serial,
+        
+        # The number of files to build in each batch.
+        [int]
+        $BatchSize = 11,
+        
+        # The throttle limit for parallel jobs.
+        # If too many jobs are running at once, errors may occur.
+        [int]
+        $ThrottleLimit = 7,
         
         # The user email associated with a git commit.
         [string]
@@ -206,7 +242,7 @@ runs:
             return
         }
         
-        git fetch --unshallow | Out-Host
+        try { git fetch --unshallow } catch { $_ | Out-Host } 
         
         $PipeScriptStart = [DateTime]::Now
         if ($Script) {
@@ -222,7 +258,7 @@ runs:
         $pipeScriptBuildErrors = $null
         if (-not $SkipBuild) {
             
-            $buildOutputFiles = @(Build-Pipescript -InputPath $env:GITHUB_WORKSPACE -ErrorVariable pipeScriptBuildErrors)
+            $buildOutputFiles = @(Build-Pipescript -Serial:$Serial -BatchSize:$BatchSize -ThrottleLimit:$ThrottleLimit -InputPath $env:GITHUB_WORKSPACE -ErrorVariable pipeScriptBuildErrors)
             if ($buildOutputFiles) {
                 "::notice:: $($buildOutputFiles.Length) files outputted" | Out-Host        
                 "$($buildOutputFiles.FullName -join [Environment]::newLine)" | Out-Host
@@ -237,9 +273,7 @@ runs:
             "::error::$($pipeScriptBuildErrors | Out-String)" | Out-Host
             $pipeScriptBuildErrors
             exit 1
-        } 
-        
-        
+        }
         
         $BuildPipeScriptEnd = [DateTime]::Now
         $BuildPipeScriptTook = $BuildPipeScriptEnd - $BuildPipeScriptStart
