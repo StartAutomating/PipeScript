@@ -11,6 +11,7 @@ Language function GCode {
         `'}` marks the end of a PipeScript block
         
     #>
+    [ValidatePattern('\.(?>gx|gcode|nc)$')]
     param()
 
     # GCode files end in `.gx`, `.gcode`, or `.nc`
