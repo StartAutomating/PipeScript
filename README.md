@@ -50,7 +50,7 @@ Often, programming involves implementing small functional changes within a speci
 
 For example, if implementing an interface or subclass, the only things that will change are the class name and method details.
 
-PipeScript can be be embedded within 59 languages.
+PipeScript can be be embedded within 60 languages.
 
 Embedding PipeScript within any of these languages allows you to generate any of these languages with parameterized scripts, thus removing some of the tedium of programming.
 
