@@ -1907,6 +1907,56 @@ $BackgroundColor
       </CustomControl>
     </View>
     <View>
+      <Name>Microsoft.CodeAnalysis.SyntaxNode</Name>
+      <ViewSelectedBy>
+        <TypeName>Microsoft.CodeAnalysis.SyntaxNode</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <PropertyName>Language</PropertyName>
+      </GroupBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <Wrap />
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Text</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>Microsoft.CodeAnalysis.SyntaxTree</Name>
+      <ViewSelectedBy>
+        <TypeName>Microsoft.CodeAnalysis.SyntaxTree</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <PropertyName>Language</PropertyName>
+      </GroupBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <Wrap />
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Text</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
       <Name>PipeScript</Name>
       <ViewSelectedBy>
         <TypeName>PipeScript</TypeName>
@@ -1994,6 +2044,52 @@ $BackgroundColor
           </TableRowEntry>
         </TableRowEntries>
       </TableControl>
+    </View>
+    <View>
+      <Name>PipeScript.Interpreters</Name>
+      <ViewSelectedBy>
+        <TypeName>PipeScript.Interpreters</TypeName>
+      </ViewSelectedBy>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+            <CustomItem>
+              <ExpressionBinding>
+                <ScriptBlock>
+    if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('Show-Markdown', 'Cmdlet')) {
+        Show-Markdown -InputObject $_.'README'
+    } else {
+        $_.'README'
+    }   
+</ScriptBlock>
+              </ExpressionBinding>
+            </CustomItem>
+          </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </View>
+    <View>
+      <Name>PipeScript.Languages</Name>
+      <ViewSelectedBy>
+        <TypeName>PipeScript.Languages</TypeName>
+      </ViewSelectedBy>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+            <CustomItem>
+              <ExpressionBinding>
+                <ScriptBlock>
+    if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('Show-Markdown', 'Cmdlet')) {
+        Show-Markdown -InputObject $_.'README'
+    } else {
+        $_.'README'
+    }   
+</ScriptBlock>
+              </ExpressionBinding>
+            </CustomItem>
+          </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
     </View>
     <View>
       <Name>PipeScript.Sentence</Name>
@@ -2316,102 +2412,6 @@ $BackgroundColor
         &amp; ${PipeScript_Format-YAML} -inputObject $inputObject    
     }
     
-</ScriptBlock>
-              </ExpressionBinding>
-            </CustomItem>
-          </CustomEntry>
-        </CustomEntries>
-      </CustomControl>
-    </View>
-    <View>
-      <Name>Microsoft.CodeAnalysis.SyntaxNode</Name>
-      <ViewSelectedBy>
-        <TypeName>Microsoft.CodeAnalysis.SyntaxNode</TypeName>
-      </ViewSelectedBy>
-      <GroupBy>
-        <PropertyName>Language</PropertyName>
-      </GroupBy>
-      <TableControl>
-        <TableHeaders>
-          <TableColumnHeader>
-          </TableColumnHeader>
-        </TableHeaders>
-        <TableRowEntries>
-          <TableRowEntry>
-            <Wrap />
-            <TableColumnItems>
-              <TableColumnItem>
-                <PropertyName>Text</PropertyName>
-              </TableColumnItem>
-            </TableColumnItems>
-          </TableRowEntry>
-        </TableRowEntries>
-      </TableControl>
-    </View>
-    <View>
-      <Name>Microsoft.CodeAnalysis.SyntaxTree</Name>
-      <ViewSelectedBy>
-        <TypeName>Microsoft.CodeAnalysis.SyntaxTree</TypeName>
-      </ViewSelectedBy>
-      <GroupBy>
-        <PropertyName>Language</PropertyName>
-      </GroupBy>
-      <TableControl>
-        <TableHeaders>
-          <TableColumnHeader>
-          </TableColumnHeader>
-        </TableHeaders>
-        <TableRowEntries>
-          <TableRowEntry>
-            <Wrap />
-            <TableColumnItems>
-              <TableColumnItem>
-                <PropertyName>Text</PropertyName>
-              </TableColumnItem>
-            </TableColumnItems>
-          </TableRowEntry>
-        </TableRowEntries>
-      </TableControl>
-    </View>
-    <View>
-      <Name>PipeScript.Interpreters</Name>
-      <ViewSelectedBy>
-        <TypeName>PipeScript.Interpreters</TypeName>
-      </ViewSelectedBy>
-      <CustomControl>
-        <CustomEntries>
-          <CustomEntry>
-            <CustomItem>
-              <ExpressionBinding>
-                <ScriptBlock>
-    if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('Show-Markdown', 'Cmdlet')) {
-        Show-Markdown -InputObject $_.'README'
-    } else {
-        $_.'README'
-    }   
-</ScriptBlock>
-              </ExpressionBinding>
-            </CustomItem>
-          </CustomEntry>
-        </CustomEntries>
-      </CustomControl>
-    </View>
-    <View>
-      <Name>PipeScript.Languages</Name>
-      <ViewSelectedBy>
-        <TypeName>PipeScript.Languages</TypeName>
-      </ViewSelectedBy>
-      <CustomControl>
-        <CustomEntries>
-          <CustomEntry>
-            <CustomItem>
-              <ExpressionBinding>
-                <ScriptBlock>
-    if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('Show-Markdown', 'Cmdlet')) {
-        Show-Markdown -InputObject $_.'README'
-    } else {
-        $_.'README'
-    }   
 </ScriptBlock>
               </ExpressionBinding>
             </CustomItem>
