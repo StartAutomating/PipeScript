@@ -25,7 +25,7 @@ Invoke-PipeScript -ScriptBlock {
         println!("{}",msg);
     }
     '
-    $HelloWorldRust = HelloWorld_Rust.rs template $HelloWorldRustString
+    $HelloWorldRust = template HelloWorld_Rust.rs $HelloWorldRustString
     "$HelloWorldRust"
 }
 ```
@@ -33,7 +33,7 @@ Invoke-PipeScript -ScriptBlock {
 
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
-    $HelloWorldRust = HelloWorld_Rust.rs template '    
+    $HelloWorldRust = template HelloWorld_Rust.rs '    
     $HelloWorld = {param([Alias(''msg'')]$message = "Hello world") "`"$message`""}
     fn main() {
         let msg = /*{param($msg = ''hello world'') "`"$msg`""}*/ ;
