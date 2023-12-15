@@ -23,7 +23,14 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
 
+    # Java files are named `.java`.
     $FilePattern = '\.(?>java)$'
+
+    # Java Projects can be pom.xml (Maven) or Gradle
+    $ProjectFilePattern = '(?>pom.xml|\.gradle$)'
+
+    # Java is case sensitive.
+    $CaseSensitive = $true
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
@@ -36,7 +43,7 @@ $languageDefinition = New-Module {
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
 
     # Java's compiler is "javac" (if found)
-    $Compiler = $ExecutionContext.SessionState.InvokeCommand.GetCommand('javac','Application')
+    $Compiler = 'javac'
     $LanguageName = 'Java'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
