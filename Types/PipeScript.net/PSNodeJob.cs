@@ -202,7 +202,7 @@ namespace PipeScript.Net
                 this.SetJobState(js);
             }
             catch (Exception ex) {
-                this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.Unknown, this));
+                this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.NotSpecified, this));
             }
         }
 
@@ -381,7 +381,7 @@ namespace PipeScript.Net
                     try {                    
                         response.Close();
                     } catch (Exception ex) {
-                        this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.Unknown, this));
+                        this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.NotSpecified, this));
                     }
                 }
             }
@@ -584,7 +584,7 @@ param($PSNodeJob, $listener)
                         }
                     }
                     catch (Exception ex) {
-                        this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.Unknown, this));
+                        this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.NotSpecified, this));
                     }
                 }
 
@@ -592,7 +592,7 @@ param($PSNodeJob, $listener)
                     UserSessions.Remove(tr);
                 }
             } catch (Exception ex) {
-                this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.Unknown, this));
+                this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.NotSpecified, this));
             }
         }
         
