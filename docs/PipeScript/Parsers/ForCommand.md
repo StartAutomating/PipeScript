@@ -16,8 +16,8 @@ Gets the parser for a given command.
 #### **CommandLine**
 The command line to examine for a match.
 
-|Type      |Required|Position|PipelineInput|Aliases       |
-|----------|--------|--------|-------------|--------------|
-|`[String]`|false   |1       |false        |InvocationName|
+|Type      |Required|Position|PipelineInput|Aliases                       |
+|----------|--------|--------|-------------|------------------------------|
+|`[String]`|false   |1       |false        |InvocationName<br/>CommandName|
 
 ---
