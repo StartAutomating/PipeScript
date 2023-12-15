@@ -28,6 +28,7 @@ The following languages support interpreters.
 * SVG
 * Wren
 * XML
+* XSD
 * XSL
 
 Note: Interpreters may require commands to be installed.
