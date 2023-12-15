@@ -25,4 +25,8 @@ Language function GCode {
     # * Whitespace should not be allowed (it makes nested blocks hard to end)
     $startComment = "(?>(?<IsSingleLine>$SingleLineCommentStart)(?>PipeScript|PS)?\{)"
     $endComment   = "(?>$SingleLineCommentStart(?:PipeScript)?\})"
+
+    # To support templates, a language has to declare `$StartPattern` and `$EndPattern`:
+    $StartPattern = "(?<PSStart>${startComment})"
+    $EndPattern   = "(?<PSEnd>${endComment})"
 }

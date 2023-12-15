@@ -26,5 +26,7 @@ Language function BrightScript {
     $startComment = "(?>(?<IsSingleLine>$SingleLineCommentStart)(?>PipeScript|PS)?\{)"
     $endComment   = "(?>$SingleLineCommentStart(?:PipeScript)?\})"
 
-
+    # To support templates, a language has to declare `$StartPattern` and `$EndPattern`:
+    $StartPattern = "(?<PSStart>${startComment})"
+    $EndPattern   = "(?<PSEnd>${endComment})"
 }
