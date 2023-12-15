@@ -13,6 +13,7 @@ param(
 $FilePath
 )
 
+if ($FilePath -match '://') { return }
 
 foreach ($prop in $this.psobject.properties) {
     if ($prop -is [psscriptproperty]) { continue }
