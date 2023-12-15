@@ -3119,7 +3119,7 @@ PipeScript presently ships with 60 languages:
                 this.SetJobState(js);
             }
             catch (Exception ex) {
-                this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.Unknown, this));
+                this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.NotSpecified, this));
             }
         }
 
@@ -3298,7 +3298,7 @@ PipeScript presently ships with 60 languages:
                     try {                    
                         response.Close();
                     } catch (Exception ex) {
-                        this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.Unknown, this));
+                        this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.NotSpecified, this));
                     }
                 }
             }
@@ -3501,7 +3501,7 @@ param($PSNodeJob, $listener)
                         }
                     }
                     catch (Exception ex) {
-                        this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.Unknown, this));
+                        this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.NotSpecified, this));
                     }
                 }
 
@@ -3509,7 +3509,7 @@ param($PSNodeJob, $listener)
                     UserSessions.Remove(tr);
                 }
             } catch (Exception ex) {
-                this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.Unknown, this));
+                this.Error.Add(new ErrorRecord(ex, "PSNode.Unknown.Error", ErrorCategory.NotSpecified, this));
             }
         }
         
