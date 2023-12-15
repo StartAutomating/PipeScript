@@ -89,7 +89,7 @@ Language function CSS {
                                 )$([Environment]::NewLine)}" 
                     }
                     else {
-                        $kv.Key + ':' + $kv.Value
+                        $kv.Key + ':' + $(if ($kv.Value -eq '') {"''"} else { $kv.Value })
                     }                                                        
                 }) -join (
                     ';' + [Environment]::NewLine + (' ' * 2 * ($cssDepth))
