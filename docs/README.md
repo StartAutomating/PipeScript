@@ -6,13 +6,13 @@
 
 PipeScript is a metaprogramming language built in PowerShell.
 
-It lets you compile PowerShell and easily work with 60 other languages (and counting).
+It lets you compile PowerShell and easily work with 61 other languages (and counting).
 
 It is designed to make programming more scriptable and scripting more programmable.
 
 PipeScript can be run interactively, or used to build more with less code.
 
-PipeScript can be used to template 60 languages, and implicitly interpert 16 languages.
+PipeScript can be used to template 61 languages, and implicitly interpert 16 languages.
 
 If you like PipeScript, why not use it to star this repository?:
 
@@ -50,7 +50,7 @@ Often, programming involves implementing small functional changes within a speci
 
 For example, if implementing an interface or subclass, the only things that will change are the class name and method details.
 
-PipeScript can work with 60 languages.
+PipeScript can work with 61 languages.
 
 Embedding PipeScript within any of these languages allows you to generate any of these languages with parameterized scripts, thus removing some of the tedium of programming.
 
