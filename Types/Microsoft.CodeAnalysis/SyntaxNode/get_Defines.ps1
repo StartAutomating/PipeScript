@@ -15,6 +15,8 @@
     foreach ($node in $this.ByType[@(
         [Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax]
         [Microsoft.CodeAnalysis.CSharp.Syntax.ClassOrStructConstraintSyntax]
+        [Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax]
+        [Microsoft.CodeAnalysis.CSharp.Syntax.EnumDeclarationSyntax]
     )]) {
         $node
     }

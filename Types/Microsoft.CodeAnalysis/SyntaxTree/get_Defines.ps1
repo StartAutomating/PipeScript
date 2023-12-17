@@ -11,11 +11,4 @@
     ').Defines
 #>
 
-, @(
-    foreach ($node in $this.ByType[@(
-        [Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax]
-        [Microsoft.CodeAnalysis.CSharp.Syntax.ClassOrStructConstraintSyntax]
-    )]) {
-        $node
-    }
-)
+return $this.Root.Defines
