@@ -73,6 +73,8 @@ function Import-PipeScript
                         if ($invokePipeScriptOutput -is [IO.FileInfo] -and 
                             $invokePipeScriptOutput.Extension -eq '.ps1') {
                             . $invokePipeScriptOutput.Fullname
+                        } elseif ($invokePipeScriptOutput -is [ScriptBlock]) {
+                            . $invokePipeScriptOutput
                         } else {
                             $invokePipeScriptOutput
                         }
