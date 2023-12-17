@@ -19,14 +19,8 @@ $formatting = @(
 $destinationRoot = $myRoot
 
 if ($formatting) {
-    $myFormatFile = Join-Path $destinationRoot "$myModuleName.format.ps1xml"
-    
-    $formatting | Out-FormatData -Module $MyModuleName -OutputPath $MyFormatFile
-    $formatting | Out-FormatData -Module $MyModuleName -OutputPath ([Ordered]@{
-        "System.Management.Automation.*" = "$(Join-Path $destinationRoot "PipeScript.Extends.PowerShell.format.ps1xml")"
-        "Microsoft.CodeAnalysis.*" = "$(Join-Path $destinationRoot "PipeScript.Extends.CodeAnalysis.format.ps1xml")"        
-        "PipeScript.Net.*" = "$(Join-Path $destinationRoot "PipeScript.Net.format.ps1xml")"
-    })
+    $myFormatFile = Join-Path $destinationRoot "$myModuleName.format.ps1xml"    
+    $formatting | Out-FormatData -Module $MyModuleName -OutputPath $MyFormatFile    
 }
 
 $types = @(
@@ -40,12 +34,6 @@ $types = @(
 
 if ($types) {
     $myTypesFile = Join-Path $destinationRoot "$myModuleName.types.ps1xml"
-
-    $types | Out-TypeData -OutputPath $myTypesFile 
-    $types | Out-TypeData -OutputPath ([Ordered]@{
-        "System.Management.Automation.*" = "$(Join-Path $destinationRoot "PipeScript.Extends.PowerShell.types.ps1xml")"
-        "Microsoft.CodeAnalysis.*" = "$(Join-Path $destinationRoot "PipeScript.Extends.CodeAnalysis.types.ps1xml")"
-        "PipeScript.Net.*" = "$(Join-Path $destinationRoot "PipeScript.Net.types.ps1xml")"
-    })#>    
+    $types | Out-TypeData -OutputPath $myTypesFile    
 }
 Pop-Location
