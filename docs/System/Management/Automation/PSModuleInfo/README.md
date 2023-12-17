@@ -9,6 +9,7 @@
 * [FindExtensions](FindExtensions.md)
 * [Folder](Folder.md)
 * [GetDynamicParameters](GetDynamicParameters.md)
+* [get_Asset](get_Asset.md)
 * [get_CommandType](get_CommandType.md)
 * [get_Export](get_Export.md)
 * [get_Extension](get_Extension.md)
