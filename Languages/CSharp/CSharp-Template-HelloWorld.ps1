@@ -20,8 +20,8 @@ function Template.HelloWorld.cs {
             string helloMessage = @"
 $($Message.Replace('"','""'))
 ";
-            if (args.Length > 0) {
-                helloMessage = String.Join(" ", args);
+            if (args != null && args.Length > 0) {
+                helloMessage = System.String.Join(" ", args);
             }
             System.Console.WriteLine(helloMessage);
         }
