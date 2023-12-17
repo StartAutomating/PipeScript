@@ -17,16 +17,24 @@ if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
 
+    # Atom files end in `.atom`
+
     $FilePattern = '\.atom$'
-    # We start off by declaring a number of regular expressions:
+
+    # Atom comments are HTML/XML style tags
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
     $Whitespace   = '[\s\n\r]{0,}'
-    # To support templates, a language has to declare `$StartPattern` and `$EndPattern`:
+    
+    # PipeScript code can be embedded within a comment block that has a scriptblock
+    # <!--{<# Your Code Goes Here #>}-->
     $StartPattern = "(?<PSStart>${startComment}\{$Whitespace)"
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
 
-    $IsDataLanguage = $true
+    # ATOM is a data language
+    $DataLanguage = $true
+    # and it is case-sensitive.
+    $CaseSentitive = $true
 
     $Interpreter = {        
         $xmlFiles = @(foreach ($arg in $args) {
