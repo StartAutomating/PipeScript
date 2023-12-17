@@ -62,7 +62,8 @@ List:
         ', 'IgnorePatternWhitespace,IgnoreCase')
 
     # YAML is a Data Language
-    $IsDataLanguage = $true
+    $DataLanguage = $true
+    $CaseSensitive = $true
 
     $ForeachObject = {
         begin {

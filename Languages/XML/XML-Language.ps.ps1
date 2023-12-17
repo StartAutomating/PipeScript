@@ -9,6 +9,7 @@ Language function XML {
 #>
 [ValidatePattern('\.xml$')]
 param()
+    # XML files can be many extensions, but `.xml` should always be standard XML.
     $FilePattern = '\.xml$'
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
@@ -20,7 +21,9 @@ param()
     $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
 
     # XML Is a Data Language.  It declares information, but does not run code.
-    $IsDataLanguage =  $true
+    $DataLanguage =  $true
+    # XML is also quite famously case-sensitive.
+    $CaseSensitive = $true
 
     # The "interpreter" for XML simply reads each of the files.
     $Interpreter = {        

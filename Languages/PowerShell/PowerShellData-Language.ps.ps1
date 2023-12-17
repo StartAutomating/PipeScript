@@ -15,6 +15,8 @@ Language function PowerShellData {
 [ValidatePattern('\.psd1$')]
 param()
 
+# PowerShell data files end in `.psd1`.
+
 $FilePattern = '\.psd1$'
 
 # We start off by declaring a number of regular expressions:
@@ -32,7 +34,7 @@ $StartPattern = [regex]::New("(?<PSStart>${IgnoredContext}${startComment}\{$Whit
 # * EndPattern       ```$whitespace + '}' + $EndComment + $ignoredContext```
 $endPattern   = [regex]::New("(?<PSEnd>$Whitespace\}${endComment}[\s-[\r\n]]{0,}${IgnoredContext})", 'IgnorePatternWhitespace')
 
-$IsDataLanguage = $true
+$DataLanguage = $true
 
 $Interpreter = {
     param()
@@ -40,7 +42,6 @@ $Interpreter = {
     if (Test-Path $Psd1Path) {
         Import-LocalizedData -BaseDirectory ($Psd1Path | Split-Path) -FileName ($Psd1Path | Split-Path -Leaf)
     }
-    
 }
 
 }

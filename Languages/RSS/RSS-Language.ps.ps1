@@ -12,7 +12,9 @@ param()
     $FilePattern = '\.rss'
 
     # RSS is a really simple data language (it's just XML, really)
-    $IsDataLanguage = $true
+    $DataLanguage = $true
+    # RSS is case-sensitive
+    $CaseSensitive = $true
 
     # We start off by declaring a number of regular expressions:
     $startComment = '<\!--' # * Start Comments ```<!--```
