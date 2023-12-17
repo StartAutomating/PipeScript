@@ -25,7 +25,8 @@ $languageDefinition = New-Module {
         $endPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,})"
     
         # XSD Is a Data Language.  It declares information, but does not run code.
-        $IsDataLanguage =  $true
+        $DataLanguage =  $true
+        $CaseSensitive = $true
     
         # The "interpreter" for XSD simply reads each of the files.
         $Interpreter = {        
