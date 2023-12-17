@@ -6020,6 +6020,8 @@ $this.'.ByType'
     foreach ($node in $this.ByType[@(
         [Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax]
         [Microsoft.CodeAnalysis.CSharp.Syntax.ClassOrStructConstraintSyntax]
+        [Microsoft.CodeAnalysis.CSharp.Syntax.MemberDeclarationSyntax]
+        [Microsoft.CodeAnalysis.CSharp.Syntax.EnumDeclarationSyntax]
     )]) {
         $node
     }
@@ -6152,14 +6154,7 @@ $this.Root.ByType
     ').Defines
 #&gt;
 
-, @(
-    foreach ($node in $this.ByType[@(
-        [Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax]
-        [Microsoft.CodeAnalysis.CSharp.Syntax.ClassOrStructConstraintSyntax]
-    )]) {
-        $node
-    }
-)
+return $this.Root.Defines
 
                     </GetScriptBlock>
       </ScriptProperty>
