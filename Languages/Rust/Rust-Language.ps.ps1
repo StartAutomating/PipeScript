@@ -73,4 +73,7 @@ Language function Rust {
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment})"
 
     $compiler = 'rustc'
+
+    $Website = 'https://www.rust-lang.org/'
+    $ProjectUri = 'https://github.com/rust-lang/rust'
 }
