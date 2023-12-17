@@ -45,8 +45,8 @@ Language function JavaScript {
 [ValidatePattern('\.js$')]
 param(
 )
-    # JavaScript's file Pattern is `\.js$`
-    $FilePattern = '\.js$'
+    # JavaScript's file Pattern is `\.js$` or `.mjs$`
+    $FilePattern = '\.m?js$'
 
     # and JavaScript is a case sensitive language.
     $CaseSensitive = $true
