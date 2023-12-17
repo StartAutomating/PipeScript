@@ -1844,6 +1844,32 @@ $BackgroundColor
       </CustomControl>
     </View>
     <View>
+      <Name>Language</Name>
+      <ViewSelectedBy>
+        <TypeName>Language</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>LanguageName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>FilePattern</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
       <Name>Markdown</Name>
       <ViewSelectedBy>
         <TypeName>Markdown</TypeName>
