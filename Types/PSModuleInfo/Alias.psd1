@@ -11,4 +11,5 @@
     Routes  = 'Route'
     Router  = 'Route'    
     Routers = 'Route'
+    Assets = 'Asset'
 }
