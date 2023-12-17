@@ -39,6 +39,8 @@ Note: Interpreters may require commands to be installed.
 
 
 * [ForFile](ForFile.md)
+* [get_All](get_All.md)
+* [set_All](set_All.md)
 * [get_Count](get_Count.md)
 * [set_Count](set_Count.md)
 * [get_LanguageName](get_LanguageName.md)
