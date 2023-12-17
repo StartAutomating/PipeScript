@@ -24,11 +24,15 @@ $this = $myInvocation.MyCommand
 if (-not $this.Self) {
 $languageDefinition = New-Module {
     param()
+    # SVG files end in `.svg`
+
     $FilePattern  = '\.svg$'
-    # We start off by declaring a number of regular expressions:
+    
+    # They use HTML/XML style comments:
     $startComment = '<\!--' # * Start Comments ```<!--```
     $endComment   = '-->'   # * End Comments   ```-->```
     $Whitespace   = '[\s\n\r]{0,}'
+    
     # * StartPattern     ```$StartComment + '{' + $Whitespace```
     $startPattern = "(?<PSStart>${startComment}\{$Whitespace)"
     # * EndPattern       ```$whitespace + '}' + $EndComment```
@@ -56,7 +60,10 @@ $languageDefinition = New-Module {
     }
     
     # SVG is a data language (event attributes only auto-wire within a browser)
-    $IsDataLanguage = $true
+    $DataLanguage = $true
+
+    # SVG is case-sensitive.
+    $CaseSensitive = $true
 
     # The "interpreter" for SVG simply reads each of the files.
     $Interpreter = {        
