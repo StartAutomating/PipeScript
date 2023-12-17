@@ -258,6 +258,9 @@ function Export-Pipescript {
         [long]$TotalInputFileLength  = 0 
         [long]$TotalOutputFileLength = 0 
         
+        # If we're only building one file, there's no point in parallelization.
+        if ($filesToBuild.Length -le 1) { $Serial = $true }
+
         if (-not $startThreadJob) { continue }
         $buildThreadJobs = [Ordered]@{}         
         $pendingBatch = @()
