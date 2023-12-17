@@ -2667,7 +2667,7 @@ foreach ($prop in $this.psobject.properties) {
 #&gt;
 ,@(foreach ($psProperty in $this.PSObject.properties) {
     if ($psProperty -isnot [psnoteproperty]) { continue  }
-    if ($prop.IsInstance -and $prop.Value.LanguageName) {
+    if ($psProperty.IsInstance -and $psProperty.Value.LanguageName) {
         $psProperty.Value
     }    
 })
@@ -2681,7 +2681,7 @@ foreach ($prop in $this.psobject.properties) {
 #&gt;
 ,@(foreach ($psProperty in $this.PSObject.properties) {
     if ($psProperty -isnot [psnoteproperty]) { continue  }
-    if ($prop.IsInstance -and $prop.Value.LanguageName) {
+    if ($psProperty.IsInstance -and $psProperty.Value.LanguageName) {
         $psProperty.Value
     }    
 })
@@ -2853,7 +2853,7 @@ foreach ($prop in $this.psobject.properties) {
 #&gt;
 ,@(foreach ($psProperty in $this.PSObject.properties) {
     if ($psProperty -isnot [psnoteproperty]) { continue  }
-    if ($prop.IsInstance -and $prop.Value.LanguageName) {
+    if ($psProperty.IsInstance -and $psProperty.Value.LanguageName) {
         $psProperty.Value
     }    
 })
@@ -2906,7 +2906,7 @@ return $count
 
 A Language is defined a function named Language.NameOfLanguage.
 
-PipeScript presently ships with 62 languages:
+PipeScript presently ships with 63 languages:
 
 * ADA
 * Arduino
@@ -2916,6 +2916,7 @@ PipeScript presently ships with 62 languages:
 * Batch
 * Bicep
 * BrightScript
+* Conf
 * CPlusPlus
 * CSharp
 * CSS
