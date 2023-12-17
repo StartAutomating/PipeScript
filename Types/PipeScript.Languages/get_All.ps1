@@ -6,7 +6,7 @@
 #>
 ,@(foreach ($psProperty in $this.PSObject.properties) {
     if ($psProperty -isnot [psnoteproperty]) { continue  }
-    if ($prop.IsInstance -and $prop.Value.LanguageName) {
+    if ($psProperty.IsInstance -and $psProperty.Value.LanguageName) {
         $psProperty.Value
     }    
 })
