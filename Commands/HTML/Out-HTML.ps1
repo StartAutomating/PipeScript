@@ -380,18 +380,16 @@
             $trimmedString = $inputObject.TrimStart([Environment]::NewLine).TrimEnd([Environment]::NewLine).TrimStart().TrimEnd()            
             # If the string looks @ all like markup or HTML, pass it thru
             
-            if (($trimmedString -like "*<*") -and 
-                ($trimmedString -like "*>*") -and
-                ($trimmedString -notlike "*<?xml*")) {                
+            if ($inputObject -match "^\s{0,}\<" -and $inputObject -match "\>\s{0,}$") {                
                 if ($escape) { 
                     $null = $htmlOut.Append("
 $([Web.HttpUtility]::HtmlEncode($inputObject).Replace([Environment]::NewLine, '<BR/>').Replace('`n', '<BR/>').Replace(' ', '&nbsp;'))
 ")
                 } else {
-                    $null = $htmlOut.Append(" $inputObject")
+                    $null = $htmlOut.Append("$inputObject")
                 } 
             } else {
-                $null= $htmlOut.Append(" $([Web.HttpUtility]::HtmlEncode($inputObject))")
+                $null= $htmlOut.Append("$([Web.HttpUtility]::HtmlEncode($inputObject))")
             }            
         } elseif ([Double], [int], [uint32], [long], [byte] -contains $inputObject.GetType()) {
             # If it's a number, simply print it out
