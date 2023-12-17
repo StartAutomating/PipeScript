@@ -78,6 +78,9 @@ $languageDefinition = New-Module {
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment})"
 
     $compiler = 'rustc'
+
+    $Website = 'https://www.rust-lang.org/'
+    $ProjectUri = 'https://github.com/rust-lang/rust'
     $LanguageName = 'Rust'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
