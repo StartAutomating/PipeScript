@@ -1,4 +1,4 @@
-namespace Pipescript.Net
+namespace PipeScript.Net
 {
     using System;
     using System.ComponentModel;
