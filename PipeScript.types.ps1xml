@@ -3600,7 +3600,7 @@ param($PSNodeJob, $listener)
       </NoteProperty>
       <NoteProperty>
         <Name>PSTransform.cs</Name>
-        <Value>namespace Pipescript.Net
+        <Value>namespace PipeScript.Net
 {
     using System;
     using System.ComponentModel;
