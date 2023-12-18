@@ -1,5 +1,3 @@
-FROM mcr.microsoft.com/powershell
-
 #{
     # <#
     # .Synopsis
@@ -7,6 +5,12 @@ FROM mcr.microsoft.com/powershell
     # .Description
     #     This is a working example DockerFile template that generates a dockerfile that runs PipeScript.
     # #>
+    # param($BaseImage = 'mcr.microsoft.com/powershell')
+    # "FROM $BaseImage"
+#}
+
+#{
+    
     # param($EnvironmentVariables = [Ordered]@{PIPESCRIPT_VERSION=(Get-Module PipeScript).Version})    
     # if ($EnvironmentVariables) {
         # foreach ($kvp in $environmentVariables.GetEnumerator()) {
@@ -14,6 +18,20 @@ FROM mcr.microsoft.com/powershell
         # }
     # }
 #}
+
+ENV PSModulePath ./Modules
+
+#{
+    # param($DockerInstallModules = @("Splatter", "PSSVG", "ugit") )
+    # $PowerShellPath = "opt/microsoft/powershell/7/pwsh"
+    # if ($DockerInstallModules) { "RUN $PowerShellPath --noprofile --nologo -c Install-Module '$($DockerInstallModules -join "','")' -Scope CurrentUser -Force"}
+#}
+
+#{
+    # param($DockerInstallPackages = @("git","curl","ca-certificates","libc6","libgcc1") )    
+    # if ($DockerInstallPackages) {"RUN apt-get update && apt-get install -y $($dockerInstallPackages -join ' ')"}
+#}
+
 
 #{    
     # $LoadedModuleInPath = (Get-Module | Split-Path) -match ([Regex]::Escape($pwd)) | Select -first 1
@@ -23,17 +41,5 @@ FROM mcr.microsoft.com/powershell
 #{
     # param(<# A Script to Run When Docker Starts #>$DockerProfileScript = "./PipeScript.Server.Start.ps1")
     # if ($DockerProfileScript) { "COPY ./$DockerProfileScript /root/.config/powershell/Microsoft.PowerShell_profile.ps1"} 
-#}
-ENV PSModulePath ./Modules
-
-#{
-    # param($DockerInstallModules = @()) # "Splatter", "PSSVG", "ugit"
-    # $PowerShellPath = "opt/microsoft/powershell/7/pwsh"
-    # if ($DockerInstallModules) { "RUN $PowerShellPath --noprofile --nologo -c Install-Module '$($DockerInstallModules -join "','")' -Scope CurrentUser -Force"}
-#}
-
-#{
-    # param($DockerInstallPackages = @()) # @("git","curl","ca-certificates","libc6","libgcc1")    
-    # if ($DockerInstallPackages) {"RUN apt-get update && apt-get install -y $($dockerInstallPackages -join ' ')"}
 #}
 
