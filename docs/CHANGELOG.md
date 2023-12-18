@@ -1,3 +1,21 @@
+## PipeScript 0.2.7:
+
+PipeScript can now easily define any language and you can now interpret Anything with PipeScript!
+
+* Complete Overhaul of Languages in PipeScript!
+  * Languages are now defined in open-ended psuedo-object
+  * They can define an .Interpreter
+  * If they do, the language can be dynamically interpreted!
+  * Languages can also specify translation methods (.TranslateFromAstType)
+  * More support for the PowerShell Abstract Syntax Tree and Roslyn
+  * New languages supported: Docker, XSL, XSD, BrightScript, Conf, Wren, Vue, F#, GCODE
+* Start-PSNode lets you run PowerShell as a microservice
+  * Import/Export-JSON make JSON easier to work with
+  * Import-ModuleMember lets modules flexibly self-extend
+  * Out-HTML is back!
+
+---
+
 ## PipeScript 0.2.6:
 
 * PipeScript can now be sponsored! (please show your support) (#488)
