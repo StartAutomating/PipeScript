@@ -1,6 +1,7 @@
 # Declares various 'my' automatic variables
 
 function PipeScript.Automatic.Variable.MyCallstack {
+
     <#
     .SYNOPSIS
         $MyCallStack
@@ -8,16 +9,19 @@ function PipeScript.Automatic.Variable.MyCallstack {
         $MyCallstack is an automatic variable that contains the current callstack.
     #>
     @(Get-PSCallstack) # Set $MyCallstack
+
 }
 
 
 
 function PipeScript.Automatic.Variable.MySelf {
+
     <#
     .SYNOPSIS
         $MySelf
     .DESCRIPTION
         $MySelf contains the currently executing ScriptBlock.
+
         A Command can & $myself to use anonymous recursion.
     .EXAMPLE
         {
@@ -27,6 +31,7 @@ function PipeScript.Automatic.Variable.MySelf {
         # By using $Myself, we can write an anonymously recursive fibonacci sequence.
         Invoke-PipeScript {
             param([int]$n = 1)
+
             if ($n -lt 2) {
                 $n
             } else {
@@ -35,16 +40,19 @@ function PipeScript.Automatic.Variable.MySelf {
         } -ArgumentList 10
     #>    
     $MyInvocation.MyCommand.ScriptBlock # Set $mySelf
+
 }
 
 
 
 function PipeScript.Automatic.Variable.MyParameters {
+
     <#
     .SYNOPSIS
         $MyParameters
     .DESCRIPTION
         $MyParameters contains a copy of $psBoundParameters.
+
         This leaves you more free to change it.
     .EXAMPLE
         Invoke-PipeScript -ScriptBlock {
@@ -52,11 +60,14 @@ function PipeScript.Automatic.Variable.MyParameters {
         }
     #>
     [Ordered]@{} + $PSBoundParameters
+
 }
 
 
 
 function PipeScript.Automatic.Variable.MyCaller {
+
+
     <#
     .SYNOPSIS
         $MyCaller
@@ -70,11 +81,15 @@ function PipeScript.Automatic.Variable.MyCaller {
    
 $myCallStack=@(Get-PSCallstack)
  $myCallStack[-1] # Initialize MyCaller
+
+
 }
 
 
 
 function PipeScript.Automatic.Variable.MyCommandAst {
+
+
     <#
     .SYNOPSIS
         $MyCommandAst
@@ -96,5 +111,7 @@ $MyCaller=$($myCallStack=@(Get-PSCallstack)
                 $ast -is [Management.Automation.Language.CommandAst]
         },$true)
     }
+
+
 }
 

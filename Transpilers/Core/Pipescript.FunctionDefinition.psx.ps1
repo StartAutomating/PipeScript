@@ -12,15 +12,16 @@ $FunctionDefinition
 )
 
 begin {
-    $pipeScriptCommands = @($ExecutionContext.SessionState.InvokeCommand.GetCommands('PipeScript*', 'Function,Alias', $true)) -match '^PipeScript\.(?>Pre|Post|Analyze|Optimize)'
+
+    $pipeScriptCommands = Get-PipeScript -PipeScriptType PostProcessor, PreProcessor, Optimizer, Analyzer
     $preCommands = @()
     $postCommands = @()
     foreach ($pipeScriptCommand in $pipeScriptCommands) {
-        if ($pipeScriptCommand.Name -match '^PipeScript.(?>Pre|Analyze)' -and 
+        if ($pipeScriptCommand.Name -match '(?>Pre|Analyze)' -and
             $pipeScriptCommand.CouldPipeType([Management.Automation.Language.FunctionDefinitionAst])) {
             $preCommands += $pipeScriptCommand
         }
-        if ($pipeScriptCommand.Name -match '^PipeScript.(?>Post|Optimize)' -and
+        if ($pipeScriptCommand.Name -match '(?>Post|Optimize)' -and
             $pipeScriptCommand.CouldPipeType([Management.Automation.Language.FunctionDefinitionAst])
         ) {
             $postCommands += $pipeScriptCommand
@@ -31,12 +32,14 @@ begin {
 }
 
 process {
+    $FunctionHasChanged = $false
     #region PreCommands
     if ($preCommands) {
         foreach ($pre in $preCommands) {
             $preOut = $FunctionDefinition | & $pre
             if ($preOut -and $preOut -is [Management.Automation.Language.FunctionDefinitionAst]) {
                 $FunctionDefinition = $preOut
+                $FunctionHasChanged = $true
             }
         }
     }
@@ -45,8 +48,8 @@ process {
     $TranspilerSteps = @()
     $realFunctionName = $functionDefinition.Name
     if ($FunctionDefinition.Name -match '\W(?<Name>\w+)$' -or
-        $FunctionDefinition.Name -match '^(?<Name>[\w-]+)\W') { 
-        
+        $FunctionDefinition.Name -match '^(?<Name>[\w-]+)\W') {
+
         $TranspilerSteps = @([Regex]::new('
             ^\s{0,}
             (?<BalancedBrackets>
@@ -61,7 +64,7 @@ process {
         ', 'IgnoreCase,IgnorePatternWhitespace','00:00:00.1').Match($FunctionDefinition.Name).Groups["BalancedBrackets"])
 
         if ($TranspilerSteps ) {
-            $transpilerStepsEnd     = $TranspilerSteps[-1].Start + $transpilerSteps[-1].Length                
+            $transpilerStepsEnd     = $TranspilerSteps[-1].Start + $transpilerSteps[-1].Length
             $realFunctionName       = $functionDefinition.Name.Substring($transpilerStepsEnd)
         }
     }
@@ -72,7 +75,7 @@ process {
         } else {
             ''
         }
-    
+
     $newFunction = @(
         if ($FunctionDefinition.IsFilter) {
             "filter", $realFunctionName, $inlineParameters, '{' -ne '' -join ' '
@@ -80,19 +83,26 @@ process {
             "function", $realFunctionName, $inlineParameters, '{' -ne '' -join ' '
         }
         # containing the transpiled funciton body.
-        [ScriptBlock]::Create(($functionDefinition.Body.Extent -replace '^{' -replace '}$')) |
-            .>Pipescript -Transpiler $transpilerSteps        
-                
-        $transpiledFunctionBody                
+        $FunctionBodyScriptBlock = [ScriptBlock]::Create(($functionDefinition.Body.Extent -replace '^{' -replace '}$'))
+
+        $transpiledFunctionBody = $FunctionBodyScriptBlock |
+            .>Pipescript -Transpiler $transpilerSteps
+        if (-not $transpiledFunctionBody.IsEquivalentTo($FunctionBodyScriptBlock)) {
+            $FunctionHasChanged = $true
+            $transpiledFunctionBody
+        } else {
+            $FunctionBodyScriptBlock
+        }
+
         "}"
     )
     # Create a new script block
     $transpiledFunction = [ScriptBlock]::Create($newFunction -join [Environment]::NewLine)
 
     $transpiledFunctionAst = $transpiledFunction.Ast.EndBlock.Statements[0]
-    if ($postCommands -and 
+    if ($postCommands -and
         $transpiledFunctionAst -is [Management.Automation.Language.FunctionDefinitionAst]) {
-        
+
         foreach ($post in $postCommands) {
             $postProcessStart = [DateTime]::now
             $postOut = $transpiledFunctionAst | & $post
@@ -102,12 +112,17 @@ process {
                 InputObject = $transpiledFunctionAst
                 Duration = ($postProcessEnd - $postProcessStart)
             })
-            if ($postOut -and $postOut -is [Management.Automation.Language.FunctionDefinitionAst]) {
+            if ($postOut -and
+                $postOut -is [Management.Automation.Language.FunctionDefinitionAst] -and
+                -not $postOut.IsEquivalentTo($transpiledFunctionAst)
+            ) {
                 $transpiledFunctionAst = $postOut
+                $FunctionHasChanged = $true
             }
         }
-        
+
         $transpiledFunction = [scriptblock]::Create("$transpiledFunctionAst")
+
     }
 
     Import-PipeScript -ScriptBlock $transpiledFunction -NoTranspile
@@ -121,3 +136,4 @@ process {
     # Output the transpiled function.
     $transpiledFunction
 }
+

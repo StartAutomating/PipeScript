@@ -1,16 +1,10 @@
 Assert
 ------
 
-
-
-
 ### Synopsis
 Assert keyword
 
-
-
 ---
-
 
 ### Description
 
@@ -32,85 +26,63 @@ Assertions will not be transpiled or included if -Verbose or -Debug has not been
 
 Additionally, while running, Assertions will be ignored if -Verbose or -Debug has not been set.
 
-
-
 ---
 
-
 ### Examples
-#### EXAMPLE 1
+With no second argument, assert will throw an error with the condition of the assertion.
+
 ```PowerShell
-# With no second argument, assert will throw an error with the condition of the assertion.
 Invoke-PipeScript {
     assert (1 -ne 1)
 } -Debug
 ```
+With a second argument of a string, assert will throw an error
 
-#### EXAMPLE 2
 ```PowerShell
-# With a second argument of a string, assert will throw an error
 Invoke-PipeScript {
     assert ($false) "It's not true!"
 } -Debug
 ```
+Conditions can also be written as a ScriptBlock
 
-#### EXAMPLE 3
 ```PowerShell
-# Conditions can also be written as a ScriptBlock
 Invoke-PipeScript {
     assert {$false} "Process id '$pid' Asserted"
 } -Verbose
 ```
+If the assertion action was a ScriptBlock, no exception is automatically thrown
 
-#### EXAMPLE 4
 ```PowerShell
-# If the assertion action was a ScriptBlock, no exception is automatically thrown
 Invoke-PipeScript {
     assert ($false) { Write-Information "I Assert There Is a Problem"}
 } -Verbose
 ```
+assert can be used with the object pipeline.  $_ will be the current object.
 
-#### EXAMPLE 5
 ```PowerShell
-# assert can be used with the object pipeline.  $_ will be the current object.
 Invoke-PipeScript {
     1..4 | assert {$_ % 2} "$_ is not odd!"
 } -Debug
 ```
+You can provide a ```[ScriptBlock]``` as the second argument to see each failure
 
-#### EXAMPLE 6
 ```PowerShell
-# You can provide a ```[ScriptBlock]``` as the second argument to see each failure
 Invoke-PipeScript {
     1..4 | assert {$_ % 2} { Write-Error "$_ is not odd!" }
 } -Debug
 ```
 
-
-
 ---
-
 
 ### Parameters
 #### **CommandAst**
-
 The CommandAst
-
-
-
-
-
 
 |Type          |Required|Position|PipelineInput |
 |--------------|--------|--------|--------------|
 |`[CommandAst]`|true    |named   |true (ByValue)|
 
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell

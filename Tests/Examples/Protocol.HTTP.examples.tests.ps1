@@ -40,6 +40,7 @@ describe 'Protocol.HTTP' {
                 http://text-processing.com/api/sentiment/ -Method POST -ContentType 'application/x-www-form-urlencoded' -Body "text=amazing!" |
                     Select-Object -ExpandProperty Probability -Property Label
             }
+
         $semanticAnalysis
     }
     it 'Protocol.HTTP Example 8' {
@@ -47,6 +48,7 @@ describe 'Protocol.HTTP' {
             [Https('status.dev.azure.com/_apis/status/health')]
             param()
         } | Use-PipeScript
+
         & $StatusHealthCheck
     }
 }

@@ -3,7 +3,14 @@ param(
 $Type
 )
 
-:nextParameterSet foreach ($paramSet in $this.ParameterSets) {
+$parameterSets =
+    if ($this.ResolvedCommand.ParameterSets) {
+        $this.ResolvedCommand.ParameterSets
+    } elseif ($this.ParameterSets) {
+        $this.ParameterSets
+    }
+
+:nextParameterSet foreach ($paramSet in $parameterSets) {
     if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
     $params = @{}
     $mappedParams = [Ordered]@{} # Create a collection of mapped parameters

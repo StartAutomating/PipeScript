@@ -40,7 +40,8 @@ param(
 # The name of one or more types.
 # Types can either be a .NET types of .PSTypenames
 # TypeNames will be treated first as real types, then as exact matches, then as wildcards, and then as regular expressions.
-[Parameter(Mandatory,Position=0)]
+[Parameter(Mandatory,Position=0,ValueFromRemainingArguments)]
+[Alias('Type','Types','TypeNames','PSTypeName','PSTypeNames')]
 [string[]]
 $TypeName,
 

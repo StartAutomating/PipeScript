@@ -2,7 +2,7 @@
 name: BuildPipeScript
 description: Builds code using PipeScript
 inputs: 
-  PipeScript: 
+  Script: 
     required: false
     description: |
       A PowerShell Script that uses PipeScript.  
@@ -20,7 +20,22 @@ inputs:
   InstallModule: 
     required: false
     default: 'ugit'
-    description: A list of modules to be installed from the PowerShell gallery before scripts run.
+    description: |
+      A list of modules to be installed from the PowerShell gallery before scripts run.
+      Note: If ugit is not installed, commit messages will not be carried properly with multiple commits.
+  Serial: 
+    required: false
+    description: If set, will build files one-by-one, instead of in parallel.
+  BatchSize: 
+    required: false
+    default: 11
+    description: The number of files to build in each batch.
+  ThrottleLimit: 
+    required: false
+    default: 7
+    description: |
+      The throttle limit for parallel jobs.
+      If too many jobs are running at once, errors may occur.
   UserEmail: 
     required: false
     description: The user email associated with a git commit.
@@ -37,20 +52,27 @@ runs:
       id: PipeScriptAction
       shell: pwsh
       env: 
-        UserName: ${{inputs.UserName}}
-        UserEmail: ${{inputs.UserEmail}}
         InstallModule: ${{inputs.InstallModule}}
-        PipeScript: ${{inputs.PipeScript}}
-        SkipBuild: ${{inputs.SkipBuild}}
+        UserEmail: ${{inputs.UserEmail}}
         CommitMessage: ${{inputs.CommitMessage}}
+        Serial: ${{inputs.Serial}}
+        Script: ${{inputs.Script}}
+        UserName: ${{inputs.UserName}}
+        SkipBuild: ${{inputs.SkipBuild}}
+        ThrottleLimit: ${{inputs.ThrottleLimit}}
+        BatchSize: ${{inputs.BatchSize}}
       run: |
         $Parameters = @{}
-        $Parameters.PipeScript = ${env:PipeScript}
+        $Parameters.Script = ${env:Script}
         $Parameters.SkipBuild = ${env:SkipBuild}
         $Parameters.SkipBuild = $parameters.SkipBuild -match 'true';
         $Parameters.CommitMessage = ${env:CommitMessage}
         $Parameters.InstallModule = ${env:InstallModule}
         $Parameters.InstallModule = $parameters.InstallModule -split ';' -replace '^[''"]' -replace  '[''"]$'
+        $Parameters.Serial = ${env:Serial}
+        $Parameters.Serial = $parameters.Serial -match 'true';
+        $Parameters.BatchSize = ${env:BatchSize}
+        $Parameters.ThrottleLimit = ${env:ThrottleLimit}
         $Parameters.UserEmail = ${env:UserEmail}
         $Parameters.UserName = ${env:UserName}
         foreach ($k in @($parameters.Keys)) {
@@ -78,7 +100,7 @@ runs:
         # Any files outputted from the script will be added to the repository.
         # If those files have a .Message attached to them, they will be committed with that message.
         [string]
-        $PipeScript,
+        $Script,
         
         # If set, will not run Build-PipeScript.
         [switch]
@@ -91,8 +113,22 @@ runs:
         $CommitMessage,
         
         # A list of modules to be installed from the PowerShell gallery before scripts run.
+        # Note: If ugit is not installed, commit messages will not be carried properly with multiple commits.
         [string[]]
         $InstallModule = 'ugit',
+        
+        # If set, will build files one-by-one, instead of in parallel.
+        [switch]
+        $Serial,
+        
+        # The number of files to build in each batch.
+        [int]
+        $BatchSize = 11,
+        
+        # The throttle limit for parallel jobs.
+        # If too many jobs are running at once, errors may occur.
+        [int]
+        $ThrottleLimit = 7,
         
         # The user email associated with a git commit.
         [string]
@@ -206,9 +242,11 @@ runs:
             return
         }
         
+        try { git fetch --unshallow } catch { $_ | Out-Host } 
+        
         $PipeScriptStart = [DateTime]::Now
-        if ($PipeScript) {
-            Invoke-PipeScript -Command $PipeScript |
+        if ($Script) {
+            Invoke-PipeScript -Command $Script |
                 . $processScriptOutput |
                 Out-Host
         }
@@ -220,7 +258,7 @@ runs:
         $pipeScriptBuildErrors = $null
         if (-not $SkipBuild) {
             
-            $buildOutputFiles = @(Build-Pipescript -InputPath $env:GITHUB_WORKSPACE -ErrorVariable pipeScriptBuildErrors)
+            $buildOutputFiles = @(Build-Pipescript -Serial:$Serial -BatchSize:$BatchSize -ThrottleLimit:$ThrottleLimit -InputPath $env:GITHUB_WORKSPACE -ErrorVariable pipeScriptBuildErrors)
             if ($buildOutputFiles) {
                 "::notice:: $($buildOutputFiles.Length) files outputted" | Out-Host        
                 "$($buildOutputFiles.FullName -join [Environment]::newLine)" | Out-Host
@@ -235,9 +273,7 @@ runs:
             "::error::$($pipeScriptBuildErrors | Out-String)" | Out-Host
             $pipeScriptBuildErrors
             exit 1
-        } 
-        
-        
+        }
         
         $BuildPipeScriptEnd = [DateTime]::Now
         $BuildPipeScriptTook = $BuildPipeScriptEnd - $BuildPipeScriptStart

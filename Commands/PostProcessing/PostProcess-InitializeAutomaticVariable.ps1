@@ -1,16 +1,20 @@
 
 function PipeScript.PostProcess.InitializeAutomaticVariables {
+
     <#
     .SYNOPSIS
         Initializes any automatic variables
     .DESCRIPTION
         Initializes any automatic variables at the beginning of a script block.
+
         This enables Automatic?Variable* and Magic?Variable* commands to be populated and populated effeciently.
         
         For example:
         * If a function exists named Automatic.Variable.MyCallstack
         * AND $myCallStack is used within a ScriptBlock
+
         Then the body of Automatic.Variable.MyCallstack will be added to the top of the ScriptBlock.
+
     .EXAMPLE
         # Declare an automatic variable, MyCallStack
         Import-PipeScript {
@@ -18,6 +22,7 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
                 Get-PSCallstack
             }
         }
+
         # Now we can use $MyCallstack as-is.
         # It will be initialized at the beginning of the script
         {
@@ -28,10 +33,12 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
     [Parameter(Mandatory,ParameterSetName='ScriptBlock',ValueFromPipeline)]
     [scriptblock]
     $ScriptBlock,
+
     [Parameter(Mandatory,ParameterSetName='FunctionDefinition',ValueFromPipeline)]
     [Management.Automation.Language.FunctionDefinitionAst]
     $FunctionDefinitionAst
     )
+
     begin {
         
         # First, let's find all commands that automatic or magic variables.
@@ -49,14 +56,17 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
         
         # Declare a quick filter to get the definition of the automatic variable
         filter GetAutomaticVariableDefinition {
+        
                     $automaticVariableCommand = $_
                     if (-not $automaticVariableCommand) {
                         $automaticVariableCommand = $args
                     }
+        
                     # Resolve any alias as far as we can
                     while ($automaticVariableCommand -is [Management.Automation.AliasInfo]) {
                         $automaticVariableCommand = $automaticVariableCommand.ResolvedCommand
                     }
+        
                     # If we've resolved to a function
                     if ($automaticVariableCommand -is [Management.Automation.FunctionInfo]) {
                         # take a quick second to check that the function is "right"
@@ -77,8 +87,10 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
                 
         }
     }
+
     process {
         $inObj = $_
+
         if ($psCmdlet.ParameterSetName -eq 'FunctionDefinition') {
             $ScriptBlock = [scriptblock]::Create($FunctionDefinitionAst.Body -replace '^\{' -replace '\}$')
         }
@@ -103,6 +115,7 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
         
         # If there were no variables in this script block, return.
         if (-not $allVariables) { return }
+
         # Let's collect all of the variables we need to define
         $prependDefinitions = [Ordered]@{}
         foreach ($var in $allVariables) {            
@@ -117,8 +130,10 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
                 $prependDefinitions[$variableName] = $allAutomaticVariables[$variableName] | GetAutomaticVariableDefinition                    
             }
         }
+
         # If we don't need to prepend anything, return
         if (-not $prependDefinitions.Count) { return }
+
         $AlreadyPrepended = @()
         
         # Otherwise, make it all one big string.
@@ -161,6 +176,7 @@ function PipeScript.PostProcess.InitializeAutomaticVariables {
             }
         }
     }
+
 }
 
 

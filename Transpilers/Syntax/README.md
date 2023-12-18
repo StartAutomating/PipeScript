@@ -5,13 +5,15 @@ This directory and it's subdirectories contain syntax changes that enable common
 |--------------------------------------------------------|------------------------------------------------------------------|
 |[NamespacedAlias](NamespacedAlias.psx.ps1)              |[Declares a namespaced alias](NamespacedAlias.psx.ps1)            |
 |[NamespacedFunction](NamespacedFunction.psx.ps1)        |[Namespaced functions](NamespacedFunction.psx.ps1)                |
+|[NamespacedObject](NamespacedObject.psx.ps1)            |[Namespaced functions](NamespacedObject.psx.ps1)                  |
 |[ArrowOperator](ArrowOperator.psx.ps1)                  |[Arrow Operator](ArrowOperator.psx.ps1)                           |
 |[ConditionalKeyword](ConditionalKeyword.psx.ps1)        |[Conditional Keyword Expansion](ConditionalKeyword.psx.ps1)       |
 |[Dot](Dot.psx.ps1)                                      |[Dot Notation](Dot.psx.ps1)                                       |
+|[DoubleDotting](DoubleDotting.psx.ps1)                  |[Supports "Double Dotted" location changes](DoubleDotting.psx.ps1)|
 |[EqualityComparison](EqualityComparison.psx.ps1)        |[Allows equality comparison.](EqualityComparison.psx.ps1)         |
 |[EqualityTypeComparison](EqualityTypeComparison.psx.ps1)|[Allows equality type comparison.](EqualityTypeComparison.psx.ps1)|
 |[PipedAssignment](PipedAssignment.psx.ps1)              |[Piped Assignment Transpiler](PipedAssignment.psx.ps1)            |
-|[RegexLiteral](RegexLiteral.psx.ps1)                    |[Regex Literal Transpiler](RegexLiteral.psx.ps1)                  |
+|[SwitchAsIs](SwitchAsIs.psx.ps1)                        |[Switches based off of type, using as or is](SwitchAsIs.psx.ps1)  |
 |[WhereMethod](WhereMethod.psx.ps1)                      |[Where Method](WhereMethod.psx.ps1)                               |
 
 
@@ -88,6 +90,16 @@ This directory and it's subdirectories contain syntax changes that enable common
             
         }
     }.Transpile()
+~~~
+
+## NamespacedObject Example 1
+
+
+~~~PowerShell
+    Invoke-PipeScript {
+        My Object Precious { $IsARing = $true; $BindsThemAll = $true }
+        My.Precious
+    }
 ~~~
 
 ## ArrowOperator Example 1
@@ -232,6 +244,20 @@ This directory and it's subdirectories contain syntax changes that enable common
     }
 ~~~
 
+## DoubleDotting Example 1
+
+
+~~~PowerShell
+    Invoke-PipeScript { .. }
+~~~
+
+## DoubleDotting Example 2
+
+
+~~~PowerShell
+    Invoke-PipeScript { ^.. }
+~~~
+
 ## EqualityComparison Example 1
 
 
@@ -341,92 +367,6 @@ This directory and it's subdirectories contain syntax changes that enable common
     $Collection = $Collection |
             Where-Object Name -match $pattern |
             Select-Object -ExpandProperty Name
-~~~
-
-## RegexLiteral Example 1
-
-
-~~~PowerShell
-    {
-        '/[a|b]/'
-    } | .>PipeScript
-
-    # This will become:
-
-    [regex]::new('[a|b]', 'IgnoreCase')
-~~~
-
-## RegexLiteral Example 2
-
-
-~~~PowerShell
-    Invoke-PipeScript {
-        '/[a|b]/'.Matches('ab')
-    }
-~~~
-
-## RegexLiteral Example 3
-
-
-~~~PowerShell
-    {
-        "/[$a|$b]/"
-    } | .>PipeScript
-
-    # This will become:
-
-    [regex]::new("[$a|$b]", 'IgnoreCase')
-~~~
-
-## RegexLiteral Example 4
-
-
-~~~PowerShell
-    {
-@'
-/
-# Heredocs Regex literals will have IgnorePatternWhitespace by default, which allows comments
-^ # Match the string start
-(?<indent>\s{0,1})
-/
-'@
-    } | .>PipeScript
-
-    # This will become:
-
-    [regex]::new(@'
-# Heredocs Regex literals will have IgnorePatternWhitespace by default, which allows comments
-^ # Match the string start
-(?<indent>\s{0,1})
-'@, 'IgnorePatternWhitespace,IgnoreCase')
-~~~
-
-## RegexLiteral Example 5
-
-
-~~~PowerShell
-    $Keywords = "looking", "for", "these", "words"
-
-    {
-@"
-/
-# Double quoted heredocs can still contain variables
-[\s\p{P}]{0,1}         # Whitespace or punctuation
-$($Keywords -join '|') # followed by keywords
-[\s\p{P}]{0,1}         # followed by whitespace or punctuation
-/
-"@
-    } | .>PipeScript
-
-
-    # This will become:
-
-    [regex]::new(@"
-# Double quoted heredocs can still contain variables
-[\s\p{P}]{0,1}         # Whitespace or punctuation
-$($Keywords -join '|') # followed by keywords
-[\s\p{P}]{0,1}         # followed by whitespace or punctuation
-"@, 'IgnorePatternWhitespace,IgnoreCase')
 ~~~
 
 ## WhereMethod Example 1

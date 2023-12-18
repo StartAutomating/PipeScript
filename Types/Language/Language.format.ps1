@@ -1,0 +1,1 @@
+Write-FormatView -TypeName Language -Property LanguageName, FilePattern

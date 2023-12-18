@@ -59,6 +59,10 @@ $SourceText,
 [regex]
 $ReplacePattern,
 
+# The timeout for a replacement.  By default, 15 seconds.
+[timespan]
+$ReplaceTimeout = '00:00:15',
+
 # The name of the template.  This can be implied by the pattern.
 [Alias('Name')]
 $TemplateName,
@@ -119,6 +123,9 @@ $ArgumentList = @(),
 [Regex]
 $LinePattern,
 
+[switch]
+$AsScriptBlock,
+
 # The Command Abstract Syntax Tree.  If this is provided, we are transpiling a template keyword.
 [Parameter(ValueFromPipeline)]
 [Management.Automation.Language.CommandAst]
@@ -139,9 +146,17 @@ begin {
             return
         }
 
+        if ($this.LinePattern) {$LinePattern = $this.LinePattern}
+
         if ($LinePattern -and $match.Groups["IsSingleLine"].Value) {
-            $pipeScriptLines = @($pipeScriptText -split '(?>\r\n|\n)')
-            $pipeScriptText  = $pipeScriptLines -match $LinePattern -replace $LinePattern -join [Environment]::Newline
+            $pipeScriptLines = @($pipeScriptText -split '(?>\r\n|\n)' -ne '')
+            if ($pipeScriptLines.Length -gt 1) {
+                $firstLine, $restOfLines = $pipeScriptLines
+                $restOfLines = @($restOfLines)
+                $pipeScriptText = @(@($firstLine) + $restOfLines -match $LinePattern -replace $LinePattern) -join [Environment]::Newline
+            } else {
+                $pipeScriptText = @($pipeScriptLines -match $LinePattern -replace $LinePattern) -join [Environment]::Newline
+            }             
         }
 
         $InlineScriptBlock = [scriptblock]::Create($pipeScriptText)
@@ -165,7 +180,7 @@ process {
     #region Finding Template Transpiler 
     if ($CommandAst) {
         # Get command transpilers
-        $commandInfoTranspilers = Get-Transpiler -CouldPipe $MyInvocation.MyCommand
+        $LanguageCommands = @(Get-PipeScript -PipeScriptType Language)
 
         # Collect all of the bareword arguments
         $barewords = 
@@ -180,34 +195,62 @@ process {
         
         # Find a matching template transpiler.
         $foundTemplateTranspiler = 
-            :nextTranspiler foreach ($cmdTranspiler in $commandInfoTranspilers) {
-                $langName = $cmdTranspiler.ExtensionCommand.DisplayName -replace '^(?>Inline|Template)\.'
+            :nextTranspiler foreach ($LanguageCommand in $LanguageCommands) {            
+                $langName = $LanguageCommand.Name -replace 'Language\p{P}' -replace 'ps1$'
+                                
+                if (-not $langName) { continue }
                 if ($barewords -contains $langName) {
-                    $cmdTranspiler
+                    $LanguageCommand
                     continue
                 }
                 if ($CommandAst.CommandElements[1] -is [Management.Automation.Language.MemberExpressionAst] -and 
                     $CommandAst.CommandElements[1].Member.Value -eq $langName) {
-                    $cmdTranspiler
+                    $LanguageCommand
                     continue
                 }
-
-                foreach ($attr in $cmdTranspiler.ExtensionCommand.Attributes) {
-                    if ($attr -isnot [Management.Automation.ValidatePatternAttribute]) { continue }
-                    $regexPattern = [Regex]::new($attr.RegexPattern, $attr.Options, '00:00:05')
-                    if ($regexPattern.Match($barewords[0]).Success) {
-                        $TemplateName = $barewords[0]
-                        $cmdTranspiler
-                        continue nextTranspiler
-                    } elseif ($barewords[1] -and $regexPattern.Match($barewords[1]).Success) {
-                        $TemplateName = $barewords[1]
-                        $cmdTranspiler
-                        continue nextTranspiler
+                $attrList = 
+                    if ($LanguageCommand.ScriptBlock.Attributes) {
+                        $LanguageCommand.ScriptBlock.Attributes
                     }
+
+                $languageCmd = $LanguageCommand                
+
+                if (-not $ReplaceTimeout) {
+                    $ReplaceTimeout = [timespan]"00:00:15"
+                }
+
+                $languageDefinition = & $languageCmd
+                if ($languageDefinition.FilePattern) {
+                    $regexPattern = [Regex]::new($languageDefinition.FilePattern, "IgnoreCase,IgnorePatternWhitespace", $ReplaceTimeout)
+                    for ($barewordIndex = 0 ; $barewordIndex -lt 3; $barewordIndex++) {
+                        if (-not $barewords[$barewordIndex]) { continue }
+                        if ($regexPattern.Match($barewords[$barewordIndex]).Success) {
+                            $templateName = $barewords[$barewordIndex]
+                            $LanguageCmd
+                            continue nextTranspiler
+                        }
+                        
+                    }
+                }
+                
+                foreach ($attr in $attrList) {
+                    if ($attr -isnot [Management.Automation.ValidatePatternAttribute]) { continue }                    
+                    
+                    $regexPattern = [Regex]::new($attr.RegexPattern, $attr.Options, $ReplaceTimeout)
+                    break
+                    for ($barewordIndex = 0 ; $barewordIndex -lt 3; $barewordIndex++) {
+                        if (-not $barewords[$barewordIndex]) { continue }
+                        if ($regexPattern.Match($barewords[$barewordIndex]).Success) {
+                            $templateName = $barewords[$barewordIndex]
+                            $languageCmd
+                            continue nextTranspiler
+                        }                        
+                    }
+                    
 
                     if ($CommandAst.CommandElements[1] -is [Management.Automation.Language.MemberExpressionAst] -and 
                         $regexPattern.Match(('.' + $CommandAst.CommandElements[1].Member)).Success) {
-                        $cmdTranspiler
+                        $languageCmd
                         continue nextTranspiler
                     }                
                 }
@@ -217,21 +260,35 @@ process {
         # If we found a template transpiler
         # we'll want to effectively pack the transpilation engine into an object
         if ($foundTemplateTranspiler) {
-            if (-not $foundTemplateTranspiler.ExtensionCommand.Parameters.AsTemplateObject) {
+            if (-not $foundTemplateTranspiler.Parameters.AsTemplateObject -and -not ($foundTemplateTranspiler.pstypenames -contains 'Language.Command')) {
                 Write-Error "$($foundTemplateTranspiler) does not support dynamic use"
                 return
             }
-            $Splat = & $foundTemplateTranspiler.ExtensionCommand -AsTemplateObject
-            foreach ($kv in $splat.GetEnumerator()) {
-                $ExecutionContext.SessionState.PSVariable.Set($kv.Key, $kv.Value)
-                $PSBoundParameters[$kv.Key] = $kv.Value
+            if ($foundTemplateTranspiler.pstypenames -contains 'Language.Command') {
+                $languageDef = & $foundTemplateTranspiler
+                foreach ($kv in $languageDef.psobject.properties) {
+                    $ExecutionContext.SessionState.PSVariable.Set($kv.Name, $kv.Value)
+                    $PSBoundParameters[$kv.Name] = $kv.Value
+                }
+            } else {
+                $Splat = & $foundTemplateTranspiler -AsTemplateObject
+                foreach ($kv in $splat.GetEnumerator()) {
+                    $ExecutionContext.SessionState.PSVariable.Set($kv.Key, $kv.Value)
+                    $PSBoundParameters[$kv.Key] = $kv.Value
+                }
             }
         }
     }
     #endregion Finding Template Transpiler
 
+    if ($barewords -contains 'function') {
+        $AsScriptBlock = $true        
+    }
     
     if ($StartPattern -and $EndPattern) {
+        if (-not $ReplaceTimeout) {
+            $ReplaceTimeout = [timespan]"00:00:15"
+        }
         # If the Source Start and End were provided,
         # create a replacepattern that matches all content until the end pattern.
         $ReplacePattern = [Regex]::New("
@@ -243,7 +300,7 @@ process {
     )
     # Then Match the PipeScript End
     $EndPattern
-        ", 'IgnoreCase, IgnorePatternWhitespace', '00:00:10')
+        ", 'IgnoreCase, IgnorePatternWhitespace', $ReplaceTimeout)
 
         # Now switch the parameter set to SourceTextReplace
         $psParameterSet = 'SourceTextReplace'
@@ -352,8 +409,11 @@ process {
                     $ArgumentList += $arg
                 }
             }
-    
-            $ReplacePattern = [Regex]::new($this.Pattern,'IgnoreCase,IgnorePatternwhitespace','00:00:05')
+            
+            if (-not $ReplaceTimeout) {
+                $ReplaceTimeout = [timespan]"00:00:15"
+            }
+            $ReplacePattern = [Regex]::new($this.Pattern,'IgnoreCase,IgnorePatternwhitespace',$ReplaceTimeout)
     
             # Walk thru each match before we replace it
             foreach ($match in $ReplacePattern.Matches($fileText)) {
@@ -428,7 +488,7 @@ process {
             Get-Item -Path $name        
         }
         $filePattern = 
-            foreach ($attr in $foundTemplateTranspiler.ExtensionCommand.ScriptBlock.Attributes) {
+            foreach ($attr in $foundTemplateTranspiler.ScriptBlock.Attributes) {
                 if ($attr -is [ValidatePattern]) {
                     $attr.RegexPattern
                     break
@@ -443,9 +503,10 @@ process {
             }            
         }
         $null, $templateElements = foreach ($sentenceArg in $mySentence.ArgumentList) {
-            if ($sentenceArg.StringConstantType -eq 'Bareword' -and $sentenceArg.Value -eq 'template') {
+            if ($sentenceArg.StringConstantType -eq 'Bareword' -and $sentenceArg.Value -in 'template', 'function') {
                 continue
             }
+            if ($sentenceArg -in 'template', 'function') { continue }
             $convertedAst = 
                 if ($sentenceArg.ConvertFromAst) {
                     $sentenceArg.ConvertFromAst()
@@ -462,7 +523,13 @@ process {
             $convertedAst
         }
         if (-not $templateElements) { $templateElements = "''"}        
-        $languageString = $($foundTemplateTranspiler.ExtensionCommand.DisplayName -replace '(?>Template|Inline)\.' -replace '^\.')
+        $languageString = $(
+            if ($foundTemplateTranspiler.pstypenames -contains 'Language.Command') {
+                $foundTemplateTranspiler.Name -replace 'Language\p{P}' -replace 'ps1$'                
+            } else {
+                $foundTemplateTranspiler.DisplayName -replace '(?>Template|Inline)\.' -replace '^\.'
+            }            
+        )
         if (-not $TemplateName) { $TemplateName = $languageString }
         $createdSb = [scriptblock]::Create(@"
 `$(
@@ -470,6 +537,9 @@ process {
     PSTypeName = 'PipeScript.Template'
     Name = '$($TemplateName -replace "'", "''")'
     Language = '$languageString'
+    $(if ($LinePattern) {
+        "LinePattern = '$LinePattern'"
+    })
     SourceFile = ''
     FilePattern = '$($filePattern -replace "'", "''")'
     Pattern = 
@@ -522,13 +592,143 @@ $replacePattern
 )
 "@
 )
-        $createdSb
-        
-        return        
+        if (-not ($mySentence.ArgumentList -contains 'function')) {
+            $createdSb        
+            return        
+        }       
     }
     #endregion Template Keyword
 
     $FileModuleContext = New-Module @newModuleSplat
+
+
+    # There are a couple of paths we could take from here:
+    # We could replace inline, and keep a context for variables
+    # Or we can turn the whole thing into a `[ScriptBlock]`
+    if ($AsScriptBlock) {
+        $index = 0
+        $fileText      = $SourceText        
+        if ((-not $fileText) -and $CommandAst) {
+            $firstElement, $templateContent = $CommandAst.CommandElements -notmatch '^(?>template|function)$'
+            $OptimizedTemplateElement = $null
+            $fileText  = @(foreach ($contentElement in $templateContent) {
+                if ($contentElement -is [Management.Automation.Language.StringConstantExpressionAst]) {
+                    $contentElement.Value
+                }
+                elseif ($contentElement -is [Management.Automation.Language.ExpandableStringExpressionAst]) {
+                    $OptimizedTemplateElement = $contentElement
+                }
+                elseif ($contentElement -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
+                    $OptimizedTemplateElement = $contentElement
+                }
+            }) -join ' '            
+        }
+
+        if ($OptimizedTemplateElement) {
+            $templateScriptBlock = @(foreach ($optimizedElement in $OptimizedTemplateElement) {
+                if ($OptimizedTemplateElement -is [Management.Automation.Language.ExpandableStringExpressionAst]) {
+                    New-PipeScript -AutoParameter -Process ([scriptblock]::Create($OptimizedTemplateElements))
+                }
+                elseif ($optimizedElement -is [Management.Automation.Language.ScriptBlockExpressionAst]) {                    
+                    $optimizedElement.AsScriptBlock()
+                }
+            }) | Join-PipeScript
+            
+            $templatePreCompiledString = @("template function $TemplateName {", $templateScriptBlock,"}") -join [Environment]::newLine             
+            [ScriptBlock]::Create("$templatePreCompiledString") | Use-PipeScript
+            return
+        }
+
+        if (-not $fileText) { return }
+
+        $hasParameters = $false
+        $allInlineScripts = @()
+        
+        $newContent = @(
+        foreach ($match in $ReplacePattern.Matches($fileText)) {
+            if ($match.Index -gt $index) {
+                "@'" + 
+                    [Environment]::NewLine + 
+                    (
+                        $fileText.Substring($index, $match.Index - $index) -replace "'@", "''@"  -replace "@'", "@''" 
+                    ) +
+                    [Environment]::NewLine +
+                "'@" + { -replace "''@", "'@" -replace "@''", "'@"} + [Environment]::NewLine 
+            }
+            $inlineScriptBlock = & $GetInlineScript $match
+            if (-not $inlineScriptBlock) { 
+                continue # skip.
+            }
+
+            $allInlineScripts += $inlineScriptBlock
+
+            $inlineScriptBlock = if ($inlineScriptBlock.Ast.ParamBlock) {                
+                $hasParameters = $true
+                "$inlineScriptBlock".Substring($inlineScriptBlock.Ast.ParamBlock.Extent.ToString().Length)
+            } else {
+                "$inlineScriptBlock"
+            }
+
+            if ($Begin) {
+                "$Begin"
+            }
+
+            if ($ForeachObject) {
+                "@($inlineScriptBlock)" + $(
+                    if ($ForeachObject) {
+                        '|' + [Environment]::NewLine
+                        @(foreach ($foreachStatement in $ForeachObject) {
+                            if ($foreachStatement.Ast.ProcessBlock -or $foreachStatement.Ast.BeginBlock) {
+                                ". {$ForeachStatement}"
+                            } elseif ($foreachStatement.Ast.EndBlock.Statements -and 
+                                $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements -and
+                                $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements[0].CommandElements -and
+                                $foreachStatement.Ast.EndBlock.Statements[0].PipelineElements[0].CommandElements.Value -in 'Foreach-Object', '%') {
+                                "$ForeachStatement"
+                            } else {
+                                "Foreach-Object {$ForeachStatement}"
+                            }
+                        }) -join (' |' + [Environment]::NewLine)
+                    }
+                )
+            } else {
+                $inlineScriptBlock
+            }
+
+            if ($end) {
+                "$end"
+            }
+                    
+            $index = $match.Index + $match.Length            
+        }
+        if ($index -lt $fileText.Length) {
+            "@'" + [Environment]::NewLine + (
+                $fileText.Substring($index) -replace "'@", "''@"
+            )  + [Environment]::NewLine + 
+            "'@" + 
+            { -replace "''@", "'@" -replace "@''", "'@"} + 
+            [Environment]::NewLine            
+        }
+        )
+
+        $templateScriptBlock = 
+            if ($hasParameters) {
+                $combinedParamBlock = $allInlineScripts | Join-ScriptBlock -IncludeBlockType param, header, help
+                
+                $combinedParamBlock, ([ScriptBlock]::Create($newContent -join [Environment]::NewLine)) | Join-PipeScript
+            } else {
+                ([ScriptBlock]::Create($newContent -join [Environment]::NewLine))
+            }
+
+        if ($templateScriptBlock -and $barewords -contains "function") {
+            $templatePreCompiledString = @("template function $TemplateName {", $templateScriptBlock,"}") -join [Environment]::newLine             
+            [ScriptBlock]::Create("$templatePreCompiledString") | Use-PipeScript
+            return
+        }
+
+        $null = $null
+        
+    }
 
     # If the parameter set was SourceTextReplace
     if ($ReplacePattern) {
@@ -559,7 +759,7 @@ $replacePattern
         # This should run each inline script and replace the text.
         $replacement = 
             try {
-            $ReplacePattern.Replace($fileText, $ReplacementEvaluator)
+                $ReplacePattern.Replace($fileText, $ReplacementEvaluator)
             } catch {
                 $ex = $_
                 Write-Error -ErrorRecord $ex

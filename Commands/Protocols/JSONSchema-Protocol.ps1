@@ -1,5 +1,6 @@
 
 function Protocol.JSONSchema {
+
     <#
     .SYNOPSIS
         JSON Schema protocol
@@ -15,6 +16,7 @@ function Protocol.JSONSchema {
     #>
     [ValidateScript({
         $commandAst = $_
+
         if ($commandAst -isnot [Management.Automation.Language.CommandAst]) { return $false }
         if ($commandAst.CommandElements.Count -eq 1) { return $false }
         # If neither command element contained a URI
@@ -32,76 +34,88 @@ function Protocol.JSONSchema {
     [Parameter(Mandatory,ParameterSetName='ScriptBlock')]
     [uri]
     $SchemaUri,
+
     # The Command's Abstract Syntax Tree
     [Parameter(Mandatory,ParameterSetName='Protocol')]
     [Management.Automation.Language.CommandAST]
     $CommandAst,
+
     # The ScriptBlock.
     # This is provided when transpiling the protocol as an attribute.
     # Providing a value here will run this script's contents, rather than a default implementation.
     [Parameter(Mandatory,ParameterSetName='ScriptBlock',ValueFromPipeline)]
     [scriptblock]
     $ScriptBlock = {},
+
     # One or more property prefixes to remove.
     # Properties that start with this prefix will become parameters without the prefix.
     [Alias('Remove Property Prefix')]
     [string[]]
     $RemovePropertyPrefix,
+
     # One or more properties to ignore.
     # Properties whose name or description is like this keyword will be ignored.
     [Alias('Ignore Property', 'IgnoreProperty','SkipProperty', 'Skip Property')]
     [string[]]
     $ExcludeProperty,
+
     # One or more properties to include.
     # Properties whose name or description is like this keyword will be included.
     [Alias('Include Property')]
     [string[]]
     $IncludeProperty,
+
     # If set, will not mark a parameter as required, even if the schema indicates it should be.
     [Alias('NoMandatoryParameters','No Mandatory Parameters', 'NoMandatories', 'No Mandatories')]
     [switch]
     $NoMandatory
     )
+
     begin {
         # First we declare a few filters we will reuse.
+
         # One resolves schema definitions.
         # The inputObject is the schema.
         # The arguments are the path within the schema.
-        filter resolveSchemaDefinition {
-                    $in = $_.'$defs'
-                    $schemaPath = $args -replace '^#' -replace '^/' -replace '^\$defs' -split '[/\.]' -ne ''
-                    foreach ($sp in $schemaPath) {
-                        $in = $in.$sp
-                    }
-                    $in
-                
+        filter resolveSchemaDefinition
+        {
+            $in = $_.'$defs'
+            $schemaPath = $args -replace '^#' -replace '^/' -replace '^\$defs' -split '[/\.]' -ne ''
+            foreach ($sp in $schemaPath) {
+                $in = $in.$sp
+            }
+            $in
         }
+
         # Another converts property names into schema parameter names.
         filter getSchemaParameterName {
-                    $parameterName = $_
-                    # If we had any prefixes we wished to remove, now is the time.
-                    if ($RemovePropertyPrefix) {            
-                        $parameterName = $parameterName -replace "^(?>$(@($RemovePropertyPrefix) -join '|'))"
-                        if ($property.Name -like 'Experimental.*') {
-                            $null = $null
-                        }                                
-                    }
-                    # Any punctuation followed by a letter should be removed and replaced with an Uppercase letter.
-                    $parameterName = [regex]::Replace($parameterName, "\p{P}(\p{L})", {
-                        param($match)
-                        $match.Groups[1].Value.ToUpper()
-                    }) -replace '\p{P}'
-                    # And we should force the first letter to be uppercase.
-                    $parameterName.Substring(0,1).ToUpper() + $parameterName.Substring(1)
-                
+            $parameterName = $_
+            # If we had any prefixes we wished to remove, now is the time.
+            if ($RemovePropertyPrefix) {            
+                $parameterName = $parameterName -replace "^(?>$(@($RemovePropertyPrefix) -join '|'))"
+                if ($property.Name -like 'Experimental.*') {
+                    $null = $null
+                }                                
+            }
+            # Any punctuation followed by a letter should be removed and replaced with an Uppercase letter.
+            $parameterName = [regex]::Replace($parameterName, "\p{P}(\p{L})", {
+                param($match)
+                $match.Groups[1].Value.ToUpper()
+            }) -replace '\p{P}'
+            # And we should force the first letter to be uppercase.
+            $parameterName.Substring(0,1).ToUpper() + $parameterName.Substring(1)
         }
+
         # If we have not cached the schema uris, create a collection for it.
         if (-not $script:CachedSchemaUris) {
             $script:CachedSchemaUris = @{}
         }
+
+
         $myCmd = $MyInvocation.MyCommand
         
     }
+
     process {
         # If we are being invoked as a protocol
         if ($PSCmdlet.ParameterSetName -eq 'Protocol') {
@@ -122,9 +136,11 @@ function Protocol.JSONSchema {
                 }
             }        
         }
+
         if (-not $SchemaUri.Scheme) {
             $SchemaUri = [uri]"https://$($SchemaUri.OriginalString -replace '://')"
         }
+
         # We will try to cache the schema URI at a given scope.
         $script:CachedSchemaUris[$SchemaUri] = $schemaObject = 
             if (-not $script:CachedSchemaUris[$SchemaUri]) {
@@ -132,21 +148,25 @@ function Protocol.JSONSchema {
             } else {
                 $script:CachedSchemaUris[$SchemaUri]
             }    
+
         # If we do not have a schema object, error out.
         if (-not $schemaObject) {
             Write-Error "Could not get Schema from '$schemaUri'"
             return
         }
+
         # If the object does not look have a JSON schema, error out.
         if (-not $schemaObject.'$schema') {
             Write-Error "'$schemaUri' is not a JSON Schema"
             return
         }
+
         # If we do not have a URI fragment or there are no properties
         if (-not $SchemaUri.Fragment -and -not $schemaObject.properties) {        
             Write-Error "No root properties defined and no definition specified"
             return # error out.
         }
+
         # Resolve the schema object we want to generate.
         $schemaDefinition = 
             if (-not $schemaObject.properties -and $SchemaUri.Fragment) {
@@ -154,10 +174,12 @@ function Protocol.JSONSchema {
             } else {
                 $schemaObject.properties
             }
+
         # Start off by carrying over the description.
         $newPipeScriptSplat = @{
             description = $schemaDefinition.description                
         }
+
         # Now walk thru each property in the schema
         $newPipeScriptParameters = [Ordered]@{}
         :nextProperty foreach ($property in $schemaDefinition.properties.psobject.properties) {
@@ -197,8 +219,10 @@ function Protocol.JSONSchema {
                 "[Parameter($(
                     if ($property.value.required -and -not $NoMandatory) { "Mandatory,"}
                 )ValueFromPipelineByPropertyName)]"
+
                 # Followed by the defaultBindingProperty (the name of the JSON property)
                 "[ComponentModel.DefaultBindingProperty('$($property.Name)')]"
+
                 # Keep track of if null was allowed and try to resolve the type
                 $nullAllowed = $false
                 $propertyTypeInfo =                 
@@ -245,6 +269,7 @@ function Protocol.JSONSchema {
                     if ($nullAllowed) {
                         $validSet += ''
                     }
+
                     # create a validateset.
                     "[ValidateSet('$($validSet -join "','")')]"
                 }
@@ -284,13 +309,16 @@ function Protocol.JSONSchema {
                     }
                 }
             )
+
             $parameterAttributes += "`$$parameterName"
             $newPipeScriptParameters[$parameterName] = $parameterAttributes        
         }
+
+
         $newPipeScriptSplat.Parameter = $newPipeScriptParameters
         
         # If there was no scriptblock, or it was nothing but an empty param()
-        if ($ScriptBlock -match '^[\s\r\n]{0,}(?:param\([\s\r\n]{0,}\))[\s\r\n]{0,}$') {
+        if ($ScriptBlock.IsEmpty -or $ScriptBlock -match '^[\s\r\n]{0,}(?:param\([\s\r\n]{0,}\))[\s\r\n]{0,}$') {
             # Create a script that will create the schema object.
             $newPipeScriptSplat.Process = [scriptblock]::Create("
         `$schemaTypeName = '$("$schemauri".Replace("'","''"))'
@@ -327,11 +355,13 @@ function Protocol.JSONSchema {
             
             }
         }
+
         # By converting our modified copy of parameters into an object
         # we should have an object that matches the schema.
         [PSCustomObject]$myParamCopy
     })
         }
+
         # If we are transpiling a script block
         if ($PSCmdlet.ParameterSetName -eq 'ScriptBlock') {
             # join the existing script with the schema information
@@ -349,5 +379,6 @@ function Protocol.JSONSchema {
             New-PipeScript @newPipeScriptSplat
         }    
     }
+
 }
 

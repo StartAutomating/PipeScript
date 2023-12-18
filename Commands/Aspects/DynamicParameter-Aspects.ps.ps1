@@ -11,13 +11,17 @@ Aspect function DynamicParameter {
             Aspect.DynamicParameter
     .EXAMPLE
         Get-Command Get-Process | 
-            Aspect.DynamicParameter -IncludeParameter Name # Select -Expand Keys | Should -Be Name
+            Aspect.DynamicParameter -IncludeParameter Name # Select -Expand Keys # Should -Be Name
+    .EXAMPLE
+        Get-Command Get-Command, Get-Help | 
+            Aspect.DynamicParameter
     #>
     [Alias('Aspect.DynamicParameters')]
     param(
     # The InputObject.
     # This can be anything, but will be ignored unless it is a `[ScriptBlock]` or `[Management.Automation.CommandInfo]`.    
     [vfp()]
+    [PSObject]
     $InputObject,
 
     # The name of the parameter set the dynamic parameters will be placed into.    
@@ -59,22 +63,33 @@ Aspect function DynamicParameter {
     )
 
     begin {
+        # We're going to accumulate all input into a queue, so we'll need to make a queue in begin.
         $inputQueue = [Collections.Queue]::new()
     }
     process {
-        $inputQueue.Enqueue($InputObject)
+        $inputQueue.Enqueue($InputObject) # In process, we just need to enqueue the input.
     }
 
-    end {        
+    end {
+        # The dynamic parameters are created at the end of the pipeline.        
         $DynamicParameters = [Management.Automation.RuntimeDefinedParameterDictionary]::new()
+        
+        # We're going to want to track what aliases are assigned (to avoid conflicts)
+        $PendingAliasMap = [Ordered]@{}
 
-        if ($PositionOffset -and 
-            ($BlankParameter -or $PSBoundParameters['BlankParameterName'])) {
+        # Before any dynamic parameters are bound, we need to create any blank requested parameters
+        if ($PositionOffset -and # (if we're offsetting position
+            ($BlankParameter -or $PSBoundParameters['BlankParameterName']) # and we have a -BlankParameter)
+        ) {
+
             for ($pos =0; $pos -lt $PositionOffset; $pos++) {
+                # If we have a name, use that
                 $paramName = $BlankParameterName[$pos]
                 if (-not $paramName) {
+                    # Otherwise, just use the last name and give it a number.
                     $paramName = "$($BlankParameterName[-1])$pos"
-                }                
+                }
+                # construct a minimal dynamic parameter                
                 $DynamicParameters.Add($paramName, 
                     [Management.Automation.RuntimeDefinedParameter]::new(
                         $paramName,
@@ -86,24 +101,32 @@ Aspect function DynamicParameter {
                         )
                     )
                 )
+
+                $PendingAliasMap[$paramName] = $DynamicParameters[$paramName]
             }
         }
+
+        # After we've blank parameters, we move onto the input queue.        
         while ($inputQueue.Count) {
+            # and work our way thru it until it is empty.
             $InputObject = $inputQueue.Dequeue()
 
+            # First up, we turn our input into [CommandMetaData]
             $inputCmdMetaData = 
                 if ($inputObject -is [Management.Automation.CommandInfo]) {
+                    # this is a snap if it's a command already
                     [Management.Automation.CommandMetaData]$InputObject
                 }
                 elseif ($inputObject -is [scriptblock]) {
+                    # but scriptblocks need to be put into a temporary function.
                     $function:TempFunction = $InputObject
                     [Management.Automation.CommandMetaData]$ExecutionContext.SessionState.InvokeCommand.GetCommand('TempFunction','Function')
                 }
 
+            # If for any reason we couldn't get command metadata, continue.
             continue if -not $inputCmdMetaData
-                                        
+                                                   
             :nextDynamicParameter foreach ($paramName in $inputCmdMetaData.Parameters.Keys) {
-
                 if ($ExcludeParameter) {
                     foreach ($exclude in $ExcludeParameter) {
                         if ($paramName -like $exclude) { continue nextDynamicParameter}
@@ -120,7 +143,10 @@ Aspect function DynamicParameter {
                 $attrList = [Collections.Generic.List[Attribute]]::new()
                 $validCommandNames = @()
                 foreach ($attr in $inputCmdMetaData.Parameters[$paramName].attributes) {
-                    if ($attr -isnot [Management.Automation.ParameterAttribute]) {
+                    if (
+                        $attr -isnot [Management.Automation.ParameterAttribute] -and
+                        $attr -isnot [Management.Automation.AliasAttribute]
+                    ) {
                         # we can passthru any non-parameter attributes
                         $attrList.Add($attr)
                         # (`[Management.Automation.CmdletAttribute]` is special, as it indicates if the parameter applies to a command)
@@ -129,7 +155,21 @@ Aspect function DynamicParameter {
                                 ($attr.VerbName -replace '\s') + '-' + ($attr.NounName -replace '\s')
                             ) -replace '^\-' -replace '\-$'
                         }
-                    } else {
+                    } 
+                    elseif ($attr -is [Management.Automation.AliasAttribute]) {
+                        # If it is an alias attribute, we need to ensure that it will not conflict with existing aliases
+                        $unmappedAliases = @(foreach ($a in $attr.Aliases) {
+                            continue if ($a -in $pendingAliasMap.Keys)
+                            $a
+                        })
+                        if ($unmappedAliases) {
+                            $attrList.Add([Management.Automation.AliasAttribute]::new($unmappedAliases))
+                            foreach ($nowMappedAlias in $unmappedAliases) {
+                                $PendingAliasMap[$nowMappedAlias] = $DynamicParameters[$paramName]
+                            }
+                        }
+                    }
+                    else {
                         # but parameter attributes need to copied.
                         $attrCopy = [Management.Automation.ParameterAttribute]::new()
                         # (Side note: without a .Clone, copying is tedious.)
@@ -180,7 +220,7 @@ Aspect function DynamicParameter {
                 }
                 
                 if ($DynamicParameters.ContainsKey($paramName)) {                    
-                    $DynamicParameters[$paramName].ParameterType = [PSObject]                    
+                    $DynamicParameters[$paramName].ParameterType = [PSObject]
                     foreach ($attr in $attrList) {                        
                         $DynamicParameters[$paramName].Attributes.Add($attr)
                     }

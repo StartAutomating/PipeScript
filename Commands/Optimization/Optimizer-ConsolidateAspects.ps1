@@ -1,5 +1,6 @@
 
 function PipeScript.Optimizer.ConsolidateAspects {
+
     <#
     .SYNOPSIS
         Consolidates Code Aspects
@@ -8,6 +9,7 @@ function PipeScript.Optimizer.ConsolidateAspects {
     .EXAMPLE
         {        
             a.txt Template 'abc'
+
             b.txt Template 'abc'
         } | .>PipeScript
     .EXAMPLE
@@ -27,18 +29,22 @@ function PipeScript.Optimizer.ConsolidateAspects {
     [Parameter(Mandatory,ParameterSetName='ScriptBlock',ValueFromPipeline)]
     [scriptblock]
     $ScriptBlock,
+
     # The Function Definition.  All aspects used more than once within this Function Definition will be consolidated.
     [Parameter(Mandatory,ParameterSetName='FunctionDefinition',ValueFromPipeline)]
     [Management.Automation.Language.FunctionDefinitionAst]
     $FunctionDefinitionAst
     )
+
     begin {
         $findAspectComment = [Regex]::new('# aspect\p{P}(?<n>\S+)', 'IgnoreCase,RightToLeft', '00:00:01')
     }
+
     process {
         if ($psCmdlet.ParameterSetName -eq 'FunctionDefinition') {
             $ScriptBlock = [scriptblock]::Create($FunctionDefinitionAst.Body -replace '^\{' -replace '\}$')
         }
+
         # Find all ScriptBlockExpressions
         $script:FoundFunctionExtent = $null
         # If we are in a function, we can consolidate inner functions.
@@ -67,12 +73,14 @@ function PipeScript.Optimizer.ConsolidateAspects {
             if ($ast.Parent -is [Management.Automation.Language.AssignmentStatementAst]) { 
                 return $false
             }
+
             if ($ast.Parent -is [Management.Automation.Language.CommandAst] -and 
                 $ast.Parent.CommandElements[0] -ne $ast) { 
                 return $false
             }
             return $true
         } -Recurse)
+
         $scriptBlockExpressions = [Ordered]@{}
         
         foreach ($expression in $allExpressions) {
@@ -89,6 +97,8 @@ function PipeScript.Optimizer.ConsolidateAspects {
                 $scriptBlockExpressions["$matchingAst"]  += @($expression.Result)
             }
         }
+
+
         # Any bucket 
         $consolidations = [Ordered]@{}
         $consolidatedScriptBlocks = [Ordered]@{}
@@ -111,6 +121,7 @@ function PipeScript.Optimizer.ConsolidateAspects {
                 @(foreach ($value in $scriptBlockExpressions[$k]) {
                     $grandParent = $value.Parent.Parent
                     $greatGrandParent = $value.Parent.Parent.Parent
+
                     # If it's in a hashtable, use the key
                     if ($greatGrandParent -is [Management.Automation.Language.HashtableAst]) {
                         foreach ($kvp in $greatGrandParent.KeyValuePairs) {
@@ -146,6 +157,7 @@ function PipeScript.Optimizer.ConsolidateAspects {
                         $null = $null
                     }
                 })
+
             $uniquePotentialNames = @{}
             foreach ($potentialName in $potentialNames) {
                 $uniquePotentialNames[$potentialName] = $potentialName
@@ -158,6 +170,7 @@ function PipeScript.Optimizer.ConsolidateAspects {
                 }
             }
         }
+
         # Turn each of the consolidations into a regex replacement
         $astReplacement = [Ordered]@{}
         # and a bunch of content to prepend.
@@ -172,6 +185,7 @@ function PipeScript.Optimizer.ConsolidateAspects {
                 }
             ) -join [Environment]::NewLine)")
         }
+
         $updatedScriptBlock = 
             if ($astReplacement.Count -gt 1) {
                 Update-PipeScript -AstReplacement $astReplacement -ScriptBlock $ScriptBlock -Prepend $prepend
@@ -179,6 +193,7 @@ function PipeScript.Optimizer.ConsolidateAspects {
             else {
                 $ScriptBlock
             }
+
         switch ($psCmdlet.ParameterSetName) {
             ScriptBlock {
                 $updatedScriptBlock
@@ -194,6 +209,7 @@ function PipeScript.Optimizer.ConsolidateAspects {
             }
         }
     }
+
 }
 
 

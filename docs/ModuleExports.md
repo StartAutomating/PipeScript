@@ -1,28 +1,20 @@
 ModuleExports
 -------------
 
-
-
-
 ### Synopsis
 Gets Module Exports
 
-
-
 ---
-
 
 ### Description
 
 Gets Exported Commands from a module.
 
-
-
 ---
 
-
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     $PipeScriptModule = Get-Module PipeScript
@@ -31,18 +23,11 @@ Gets Exported Commands from a module.
 }
 ```
 
-
-
 ---
-
 
 ### Parameters
 #### **CommandType**
-
 The command type
-
-
-
 Valid Values:
 
 * Alias
@@ -55,36 +40,18 @@ Valid Values:
 * Configuration
 * All
 
-
-
-
-
-
 |Type              |Required|Position|PipelineInput|
 |------------------|--------|--------|-------------|
 |`[CommandTypes[]]`|false   |1       |false        |
 
-
-
 #### **VariableAST**
-
 A VariableExpression.  This variable must contain a module.
-
-
-
-
-
 
 |Type                     |Required|Position|PipelineInput |
 |-------------------------|--------|--------|--------------|
 |`[VariableExpressionAst]`|true    |named   |true (ByValue)|
 
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell

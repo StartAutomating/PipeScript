@@ -30,7 +30,7 @@ $myOffset   = 0
     }
     # otherwise, find if any pipescripts match this AST
 
-    $foundTranspilers = Get-Transpiler -CouldPipe $item -ValidateInput $item
+    $foundTranspilers = Get-Transpiler -CouldPipe $item -ValidateInput $item 
 
     if ($foundTranspilers) {
         foreach ($transpiler in $foundTranspilers) {

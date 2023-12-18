@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-16"?>
-<!-- Generated with EZOut 1.9.9: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
+<!-- Generated with EZOut 2.0.3: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
 <Configuration>
   <Controls>
     <Control>
@@ -22,6 +21,11 @@
     </ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+        $_.Type -eq 'Comment'
+    </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>$moduleName = 'PipeScript'
 
             do {
@@ -60,9 +64,19 @@
                 <PropertyName>Content</PropertyName>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+        $_.Type -eq 'Comment'
+    </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Success' ) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+        $_.Type -in 'Keyword', 'String', 'CommandArgument'
+    </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Verbose' -NoClear) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
@@ -74,9 +88,19 @@
                 <PropertyName>Content</PropertyName>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+        $_.Type -in 'Keyword', 'String', 'CommandArgument'
+    </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Verbose' ) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+        $_.Type -in 'Variable', 'Command'
+    </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Warning' -NoClear) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
@@ -88,9 +112,19 @@
                 <PropertyName>Content</PropertyName>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+        $_.Type -in 'Variable', 'Command'
+    </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Warning' ) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+        $_.Type -in 'CommandParameter'
+    </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Magenta' -NoClear) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
@@ -102,9 +136,19 @@
                 <PropertyName>Content</PropertyName>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+        $_.Type -in 'CommandParameter'
+    </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Magenta' ) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+        $_.Type -in 'Operator','GroupStart', 'GroupEnd'
+    </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Magenta' -NoClear) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
@@ -116,6 +160,11 @@
                 <PropertyName>Content</PropertyName>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock>
+        $_.Type -in 'Operator','GroupStart', 'GroupEnd'
+    </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Magenta' ) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
@@ -441,7 +490,7 @@
                 }
                 elseif ($canUseANSI) {
                     # For ANSI,
-                    '' + $esc + ']8m;;' + $Link + $esc + '\'   
+                    '' + $esc + ']8;;' + $Link + $esc + '\'   
                 }
             }
             
@@ -1566,6 +1615,7 @@ $BackgroundColor
     )
 
     begin {
+        if (-not $Depth) { $depth = $FormatEnumerationLimit }
         $toYaml = {
             param(
             [Parameter(ValueFromPipeline,Position=0)]$Object,
@@ -1794,6 +1844,32 @@ $BackgroundColor
       </CustomControl>
     </View>
     <View>
+      <Name>Language</Name>
+      <ViewSelectedBy>
+        <TypeName>Language</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>LanguageName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>FilePattern</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
       <Name>Markdown</Name>
       <ViewSelectedBy>
         <TypeName>Markdown</TypeName>
@@ -1855,6 +1931,56 @@ $BackgroundColor
           </CustomEntry>
         </CustomEntries>
       </CustomControl>
+    </View>
+    <View>
+      <Name>Microsoft.CodeAnalysis.SyntaxNode</Name>
+      <ViewSelectedBy>
+        <TypeName>Microsoft.CodeAnalysis.SyntaxNode</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <PropertyName>Language</PropertyName>
+      </GroupBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <Wrap />
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Text</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>Microsoft.CodeAnalysis.SyntaxTree</Name>
+      <ViewSelectedBy>
+        <TypeName>Microsoft.CodeAnalysis.SyntaxTree</TypeName>
+      </ViewSelectedBy>
+      <GroupBy>
+        <PropertyName>Language</PropertyName>
+      </GroupBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <Wrap />
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Text</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
     </View>
     <View>
       <Name>PipeScript</Name>
@@ -1946,6 +2072,52 @@ $BackgroundColor
       </TableControl>
     </View>
     <View>
+      <Name>PipeScript.Interpreters</Name>
+      <ViewSelectedBy>
+        <TypeName>PipeScript.Interpreters</TypeName>
+      </ViewSelectedBy>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+            <CustomItem>
+              <ExpressionBinding>
+                <ScriptBlock>
+    if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('Show-Markdown', 'Cmdlet')) {
+        Show-Markdown -InputObject $_.'README'
+    } else {
+        $_.'README'
+    }   
+</ScriptBlock>
+              </ExpressionBinding>
+            </CustomItem>
+          </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </View>
+    <View>
+      <Name>PipeScript.Languages</Name>
+      <ViewSelectedBy>
+        <TypeName>PipeScript.Languages</TypeName>
+      </ViewSelectedBy>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+            <CustomItem>
+              <ExpressionBinding>
+                <ScriptBlock>
+    if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('Show-Markdown', 'Cmdlet')) {
+        Show-Markdown -InputObject $_.'README'
+    } else {
+        $_.'README'
+    }   
+</ScriptBlock>
+              </ExpressionBinding>
+            </CustomItem>
+          </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </View>
+    <View>
       <Name>PipeScript.Sentence</Name>
       <ViewSelectedBy>
         <TypeName>PipeScript.Sentence</TypeName>
@@ -1955,6 +2127,9 @@ $BackgroundColor
           <CustomEntry>
             <CustomItem>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock> $_.Command </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>$moduleName = 'PipeScript'
 
             do {
@@ -1991,9 +2166,15 @@ $BackgroundColor
                 <PropertyName>Keyword</PropertyName>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock> $_.Command </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Warning' ) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock> $_.Command </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'green' -NoClear) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
@@ -2003,6 +2184,9 @@ $BackgroundColor
                 <ScriptBlock> " &lt;# $($_.Command) #&gt; " </ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock> $_.Command </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'green' ) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
@@ -2036,6 +2220,9 @@ $BackgroundColor
     </ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock> $_.Arguments -and -not $_.Clauses </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Magenta' -NoClear) -join ''</ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
@@ -2047,6 +2234,9 @@ $BackgroundColor
     </ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
+                <ItemSelectionCondition>
+                  <ScriptBlock> $_.Arguments -and -not $_.Clauses </ScriptBlock>
+                </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Magenta' ) -join ''</ScriptBlock>
               </ExpressionBinding>
             </CustomItem>
@@ -2133,18 +2323,18 @@ $BackgroundColor
             } while ($false)
             
         
-
-                $__ = $_
-                $ci = . {"Success"}
-                $_ = $__
-                if ($ci -is [string]) {
-                    $ci = &amp; ${PipeScript_Format-RichText} -NoClear -ForegroundColor $ci
-                } else {                    
-                    $ci = &amp; ${PipeScript_Format-RichText} -NoClear @ci
-                }
-                $output = . {$_.'DisplayName'}
-                @($ci; $output; &amp; ${PipeScript_Format-RichText}) -join ""
-                </ScriptBlock>
+                        
+                        $CellColorValue = $($Script:_LastCellStyle = $($__ = $_;. {"Success"};$_ = $__);$Script:_LastCellStyle)
+                        
+                            if ($CellColorValue -and $CellColorValue -is [string]) {
+                                $CellColorValue = &amp; ${PipeScript_Format-RichText} -NoClear -ForegroundColor $CellColorValue
+                            } elseif (`$CellColorValue -is [Collections.IDictionary]) {
+                                $CellColorValue = &amp; ${PipeScript_Format-RichText} -NoClear @CellColorValue
+                            }
+                                                    
+                        $output = . {$_.'DisplayName'}
+                        @($CellColorValue; $output; &amp; ${PipeScript_Format-RichText}) -join ''
+                        </ScriptBlock>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Synopsis</PropertyName>

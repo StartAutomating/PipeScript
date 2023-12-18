@@ -1,16 +1,10 @@
 New
 ---
 
-
-
-
 ### Synopsis
 'new' keyword
 
-
-
 ---
-
 
 ### Description
 
@@ -24,85 +18,70 @@ It creates an instance of an object.
 
 If 'new' is followed by a single string, and the type has a ::Parse method, new will parse the value.
 
-If 'new'
-
-
-
 ---
 
-
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 { new DateTime }
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 { new byte 1 }
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 { new int[] 5 }
 ```
+> EXAMPLE 4
 
-#### EXAMPLE 4
 ```PowerShell
 { new Timespan }
 ```
+> EXAMPLE 5
 
-#### EXAMPLE 5
 ```PowerShell
 { new datetime 12/31/1999 }
 ```
+> EXAMPLE 6
 
-#### EXAMPLE 6
 ```PowerShell
 { new @{RandomNumber = Get-Random; A ='b'}}
 ```
+> EXAMPLE 7
 
-#### EXAMPLE 7
 ```PowerShell
 { new Diagnostics.ProcessStartInfo @{FileName='f'} }
 ```
+> EXAMPLE 8
 
-#### EXAMPLE 8
 ```PowerShell
 { new ScriptBlock 'Get-Command'}
 ```
+> EXAMPLE 9
 
-#### EXAMPLE 9
 ```PowerShell
 { (new PowerShell).AddScript("Get-Command").Invoke() }
 ```
+> EXAMPLE 10
 
-#### EXAMPLE 10
 ```PowerShell
 { new 'https://schema.org/Thing' }
 ```
 
-
-
 ---
-
 
 ### Parameters
 #### **CommandAst**
-
-
-
 
 |Type          |Required|Position|PipelineInput |
 |--------------|--------|--------|--------------|
 |`[CommandAst]`|true    |1       |true (ByValue)|
 
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell

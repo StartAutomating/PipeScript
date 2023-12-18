@@ -34,14 +34,14 @@ namespace TestProgram/*{Get-Random}*/ {
     context 'Markdown' {
         it 'Can embed a value inline' {
             Invoke-PipeScript {
-                $mdt = a.md template '`|{1}|`'
+                $mdt = template a.md '`|{1}|`'
                 $mdt.Evaluate()
             } | Should -be "1"
         }
 
         it 'Can embed a multiline value' {
             Invoke-PipeScript {
-                $mdt = a.md template @'
+                $mdt = template a.md @'
 ~~~PipeScript{
 "hello world"
 }~~~
@@ -52,14 +52,14 @@ namespace TestProgram/*{Get-Random}*/ {
 
         it 'Can embed in an HTML comment' {
             Invoke-PipeScript {
-                $mdt = a.md template '<!--{1}-->'
+                $mdt = template a.md '<!--{1}-->'
                 $mdt.Evaluate()
             } | Should -be "1"
         }
 
         it 'Can embed in a CSS comment' {
             Invoke-PipeScript {
-                $mdt = a.md template '/*{1}*/'
+                $mdt = template a.md '/*{1}*/'
                 $mdt.Evaluate()
             } | Should -be "1"
         }
@@ -68,14 +68,14 @@ namespace TestProgram/*{Get-Random}*/ {
     context 'JSON' {
         it 'Can embed JSON' {
             Invoke-PipeScript {
-                $jsonTemplate = my.json template '/*{1}*/'
+                $jsonTemplate = template my.json '/*{1}*/'
                 $jsonTemplate.Evaluate()
             } | Should -be "1"
         }
         
         it 'Will turn non-string output into JSON' {
             Invoke-PipeScript {
-                $jsonTemplate = my.json template '/*{Get-Process -id $pid | select name,id}*/'
+                $jsonTemplate = template my.json '/*{Get-Process -id $pid | select name,id}*/'
                 $jsonTemplate.Evaluate() 
             } | ConvertFrom-Json | 
                 Select-Object -ExpandProperty Name | 

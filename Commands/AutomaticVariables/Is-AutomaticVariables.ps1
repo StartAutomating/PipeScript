@@ -1,5 +1,6 @@
 
 function PipeScript.Automatic.Variable.IsPipedTo {
+
     <#
     .SYNOPSIS
         $IsPipedTo
@@ -12,12 +13,14 @@ function PipeScript.Automatic.Variable.IsPipedTo {
     #>    
     param()
     $myInvocation.ExpectingInput
+
 }
 
 
 
 
 function PipeScript.Automatic.Variable.IsPipedFrom {
+
     <#
     .SYNOPSIS
         $IsPipedFrom
@@ -31,6 +34,7 @@ function PipeScript.Automatic.Variable.IsPipedFrom {
     #>    
     param()
     $myInvocation.PipelinePosition -lt $myInvocation.PipelineLength
+
 }
 
 

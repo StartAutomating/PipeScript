@@ -70,6 +70,10 @@ $Override,
 [switch]
 $Dynamic,
 
+# If set, will not generate a dynamic parameter block.  This is primarily present so Abstract inheritance has a small change footprint. 
+[switch]
+$NoDynamic,
+
 # If set, will always inherit commands as proxy commands.
 # This is implied by -Dynamic.
 [switch]
@@ -161,6 +165,20 @@ process {
     if (-not $resolvedCommand) {
         Write-Error "Could not resolve -Command '$Command'" # error out.
         return
+    }
+
+    $InheritTemplate = 
+        if ($resolvedCommand.Inherit) {
+            $resolvedCommand.Inherit
+        } elseif ($resolvedCommand.Module.Inherit) {
+            $resolvedCommand.Module.Inherit
+        }
+        
+    if ($InheritTemplate -is [Management.Automation.PSMethodInfo])  {
+        return $InheritTemplate.Invoke(@([Ordered]@{} + $PSBoundParameters))
+    }
+    elseif ($InheritTemplate -is [scriptblock]) {
+        return (& $InheritTemplate  @([Ordered]@{} + $PSBoundParameters) )
     }
 
     # Prepare parameters for Join-ScriptBlock
@@ -263,7 +281,8 @@ $(
     # If we do not have a resolved command, 
     if (-not $resolvedCommand) {
         {} # the first script block is empty.
-    } else {
+    }     
+    else {
         # If we have a resolvedCommand, fully qualify it.
         $fullyQualifiedCommand = 
             if ($resolvedCommand.Module) {
@@ -273,9 +292,13 @@ $(
             }
 
         # Then create a dynamicParam block that will set `$baseCommand,
-        # as well as a `$script: scoped variable for the command name.
-
-[scriptblock]::create(@"
+        # as well as a `$script: scoped variable for the command name.         
+        if ($NotDynamic) # unless, of course -NotDynamic is passed
+        {
+            {}
+        } else
+        {
+            [scriptblock]::create(@"
 dynamicParam {
     `$baseCommand = 
         if (-not `$script:$commandVariable) {
@@ -302,6 +325,7 @@ dynamicParam {
     })
 }
 "@)
+        }
     }
 ),  
     # Next is our [ScriptBlock].  This will come before almost everything else.

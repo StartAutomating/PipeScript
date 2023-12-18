@@ -140,7 +140,7 @@ process {
             foreach ($CommandElement in $commandElements) {
                 # any script block expression makes up the closing clause
                 if ($commandElement -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
-                    $PipelineClauses += $CommandElement.ScriptBlock.GetScriptBlock()
+                    $PipelineClauses += $CommandElement.ScriptBlock.AsScriptBlock()
                 } else {
                     # and all other command elements make up the condition.
                     $CommandElement

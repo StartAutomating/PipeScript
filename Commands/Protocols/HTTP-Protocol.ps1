@@ -1,5 +1,6 @@
 
 function Protocol.HTTP {
+
     <#
     .SYNOPSIS
         HTTP protocol
@@ -39,12 +40,14 @@ function Protocol.HTTP {
                 http://text-processing.com/api/sentiment/ -Method POST -ContentType 'application/x-www-form-urlencoded' -Body "text=amazing!" |
                     Select-Object -ExpandProperty Probability -Property Label
             }
+
         $semanticAnalysis
     .EXAMPLE
         $statusHealthCheck = {
             [Https('status.dev.azure.com/_apis/status/health')]
             param()
         } | Use-PipeScript
+
         & $StatusHealthCheck
     #>
     [ValidateScript({
@@ -62,6 +65,7 @@ function Protocol.HTTP {
                 [Enum]::GetValues([Microsoft.PowerShell.Commands.WebRequestMethod]) -ne 'Default'
             )
         }
+
         # If we're here, then the first element is a HTTP uri, 
         return $true # so we return true.
     })]
@@ -73,29 +77,37 @@ function Protocol.HTTP {
     [Parameter(Mandatory,ParameterSetName='ScriptBlock',Position=0)]
     [uri]
     $CommandUri,
+
     # The Command's Abstract Syntax Tree
     [Parameter(Mandatory,ParameterSetName='Protocol')]
     [Management.Automation.Language.CommandAST]
     $CommandAst,
+
     [Parameter(Mandatory,ValueFromPipeline,ParameterSetName='ScriptBlock')]
     [ScriptBlock]
     $ScriptBlock = {},
+
     # Any remaining arguments.  These will be passed positionally to the invoker.
     [Parameter(ValueFromRemainingArguments)]
     $ArgumentList = @(),
+
     # Any named parameters for the invoker.
     [Parameter(ValueFromRemainingArguments)]
     [Collections.IDictionary]
     $Parameter = @{},
+
     # The HTTP method.  By default, get.
     [string]
     $Method = 'GET',
+
     # The invocation command.  By default, Invoke-RestMethod.
     # Whatever alternative command provided should have a similar signature to Invoke-RestMethod.
     [string]
     $Invoker = 'Invoke-RestMethod'
     )
+
     process {
+
         if (-not $commandUri.Scheme) {
             $uriScheme = 
                 if ($MyInvocation.InvocationName -eq 'http') {
@@ -105,7 +117,9 @@ function Protocol.HTTP {
                 }
             $commandUri = [uri]"${uriScheme}://$($commandUri.OriginalString -replace '://')"
         }
+
         if ($PSCmdlet.ParameterSetName -eq 'Protocol') {
+
             $commandArguments  = @() + $CommandAst.ArgumentList
             $commandParameters = [Ordered]@{} + $CommandAst.Parameter
             $offset = 1
@@ -128,6 +142,7 @@ function Protocol.HTTP {
                     $ExecutionContext.SessionState.PSVariable.Set($paramName, $mySentence.Parameters[$paramName])                    
                 }
             }
+
             $method      = ''
             $commandName =         
                 if ($CommandAst.CommandElements[0].Value -match '://') {
@@ -217,6 +232,7 @@ function Protocol.HTTP {
                     }
                 }
             ) -join ' '
+
             [scriptblock]::Create($newScript)
         }
         elseif ($psCmdlet.ParameterSetName -eq 'ScriptBlock') {
@@ -237,5 +253,7 @@ function Protocol.HTTP {
             & $Invoker $commandUri @ArgumentList @Parameter
         }
     }
+
+
 }
 

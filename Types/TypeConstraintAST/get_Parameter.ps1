@@ -1,5 +1,16 @@
 
+<#
+.SYNOPSIS
+    Gets parameters to a type constraint
+.DESCRIPTION
+    Gets the parameters from a type constraint.
 
+    This will treat any generic type specifiers as potential parameters, and other type specifiers as arguments.
+.EXAMPLE
+    {
+        [a[b[c],c]]'d'
+    }.Ast.EndBlock.Statements[0].PipelineElements[0].Expression.Type.Parameters
+#>
 function TypeConstraintToArguments (
     [Parameter(ValueFromPipeline)]
     $TypeName

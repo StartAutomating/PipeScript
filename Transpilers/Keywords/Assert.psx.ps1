@@ -110,7 +110,7 @@ process {
             elseif ($firstArgTypeName -eq 'ScriptBlockExpressionAst')
             {
                 # put it in parenthesis.
-                "($($FirstArg.GetScriptBlock()))"
+                "($($FirstArg.AsScriptBlock()))"
             }
             # Otherwise
             else
@@ -130,7 +130,7 @@ process {
             "if $condition { throw '{$($firstArg -replace "'", "''")}' } "
         } elseif ($secondArg.GetType().Name -eq 'ScriptBlockExpressionAst') {
             # If the second argument was a script, transpile and embed it.
-            "if $condition {$($secondArg.GetScriptBlock().Transpile())}"
+            "if $condition {$($secondArg.AsScriptBlock().Transpile())}"
         } else {
             # Otherwise, throw the second argument.
             "if $condition { throw $secondArg } "

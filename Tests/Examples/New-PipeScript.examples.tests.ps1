@@ -34,6 +34,7 @@ describe 'New-PipeScript' {
         New-PipeScript -Parameter ([Net.HttpWebRequest].GetProperties()) -ParameterHelp @{
             Accept='
 HTTP Accept.
+
 HTTP Accept indicates what content types the web request will accept as a response.
 '
         }
@@ -45,6 +46,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
         ) -Process {
             New-Object Management.Automation.TableControl -Property $psBoundParameters
         } -Synopsis 'Creates a table control'
+
         Get-Help New-TableControl -Parameter *
     }
     it 'New-PipeScript Example 8' {
@@ -59,6 +61,7 @@ HTTP Accept indicates what content types the web request will accept as a respon
                     } -Synopsis {
                         "Creates, Changes, or Gets $($_.Name)"
                     }
+
         
         New-TableControl -Headers @(
             New-TableControlColumnHeader -Label "First" -Alignment Left -Width 10

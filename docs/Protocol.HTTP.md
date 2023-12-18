@@ -1,42 +1,34 @@
 Protocol.HTTP
 -------------
 
-
-
-
 ### Synopsis
 HTTP protocol
 
-
-
 ---
-
 
 ### Description
 
 Converts an http(s) protocol commands to PowerShell.
 
-
-
 ---
 
-
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 {
     https://api.github.com/repos/StartAutomating/PipeScript
 }
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 {
     get https://api.github.com/repos/StartAutomating/PipeScript
 } | .>PipeScript
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 Invoke-PipeScript {
     $GitHubApi = 'api.github.com'
@@ -44,22 +36,22 @@ Invoke-PipeScript {
     https://$GitHubApi/users/$UserName
 }
 ```
+> EXAMPLE 4
 
-#### EXAMPLE 4
 ```PowerShell
 -ScriptBlock {
     https://$GitHubApi/users/$UserName -GitHubApi api.github.com -UserName StartAutomating
 }
 ```
+> EXAMPLE 5
 
-#### EXAMPLE 5
 ```PowerShell
 -ScriptBlock {
     https://$GitHubApi/users/$UserName -GitHubApi api.github.com -UserName StartAutomating
 }
 ```
+> EXAMPLE 6
 
-#### EXAMPLE 6
 ```PowerShell
 -ScriptBlock {
     @(foreach ($repo in https://api.github.com/users/StartAutomating/repos?per_page=100) {
@@ -67,8 +59,8 @@ Invoke-PipeScript {
     }) | Sort-Object Stars -Descending
 }
 ```
+> EXAMPLE 7
 
-#### EXAMPLE 7
 ```PowerShell
 $semanticAnalysis = 
     Invoke-PipeScript {
@@ -77,8 +69,8 @@ $semanticAnalysis =
     }
 $semanticAnalysis
 ```
+> EXAMPLE 8
 
-#### EXAMPLE 8
 ```PowerShell
 $statusHealthCheck = {
     [Https('status.dev.azure.com/_apis/status/health')]
@@ -87,118 +79,59 @@ $statusHealthCheck = {
 & $StatusHealthCheck
 ```
 
-
-
 ---
-
 
 ### Parameters
 #### **CommandUri**
-
 The URI.
-
-
-
-
-
 
 |Type   |Required|Position|PipelineInput|
 |-------|--------|--------|-------------|
 |`[Uri]`|true    |1       |false        |
 
-
-
 #### **CommandAst**
-
 The Command's Abstract Syntax Tree
-
-
-
-
-
 
 |Type          |Required|Position|PipelineInput|
 |--------------|--------|--------|-------------|
 |`[CommandAst]`|true    |named   |false        |
 
-
-
 #### **ScriptBlock**
-
-
-
 
 |Type           |Required|Position|PipelineInput |
 |---------------|--------|--------|--------------|
 |`[ScriptBlock]`|true    |named   |true (ByValue)|
 
-
-
 #### **ArgumentList**
-
 Any remaining arguments.  These will be passed positionally to the invoker.
-
-
-
-
-
 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[Object]`|false   |named   |false        |
 
-
-
 #### **Parameter**
-
 Any named parameters for the invoker.
-
-
-
-
-
 
 |Type           |Required|Position|PipelineInput|
 |---------------|--------|--------|-------------|
 |`[IDictionary]`|false   |named   |false        |
 
-
-
 #### **Method**
-
 The HTTP method.  By default, get.
-
-
-
-
-
 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[String]`|false   |named   |false        |
 
-
-
 #### **Invoker**
-
 The invocation command.  By default, Invoke-RestMethod.
 Whatever alternative command provided should have a similar signature to Invoke-RestMethod.
 
-
-
-
-
-
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|
 |`[String]`|false   |named   |false        |
 
-
-
-
-
 ---
-
 
 ### Syntax
 ```PowerShell

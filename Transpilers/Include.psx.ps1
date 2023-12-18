@@ -131,11 +131,31 @@ function IncludeFileContents {
     }
 }
 
-$includedScript = 
-    if ($includingCommand -is [Management.Automation.CmdletInfo]) {
-        Write-Error "Cannot Include Cmdlets"
-        return
+#region Generate the Include Script
+
+$includeTemplate = 
+    if ($includingCommand.Include) {
+        $includingCommand.Include
+    } elseif ($includingCommand.Module.Include) {
+        $includingCommand.Module.Include
     }
+
+# We cannot include cmdlets
+if ($includingCommand -is [Management.Automation.CmdletInfo] -and -not $includeTemplate) {
+    Write-Error "Cannot Include Cmdlets"
+    return
+}
+
+$includedScript =
+    # If there was a include method
+    if ($includeTemplate -is [Management.Automation.PSMethodInfo]) {
+        # use that.
+        $includeTemplate.Invoke(@($includingCommand))
+    }
+    elseif ($includeTemplate -is [scriptblock]) {
+        & $includeTemplate $includingCommand
+    }
+    # We can include functions without any difficulty        
     elseif ($includingCommand -is [Management.Automation.FunctionInfo]) {
         if ($VariableAst -and $VariableAst.VariablePath -notmatch '^null$') {
             # If we're including a function as a variable, define it as a ScriptBlock
@@ -156,7 +176,9 @@ if ($Passthru) {
 })
 "@)
         }        
-    } elseif ($includingCommand.ScriptBlock) {
+    } 
+    elseif ($includingCommand.ScriptBlock)
+    {
         # If we're including a command with a ScriptBlock, assign it to a variable
         [ScriptBlock]::Create(@"
 `${$($includingCommand.Name)} =  {
@@ -167,15 +189,19 @@ if ($Passthru) { [Environment]::NewLine + "`${$($includingCommand.Name)}"}
 "@)
         
     } 
-    elseif ($includingCommand.Source -match '\.ps1{0,}\.(?<ext>[^.]+$)') {
-        $transpiledFile = Invoke-PipeScript -CommandInfo $includingCommand
-        if (-not $transpiledFile) {
+    elseif (
+        $includingCommand.Source -match '\.ps1{0,}\.(?<ext>[^.]+$)'
+    ) {
+        $compiledFile = Invoke-PipeScript -CommandInfo $includingCommand
+        if (-not $compiledFile) {
             Write-Error "Could not transpile $($includingCommand.Source)"
             return
         }
-        IncludeFileContents $transpiledFile.Fullname
+        IncludeFileContents $compiledFile.Fullname
     }
-    elseif ($includingCommand.Source -match '\.ps$') {
+    elseif (
+        $includingCommand.Source -match '\.ps$'
+    ) {
         [ScriptBlock]::Create(@"
 `${$($includingCommand.Name)} =  {
     $([ScriptBlock]::Create([IO.File]::ReadAllText($includingCommand.Source)) | .>PipeScript)
@@ -233,6 +259,7 @@ if ($Passthru) { [Environment]::NewLine + "`${$($includingCommand.Name)}"}
                 "'@")
         }
     }
+#endregion Generate the Include Script
 
 if ($psCmdlet.ParameterSetName -eq 'ScriptBlock' -or 
     $VariableAst.VariablePath -match '^null$') {

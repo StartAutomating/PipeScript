@@ -3,6 +3,7 @@ describe 'PipeScript.Optimizer.ConsolidateAspects' {
     it 'PipeScript.Optimizer.ConsolidateAspects Example 1' {
         {        
             a.txt Template 'abc'
+
             b.txt Template 'abc'
         } | .>PipeScript
     }

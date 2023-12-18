@@ -1,5 +1,6 @@
 
 function Protocol.UDP {
+
 <#
 .SYNOPSIS
     UDP protocol
@@ -18,6 +19,7 @@ function Protocol.UDP {
         watch udp://*:911
     
         send udp:// -Host [ipaddress]::broadcast -Port 911 "It's an emergency!"
+
         receive udp://*:911
     }    
 #>
@@ -32,6 +34,7 @@ function Protocol.UDP {
         }        
         return $true
     }
+
     return $false
 })]
 [Alias('UDP','UDP://')]
@@ -42,38 +45,48 @@ param(
 [Parameter(Mandatory,ParameterSetName='ScriptBlock',Position=0)]
 [uri]
 $CommandUri,
+
 [ValidateSet('Send','Receive','Watch')]
 [Parameter(Position=1)]
 [string]
 $Method,
+
 # The Command's Abstract Syntax Tree
 [Parameter(Mandatory,ParameterSetName='Protocol')]
 [Management.Automation.Language.CommandAST]
 $CommandAst,
+
 # If the UDP protocol is used as an attribute, this will be the existing script block.
 [Parameter(Mandatory,ParameterSetName='ScriptBlock')]
 [ScriptBlock]
 $ScriptBlock = {},
+
 # The script or message sent via UDP.
 $Send,
+
 # If set, will receive result events.
 [switch]
 $Receive,
+
 # A ScriptBlock used to watch the UDP socket. 
 [scriptblock]
 $Watch,
+
 # The host name.  This can be provided via parameter if it is not present in the URI.
 [Alias('Host')]
 [string]
 $HostName,
+
 # The port.  This can be provided via parameter if it is not present in the URI.
 [int]
 $Port,
+
 # Any remaining arguments.
 [Parameter(ValueFromRemainingArguments)]
 [PSObject[]]
 $ArgumentList
 )
+
 process {
     $commandParameters = 
         if ($PSCmdlet.ParameterSetName -eq 'Protocol') {
@@ -90,11 +103,13 @@ process {
         else {
             @() + $args
         }
+
     if (-not $CommandUri.Scheme) {
         $commandUri = [uri]"udp://$($commandUri.OriginalString -replace '://')"
     }
         
     $methodName  = $Method    
+
     $udpIP, $udpPort = $null, $null
     $constructorArgs = 
         
@@ -121,14 +136,18 @@ process {
             $udpPort = $commandParameters.Port 
             $udpPort 
         })
+
     # We will always need to construct a client
     # so prepare that code now that we know the host and port.
     $constructUdp    = "new Net.Sockets.UdpClient $constructorArgs"
+
     
     if ($udpIP -is [string] -and $udpIP -notmatch '^\[') {            
         $udpIP = "'$($udpIP -replace "'", "''")'"
     }
+
     $UdpOperationScript = 
+
     # If the method name is send or -Send was provided
     if ($methodName -eq 'send' -or $commandParameters.Send) {
         # ensure we have both and IP and a port
@@ -136,17 +155,20 @@ process {
             Write-Error "Must provide both IP and port to send"
             return
         }
+
         # If we don't have a -Send parameter, try to bind positionally.
         if (-not $commandParameters.Send -and $commandArguments -and $commandArguments[0]) {
             $commandParameters.Send = $commandArguments[0]
         } elseif (-not $commandParameters.Send -and $argumentList -and $ArgumentList[0]) {
             $commandParameters.Send = $ArgumentList[0]
         }
+
         # If we still don't have a -Send parameter, error out.
         if (-not $commandParameters.Send) {            
             Write-Verbose "Nothing to $(if ($methodName -ne 'Send') {'-'} else {"Send"})"
             return
         }
+
         # prepare send to be embedded
         $embedSend = 
             if ($commandParameters.Send -is [ScriptBlock]) {
@@ -174,10 +196,12 @@ process {
         if (-not $commandParameters.Watch) {
             $commandParameters.Watch = $commandArguments[0]
         }
+
         # If -Watch was passed and was not a [ScriptBlock], unset it.
         if ($commandParameters.Watch -and $commandParameters.Watch -isnot [ScriptBlock]) {
             $commandParameters.Watch = $null            
         }
+
         # If -Watch was not provided, default it to creating an event.
         if (-not $commandParameters.Watch) {
             $commandParameters.Watch = {    
@@ -190,8 +214,10 @@ process {
             Write-Error "Must provide both IP and port to Watch"
             return
         }
+
         # Receiving UDP results must be run in a background job.
         # Thus we start by creating that script.
+
         $jobScript = 
 [ScriptBlock]::Create(@"
 `$udpClient      = [Net.Sockets.UdpClient]::new()
@@ -212,6 +238,7 @@ try {
     `$watchOutput = & {
         $($commandParameters.Watch)
     } `$datagram
+
     if (`$watchOutput -isnot [Management.Automation.PSEvent]) {
         New-Event -SourceIdentifier `$udpEventName -MessageData `$watchOutput
     }
@@ -224,8 +251,10 @@ try {
         # It would be nice to be able to use Start-ThreadJob, but Start-ThreadJob will not forward events.
         # (also, Starting a ThreadJob and then doing a blocking call on that thread makes a job that cannot be stopped)
         $jobCommand = "Start-Job "
+
         $outputScript = 
 [ScriptBlock]::create(@"
+
 `$jobName = '$jobName'
 `$jobScript = {
     $jobScript
@@ -239,6 +268,7 @@ if ((-not `$JobExists) -or (`$jobExists.State -ne 'Running')) {
     )$($jobCommand + '-Name "$jobName" -ScriptBlock $jobScript')
 }
 "@)
+
         # If the command is assigned, wrap it in $() so that only one thing is returned.
         if ($CommandAst.IsAssigned) {
             [ScriptBlock]::create("`$($outputScript)")
@@ -276,5 +306,8 @@ if ((-not `$JobExists) -or (`$jobExists.State -ne 'Running')) {
         }
     }    
 }
+
+
+
 }
 

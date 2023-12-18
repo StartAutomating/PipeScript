@@ -6,8 +6,6 @@
 
     This is useful in circumstances where the valid set of values would be known at build, but would be tedious to write by hand.
 .EXAMPLE
-    
-.Example
     {
         param(
         [ValidValues(Values={

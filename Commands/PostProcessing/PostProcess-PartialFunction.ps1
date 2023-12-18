@@ -1,5 +1,6 @@
 
 function PipeScript.PostProcess.PartialFunction {
+
     <#
     .SYNOPSIS
         Expands partial functions
@@ -15,6 +16,7 @@ function PipeScript.PostProcess.PartialFunction {
             
             function testPartialFunction {}
         }
+
         testPartialFunction # Should -BeLike '*TestPartialFunction*'
     #>
     param(
@@ -24,6 +26,7 @@ function PipeScript.PostProcess.PartialFunction {
     $FunctionDefinitionAst
     )
     
+
     process {
         $realFunctionName = $FunctionDefinitionAst.Name
         $partialCommands = @(
@@ -36,6 +39,7 @@ function PipeScript.PostProcess.PartialFunction {
         
                 $partialCommands = @(foreach ($partialFunction in $script:PartialCommands) {
                     # Only real partials should be considered.
+
                     if ($partialFunction -notmatch  'partial\p{P}') { continue }
                     # Partials should not combine with other partials.
                     
@@ -57,6 +61,7 @@ function PipeScript.PostProcess.PartialFunction {
                         $partialFunction
                     }
                 })
+
                 # If there were any partial commands
                 if ($partialCommands) {
                     # sort them by rank and name.
@@ -66,9 +71,11 @@ function PipeScript.PostProcess.PartialFunction {
         )
         
         if ((-not $partialCommands)) { return }
+
         
         $originalDefinition = [ScriptBlock]::Create(($functionDefinitionAst.Body.Extent -replace '^{' -replace '}$'))
         # If there were any partial commands,
+
         # join them all together first, and skip the help block.
         $partialsToJoin = @(
             $alreadyIncluded = [Ordered]@{} # Keep track of what we've included.
@@ -91,18 +98,23 @@ function PipeScript.PostProcess.PartialFunction {
                 $alreadyIncluded["$partialCommand"] = $true
             }
         )
+
         $joinedPartials = $partialsToJoin | Join-PipeScript -ExcludeBlockType help
+
         $joinedScriptBlock = @(                
             $originalDefinition # we join them with the transpiled code.
             $joinedPartials
         ) | # Take all of the combined input and pipe in into Join-PipeScript
             Join-PipeScript -Transpile
+
+
         $inlineParameters =
             if ($FunctionDefinition.Parameters) {
                 "($($FunctionDefinition.Parameters -join ','))"
             } else {
                 ''
             }
+
         $joinedFunction = @(if ($FunctionDefinition.IsFilter) {
             "filter", $realFunctionName, $inlineParameters, '{' -ne '' -join ' '
         } else {
@@ -113,6 +125,7 @@ function PipeScript.PostProcess.PartialFunction {
         $joinedFunction = [scriptblock]::Create($joinedFunction)
         $joinedFunction.Ast.EndBlock.Statements[0]        
     }
+
 }
 
 

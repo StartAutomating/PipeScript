@@ -1,5 +1,6 @@
 
 function Aspect.ModuleExtensionType {
+
     <#
     .SYNOPSIS
         Outputs a module's extension types
@@ -17,6 +18,7 @@ function Aspect.ModuleExtensionType {
     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
     [ValidateScript({
     $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+    
     $thisType = $_.GetType()
     $IsTypeOk =
         $(@( foreach ($validType in $validTypeList) {
@@ -24,6 +26,7 @@ function Aspect.ModuleExtensionType {
                 $true;break
             }
         }))
+    
     if (-not $isTypeOk) {
         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
     }
@@ -32,11 +35,13 @@ function Aspect.ModuleExtensionType {
     
     $Module
     )
+
     begin {
         $ExtensionCollectionNames = 
             "Extension", "Command", "Cmdlet", "Function", "Alias", "Script", "Application", "File","Configuration"
         $ExtensionCollectionNames = @($ExtensionCollectionNames -replace '.+$','${0}Type') + @($ExtensionCollectionNames -replace '.+$','${0}Types')
     }
+
     process {
         #region Resolve Module Info
         if ($Module -is [string]) {
@@ -45,6 +50,7 @@ function Aspect.ModuleExtensionType {
         $ModuleInfo = $module                
         if (-not $ModuleInfo) { return }
         #endregion Resolve Module Info
+
         #region Check Cache and Hopefully Return
         if (-not $script:ModuleExtensionTypeCache) {
             $script:ModuleExtensionTypeCache = @{}
@@ -54,8 +60,10 @@ function Aspect.ModuleExtensionType {
             return $script:ModuleExtensionTypeCache[$ModuleInfo]
         }
         #endregion Check Cache and Hopefully Return
+
         #region Find Extension Types
         $modulePrivateData  = $ModuleInfo.PrivateData
+
         $SortedExtensionTypes = [Ordered]@{}
         foreach ($TypeOfExtensionCollection in $ExtensionCollectionNames) {
             $moduleExtensionTypes = 
@@ -66,7 +74,9 @@ function Aspect.ModuleExtensionType {
                 } else {
                     $null
                 }
+
             if (-not $moduleExtensionTypes) { continue } 
+
             foreach ($commandType in @($ModuleExtensionTypes.GetEnumerator() | Sort-Object Key)) {
                 if ($commandType.Value -is [Collections.IDictionary]) {
                     if (-not $commandType.Value.Name) {
@@ -96,12 +106,15 @@ function Aspect.ModuleExtensionType {
         $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
         $script:ModuleExtensionTypeCache[$ModuleInfo]
         #endregion Find Extension Types
+
     }    
+
 }
 
 
 
 function Aspect.ModuleExtensionPattern {
+
     <#
     .SYNOPSIS
         Outputs a module's extension pattern
@@ -116,6 +129,7 @@ function Aspect.ModuleExtensionPattern {
     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
     [ValidateScript({
     $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+    
     $thisType = $_.GetType()
     $IsTypeOk =
         $(@( foreach ($validType in $validTypeList) {
@@ -123,6 +137,7 @@ function Aspect.ModuleExtensionPattern {
                 $true;break
             }
         }))
+    
     if (-not $isTypeOk) {
         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
     }
@@ -130,25 +145,31 @@ function Aspect.ModuleExtensionPattern {
     })]
     
     $Module,
+
     # The suffix to apply to each named capture.
     # Defaults to '_Command'
     [Parameter(ValueFromPipelineByPropertyName)]
     [string]
     $Suffix = '_Command',
+
     # The prefix to apply to each named capture. 
     [Parameter(ValueFromPipelineByPropertyName)]
     [string]
     $Prefix
     )
+
     process {
         if ($Module -is [string]) {
             $Module = Get-Module $Module
         }
         $ModuleInfo = $module
+
+
         #region Search for Module Extension Types
         if (-not $ModuleInfo) { return }
         $ModuleExtensionTypes = # Aspect.ModuleExtensionTypes
                                 & { 
+                                
                                     <#
                                     .SYNOPSIS
                                         Outputs a module's extension types
@@ -166,6 +187,7 @@ function Aspect.ModuleExtensionPattern {
                                     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
                                     [ValidateScript({
                                     $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                    
                                     $thisType = $_.GetType()
                                     $IsTypeOk =
                                         $(@( foreach ($validType in $validTypeList) {
@@ -173,6 +195,7 @@ function Aspect.ModuleExtensionPattern {
                                                 $true;break
                                             }
                                         }))
+                                    
                                     if (-not $isTypeOk) {
                                         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
                                     }
@@ -181,11 +204,13 @@ function Aspect.ModuleExtensionPattern {
                                     
                                     $Module
                                     )
+                                
                                     begin {
                                         $ExtensionCollectionNames = 
                                             "Extension", "Command", "Cmdlet", "Function", "Alias", "Script", "Application", "File","Configuration"
                                         $ExtensionCollectionNames = @($ExtensionCollectionNames -replace '.+$','${0}Type') + @($ExtensionCollectionNames -replace '.+$','${0}Types')
                                     }
+                                
                                     process {
                                         #region Resolve Module Info
                                         if ($Module -is [string]) {
@@ -194,6 +219,7 @@ function Aspect.ModuleExtensionPattern {
                                         $ModuleInfo = $module                
                                         if (-not $ModuleInfo) { return }
                                         #endregion Resolve Module Info
+                                
                                         #region Check Cache and Hopefully Return
                                         if (-not $script:ModuleExtensionTypeCache) {
                                             $script:ModuleExtensionTypeCache = @{}
@@ -203,8 +229,10 @@ function Aspect.ModuleExtensionPattern {
                                             return $script:ModuleExtensionTypeCache[$ModuleInfo]
                                         }
                                         #endregion Check Cache and Hopefully Return
+                                
                                         #region Find Extension Types
                                         $modulePrivateData  = $ModuleInfo.PrivateData
+                                
                                         $SortedExtensionTypes = [Ordered]@{}
                                         foreach ($TypeOfExtensionCollection in $ExtensionCollectionNames) {
                                             $moduleExtensionTypes = 
@@ -215,7 +243,9 @@ function Aspect.ModuleExtensionPattern {
                                                 } else {
                                                     $null
                                                 }
+                                
                                             if (-not $moduleExtensionTypes) { continue } 
+                                
                                             foreach ($commandType in @($ModuleExtensionTypes.GetEnumerator() | Sort-Object Key)) {
                                                 if ($commandType.Value -is [Collections.IDictionary]) {
                                                     if (-not $commandType.Value.Name) {
@@ -245,8 +275,11 @@ function Aspect.ModuleExtensionPattern {
                                         $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
                                         $script:ModuleExtensionTypeCache[$ModuleInfo]
                                         #endregion Find Extension Types
+                                
                                     }    
+                                
                                  } -Module $moduleInfo
+
         
         if (-not $ModuleExtensionTypes) { return }
             
@@ -259,29 +292,34 @@ function Aspect.ModuleExtensionPattern {
             $categoryPattern = $categoryExtensionTypeInfo.Value.Pattern                
             # ( and skip anyone that does not have a pattern)
             if (-not $categoryPattern) { continue } 
+
             '(?=' + # Start a lookahead
                 '.{0,}' + # match any or no characters
                 # followed by the command pattern
                 "(?<$Prefix$($categoryExtensionTypeInfo.Name -replace '\p{P}', '_')$Suffix>$categoryPattern)" +
                 ')?' # made optional                            
         }) -join [Environment]::NewLine
+
         # Now that we've combined the whole thing, make it a Regex and output it.        
         [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
     }
+
 }
 
 
 
 function Aspect.ModuleExtensionCommand {
+
     <#
     .SYNOPSIS
         Returns a module's extended commands
     .DESCRIPTION
         Returns the commands or scripts in a module that match the module command pattern.
+
         Each returned script will be decorated with the typename(s) that match,
         so that the extended commands can be augmented by the extended types system.
     .LINK
-        Aspect.ModuleCommandPattern
+        Aspect.ModuleExtensionPattern
     .EXAMPLE
         Aspect.ModuleExtensionCommand -Module PipeScript # Should -BeOfType ([Management.Automation.CommandInfo])
     #>
@@ -291,6 +329,7 @@ function Aspect.ModuleExtensionCommand {
     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
     [ValidateScript({
     $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+    
     $thisType = $_.GetType()
     $IsTypeOk =
         $(@( foreach ($validType in $validTypeList) {
@@ -298,6 +337,7 @@ function Aspect.ModuleExtensionCommand {
                 $true;break
             }
         }))
+    
     if (-not $isTypeOk) {
         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
     }
@@ -311,37 +351,45 @@ function Aspect.ModuleExtensionCommand {
     [Parameter(ValueFromPipelineByPropertyName)]
     [Management.Automation.CommandInfo[]]
     $Commands,
+
     # The suffix to apply to each named capture.
     # Defaults to '_Command'
     [Parameter(ValueFromPipelineByPropertyName)]
     [string]
     $Suffix = '_Command',
+
     # The prefix to apply to each named capture. 
     [Parameter(ValueFromPipelineByPropertyName)]
     [string]
     $Prefix,
+
     # The file path(s).  If provided, will look for commands within these paths.
     [Parameter(ValueFromPipelineByPropertyName)]
     [Alias('Fullname')]    
     $FilePath,
+
     # The PowerShell command type.  If this is provided, will only get commands of this type.
     [Parameter(ValueFromPipelineByPropertyName)]
     [Management.Automation.CommandTypes]
     $CommandType,
+
     # The base PSTypeName(s).
     # If provided, any commands that match the pattern will apply these typenames, too.
     [string[]]
     $PSTypeName
     )
+
     process {        
         if ($Module -is [string]) {
             $Module = Get-Module $Module
         }
         $ModuleInfo = $module
+
         if (-not $ModuleInfo) { return }
         
         $ModuleCommandPattern = # Aspect.ModuleExtensionPattern
                                 & { 
+                                
                                     <#
                                     .SYNOPSIS
                                         Outputs a module's extension pattern
@@ -356,6 +404,7 @@ function Aspect.ModuleExtensionCommand {
                                     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
                                     [ValidateScript({
                                     $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                    
                                     $thisType = $_.GetType()
                                     $IsTypeOk =
                                         $(@( foreach ($validType in $validTypeList) {
@@ -363,6 +412,7 @@ function Aspect.ModuleExtensionCommand {
                                                 $true;break
                                             }
                                         }))
+                                    
                                     if (-not $isTypeOk) {
                                         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
                                     }
@@ -370,25 +420,31 @@ function Aspect.ModuleExtensionCommand {
                                     })]
                                     
                                     $Module,
+                                
                                     # The suffix to apply to each named capture.
                                     # Defaults to '_Command'
                                     [Parameter(ValueFromPipelineByPropertyName)]
                                     [string]
                                     $Suffix = '_Command',
+                                
                                     # The prefix to apply to each named capture. 
                                     [Parameter(ValueFromPipelineByPropertyName)]
                                     [string]
                                     $Prefix
                                     )
+                                
                                     process {
                                         if ($Module -is [string]) {
                                             $Module = Get-Module $Module
                                         }
                                         $ModuleInfo = $module
+                                
+                                
                                         #region Search for Module Extension Types
                                         if (-not $ModuleInfo) { return }
                                         $ModuleExtensionTypes = # Aspect.ModuleExtensionTypes
                                                                 & { 
+                                                                
                                                                     <#
                                                                     .SYNOPSIS
                                                                         Outputs a module's extension types
@@ -406,6 +462,7 @@ function Aspect.ModuleExtensionCommand {
                                                                     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
                                                                     [ValidateScript({
                                                                     $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                                                    
                                                                     $thisType = $_.GetType()
                                                                     $IsTypeOk =
                                                                         $(@( foreach ($validType in $validTypeList) {
@@ -413,6 +470,7 @@ function Aspect.ModuleExtensionCommand {
                                                                                 $true;break
                                                                             }
                                                                         }))
+                                                                    
                                                                     if (-not $isTypeOk) {
                                                                         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
                                                                     }
@@ -421,11 +479,13 @@ function Aspect.ModuleExtensionCommand {
                                                                     
                                                                     $Module
                                                                     )
+                                                                
                                                                     begin {
                                                                         $ExtensionCollectionNames = 
                                                                             "Extension", "Command", "Cmdlet", "Function", "Alias", "Script", "Application", "File","Configuration"
                                                                         $ExtensionCollectionNames = @($ExtensionCollectionNames -replace '.+$','${0}Type') + @($ExtensionCollectionNames -replace '.+$','${0}Types')
                                                                     }
+                                                                
                                                                     process {
                                                                         #region Resolve Module Info
                                                                         if ($Module -is [string]) {
@@ -434,6 +494,7 @@ function Aspect.ModuleExtensionCommand {
                                                                         $ModuleInfo = $module                
                                                                         if (-not $ModuleInfo) { return }
                                                                         #endregion Resolve Module Info
+                                                                
                                                                         #region Check Cache and Hopefully Return
                                                                         if (-not $script:ModuleExtensionTypeCache) {
                                                                             $script:ModuleExtensionTypeCache = @{}
@@ -443,8 +504,10 @@ function Aspect.ModuleExtensionCommand {
                                                                             return $script:ModuleExtensionTypeCache[$ModuleInfo]
                                                                         }
                                                                         #endregion Check Cache and Hopefully Return
+                                                                
                                                                         #region Find Extension Types
                                                                         $modulePrivateData  = $ModuleInfo.PrivateData
+                                                                
                                                                         $SortedExtensionTypes = [Ordered]@{}
                                                                         foreach ($TypeOfExtensionCollection in $ExtensionCollectionNames) {
                                                                             $moduleExtensionTypes = 
@@ -455,7 +518,9 @@ function Aspect.ModuleExtensionCommand {
                                                                                 } else {
                                                                                     $null
                                                                                 }
+                                                                
                                                                             if (-not $moduleExtensionTypes) { continue } 
+                                                                
                                                                             foreach ($commandType in @($ModuleExtensionTypes.GetEnumerator() | Sort-Object Key)) {
                                                                                 if ($commandType.Value -is [Collections.IDictionary]) {
                                                                                     if (-not $commandType.Value.Name) {
@@ -485,8 +550,11 @@ function Aspect.ModuleExtensionCommand {
                                                                         $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
                                                                         $script:ModuleExtensionTypeCache[$ModuleInfo]
                                                                         #endregion Find Extension Types
+                                                                
                                                                     }    
+                                                                
                                                                  } -Module $moduleInfo
+                                
                                         
                                         if (-not $ModuleExtensionTypes) { return }
                                             
@@ -499,18 +567,22 @@ function Aspect.ModuleExtensionCommand {
                                             $categoryPattern = $categoryExtensionTypeInfo.Value.Pattern                
                                             # ( and skip anyone that does not have a pattern)
                                             if (-not $categoryPattern) { continue } 
+                                
                                             '(?=' + # Start a lookahead
                                                 '.{0,}' + # match any or no characters
                                                 # followed by the command pattern
                                                 "(?<$Prefix$($categoryExtensionTypeInfo.Name -replace '\p{P}', '_')$Suffix>$categoryPattern)" +
                                                 ')?' # made optional                            
                                         }) -join [Environment]::NewLine
+                                
                                         # Now that we've combined the whole thing, make it a Regex and output it.        
                                         [Regex]::new("$combinedRegex", 'IgnoreCase,IgnorePatternWhitespace','00:00:01')
                                     }
+                                
                                  } $ModuleInfo -Prefix $prefix -Suffix $Suffix
         $ModuleCommandTypes   = # Aspect.ModuleExtensionType
                                 & { 
+                                
                                     <#
                                     .SYNOPSIS
                                         Outputs a module's extension types
@@ -528,6 +600,7 @@ function Aspect.ModuleExtensionCommand {
                                     [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
                                     [ValidateScript({
                                     $validTypeList = [System.String],[System.Management.Automation.PSModuleInfo]
+                                    
                                     $thisType = $_.GetType()
                                     $IsTypeOk =
                                         $(@( foreach ($validType in $validTypeList) {
@@ -535,6 +608,7 @@ function Aspect.ModuleExtensionCommand {
                                                 $true;break
                                             }
                                         }))
+                                    
                                     if (-not $isTypeOk) {
                                         throw "Unexpected type '$(@($thisType)[0])'.  Must be 'string','psmoduleinfo'."
                                     }
@@ -543,11 +617,13 @@ function Aspect.ModuleExtensionCommand {
                                     
                                     $Module
                                     )
+                                
                                     begin {
                                         $ExtensionCollectionNames = 
                                             "Extension", "Command", "Cmdlet", "Function", "Alias", "Script", "Application", "File","Configuration"
                                         $ExtensionCollectionNames = @($ExtensionCollectionNames -replace '.+$','${0}Type') + @($ExtensionCollectionNames -replace '.+$','${0}Types')
                                     }
+                                
                                     process {
                                         #region Resolve Module Info
                                         if ($Module -is [string]) {
@@ -556,6 +632,7 @@ function Aspect.ModuleExtensionCommand {
                                         $ModuleInfo = $module                
                                         if (-not $ModuleInfo) { return }
                                         #endregion Resolve Module Info
+                                
                                         #region Check Cache and Hopefully Return
                                         if (-not $script:ModuleExtensionTypeCache) {
                                             $script:ModuleExtensionTypeCache = @{}
@@ -565,8 +642,10 @@ function Aspect.ModuleExtensionCommand {
                                             return $script:ModuleExtensionTypeCache[$ModuleInfo]
                                         }
                                         #endregion Check Cache and Hopefully Return
+                                
                                         #region Find Extension Types
                                         $modulePrivateData  = $ModuleInfo.PrivateData
+                                
                                         $SortedExtensionTypes = [Ordered]@{}
                                         foreach ($TypeOfExtensionCollection in $ExtensionCollectionNames) {
                                             $moduleExtensionTypes = 
@@ -577,7 +656,9 @@ function Aspect.ModuleExtensionCommand {
                                                 } else {
                                                     $null
                                                 }
+                                
                                             if (-not $moduleExtensionTypes) { continue } 
+                                
                                             foreach ($commandType in @($ModuleExtensionTypes.GetEnumerator() | Sort-Object Key)) {
                                                 if ($commandType.Value -is [Collections.IDictionary]) {
                                                     if (-not $commandType.Value.Name) {
@@ -607,7 +688,9 @@ function Aspect.ModuleExtensionCommand {
                                         $script:ModuleExtensionTypeCache[$ModuleInfo] = [PSCustomObject]$SortedExtensionTypes
                                         $script:ModuleExtensionTypeCache[$ModuleInfo]
                                         #endregion Find Extension Types
+                                
                                     }    
+                                
                                  } $ModuleInfo
         
         $commands    =
@@ -619,7 +702,10 @@ function Aspect.ModuleExtensionCommand {
                 if (-not $commandType) {
                     $commandType = 'Application,ExternalScript'
                 }
-                foreach ($file in Get-ChildItem -File -Path $PSBoundParameters['FilePath'] -Recurse) {
+                
+                $shouldRecurse = $($PSBoundParameters['FilePath'] -notmatch '^\.\\') -as [bool]
+                    
+                foreach ($file in Get-ChildItem -File -Path $PSBoundParameters['FilePath'] -Recurse:$shouldRecurse ) {
                     $ExecutionContext.SessionState.InvokeCommand.GetCommand($file.FullName, $commandType)
                 }
             } else {
@@ -628,6 +714,7 @@ function Aspect.ModuleExtensionCommand {
                 }
                 $ExecutionContext.SessionState.InvokeCommand.GetCommands('*', $commandType, $true)
             })
+
         :nextCommand foreach ($cmd in $commands) {            
             $matched = $ModuleCommandPattern.Match("$cmd")
             if (-not $matched.Success) { continue }
@@ -664,5 +751,6 @@ function Aspect.ModuleExtensionCommand {
             }
         }
     }
+
 }
 

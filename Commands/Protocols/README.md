@@ -91,6 +91,7 @@ All of the current protocol examples are listed below:
                 http://text-processing.com/api/sentiment/ -Method POST -ContentType 'application/x-www-form-urlencoded' -Body "text=amazing!" |
                     Select-Object -ExpandProperty Probability -Property Label
             }
+
         $semanticAnalysis
 ~~~
 
@@ -102,6 +103,7 @@ All of the current protocol examples are listed below:
             [Https('status.dev.azure.com/_apis/status/health')]
             param()
         } | Use-PipeScript
+
         & $StatusHealthCheck
 ~~~
 
@@ -135,6 +137,7 @@ All of the current protocol examples are listed below:
                 param()
             }
         }
+
         Get-GitHubIssue -Owner StartAutomating -Repo PipeScript
 ~~~
 
@@ -150,6 +153,7 @@ All of the current protocol examples are listed below:
                 param()
             }
         }
+
         GitHubApi '/zen'
 ~~~
 
@@ -201,6 +205,7 @@ All of the current protocol examples are listed below:
         watch udp://*:911
     
         send udp:// -Host [ipaddress]::broadcast -Port 911 "It's an emergency!"
+
         receive udp://*:911
     }
 ~~~

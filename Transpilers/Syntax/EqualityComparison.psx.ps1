@@ -29,8 +29,13 @@
 [ValidateScript({
     # This is valid if the assignment statement's
     $AssignmentStatementAST = $_
-    # right side is followed by an = and at least one space.
-    $AssignmentStatementAST.Right -match '^=\s{1,}'
+    # The operator must be an equals
+    $AssignmentStatementAST.Operator -eq 'Equals' -and     
+    # The right must start with =
+    $AssignmentStatementAST.Right -match '^=' -and
+    $AssignmentStatementAST.Parent.ToString() -match "$(
+        [Regex]::Escape($AssignmentStatementAST.Left.ToString())
+    )\s{0,}==[^=]"
 })]
 param(
 # The original assignment statement.

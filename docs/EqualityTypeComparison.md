@@ -1,16 +1,10 @@
 EqualityTypeComparison
 ----------------------
 
-
-
-
 ### Synopsis
 Allows equality type comparison.
 
-
-
 ---
-
 
 ### Description
 
@@ -20,13 +14,11 @@ Many languages support this syntax.  PowerShell does not.
 
 This transpiler enables equality and type comparison with ===.
 
-
-
 ---
 
-
 ### Examples
-#### EXAMPLE 1
+> EXAMPLE 1
+
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
     $a = 1
@@ -36,8 +28,8 @@ Invoke-PipeScript -ScriptBlock {
     }
 }
 ```
+> EXAMPLE 2
 
-#### EXAMPLE 2
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
     $One = 1
@@ -50,8 +42,8 @@ Invoke-PipeScript -ScriptBlock {
     }
 }
 ```
+> EXAMPLE 3
 
-#### EXAMPLE 3
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
     if ($null === $null) {
@@ -59,8 +51,8 @@ Invoke-PipeScript -ScriptBlock {
     }
 }
 ```
+> EXAMPLE 4
 
-#### EXAMPLE 4
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
     $zero = 0
@@ -69,8 +61,8 @@ Invoke-PipeScript -ScriptBlock {
     }
 }
 ```
+> EXAMPLE 5
 
-#### EXAMPLE 5
 ```PowerShell
 {
     $a = "b"
@@ -78,43 +70,25 @@ Invoke-PipeScript -ScriptBlock {
 } | .>PipeScript
 ```
 
-
-
 ---
-
 
 ### Parameters
 #### **AssignmentStatementAST**
-
 The original assignment statement.
-
-
-
-
-
 
 |Type                      |Required|Position|PipelineInput |
 |--------------------------|--------|--------|--------------|
 |`[AssignmentStatementAst]`|true    |1       |true (ByValue)|
 
-
-
-
-
 ---
-
 
 ### Notes
 This will not work if there is a constant on both sides of the expression
 
-
 if ($one === $one) { "this will work"} 
 if ('' === '')     { "this will not"}
 
-
-
 ---
-
 
 ### Syntax
 ```PowerShell
