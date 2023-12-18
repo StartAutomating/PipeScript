@@ -19,19 +19,18 @@
     # }
 #}
 
-ENV PSModulePath ./Modules
-
-#{
-    # param($DockerInstallModules = @("Splatter", "PSSVG", "ugit") )
-    # $PowerShellPath = "opt/microsoft/powershell/7/pwsh"
-    # if ($DockerInstallModules) { "RUN $PowerShellPath --noprofile --nologo -c Install-Module '$($DockerInstallModules -join "','")' -Scope CurrentUser -Force"}
-#}
-
 #{
     # param($DockerInstallPackages = @("git","curl","ca-certificates","libc6","libgcc1") )    
     # if ($DockerInstallPackages) {"RUN apt-get update && apt-get install -y $($dockerInstallPackages -join ' ')"}
 #}
 
+ENV PSModulePath ./Modules
+
+#{
+    # param($DockerInstallModules = @("Splatter", "PSSVG", "ugit", "Irregular") )
+    # $PowerShellPath = "opt/microsoft/powershell/7/pwsh"
+    # if ($DockerInstallModules) { "RUN $PowerShellPath --noprofile --nologo -c Install-Module '$($DockerInstallModules -join "','")' -Scope CurrentUser -Force"}
+#}
 
 #{    
     # $LoadedModuleInPath = (Get-Module | Split-Path) -match ([Regex]::Escape($pwd)) | Select -first 1
@@ -39,7 +38,7 @@ ENV PSModulePath ./Modules
 #}
 
 #{
-    # param(<# A Script to Run When Docker Starts #>$DockerProfileScript = "./PipeScript.Server.Start.ps1")
+    # param(<# A Script to Run When Docker Starts #>$DockerProfileScript = "./Http.Server.Start.ps1")
     # if ($DockerProfileScript) { "COPY ./$DockerProfileScript /root/.config/powershell/Microsoft.PowerShell_profile.ps1"} 
 #}
 
