@@ -100,6 +100,13 @@ This will use dynamic parameters instead of static parameters, and will use a pr
 |----------|--------|--------|-------------|
 |`[Switch]`|false   |named   |false        |
 
+#### **NoDynamic**
+If set, will not generate a dynamic parameter block.  This is primarily present so Abstract inheritance has a small change footprint.
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
 #### **Proxy**
 If set, will always inherit commands as proxy commands.
 This is implied by -Dynamic.
@@ -220,5 +227,5 @@ This parameter is ignored when inheriting from anything other than an applicatio
 
 ### Syntax
 ```PowerShell
-Inherit [-Command] <String> [-Abstract] [-Override] [-Dynamic] [-Proxy] [-CommandType <String[]>] [-ExcludeBlockType <String[]>] [-IncludeBlockType <String[]>] [-IncludeParameter <String[]>] [-ExcludeParameter <String[]>] [-ArgumentListParameterName <String>] [-ArgumentListParameterAlias <String[]>] [-ArgumentListParameterType <Type>] [-ArgumentListParameterHelp <String>] [-ScriptBlock <ScriptBlock>] [<CommonParameters>]
+Inherit [-Command] <String> [-Abstract] [-Override] [-Dynamic] [-NoDynamic] [-Proxy] [-CommandType <String[]>] [-ExcludeBlockType <String[]>] [-IncludeBlockType <String[]>] [-IncludeParameter <String[]>] [-ExcludeParameter <String[]>] [-ArgumentListParameterName <String>] [-ArgumentListParameterAlias <String[]>] [-ArgumentListParameterType <Type>] [-ArgumentListParameterHelp <String>] [-ScriptBlock <ScriptBlock>] [<CommonParameters>]
 ```
