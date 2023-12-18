@@ -8,7 +8,7 @@
     TypesToProcess    = 'PipeScript.types.ps1xml'
     Guid              = 'fc054786-b1ce-4ed8-a90f-7cc9c27edb06'
     CompanyName       = 'Start-Automating'
-    Copyright         = '2022 Start-Automating'
+    Copyright         = '2022-2023 Start-Automating'
     Author            = 'James Brundage'
     FunctionsToExport = '*' <#{
         $exportNames = Get-ChildItem -Recurse -Filter '*-*.ps1' |
@@ -234,10 +234,13 @@ PipeScript can now easily define any language and you can now interpret Anything
   * Languages can also specify translation methods (.TranslateFromAstType)
   * More support for the PowerShell Abstract Syntax Tree and Roslyn
   * New languages supported: Docker, XSL, XSD, BrightScript, Conf, Wren, Vue, F#, GCODE
-* Start-PSNode lets you run PowerShell as a microservice
+* New Commands:
+  * Start-PSNode lets you run PowerShell as a microservice
   * Import/Export-JSON make JSON easier to work with
   * Import-ModuleMember lets modules flexibly self-extend
-  * Out-HTML is back!
+  * Out-HTML gives formatted HTML output!
+
+... and much, much more
 
 ---
             
