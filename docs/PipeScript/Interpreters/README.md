@@ -43,6 +43,8 @@ Note: Interpreters may require commands to be installed.
 * [set_All](set_All.md)
 * [get_Count](get_Count.md)
 * [set_Count](set_Count.md)
+* [get_ExcludePath](get_ExcludePath.md)
+* [set_ExcludePath](set_ExcludePath.md)
 * [get_ExcludePattern](get_ExcludePattern.md)
 * [set_ExcludePattern](set_ExcludePattern.md)
 * [get_LanguageName](get_LanguageName.md)
