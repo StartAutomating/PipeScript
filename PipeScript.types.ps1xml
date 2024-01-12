@@ -2621,6 +2621,18 @@ foreach ($potentialTemplatePath in $potentialTemplatePaths ) {
     <Name>PipeScript.Interpreters</Name>
     <Members>
       <AliasProperty>
+        <Name>ExcludePaths</Name>
+        <ReferencedMemberName>ExcludePaths</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ExcludePatterns</Name>
+        <ReferencedMemberName>ExcludePatterns</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Excludes</Name>
+        <ReferencedMemberName>Exclude</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>LanguageNames</Name>
         <ReferencedMemberName>LanguageName</ReferencedMemberName>
       </AliasProperty>
@@ -2724,6 +2736,43 @@ foreach ($prop in $this.psobject.properties) {
     }
 }
 return $count
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Exclude</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Languages Exclusions
+.DESCRIPTION
+    Gets any excluded patterns and paths for languages in PipeScript.
+
+    If a command matches any of these patterns, it should not be interpreted.
+#&gt;
+param()
+
+
+return @(
+    $this.ExcludePattern
+    $this.ExcludePath
+)
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Languages Exclusions
+.DESCRIPTION
+    Gets any excluded patterns and paths for languages in PipeScript.
+
+    If a command matches any of these patterns, it should not be interpreted.
+#&gt;
+param()
+
+
+return @(
+    $this.ExcludePattern
+    $this.ExcludePath
+)
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -2887,6 +2936,18 @@ Note: Interpreters may require commands to be installed.
     <Name>PipeScript.Languages</Name>
     <Members>
       <AliasProperty>
+        <Name>ExcludePaths</Name>
+        <ReferencedMemberName>ExcludePaths</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ExcludePatterns</Name>
+        <ReferencedMemberName>ExcludePatterns</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Excludes</Name>
+        <ReferencedMemberName>Exclude</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>LanguageNames</Name>
         <ReferencedMemberName>LanguageName</ReferencedMemberName>
       </AliasProperty>
@@ -2959,6 +3020,55 @@ foreach ($prop in $this.psobject.properties) {
 }
 return $count
                     </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Exclude</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Languages Exclusions
+.DESCRIPTION
+    Gets any excluded patterns and paths for languages in PipeScript.
+
+    If a command matches any of these patterns, it should not be interpreted.
+#&gt;
+param()
+
+
+return @(
+    $this.ExcludePattern
+    $this.ExcludePath
+)
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets language exclusions
+.DESCRIPTION
+    Gets any excluded patterns and paths for languages in PipeScript.
+.NOTES
+    If you provide a `[regex]`, it will set `.ExcludePattern`.
+    Otherwise, this will set `.ExcludePath`.
+#&gt;
+$unrolledArgs = $args | . { process {  $_ } }
+$patterns = @()
+$paths = @(
+foreach ($arg in $unrolledArgs) {
+    if ($arg -is [Regex]) {
+        $patterns += $arg
+    } else {
+        "$arg"
+    }
+})
+
+if ($patterns) {
+    $this.ExcludePattern = $patterns
+}
+if ($paths) {
+    $this.ExcludePath = $paths
+}
+
+                    </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>ExcludePath</Name>
