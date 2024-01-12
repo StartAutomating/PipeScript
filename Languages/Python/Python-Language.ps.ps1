@@ -41,5 +41,28 @@ param()
     $endPattern   = "(?<PSEnd>${endComment})"
 
     # The interpreter for Python is just "python" (if present)
-    $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('python', 'Application'))[0] 
+    $Interpreter  = 'python'
+
+    # The keywords map for Python is as follows:
+
+    $Keywords = Object @{
+        "def" = "function"
+        "class" = "class"
+        "if" = "if"
+        "elseif" = "elif"
+        "else" = "else"
+        "for" = "foreach", "for"
+        "raise" = "throw"
+        "break" = "break"
+        "continue" = "continue"
+        "not" = "-not"
+        "or" = "-or"
+        "and" = "-and"
+        "nonlocal" = "global"
+        "True" = $true
+        "False" = $false
+        "while" = "while"
+        "yield" = ""
+        "import" = "import"
+    }
 }
