@@ -46,7 +46,34 @@ $languageDefinition = New-Module {
     $endPattern   = "(?<PSEnd>${endComment})"
 
     # The interpreter for Python is just "python" (if present)
-    $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('python', 'Application'))[0]
+    $Interpreter  = 'python'
+
+    # The keywords map for Python is as follows:
+
+    $Keywords = [PSCustomObject][Ordered]@{
+                        "def"       = 'function ($Parameters)
+                    $Body
+                '
+                        "class"     = 'class ${Name}:
+                    $Members
+                '
+                        "if"        = 'if'
+                        "elseif"    = "elif"
+                        "else"      = "else"
+                        "for"       = "foreach", "for"
+                        "raise"     = "throw"
+                        "break"     = "break"
+                        "continue"  = "continue"
+                        "not"       = "-not"
+                        "or"        = "-or"
+                        "and"       = "-and"
+                        "nonlocal"  = '`$global:$VariablePath'
+                        "True"      = $true
+                        "False"     = $false
+                        "while"     = "while"
+                        "yield"     = ""
+                        "import"    = "import"
+                    }
     $LanguageName = 'Python'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
