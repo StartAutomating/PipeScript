@@ -15,16 +15,16 @@ $FilePath
 )
 
 foreach ($excludePattern in $this.ExcludePattern) {
-    if ($filePath -match $excludePattern) { return }
+    return if $filePath -match $excludePattern
 }
 
 foreach ($excludePath in $this.ExcludePath) {
-    if (-not $excludePath) { continue } 
-    if ($filePath -like $excludePath) { return }
+    continue if -not $excludePath
+    return if $filePath -like $excludePath
 }
 
 foreach ($prop in $this.psobject.properties) {
-    if ($prop -is [psscriptproperty]) { continue }     
+    continue if $prop -is [psscriptproperty]    
     if ($prop.IsInstance -and 
         $prop.Value.LanguageName -and
         $prop.Value.FilePattern -and
@@ -32,4 +32,3 @@ foreach ($prop in $this.psobject.properties) {
         $prop.Value
     }
 }
-
