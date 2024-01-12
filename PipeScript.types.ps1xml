@@ -2727,6 +2727,43 @@ return $count
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>ExcludePath</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Excluded Paths for all languages.
+.DESCRIPTION
+    Gets any excluded paths for interpreted languages in PipeScript.
+
+    If a command is like any of these paths, it should not be interpreted.
+#&gt;
+param()
+
+if ($null -eq $this.'.ExcludePath'.Length) {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePath' -Value @()
+}
+
+return $this.'.ExcludePath'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Excluded Paths for all languages.
+.DESCRIPTION
+    Gets any excluded paths for interpreted languages in PipeScript.
+
+    If a command is like any of these paths, it should not be interpreted.
+#&gt;
+param()
+
+if ($null -eq $this.'.ExcludePath'.Length) {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePath' -Value @()
+}
+
+return $this.'.ExcludePath'
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>ExcludePattern</Name>
         <GetScriptBlock>
                         &lt;#
@@ -2922,6 +2959,44 @@ foreach ($prop in $this.psobject.properties) {
 }
 return $count
                     </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ExcludePath</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Excluded Paths for all languages.
+.DESCRIPTION
+    Gets any excluded paths for interpreted languages in PipeScript.
+
+    If a command is like any of these paths, it should not be interpreted.
+#&gt;
+param()
+
+if ($null -eq $this.'.ExcludePath'.Length) {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePath' -Value @()
+}
+
+return $this.'.ExcludePath'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Changes the Exclusion Paths
+.DESCRIPTION
+    Sets any excluded paths for interpreted languages in PipeScript.
+
+    If a command matches any of these patterns, it should not be interpreted.
+.NOTES
+    Excluded paths will be processed as wildcards.
+#&gt;
+$paths = @(foreach ($arg in $args | . { process { $_ }}) {
+    "$arg"
+})
+
+Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePath' -Value $paths
+
+                    </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>ExcludePattern</Name>
