@@ -9,7 +9,7 @@
 param()
 
 if ($null -eq $this.'.ExcludePath'.Length) {
-    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePath' @()
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePath' -Value @()
 }
 
 return $this.'.ExcludePath'
