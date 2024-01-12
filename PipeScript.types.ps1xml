@@ -2727,6 +2727,49 @@ return $count
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>ExcludePattern</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Language Exclusion Patterns
+.DESCRIPTION
+    `$psLanguages.ExcludePattern` and `$psInterpreters.ExcludePattern` contain the patterns excluded from interpretation.
+
+    If a command matches any of these patterns, it should not be interpreted.    
+#&gt;
+param()
+
+if (-not $this.'.ExcludePattern') {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePattern' @(
+        [Regex]::new('\.ps1?\.','IgnoreCase')
+        [Regex]::new('://.')
+    )
+}
+
+return $this.'.ExcludePattern'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Language Exclusion Patterns
+.DESCRIPTION
+    `$psLanguages.ExcludePattern` and `$psInterpreters.ExcludePattern` contain the patterns excluded from interpretation.
+
+    If a command matches any of these patterns, it should not be interpreted.    
+#&gt;
+param()
+
+if (-not $this.'.ExcludePattern') {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePattern' @(
+        [Regex]::new('\.ps1?\.','IgnoreCase')
+        [Regex]::new('://.')
+    )
+}
+
+return $this.'.ExcludePattern'
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>LanguageName</Name>
         <GetScriptBlock>
                         &lt;#
@@ -2879,6 +2922,49 @@ foreach ($prop in $this.psobject.properties) {
 }
 return $count
                     </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ExcludePattern</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Language Exclusion Patterns
+.DESCRIPTION
+    `$psLanguages.ExcludePattern` and `$psInterpreters.ExcludePattern` contain the patterns excluded from interpretation.
+
+    If a command matches any of these patterns, it should not be interpreted.    
+#&gt;
+param()
+
+if (-not $this.'.ExcludePattern') {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePattern' @(
+        [Regex]::new('\.ps1?\.','IgnoreCase')
+        [Regex]::new('://.')
+    )
+}
+
+return $this.'.ExcludePattern'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Changes the Exclusion Patterns
+.DESCRIPTION
+    Sets any excluded patterns for interpreted languages in PipeScript.
+
+    If a command matches any of these patterns, it should not be interpreted.
+.NOTES
+    Under most circumstances, this should not be set.
+    
+    Setting this may cause Templates and Protocols to stop working (for interpretable languages)
+#&gt;
+$patterns = @(foreach ($arg in $args | . { process { $_ }}) {
+    [Regex]::new("$arg","IgnoreCase,IgnorePatternWhitespace","00:00:00.1")
+})
+
+Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePattern' -Value $patterns
+
+                    </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>LanguageName</Name>
