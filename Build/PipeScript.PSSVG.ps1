@@ -55,14 +55,14 @@ svg -ViewBox 1920,1080 @(
         SVG.ArcPath -Start $circleLeft -End $circleBottom -Sweep -Radius $radius -Large -Opacity $Opacity |
             SVG.ArcPath -Radius $radius -End $circleLeft -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
                 if ($variant -match 'animated') {
-                    svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
+                    svg.animateTransform -AttributeName transform -From "0 $circleMid"  -To "360 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
                 }                
             ) -Opacity $Opacity
        
             SVG.ArcPath -Start $circleRight -End $circleTop -Sweep -Radius $radius -Large -Opacity $Opacity |
                 SVG.ArcPath -Radius $radius -End $circleRight -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
                     if ($variant -match 'animated') {
-                        svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
+                        svg.animateTransform -AttributeName transform -From "0 $circleMid"  -To "360 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
                     }
                 ) -Opacity $Opacity
         if ($variant -match '4-chevron') {
@@ -70,14 +70,14 @@ svg -ViewBox 1920,1080 @(
         SVG.ArcPath -Start $circleTop -End $circleLeft -Sweep -Radius $radius -Large -Opacity $Opacity |
             SVG.ArcPath -Radius $radius -End $circleTop -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
                 if ($variant -match 'animated') {
-                    svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
+                    svg.animateTransform -AttributeName transform -From "0 $circleMid"  -To "360 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
                 }
             ) -Opacity $Opacity
 
         SVG.ArcPath -Start $circleBottom -End $circleRight -Sweep -Radius $radius -Large |
             SVG.ArcPath -Radius $radius -End $circleBottom -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
                 if ($variant -match 'animated') {
-                    svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
+                    svg.animateTransform -AttributeName transform -From "0 $circleMid"  -To "360 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
                 }
             )
         }
