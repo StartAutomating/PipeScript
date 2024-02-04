@@ -236,7 +236,13 @@
             $IsSourceGenerator = '\.ps1{0,1}\.(?<ext>[^.]+$)' # if it matches the regex designating a SourceGenerator
 
             $pipeScriptLanguages = Get-PipeScript -PipeScriptType Language
-            $matchingPipeScriptLanguage = $PSLanguage.ForFile($command)                    
+            $matchingPipeScriptLanguage = $(foreach ($pipescriptLanguage in $pipeScriptLanguages) {                    
+                if ($pipescriptLanguage.IsMatch($Command)) {
+                    $matchingPipeScriptLanguageCommand = $pipescriptLanguage
+                    & $pipescriptLanguage
+                    break
+                }
+            })
 
             # If the command was not a source generator
             if ($Command.Source -notmatch $IsSourceGenerator ) {
@@ -285,7 +291,6 @@
                             } else {
                                 $ArgumentList | . { process { $_ } }
                             })
-                            
                         $ArgumentList = @($interpreterArguments) + $(
                             if ($matchingPipeScriptLanguage.Interpreter) {
                                 $command.Source
