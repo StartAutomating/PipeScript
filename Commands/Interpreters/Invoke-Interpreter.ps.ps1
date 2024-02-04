@@ -39,7 +39,7 @@ function Invoke-Interpreter {
                     $args | 
                         . { process { 
                             if ($_ -isnot [string]) {
-                                & $ConvertToJson -InputObject $_ -Depth 100
+                                ConvertTo-Json -InputObject $_ -Depth 100
                             } else {
                                 $_
                             }
