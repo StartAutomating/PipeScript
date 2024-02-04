@@ -45,8 +45,8 @@ $languageDefinition = New-Module {
     $startPattern = "(?<PSStart>${startComment})"    
     $endPattern   = "(?<PSEnd>${endComment})"
 
-    # The interpreter for Python is just "py" (if present)
-    $Interpreter  = 'py'
+    # The interpreter for Python is "python" (if present)
+    $Interpreter  = 'python'
 
     # The keywords map for Python is as follows:
 
