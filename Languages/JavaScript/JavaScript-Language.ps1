@@ -43,7 +43,7 @@ function Language.JavaScript {
     "console.log('hi')" > .\Hello.js
     Invoke-PipeScript .\Hello.js
 #>
-[ValidatePattern('\.js$')]
+[ValidatePattern('\.m?js$')]
 param()
 $this = $myInvocation.MyCommand
 if (-not $this.Self) {
@@ -66,7 +66,7 @@ $languageDefinition = New-Module {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"    
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
 
-    $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('node', 'Application'))[0] # Get the first node, if present
+    $Interpreter  = 'node' # Get the first node, if present
 
     $ForeachObject = {
         $in = $_
