@@ -19,27 +19,47 @@ function Invoke-Interpreter {
     return if -not $PSInterpreters
     # If we cannot find mappings 
     return if -not $PSInterpreters.ForFile    
-    $interpreterForFile = $PSInterpreters.ForFile($invocationName)
+    $interpreterForFiles = $PSInterpreters.ForFile($invocationName)
     # or don't find a mapping, return.
-    return if -not $interpreterForFile
+    return if -not $interpreterForFiles
     
-    $interpreterCommand, $leadingArgs = $interpreterForFile.Interpreter
-    # If there was no interpreter command, return.
-    return if -not $interpreterCommand
-    
-    $leadingArgs = @($leadingArgs)    
+    # There can be more than one potential interpreter for each file
+    :NextInterpreter foreach ($interpreterForFile in $interpreterForFiles) {
+        $interpreterCommand, $leadingArgs = $interpreterForFile.Interpreter
+        # If there was no interpreter command, return.
+        continue if -not $interpreterCommand        
+        
+        $leadingArgs = @($leadingArgs)
+        
+        $convertedArguments =
+            @(
+                if (
+                    $interpreterCommand -isnot [ScriptBlock]
+                ) {
+                    $args | 
+                        . { process { 
+                            if ($_ -isnot [string]) {
+                                & $ConvertToJson -InputObject $_ -Depth 100
+                            } else {
+                                $_
+                            }
+                        } }
+            } else {
+                $args | . { process { $_ } }
+            })
 
-    if ($leadingArgs) {
-        if ($MyInvocation.ExpectingInput) {
-            $input | & $interpreterCommand @leadingArgs $invocationName @args
+        if ($leadingArgs) {
+            if ($MyInvocation.ExpectingInput) {
+                $input | & $interpreterCommand @leadingArgs $invocationName @convertedArguments
+            } else {
+                & $interpreterCommand @leadingArgs $invocationName @convertedArguments
+            }
         } else {
-            & $interpreterCommand @leadingArgs $invocationName @args
+            if ($MyInvocation.ExpectingInput) {
+                $input | & $interpreterCommand $invocationName @args
+            } else {
+                & $interpreterCommand $invocationName @args
+            }
         }
-    } else {
-        if ($MyInvocation.ExpectingInput) {
-            $input | & $interpreterCommand $invocationName @args
-        } else {
-            & $interpreterCommand $invocationName @args
-        }
-    }        
+    }            
 }
