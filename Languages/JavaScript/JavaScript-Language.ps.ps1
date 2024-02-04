@@ -42,7 +42,7 @@ Language function JavaScript {
     "console.log('hi')" > .\Hello.js
     Invoke-PipeScript .\Hello.js
 #>
-[ValidatePattern('\.js$')]
+[ValidatePattern('\.m?js$')]
 param(
 )
     # JavaScript's file Pattern is `\.js$` or `.mjs$`
@@ -61,7 +61,7 @@ param(
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"    
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
 
-    $Interpreter  = @($ExecutionContext.SessionState.InvokeCommand.GetCommand('node', 'Application'))[0] # Get the first node, if present
+    $Interpreter  = 'node' # Get the first node, if present
 
     $ForeachObject = {
         $in = $_
