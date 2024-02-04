@@ -56,9 +56,9 @@ function Invoke-Interpreter {
             }
         } else {
             if ($MyInvocation.ExpectingInput) {
-                $input | & $interpreterCommand $invocationName @args
+                $input | & $interpreterCommand $invocationName @convertedArguments
             } else {
-                & $interpreterCommand $invocationName @args
+                & $interpreterCommand $invocationName @convertedArguments
             }
         }
     }            
