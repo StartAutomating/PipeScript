@@ -236,14 +236,7 @@
             $IsSourceGenerator = '\.ps1{0,1}\.(?<ext>[^.]+$)' # if it matches the regex designating a SourceGenerator
 
             $pipeScriptLanguages = Get-PipeScript -PipeScriptType Language
-            $matchingPipeScriptLanguageCommand = $null
-            $matchingPipeScriptLanguage = $(foreach ($pipescriptLanguage in $pipeScriptLanguages) {                    
-                if ($pipescriptLanguage.IsMatch($Command)) {
-                    $matchingPipeScriptLanguageCommand = $pipescriptLanguage
-                    & $pipescriptLanguage
-                    break
-                }
-            })
+            $matchingPipeScriptLanguage = $PSLanguage.ForFile($command)                    
 
             # If the command was not a source generator
             if ($Command.Source -notmatch $IsSourceGenerator ) {
@@ -266,7 +259,11 @@
                             { $_ -is [scriptblock] -and -not $interpreterCommand} { $interpreterCommand = $_ }
                             default {
                                 # (any other results in a language's Interpreter will be counted as positional arguments)
-                                $_
+                                if (-not $interpreterCommand -and $_ -is [string]) {
+                                    $interpreterCommand = $_
+                                } else {
+                                    $_
+                                }
                             }
                         }
                     )
@@ -274,6 +271,21 @@
                     # If we found an interpreter
                     if ($interpreterCommand) {
                         # rearrange the arguments
+                        $ArgumentList =
+                            @(
+                                if ($matchingPipeScriptLanguage.Interpreter -isnot [ScriptBlock]) {
+                                    $ArgumentList | 
+                                        . { process { 
+                                            if ($_ -isnot [string]) {
+                                                ConvertTo-Json -InputObject $_ -Depth 100
+                                            } else {
+                                                $_
+                                            }
+                                        } }
+                            } else {
+                                $ArgumentList | . { process { $_ } }
+                            })
+                            
                         $ArgumentList = @($interpreterArguments) + $(
                             if ($matchingPipeScriptLanguage.Interpreter) {
                                 $command.Source
