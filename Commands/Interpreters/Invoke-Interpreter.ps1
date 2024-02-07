@@ -32,23 +32,28 @@ function Invoke-Interpreter {
         
         $leadingArgs = @($leadingArgs)
         
+        # Now things get a little more complicated.
+        
+        # Since many things that will interpret our arguments will _not_ be PowerShell, we want to conver them
         $convertedArguments =
             @(
-                if (
-                    $interpreterCommand -isnot [ScriptBlock]
-                ) {
-                    $args | 
-                        . { process { 
+                # Unless, of course, the interpreter is native PowerShell, 
+                # which we can know if .HasPowerShellInterpreter is true
+                if ($interpreterForFile.HasPowerShellInterpreter) {
+                    $args | . { process { $_ } }
+            } else {
+                # If it does not have a PowerShell interpreter,
+                $args | 
+                        . { process {
+                            # Then non-string arguments should become JSON
                             if ($_ -isnot [string]) {
                                 ConvertTo-Json -InputObject $_ -Depth 100
                             } else {
                                 $_
                             }
                         } }
-            } else {
-                $args | . { process { $_ } }
             })
-
+        
         if ($leadingArgs) {
             if ($MyInvocation.ExpectingInput) {
                 $input | & $interpreterCommand @leadingArgs $invocationName @convertedArguments
