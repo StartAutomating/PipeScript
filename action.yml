@@ -25,7 +25,10 @@ inputs:
       Note: If ugit is not installed, commit messages will not be carried properly with multiple commits.
   Serial: 
     required: false
-    description: If set, will build files one-by-one, instead of in parallel.
+    description: If set, will build files one-by-one, instead of in parallel.  This is currently the default.
+  Parallel: 
+    required: false
+    description: If set, will build files in parallel.
   BatchSize: 
     required: false
     default: 11
@@ -52,15 +55,16 @@ runs:
       id: PipeScriptAction
       shell: pwsh
       env: 
-        InstallModule: ${{inputs.InstallModule}}
-        UserEmail: ${{inputs.UserEmail}}
-        CommitMessage: ${{inputs.CommitMessage}}
-        Serial: ${{inputs.Serial}}
-        Script: ${{inputs.Script}}
         UserName: ${{inputs.UserName}}
+        Script: ${{inputs.Script}}
+        CommitMessage: ${{inputs.CommitMessage}}
+        InstallModule: ${{inputs.InstallModule}}
         SkipBuild: ${{inputs.SkipBuild}}
-        ThrottleLimit: ${{inputs.ThrottleLimit}}
+        UserEmail: ${{inputs.UserEmail}}
         BatchSize: ${{inputs.BatchSize}}
+        Parallel: ${{inputs.Parallel}}
+        Serial: ${{inputs.Serial}}
+        ThrottleLimit: ${{inputs.ThrottleLimit}}
       run: |
         $Parameters = @{}
         $Parameters.Script = ${env:Script}
@@ -71,6 +75,8 @@ runs:
         $Parameters.InstallModule = $parameters.InstallModule -split ';' -replace '^[''"]' -replace  '[''"]$'
         $Parameters.Serial = ${env:Serial}
         $Parameters.Serial = $parameters.Serial -match 'true';
+        $Parameters.Parallel = ${env:Parallel}
+        $Parameters.Parallel = $parameters.Parallel -match 'true';
         $Parameters.BatchSize = ${env:BatchSize}
         $Parameters.ThrottleLimit = ${env:ThrottleLimit}
         $Parameters.UserEmail = ${env:UserEmail}
@@ -117,9 +123,13 @@ runs:
         [string[]]
         $InstallModule = 'ugit',
         
-        # If set, will build files one-by-one, instead of in parallel.
+        # If set, will build files one-by-one, instead of in parallel.  This is currently the default.
         [switch]
         $Serial,
+        
+        # If set, will build files in parallel.
+        [switch]
+        $Parallel,
         
         # The number of files to build in each batch.
         [int]
@@ -242,7 +252,9 @@ runs:
             return
         }
         
-        try { git fetch --unshallow } catch { $_ | Out-Host } 
+        try { $unshallowResults = git fetch --unshallow  } catch { $_ | Out-Host } 
+        
+        if (-not $Parallel) { $serial= $true}
         
         $PipeScriptStart = [DateTime]::Now
         if ($Script) {

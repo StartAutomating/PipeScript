@@ -34,9 +34,13 @@ $CommitMessage,
 [string[]]
 $InstallModule = 'ugit',
 
-# If set, will build files one-by-one, instead of in parallel.
+# If set, will build files one-by-one, instead of in parallel.  This is currently the default.
 [switch]
 $Serial,
+
+# If set, will build files in parallel.
+[switch]
+$Parallel,
 
 # The number of files to build in each batch.
 [int]
@@ -159,7 +163,9 @@ if (-not $branchName) {
     return
 }
 
-try { git fetch --unshallow } catch { $_ | Out-Host } 
+try { $unshallowResults = git fetch --unshallow  } catch { $_ | Out-Host } 
+
+if (-not $Parallel) { $serial= $true}
 
 $PipeScriptStart = [DateTime]::Now
 if ($Script) {
