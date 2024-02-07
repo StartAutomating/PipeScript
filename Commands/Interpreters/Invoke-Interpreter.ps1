@@ -53,20 +53,27 @@ function Invoke-Interpreter {
                             }
                         } }
             })
+
+        $ParsersForCommand = $PSParser.ForCommand($invocationName)
+
         
-        if ($leadingArgs) {
+        $leadingArgs += @($invocationName)
+        if ($ParsersForCommand) {
             if ($MyInvocation.ExpectingInput) {
-                $input | & $interpreterCommand @leadingArgs $invocationName @convertedArguments
+                $input | 
+                    & $interpreterCommand @leadingArgs @convertedArguments | 
+                    Out-Parser -CommandLine $invocationName
             } else {
-                & $interpreterCommand @leadingArgs $invocationName @convertedArguments
+                & $interpreterCommand @leadingArgs @convertedArguments | 
+                    Out-Parser -CommandLine $invocationName
             }
         } else {
             if ($MyInvocation.ExpectingInput) {
-                $input | & $interpreterCommand $invocationName @convertedArguments
+                $input | & $interpreterCommand @leadingArgs @convertedArguments
             } else {
-                & $interpreterCommand $invocationName @convertedArguments
+                & $interpreterCommand @leadingArgs @convertedArguments
             }
-        }
+        }         
     }            
 
 }
