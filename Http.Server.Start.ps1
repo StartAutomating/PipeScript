@@ -120,7 +120,7 @@ $ImportedModules = Get-ChildItem -Path /Modules -Directory |
                                     Get-Module PipeScript | 
                                     Split-Path | 
                                     Join-Path -ChildPath Assets | 
-                                    Join-Path -ChildPath PipeScript-4-chevron-animated.svg
+                                    Join-Path -ChildPath PipeScript-ouroborus-animated.svg
                                 ) -Raw
                             }
                         }
