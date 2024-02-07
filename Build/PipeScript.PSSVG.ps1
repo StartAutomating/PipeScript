@@ -3,14 +3,14 @@
 $psChevron = Invoke-restMethod https://pssvg.start-automating.com/Examples/PowerShellChevron.svg
 $RotateEvery = [Timespan]'00:00:15'
 
-$Variants = '', '4-chevron','animated','4-chevron-animated'
+$Variants = '', '4-chevron','ouroboros','animated','4-chevron-animated','ouroboros-animated'
 
 foreach ($variant in $variants) {
 
 svg -ViewBox 1920,1080 @(
     svg.defs @(
         SVG.GoogleFont -FontName "Roboto"
-        SVG.marker -id 'marker' -ViewBox 100,100 @(
+        SVG.marker -id 'Head' -ViewBox 100,100 @(
             svg.polygon -Points (@(
                 "30,0"
                 "35,0"
@@ -19,7 +19,18 @@ svg -ViewBox 1920,1080 @(
                 "12.5,100"
                 "55,50"
             ) -join ' ') -Fill '#4488ff' -Class 'foreground-fill'
-        ) -MarkerWidth 75 -MarkerHeight 75 -RefX 50 -RefY 50 -Orient 'auto-start-reverse'        
+        ) -MarkerWidth 75 -MarkerHeight 75 -RefX 50 -RefY 50 -Orient 'auto-start-reverse'
+
+        SVG.marker -id 'Tail' -ViewBox 100,100 @(
+            svg.polygon -Points (@(
+                "30,0"
+                "35,0"
+                "60,50"
+                "15,100"
+                "12.5,100"
+                "55,50"
+            ) -join ' ') -Fill '#4488ff' -Class 'foreground-fill'
+        ) -MarkerWidth 75 -MarkerHeight 75 -RefX 50 -RefY 50 -Orient 'auto'
     )
     
     $psChevron.svg.symbol.OuterXml
@@ -52,34 +63,64 @@ svg -ViewBox 1920,1080 @(
 
         $strokeWidth  = 1.25 - ($circleN * .05)
         $Opacity = 1 - ($circleN * .05)
-        SVG.ArcPath -Start $circleLeft -End $circleBottom -Sweep -Radius $radius -Large -Opacity $Opacity |
-            SVG.ArcPath -Radius $radius -End $circleLeft -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
+
+        $pathParameters = [Ordered]@{
+            Sweep = $true
+            Stroke = '#4488ff'
+            'Class' = 'foreground-stroke'
+            'fill' = 'transparent' 
+            'markerEnd' = "url(#Head)"
+            strokeWidth = $strokeWidth 
+            Opacity = $Opacity
+        }
+
+        SVG.ArcPath -Start $circleLeft -End $circleBottom -Sweep -Radius $radius -Large |
+            SVG.ArcPath -Radius $radius -End $circleLeft @pathParameters -Content @(
                 if ($variant -match 'animated') {
                     svg.animateTransform -AttributeName transform -From "0 $circleMid"  -To "360 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
                 }                
-            ) -Opacity $Opacity
+            )
        
-            SVG.ArcPath -Start $circleRight -End $circleTop -Sweep -Radius $radius -Large -Opacity $Opacity |
-                SVG.ArcPath -Radius $radius -End $circleRight -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
-                    if ($variant -match 'animated') {
-                        svg.animateTransform -AttributeName transform -From "0 $circleMid"  -To "360 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
-                    }
-                ) -Opacity $Opacity
-        if ($variant -match '4-chevron') {
-
-        SVG.ArcPath -Start $circleTop -End $circleLeft -Sweep -Radius $radius -Large -Opacity $Opacity |
-            SVG.ArcPath -Radius $radius -End $circleTop -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
-                if ($variant -match 'animated') {
-                    svg.animateTransform -AttributeName transform -From "0 $circleMid"  -To "360 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
-                }
-            ) -Opacity $Opacity
-
-        SVG.ArcPath -Start $circleBottom -End $circleRight -Sweep -Radius $radius -Large |
-            SVG.ArcPath -Radius $radius -End $circleBottom -Sweep -Stroke '#4488ff' -Class foreground-stroke -fill transparent -markerEnd "url(#marker)" -strokeWidth $strokeWidth -Content @(
+        SVG.ArcPath -Start $circleRight -End $circleTop -Sweep -Radius $radius -Large -Opacity $Opacity |
+            SVG.ArcPath -Radius $radius -End $circleRight @pathParameters -Content @(
                 if ($variant -match 'animated') {
                     svg.animateTransform -AttributeName transform -From "0 $circleMid"  -To "360 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
                 }
             )
+
+        if ($variant -match 'ouroboros') {            
+            $AntiPathParameters = [Ordered]@{} + $pathParameters            
+            $AntiPathParameters.Remove('MarkerEnd')
+            $AntiPathParameters.MarkerStart = "url(#Tail)"
+            SVG.ArcPath -Start $circleLeft -End $circleBottom -Sweep -Radius $radius -Large |
+                SVG.ArcPath -Radius $radius -End $circleLeft @AntiPathParameters -Content @(
+                    if ($variant -match 'animated') {
+                        svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
+                    }                
+                )
+
+            SVG.ArcPath -Start $circleRight -End $circleTop -Sweep -Radius $radius -Large -Opacity $Opacity |
+                SVG.ArcPath -Radius $radius -End $circleRight @AntiPathParameters -Content @(
+                    if ($variant -match 'animated') {
+                        svg.animateTransform -AttributeName transform -From "360 $circleMid"  -To "0 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
+                    }
+                )
+        }
+
+        if ($variant -match '4-chevron') {
+            SVG.ArcPath -Start $circleTop -End $circleLeft -Sweep -Radius $radius -Large -Opacity $Opacity |
+                SVG.ArcPath -Radius $radius -End $circleTop @pathParameters -Content @(
+                    if ($variant -match 'animated') {
+                        svg.animateTransform -AttributeName transform -From "0 $circleMid"  -To "360 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
+                    }
+                ) -Opacity $Opacity
+
+            SVG.ArcPath -Start $circleBottom -End $circleRight -Sweep -Radius $radius -Large |
+                SVG.ArcPath -Radius $radius -End $circleBottom @pathParameters -Content @(
+                    if ($variant -match 'animated') {
+                        svg.animateTransform -AttributeName transform -From "0 $circleMid"  -To "360 $circleMid" -dur "$($rotateEach.TotalSeconds)s" -RepeatCount 'indefinite' -AttributeType 'XML' -Type 'rotate'
+                    }
+                )
         }
     }     
 ) -OutputPath (
