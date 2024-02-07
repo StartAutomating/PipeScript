@@ -2048,6 +2048,19 @@ $FunctionsForThisLanguage
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>HasInterpreter</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Does a Language Have an Interpreter?
+.DESCRIPTION
+    Returns true if a language defined an interpreter.
+#&gt;
+return ($this.Interpreter -as [bool])
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Template</Name>
         <GetScriptBlock>
                         &lt;#
