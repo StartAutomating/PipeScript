@@ -39,32 +39,16 @@ function Get-Interpreter {
             }
         }
         
-        $myVerb, $myNoun = $MyInvocation.InvocationName -split '-', 2
-        if (-not $myNoun) {
-            $myNoun = $myVerb
-            $myVerb = "Get"
-        }
-
-        switch ($myVerb) {
-            Get {
-                if ($LanguageName) {
-            
-                    $PSInterpreters[$LanguageName]
-                } else {
-                    $PSInterpreters
-                }
-            }
-            default {
-                foreach ($arg in $ArgumentList) {
-                    if ($LanguageName) {
-                        $PSInterpreters[$LanguageName]
-                    }
-                }
-
-                
-            }
-        }
         
+        if ($LanguageName) {
+            foreach ($langName in $LanguageName) {
+                if ($PSInterpreters.$langName) {
+                    $PSInterpreters.$langName
+                }
+            }
+        } else {
+            $PSInterpreters
+        }        
     }
 
 }
