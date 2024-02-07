@@ -2,10 +2,10 @@ Write-FormatView -TypeName Language -Property LanguageName, FilePattern
 
 Write-FormatView -TypeName Language -Action {
     $NoteProperties = [Ordered]@{}
-    foreach ($prop in $_.psobject.properties) {
-        if ($prop -is [psnoteproperty]) {
-            $NoteProperties[$prop.Name] = $prop.Value
+    foreach ($psProp in $_.psobject.properties) {
+        if ($psProp -is [psnoteproperty]) {
+            $NoteProperties[$psProp.Name] = $psProp.Value
         }
     }
-    $NoteProperties | Format-YAML
+    Format-YAML -InputObject ([PSCustomObject]$NoteProperties)
 }
