@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.2.7'
+    ModuleVersion     = '0.2.8'
     Description       = 'Metaprogram PowerShell (and everything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -24,7 +24,7 @@
             }
         "'$($exportNames -join "','")'"
     }#>
-    PrivateData = @{
+    PrivateData = @{        
         FunctionTypes = @{
             'Partial' = @{
                 Description = 'A partial function.'
@@ -223,28 +223,34 @@
             BuildModule     = @('EZOut','Piecemeal','PipeScript','HelpOut', 'PSDevOps')
             Tags            = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
-## PipeScript 0.2.7:
+## PipeScript 0.2.8:
 
-PipeScript can now easily define any language and you can now interpret Anything with PipeScript!
+More Implicit Interpretation!
 
-* Complete Overhaul of Languages in PipeScript!
-  * Languages are now defined in open-ended psuedo-object
-  * They can define an .Interpreter
-  * If they do, the language can be dynamically interpreted!
-  * Languages can also specify translation methods (.TranslateFromAstType)
-  * More support for the PowerShell Abstract Syntax Tree and Roslyn
-  * New languages supported: Docker, XSL, XSD, BrightScript, Conf, Wren, Vue, F#, GCODE
-* New Commands:
-  * Start-PSNode lets you run PowerShell as a microservice
-  * Import/Export-JSON make JSON easier to work with
-  * Import-ModuleMember lets modules flexibly self-extend
-  * Out-HTML gives formatted HTML output!
-
-... and much, much more
+* Invoke-Interpreter will now JSONify non-string arguments (#896)
+* Invoke-Interpreter will now call Out-Parser (#857, #858)
+* Improved Interpreter exclusions
+    * `.ExcludePath` excludes path wildcards (#875, #877)
+    * `.ExcludePattern` excludes by pattern (#875, #876)
+* Implicit Interpretation Demo (#886)
+* New Languages Supported:
+    * Crystal (#878)
+* More Language Support
+    * Template.HelloWorld.go (#846)
+    * Template.HelloWorld.py (#846)
+    * Python Keywords map (#872)
+* New ScriptProperties
+    * Language.HasPowerShellInterpreter (#904)
+    * Language.HasInterpreter (#903)
+* Adding .Parallel option to GitHub action (defaulting to Serial) (#888)
+* Fixing Aliases for Aliases (thanks @HCRitter ! )
 
 ---
             
 Additional history in [CHANGELOG](https://github.com/StartAutomating/PipeScript/blob/main/CHANGELOG.md)
+
+Like it?  Star It!  Love it?  Support It!
+
 '@
         }
     }
