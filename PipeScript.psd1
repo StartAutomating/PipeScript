@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.2.7'
+    ModuleVersion     = '0.2.8'
     Description       = 'Metaprogram PowerShell (and everything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -11,7 +11,7 @@
     Copyright         = '2022-2023 Start-Automating'
     Author            = 'James Brundage'
     FunctionsToExport = 'Language.CSharp','Template.Class.cs','Template.HelloWorld.cs','Template.Method.cs','Template.Namespace.cs','Template.Property.cs','Template.TryCatch.cs','Language.JSON','Language.Ruby','Template.HelloWorld.rb','Language.XAML','Language.Wren','Template.HelloWorld.wren','Language.TCL','Language.Bash','Language.XSD','Language.Java','Language.Docker','Language.Kusto','Language.Python','Template.HelloWorld.py','Language.JavaScript','Template.Assignment.js','Template.Class.js','Template.DoLoop.js','Template.ForEachLoop.js','Template.ForLoop.js','Template.Function.js','Template.HelloWorld.js','Template.InvokeMethod.js','Template.RegexLiteral.js','Template.TryCatch.js','Template.WhileLoop.js','Language.Crystal','Template.HelloWorld.cr','Language.ADA','Language.Bicep','Language.Perl','Language.PipeScript','Language.ATOM','Language.Haxe','Language.BASIC','Language.XML','Language.PHP','Language.GLSL','Language.Kotlin','Language.XSL','Language.FSharp','Language.Batch','Language.Arduino','Language.ObjectiveC','Language.HLSL','Language.OpenSCAD','Language.CSS','Language.HTML','Language.TOML','Language.Liquid','Language.HCL','Language.CPlusPlus','Language.GCode','Language.SVG','Language.Conf','Language.Go','Template.HelloWorld.go','Language.Eiffel','Language.YAML','Language.Razor','Language.TypeScript','Template.HelloWorld.ts','Language.Dart','Language.Markdown','Language.BrightScript','Language.Scala','Language.Vue','Language.WebAssembly','Language.SQL','Language.RSS','Language.Rust','Language.Racket','Language.LaTeX','Language.R','Language.PowerShell','Language.PowerShellData','Language.PowerShellXML','Language.Lua','Get-Transpiler','Start-PSNode','Export-Json','Import-Json','Aspect.DynamicParameter','Aspect.ModuleExtensionType','Aspect.ModuleExtensionPattern','Aspect.ModuleExtensionCommand','Aspect.GroupObjectByTypeName','Aspect.GroupObjectByType','Export-Pipescript','Get-PipeScript','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript','Compile.LanguageDefinition','Out-HTML','Route.Uptime','Route.VersionInfo','Signal.Nothing','Signal.Out','Get-Interpreter','Invoke-Interpreter','ConvertFrom-CliXml','ConvertTo-CliXml','Import-ModuleMember','Protocol.HTTP','Protocol.JSONSchema','Protocol.OpenAPI','Protocol.UDP','Out-Parser','Parse.CSharp','Parse.PowerShell','PipeScript.PostProcess.InitializeAutomaticVariables','PipeScript.PostProcess.PartialFunction','PipeScript.Optimizer.ConsolidateAspects','PipeScript.Automatic.Variable.IsPipedTo','PipeScript.Automatic.Variable.IsPipedFrom','PipeScript.Automatic.Variable.MyCallstack','PipeScript.Automatic.Variable.MySelf','PipeScript.Automatic.Variable.MyParameters','PipeScript.Automatic.Variable.MyCaller','PipeScript.Automatic.Variable.MyCommandAst'
-    PrivateData = @{
+    PrivateData = @{        
         FunctionTypes = @{
             'Partial' = @{
                 Description = 'A partial function.'
@@ -210,28 +210,34 @@
             BuildModule     = @('EZOut','Piecemeal','PipeScript','HelpOut', 'PSDevOps')
             Tags            = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
-## PipeScript 0.2.7:
+## PipeScript 0.2.8:
 
-PipeScript can now easily define any language and you can now interpret Anything with PipeScript!
+More Implicit Interpretation!
 
-* Complete Overhaul of Languages in PipeScript!
-  * Languages are now defined in open-ended psuedo-object
-  * They can define an .Interpreter
-  * If they do, the language can be dynamically interpreted!
-  * Languages can also specify translation methods (.TranslateFromAstType)
-  * More support for the PowerShell Abstract Syntax Tree and Roslyn
-  * New languages supported: Docker, XSL, XSD, BrightScript, Conf, Wren, Vue, F#, GCODE
-* New Commands:
-  * Start-PSNode lets you run PowerShell as a microservice
-  * Import/Export-JSON make JSON easier to work with
-  * Import-ModuleMember lets modules flexibly self-extend
-  * Out-HTML gives formatted HTML output!
-
-... and much, much more
+* Invoke-Interpreter will now JSONify non-string arguments (#896)
+* Invoke-Interpreter will now call Out-Parser (#857, #858)
+* Improved Interpreter exclusions
+    * `.ExcludePath` excludes path wildcards (#875, #877)
+    * `.ExcludePattern` excludes by pattern (#875, #876)
+* Implicit Interpretation Demo (#886)
+* New Languages Supported:
+    * Crystal (#878)
+* More Language Support
+    * Template.HelloWorld.go (#846)
+    * Template.HelloWorld.py (#846)
+    * Python Keywords map (#872)
+* New ScriptProperties
+    * Language.HasPowerShellInterpreter (#904)
+    * Language.HasInterpreter (#903)
+* Adding .Parallel option to GitHub action (defaulting to Serial) (#888)
+* Fixing Aliases for Aliases (thanks @HCRitter ! )
 
 ---
             
 Additional history in [CHANGELOG](https://github.com/StartAutomating/PipeScript/blob/main/CHANGELOG.md)
+
+Like it?  Star It!  Love it?  Support It!
+
 '@
         }
     }
