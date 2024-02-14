@@ -1,24 +1,25 @@
-Language function CPlusPlus {
+Language function C {
     <#
     .SYNOPSIS
-        C++ Language Definition.
+        PipeScript C Language Definition.
     .DESCRIPTION
-        Allows PipeScript to generate C++, Header or Swig files.
+        Allows PipeScript to generate C files.
 
         Multiline comments with /*{}*/ will be treated as blocks of PipeScript.
 
         Multiline comments can be preceeded or followed by 'empty' syntax, which will be ignored.
 
-        The within C++, PipeScript will consider the following syntax to be empty:
+        The C will consider the following syntax to be empty:
 
         * ```null```
         * ```""```
         * ```''```
     #>
-    [ValidatePattern('\.(?>cpp|h|swig)$')]
-    param()
+    [ValidatePattern('\.c$')]
+    param(
+    )
 
-    $FilePattern = '\.(?>cpp|h|swig)$'
+    $FilePattern = '\.c$'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
@@ -30,11 +31,4 @@ Language function CPlusPlus {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
-    
-    # The default compiler for C++ is `C++` on Windows, and `gcc` everywhere else.
-    $Compiler = if ($psVersionTable.Platform -match 'win') {
-        'c++'   
-    } else {
-        'gcc'
-    }
 }
