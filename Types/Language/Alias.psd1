@@ -1,5 +1,5 @@
 @{
     Templates = 'Template'
     Functions = 'Function'
-    Alias = 'Aliases'
+    Aliases = 'Alias'
 }
