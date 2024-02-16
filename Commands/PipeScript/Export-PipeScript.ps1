@@ -98,11 +98,8 @@ function Export-Pipescript {
                     "$ValidateAgainst"
                 }
             if (-not $ValidateAgainst) {
-                $ValidateAgainst = try { 
-                    git log --stat -n 1 
-                } catch {
-                    Write-Warning "Could not get git $($_ | Out-String)"
-                }
+                $ValidateAgainst = git log -n 1
+                
                 $ValidateAgainstString = 
                     if ($ValidateAgainst.CommitMessage) {
                         $ValidateAgainst.CommitMessage
@@ -122,7 +119,7 @@ function Export-Pipescript {
                     $validationPattern = [Regex]::new($commandAttribute.RegexPattern, $commandAttribute.Options, '00:00:00.1')
                     if (-not $validationPattern.IsMatch($ValidateAgainstString)) {
                         if ($env:GITHUB_STEP_SUMMARY) {
-                            "* skipping $($CommandInfo) because $ValidateAgainstString did not match ($($commandAttribute.RegexPattern))" | Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
+                            "* 🖐️ Skipping $($CommandInfo) because $ValidateAgainstString did not match ($($commandAttribute.RegexPattern))" | Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
                         }
                         Write-Warning "Skipping $($CommandInfo) : Did not match $($validationPattern)"
                         return $false
@@ -143,7 +140,7 @@ function Export-Pipescript {
                     $validationOutput = . $commandAttribute.ScriptBlock $ValidateAgainst
                     if (-not $validationOutput) {
                         if ($env:GITHUB_STEP_SUMMARY) {
-                            "* Skipping $($CommandInfo) because $($ValidateAgainstString) did not meet the validation criteria:" | Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
+                            "* 🖐️ Skipping $($CommandInfo) because $($ValidateAgainstString) did not meet the validation criteria:" | Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
                             
                         }
                         Write-Warning "Skipping $($CommandInfo) : The $ValidateAgainstString was not valid"
