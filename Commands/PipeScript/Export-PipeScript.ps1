@@ -231,11 +231,29 @@ function Export-Pipescript {
 
                 if ($env:GITHUB_WORKSPACE -or ($host.Name -eq 'Default Host')) {
                     $FileBuildEnded = [DateTime]::now
+                    
                     "$($buildFile.Source)", "$('=' * $buildFile.Source.Length)", "Output:" -join [Environment]::newLine | Out-Host
-                    if ($buildOutput -is [Management.Automation.ErrorRecord]) {
+                    if ($buildOutput -is [Management.Automation.ErrorRecord] -or $buildOutput -is [Exception]) {
                         $buildOutput | Out-Host
+                        if ($env:GITHUB_STEP_SUMMARY) {
+                            @(
+                                "* ❌ ``$($buildFile.Source | Split-Path -Leaf)`` !!!:"
+                                '~~~'
+                                $($buildOutput | Out-String)
+                                '~~~'
+                            ) -join [Environment]::newLine| Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
+                        }
                     } else {
-                        $buildOutput.FullName | Out-Host
+                        if ($env:GITHUB_STEP_SUMMARY) {
+                            @(
+                                "* ✅ ``$($buildFile.Source | Split-Path -Leaf)`` ⋙ $(if ($buildOutput -is [IO.FileInfo]) { $buildOutput.Name })"
+                                "  * $(@(if ($buildOutput -is [object[]]) {
+                                    foreach ($buildOutObject in $buildOutput) {
+                                        $buildOutput.Name
+                                    }
+                                }) -join ([Environment]::newLine + '  * '))"
+                            ) -join [Environment]::newLine | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
+                        }                        
                     }
                     $totalProcessTime = 0 
                     if ($env:ACTIONS_RUNNER_DEBUG) {
