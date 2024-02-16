@@ -38,6 +38,13 @@ If set, will prefer to build in a series, rather than in parallel.
 |----------|--------|--------|-------------|
 |`[Switch]`|false   |named   |false        |
 
+#### **Parallel**
+If set, will build in parallel
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
 #### **BatchSize**
 The number of files to build in each batch.
 
@@ -56,5 +63,5 @@ The throttle limit for parallel jobs.
 
 ### Syntax
 ```PowerShell
-Export-Pipescript [[-InputPath] <String[]>] [-Serial] [[-BatchSize] <Int32>] [[-ThrottleLimit] <Int32>] [<CommonParameters>]
+Export-Pipescript [[-InputPath] <String[]>] [-Serial] [-Parallel] [[-BatchSize] <Int32>] [[-ThrottleLimit] <Int32>] [<CommonParameters>]
 ```
