@@ -132,10 +132,11 @@ function Export-Pipescript {
                 {
                     if ($env:GITHUB_STEP_SUMMARY) {                         
                         @(
-                            "* $($CommandInfo) has a Build Validation Script."
+                            "<details><summary>$($CommandInfo) has a Build Validation Script.</summary>"
                             "~~~PowerShell"
                             "$($commandAttribute.ScriptBlock)"
                             "~~~"
+                            "</details>"
                         ) -join [Environment]::Newline |
                                 Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
                     }
@@ -232,7 +233,7 @@ function Export-Pipescript {
                 if ($env:GITHUB_WORKSPACE -or ($host.Name -eq 'Default Host')) {
                     $FileBuildEnded = [DateTime]::now
                     
-                    "$($buildFile.Source)", "$('=' * $buildFile.Source.Length)", "Output:" -join [Environment]::newLine | Out-Host
+                    "$($buildFile.Source)" | Out-Host
                     if ($buildOutput -is [Management.Automation.ErrorRecord] -or $buildOutput -is [Exception]) {
                         $buildOutput | Out-Host
                         if ($env:GITHUB_STEP_SUMMARY) {
@@ -247,11 +248,13 @@ function Export-Pipescript {
                         if ($env:GITHUB_STEP_SUMMARY) {
                             @(
                                 "* ✅ ``$($buildFile.Source | Split-Path -Leaf)`` ⋙ $(if ($buildOutput -is [IO.FileInfo]) { $buildOutput.Name })"
-                                "  * $(@(if ($buildOutput -is [object[]]) {
-                                    foreach ($buildOutObject in $buildOutput) {
-                                        $buildOutput.Name
-                                    }
-                                }) -join ([Environment]::newLine + '  * '))"
+                                if ($buildOutput -is [object[]]) {
+                                    "  * $(@(
+                                        foreach ($buildOutObject in $buildOutput) {
+                                            $buildOutput.Name
+                                        }
+                                    ) -join ([Environment]::newLine + '  * '))"
+                                }
                             ) -join [Environment]::newLine | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
                         }                        
                     }
