@@ -360,17 +360,35 @@
                             }
                         }
 
-                        $null =
+                        $approveTemplateEvent =
                             New-Event -SourceIdentifier 'PipeScript.TemplateFile.Approve' -MessageData ([PSCustomObject][Ordered]@{
                                 Language = $matchingPipeScriptLanguage
-                                SourcePath = $command.Source
-                            }) -EventArguments $MatchingPipeScriptLanguage, $command.Source                        
-
+                                TemplateFilePath = $command.Source
+                            }) -EventArguments $MatchingPipeScriptLanguage, $command.Source
+                        
+                        Out-Null # Running nothing, so that events have a chance to process
+                        $denyTemplateEvents = @(Get-Event -SourceIdentifier 'PipeScript.TemplateFile.Deny' -ErrorAction Ignore)
+                        if ($denyTemplateEvents) {
+                            [Array]::Reverse($denyTemplateEvents)
+                            $denyThisFile = 
+                                foreach ($denyEvent in $denyTemplateEvents) {
+                                    if ($denyEvent.MessageData.TemplateFilePath -eq 
+                                        $approveTemplateEvent.MessageData.TemplateFilePath -and 
+                                        $denyEvent.TimeGenerated -gt $approveTemplateEvent.TimeGenerated) {
+                                        $true;break
+                                    }
+                                    if ($denyEvent.TimeGenerated -lt $approveTemplateEvent.TimeGenerated) {
+                                        break
+                                    }
+                                }
+                            if ($denyThisFile) { return }
+                        }
+                        
                         $templateOutput = & $script:CoreTemplateTranspiler @CoreTemplateTranspilerSplat @ErrorsAndWarnings
                         $null =
                                 New-Event -SourceIdentifier 'PipeScript.TemplateFile.Out' -MessageData ([PSCustomObject][Ordered]@{
-                                    Language   = $matchingPipeScriptLanguage
-                                    SourcePath = $command.Source
+                                    Language         = $matchingPipeScriptLanguage
+                                    TemplateFilePath = $command.Source
                                     Output     = $templateOutput
                                     Errors     = $TranspilerErrors
                                     Warnings   = $TranspilerWarnings
