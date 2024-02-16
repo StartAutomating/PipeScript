@@ -3237,7 +3237,7 @@ Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePat
 
 A Language is defined a function named Language.NameOfLanguage.
 
-PipeScript presently ships with 65 languages:
+PipeScript presently ships with 66 languages:
 
 * ADA
 * Arduino
@@ -3248,6 +3248,7 @@ PipeScript presently ships with 65 languages:
 * Bicep
 * BrightScript
 * C
+* C3
 * Conf
 * CPlusPlus
 * Crystal
