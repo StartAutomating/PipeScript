@@ -129,11 +129,7 @@ function Export-Pipescript {
                 {
                     if ($env:GITHUB_STEP_SUMMARY) {                         
                         @(
-                            "<details><summary>$($CommandInfo) has a Build Validation Script.</summary>"
-                            "<code language='PowerShell'>"
-                            "$($commandAttribute.ScriptBlock)"
-                            "</code>"
-                            "</details>"
+                            "* $($CommandInfo) has a Build Validation Script"
                         ) -join [Environment]::Newline |
                                 Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
                     }
