@@ -5,8 +5,18 @@
     Ensures Examples work by turning each example into a test.
 
     Including a comment followed by 'should' will turn specific lines of the test into Pester should statements.
+.NOTES
+    This build is run condtionally, whenever the word "Example" is used in a commit message.
 #>
+[ValidatePattern(
+    # In a PipeScript *.Build.ps1 file, ValidatePattern will be checked against the last commit message.
+    # This checks for the Pattern:
+    "Example"
+    # If the pattern is found, then the script will run.
+    # If the pattern is not found, then the script will not run (and this will be written as a warning and noted in the build summary)
+)]
 param(
+# The name of the module containing examples
 $ModuleName = 'PipeScript'
 )
 
