@@ -27,10 +27,8 @@ function Invoke-Interpreter {
     :NextInterpreter foreach ($interpreterForFile in $interpreterForFiles) {
         $interpreterCommand, $leadingArgs = $interpreterForFile.Interpreter
         # If there was no interpreter command, return.
-        continue if -not $interpreterCommand        
-        
-        $leadingArgs = @($leadingArgs)
-        
+        continue if -not $interpreterCommand
+                
         # Now things get a little more complicated.
         
         # Since many things that will interpret our arguments will _not_ be PowerShell, we want to conver them
@@ -52,11 +50,24 @@ function Invoke-Interpreter {
                             }
                         } }
             })
-
-        $ParsersForCommand = $PSParser.ForCommand($invocationName)
-
         
-        $leadingArgs += @($invocationName)
+        # We want to use splatting for both sets of arguments,
+        # so force leading args into an array
+        $leadingArgs = @($leadingArgs)
+
+        # If there were leading args
+        if ($leadingArgs) {
+            # append the invocation name to the array
+            $leadingArgs += @($invocationName)
+        } else {
+            # otherwise, the invocation name is the only leading argument (and we do not want blanks)
+            $leadingArgs = @($invocationName)
+        }
+
+        # Just before we run, see if we have any parsers for the command
+        $ParsersForCommand = $PSParser.ForCommand($invocationName)
+                
+        # If we do, we'll pipe to Out-Parser.
         if ($ParsersForCommand) {
             if ($MyInvocation.ExpectingInput) {
                 $input | 
@@ -72,6 +83,6 @@ function Invoke-Interpreter {
             } else {
                 & $interpreterCommand @leadingArgs @convertedArguments
             }
-        }         
-    }            
+        }
+    }
 }
