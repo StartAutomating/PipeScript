@@ -163,10 +163,7 @@ function Export-Pipescript {
 
             $buildFileTemplate = $buildFile.Template
             if ($buildFileTemplate -and $buildFile.PipeScriptType -ne 'Template') {
-                AutoRequiresSimple -CommandInfo $buildFileTemplate
-                if (-not (Test-PipeScript-Build-Condition -CommandInfo $buildFileTemplate)) {
-                    return
-                }
+                AutoRequiresSimple -CommandInfo $buildFileTemplate                
                 try {
                     Invoke-PipeScript $buildFileTemplate.Source
                 } catch {
@@ -186,9 +183,9 @@ function Export-Pipescript {
 
             $EventsFromThisBuild = Get-Event |
                 Where-Object TimeGenerated -gt $ThisBuildStartedAt |
-                Where-Object SourceIdentifier -Like '*PipeScript*'
+                Where-Object SourceIdentifier -Like '*PipeScript*'            
             AutoRequiresSimple -CommandInfo $buildFile
-            if (-not (Test-PipeScript-Build-Condition -CommandInfo $buildFileTemplate)) {
+            if (-not (Test-PipeScript-Build-Condition -CommandInfo $buildFile)) {
                 return
             }
             $FileBuildStarted = [datetime]::now
