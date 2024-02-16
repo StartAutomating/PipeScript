@@ -232,8 +232,8 @@
         # If the command is a ```[Management.Automation.CommandInfo]```
         elseif ($command -is [Management.Automation.CommandInfo])
         {
-            # Determine if the Command is a SourceGenerator.
-            $IsSourceGenerator = '\.ps1{0,1}\.(?<ext>[^.]+$)' # if it matches the regex designating a SourceGenerator
+            # Determine if the Command is a Template File.
+            $IsTemplateFile = '\.ps1{0,1}\.(?<ext>[^.]+$)' # if it matches the regex designating a SourceGenerator
 
             $pipeScriptLanguages = Get-PipeScript -PipeScriptType Language
             $matchingPipeScriptLanguage = $(foreach ($pipescriptLanguage in $pipeScriptLanguages) {                    
@@ -245,7 +245,7 @@
             })
 
             # If the command was not a source generator
-            if ($Command.Source -notmatch $IsSourceGenerator ) {
+            if ($Command.Source -notmatch $IsTemplateFile ) {
                 # we'll try to invoke it.
 
                 # If we have an interpreter for that language
@@ -325,12 +325,9 @@
             else {
                 if (-not $MyParameters.OutputPath) {
                     # predetermine the output path if none was provided.
-                    $outputPath = $($Command.Source -replace $IsSourceGenerator, '.${ext}')
+                    $outputPath = $($Command.Source -replace $IsTemplateFile, '.${ext}')
                 }
-                
-                # and attempt to find a transpiler.
-                $foundTranspiler = Get-Transpiler -CouldPipe $Command -ValidateInput $Command -ErrorAction Ignore
-
+                            
                 if (-not $script:CoreTemplateTranspiler) {
                     $script:CoreTemplateTranspiler = Get-Transpiler -TranspilerName PipeScript.Template
                 }                                                
@@ -339,53 +336,12 @@
                 $transpilerErrors   = @()
                 $transpilerWarnings = @()
 
-
                 # Push into the location of the file, so the current working directory will be accurate for any inline scripts.
                 Push-Location ($command.Source | Split-Path)
 
                 # Get the output from the source generator.
-                $pipescriptOutput =
-                    if ($foundTranspiler) { # If we found transpilers
-                        foreach ($ft in $foundTranspiler)  {
-                            # run them.
-
-                            $null =
-                                New-Event -SourceIdentifier 'PipeScript.SourceGenerator.Start' -MessageData ([PSCustomObject][Ordered]@{
-                                    Transpiler = $ft.ExtensionCommand
-                                    SourcePath = $command.Source
-                                })
-
-                            $transpilerOutput = $command |
-                                & $ft.ExtensionCommand @ErrorsAndWarnings @ParamsAndArgs
-
-                            $null =
-                                New-Event -SourceIdentifier 'PipeScript.SourceGenerator.Stop' -MessageData ([PSCustomObject][Ordered]@{
-                                    Transpiler       = $ft.ExtensionCommand
-                                    TranspilerOutput = $transpilerOutput
-                                    SourcePath       = $command.Source
-                                    Errors           = $TranspilerErrors
-                                    Warnings         = $TranspilerWarnings
-                                })
-
-                            $transpilerOutput =
-                                # If the transpiler returned a [ScriptBlock]
-                                if ($transpilerOutput -is [Scriptblock]) {
-                                    # recursively invoke.
-                                    $InvokePipeScriptParameters.Command = $transpilerOutput
-                                    Invoke-PipeScript @InvokePipeScriptParameters
-                                } else {
-                                    # otherwise, return the output of the transpiler.
-                                    $transpilerOutput
-                                }
-
-                            # If the transpiler had output,
-                            if ($transpilerOutput) {
-                                $transpilerOutput # use that output
-                                break             # and stop processing additional transpilers.
-                            }
-                        }
-                    } 
-                    elseif (
+                $pipescriptOutput =                     
+                    if (
                         $matchingPipeScriptLanguage.StartPattern -and 
                         $matchingPipeScriptLanguage.EndPattern
                     ) {
@@ -403,7 +359,22 @@
                                 $CoreTemplateTranspilerSplat[$prop.Name] = $prop.Value
                             }
                         }
-                        $templateOutput = & $script:CoreTemplateTranspiler @CoreTemplateTranspilerSplat
+
+                        $null =
+                            New-Event -SourceIdentifier 'PipeScript.TemplateFile.Approve' -MessageData ([PSCustomObject][Ordered]@{
+                                Language = $matchingPipeScriptLanguage
+                                SourcePath = $command.Source
+                            }) -EventArguments $MatchingPipeScriptLanguage, $command.Source                        
+
+                        $templateOutput = & $script:CoreTemplateTranspiler @CoreTemplateTranspilerSplat @ErrorsAndWarnings
+                        $null =
+                                New-Event -SourceIdentifier 'PipeScript.TemplateFile.Out' -MessageData ([PSCustomObject][Ordered]@{
+                                    Language   = $matchingPipeScriptLanguage
+                                    SourcePath = $command.Source
+                                    Output     = $templateOutput
+                                    Errors     = $TranspilerErrors
+                                    Warnings   = $TranspilerWarnings
+                                }) -EventArguments $MatchingPipeScriptLanguage, $command.Source
                         if ($matchingPipeScriptLanguage.ReplaceOutputFileName) {
                             # This is a little annoying and esoteric, but it's required to make something like a "Dockerfile" work.
                             $OutputPath = $OutputPath | Split-Path | Join-Path -ChildPath (
