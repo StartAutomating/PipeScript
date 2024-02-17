@@ -1,18 +1,18 @@
-Template function DoLoop.py {
+Template function UntilLoop.py {
     <#
     .SYNOPSIS
-        Template for a Python `do` Loop
+        Template for a Python `until` Loop
     .DESCRIPTION
-        Template for a `do` loop in Python.
+        Template for a `until` loop in Python.
     .NOTES
-        There is not a proper `do` loop in Python, so we have to be a little creative.
+        There is not a proper `do` or `until` loop in Python, so we have to be a little creative.
 
         This will produce a while loop where the `-InitialCondition` should always be true,
-        and the `-Condition` will be checked at the end of each loop.
+        and the `-Condition` will be checked at the end of each iteration.
 
-        If the `Condition` is false, then the loop will break.
+        If the `Condition` is true, then the loop will break.
     .EXAMPLE
-        Template.DoLoop.py -Condition "False" -Body "print('This happens once')"
+        Template.UntilLoop.py -Condition "True" -Body "print('This happens once')"
     #>    
     param(    
     # The Loop's Condition.
@@ -61,7 +61,7 @@ $(' ' * $BodyIndent)$(
     $Body -split "(?>\r\n|\n)" -join ([Environment]::NewLine + $(' ' * $BodyIndent))
 )
 $(' ' * $BodyIndent)$(
-    "if not ${Condition}:$(
+    "if ${Condition}:$(
         [Environment]::NewLine + (' ' * $BodyIndent * 2)
     )break"
 )
