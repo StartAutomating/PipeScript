@@ -1678,22 +1678,6 @@ return $this.'.CommandMetadata'
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
-        <Name>CommandNamespace</Name>
-        <GetScriptBlock>
-                        $matched = $this.Separator.Match($this.FullyQualifiedName)
-if ($matched.Success -and $matched.Index -gt 0) {
-    $this.FullyQualifiedName.Substring(0,$matched.Index)
-}
-else {
-    ''
-}
-
-
-
-
-                    </GetScriptBlock>
-      </ScriptProperty>
-      <ScriptProperty>
         <Name>Description</Name>
         <GetScriptBlock>
                         if ($this -is [Management.Automation.AliasInfo]) {
@@ -1822,56 +1806,6 @@ if ($this.pstypenames -like '*.Command') {
 }
 return 0
                     </GetScriptBlock>
-      </ScriptProperty>
-      <ScriptProperty>
-        <Name>Segments</Name>
-        <GetScriptBlock>
-                        $allMatches = @($this.Separator.Matches($this.FullyQualifiedName))
-@(
-    # All namespaces are a series of matches
-    foreach ($matched in $allMatches) {
-        $this.FullyQualifiedName.Substring($matched.Index)
-    }
-    if ($matched.Index -gt 0) {
-        $this.FullyQualifiedName
-    }
-) -as [string[]]
-                    </GetScriptBlock>
-      </ScriptProperty>
-      <ScriptProperty>
-        <Name>Separator</Name>
-        <GetScriptBlock>
-                        # Allowing this to be set (caching what what set in .`.NamespaceSeparator`)
-if ($this.'.Separator') {    
-    if ($this.'.Separator' -is [regex]) {
-        $this.'.Separator'
-    } else {
-        [Regex]::new("[" +
-            [Regex]::Escape($this.'.Separator') +
-        "]", 'RightToLeft')
-    }
-}
-# Laying groundwork for some special/automatic variables
-elseif ($psCommandNameSeparator) 
-{
-    if ($psCommandNameSeparator -is [string])  {
-        [Regex]::new("[" +
-            [Regex]::Escape($psCommandNameSeparator) +
-        "]{1,}", 'RightToLeft')
-    } elseif ($psCommandNameSeparator -is [regex]) {
-        $psCommandNameSeparator
-    }
-}
-else
-{
-    [Regex]::new('[\p{P}&lt;&gt;]{1,}','RightToLeft')
-}
-
-                    </GetScriptBlock>
-        <SetScriptBlock>
-                        $this | Add-Member NoteProperty ".Separator" $args -Force
-
-                    </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>StrongPipeType</Name>
