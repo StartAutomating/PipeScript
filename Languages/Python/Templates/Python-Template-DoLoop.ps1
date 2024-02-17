@@ -9,7 +9,10 @@ function Template.DoLoop.py {
     .NOTES
         There is not a proper `do` loop in Python, so we have to be a little creative.
 
-        This will produce a while loop where the `-InitialCondition` should always be true, and,         
+        This will produce a while loop where the `-InitialCondition` should always be true,
+        and the `-Condition` will be checked at the end of each loop.
+
+        If the `Condition` is false, then the loop will break.
     .EXAMPLE
         Template.DoLoop.py -Condition "False" -Body "print('This happens once')"
     #>    
