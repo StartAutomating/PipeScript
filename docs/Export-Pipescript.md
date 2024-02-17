@@ -2,15 +2,20 @@ Export-Pipescript
 -----------------
 
 ### Synopsis
-Builds and Exports using PipeScript
+Export PipeScript
 
 ---
 
 ### Description
 
-Builds and Exports a path, using PipeScript.
+Builds a path with PipeScript, which exports the outputted files.
 
-Any Source Generator Files Discovered by PipeScript will be run, which will convert them into source code.
+Build Scripts (`*.build.ps1`) will run,
+then all Template Files (`*.ps.*` or `*.ps1.*`) will build.
+
+Either file can contain a `[ValidatePattern]` or `[ValidateScript]` to make the build conditional.
+
+The condition will be validated against the last git commit (if present).
 
 ---
 
@@ -18,7 +23,7 @@ Any Source Generator Files Discovered by PipeScript will be run, which will conv
 > EXAMPLE 1
 
 ```PowerShell
-Export-PipeScript -Serial   # (PipeScript builds in parallel by default)
+Export-PipeScript # (PipeScript can build in parallel)
 ```
 
 ---
