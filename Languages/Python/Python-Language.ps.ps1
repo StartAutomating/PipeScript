@@ -24,7 +24,7 @@ print("$msg")
     .> .\HelloWorld.ps1.py
 .EXAMPLE
     'print("Hello World")' > .\HelloWorld.py
-    Invoke-PipeScript .\HelloWorld.py # Should -Be 'Hello World'
+    Invoke-PipeScript .\HelloWorld.py
 #>
 [ValidatePattern('\.py$')]
 param()
