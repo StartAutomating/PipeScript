@@ -15,7 +15,12 @@
     # If the pattern is found, then the script will run.
     # If the pattern is not found, then the script will not run (and this will be written as a warning and noted in the build summary)
 )]
-[Reflection.AssemblyMetadata("Order",1kb)]
+[Reflection.AssemblyMetadata(
+    # Order impacts the order in which commands run.  A lower order will run sooner, a higher order will run later.
+    # The default order is 0.
+    "Order",
+    1kb # by indicating an Order of 1kb, we are really saying "run later than most things"
+)]
 param(
 # The name of the module containing examples
 $ModuleName = 'PipeScript'
