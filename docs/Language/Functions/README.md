@@ -6,3 +6,4 @@
 
 * [get_All](get_All.md)
 * [get_Count](get_Count.md)
+* [get_Unique](get_Unique.md)
