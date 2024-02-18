@@ -28,12 +28,6 @@ $ModuleName = 'PipeScript'
 
 $moduleInfo = Get-Module $ModuleName
 
-# Reload the module, because commands may have been created since this process first launched.
-$psd1Path = $moduleInfo.Path -replace '\.psm1','.psd1'
-if (Test-path $psd1Path) {
-    Import-Module $psd1Path -Global -Force
-}
-
 $commandsInModule = Get-Command -Module $moduleName
 
 $commandsWithExamples = $commandsInModule | Where-Object { $_.Examples }
