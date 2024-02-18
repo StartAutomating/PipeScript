@@ -2121,6 +2121,10 @@ return $false
   <Type>
     <Name>Language.Functions</Name>
     <Members>
+      <AliasProperty>
+        <Name>Distinct</Name>
+        <ReferencedMemberName>Unique</ReferencedMemberName>
+      </AliasProperty>
       <ScriptProperty>
         <Name>All</Name>
         <GetScriptBlock>
@@ -2153,11 +2157,42 @@ return $false
 }).Length
                     </GetScriptBlock>
       </ScriptProperty>
+      <ScriptProperty>
+        <Name>Unique</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets unique Language Functions
+.DESCRIPTION
+    Gets unique functions related to a language.
+#&gt;
+$distinctCommands = @{}
+,@(foreach ($psProperty in $this.PSObject.properties) {
+    if ($psProperty -isnot [psnoteproperty]) { continue  }    
+    if ($psProperty.Value -isnot [Management.Automation.CommandInfo]) { continue }
+    if (
+        $psProperty.Value -is [Management.Automation.AliasInfo] -and
+        (
+            $distinctCommands[$psProperty.Value.ResolvedCommand] -or
+            $this.PSObject.Properties[$psProperty.Value.ResolvedCommand.Name]
+        )
+    ) {
+        continue
+    }
+    $distinctCommands[$psProperty.Value] = $psProperty.Value
+    $psProperty.Value
+})
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>
     <Name>Language.Templates</Name>
     <Members>
+      <AliasProperty>
+        <Name>Distinct</Name>
+        <ReferencedMemberName>Unique</ReferencedMemberName>
+      </AliasProperty>
       <ScriptProperty>
         <Name>All</Name>
         <GetScriptBlock>
@@ -2188,6 +2223,33 @@ return $false
     if ($psProperty.Value -isnot [Management.Automation.CommandInfo]) { continue }
     $psProperty.Value
 }).Length
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Unique</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets unique Language Templates
+.DESCRIPTION
+    Gets unique templates related to a language.
+#&gt;
+$distinctCommands = @{}
+,@(foreach ($psProperty in $this.PSObject.properties) {
+    if ($psProperty -isnot [psnoteproperty]) { continue  }    
+    if ($psProperty.Value -isnot [Management.Automation.CommandInfo]) { continue }
+    if (
+        $psProperty.Value -is [Management.Automation.AliasInfo] -and
+        (
+            $distinctCommands[$psProperty.Value.ResolvedCommand] -or
+            $this.PSObject.Properties[$psProperty.Value.ResolvedCommand.Name]
+        )
+    ) {
+        continue
+    }
+    $distinctCommands[$psProperty.Value] = $psProperty.Value
+    $psProperty.Value
+})
                     </GetScriptBlock>
       </ScriptProperty>
     </Members>
@@ -3208,7 +3270,7 @@ Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePat
 
 A Language is defined a function named Language.NameOfLanguage.
 
-PipeScript presently ships with 66 languages:
+PipeScript presently ships with 68 languages:
 
 * ADA
 * Arduino
