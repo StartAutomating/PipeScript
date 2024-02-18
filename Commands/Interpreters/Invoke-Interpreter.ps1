@@ -12,8 +12,40 @@ function Invoke-Interpreter {
         This will happen automatically as you attempt to use commands that have an associated interpreter
     #>
     param()
+    
+    # Store myInvocation (we'll need it often)
     $myInv = $MyInvocation
+
+    # Determine the invocation name
     $invocationName = $MyInvocation.InvocationName
+    
+    # If we do not have the correct invocation name, that's because the call operator is being used
+    # Unfortunately, this makes this more complicated, as we have to go looking
+    if ($invocationName -in '.', '&') {
+        # Starting off by picking the words after the invocation
+        $myLine = $myInv.Line.Substring($myInv.OffsetInLine) -replace '^\s{0,}'
+        $MyWords = @($myLine -split '\s{1,}')
+
+        # If the first word is a variable
+        if ($MyWords[0] -match '^\$(?<v>\w+)') {            
+            $firstWordVariableValue = $ExecutionContext.SessionState.PSVariable.Get($matches.0 -replace '^\s\$').Value
+            # and it has a value
+            if ($firstWordVariableValue) {
+                # use that as the InvocationName.
+                $invocationName = $firstWordVariableValue
+            }
+        }
+        # If the first word is not a variable,
+        elseif ($MyWords[0] -match '^(?<w>\w+)') {
+            # see if it's an alias
+            $firstWordAlias = $ExecutionContext.SessionState.InvokeCommand.GetCommand($mywords[0], 'Alias')            
+            if ($firstWordAlias.ReferencedCommand -ne $myInv.MyCommand.Name) {
+                # and use the referenced command as the invocation name.
+                $invocationName = $firstWordAlias
+            }
+        }
+    }
+        
     # Return if we were called by our real name.
     if ($invocationName -eq $myInv.MyCommand.Name) { return }
     # If there are no interpreters, obviously return.
@@ -22,6 +54,13 @@ function Invoke-Interpreter {
     if (-not $PSInterpreters.ForFile) { return }    
     $interpreterForFiles = $PSInterpreters.ForFile($invocationName)
     # or don't find a mapping, return.
+    if (-not $interpreterForFiles -and $invocationName -notmatch '[\&\.]') {
+        $nameIsAlias = Get-Alias -Name $InvocationName
+        if ($nameIsAlias.ReferencedCommand.Name -ne $myInv.MyCommand.Name) {
+            $invocationName = $nameIsAlias.ReferencedCommand.Name
+            $interpreterForFiles = $PSInterpreters.ForFile($nameIsAlias.ReferencedCommand)
+        }
+    }
     if (-not $interpreterForFiles) { return }
     
     # There can be more than one potential interpreter for each file
