@@ -34,7 +34,7 @@ if (Test-path $psd1Path) {
     Import-Module $psd1Path -Global -Force
 }
 
-$commandsInModule = Get-Command -Module $moduleName -CommandType All
+$commandsInModule = Get-Command -Module $moduleName
 
 $commandsWithExamples = $commandsInModule | Where-Object { $_.Examples }
 
