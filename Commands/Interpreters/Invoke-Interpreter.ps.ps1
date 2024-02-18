@@ -8,7 +8,7 @@ function Invoke-Interpreter {
 
         This command is not used directly, it is used by creating an alias to invoke-interpreter.
     
-        This will happen automatically as you attempt to use commands that have an associated interpreter
+        This will happen automatically as you attempt to use commands that have an associated interpreter.
     #>
     param()
     
@@ -26,7 +26,7 @@ function Invoke-Interpreter {
         $MyWords = @($myLine -split '\s{1,}')
 
         # If the first word is a variable
-        if ($MyWords[0] -match '^\$(?<v>\w+)') {            
+        if ($MyWords[0] -match '^\$(?<v>\w+)') {
             $firstWordVariableValue = $ExecutionContext.SessionState.PSVariable.Get($matches.0 -replace '^\$').Value
             # and it has a value
             if ($firstWordVariableValue) {
@@ -37,7 +37,7 @@ function Invoke-Interpreter {
         # If the first word is not a variable,
         elseif ($MyWords[0] -match '^(?<w>\w+)') {
             # see if it's an alias
-            $firstWordAlias = $ExecutionContext.SessionState.InvokeCommand.GetCommand($mywords[0], 'Alias')            
+            $firstWordAlias = $ExecutionContext.SessionState.InvokeCommand.GetCommand($mywords[0], 'Alias')
             if ($firstWordAlias.ReferencedCommand -ne $myInv.MyCommand.Name) {
                 # and use the referenced command as the invocation name.
                 $invocationName = $firstWordAlias
