@@ -15,6 +15,7 @@
     # If the pattern is found, then the script will run.
     # If the pattern is not found, then the script will not run (and this will be written as a warning and noted in the build summary)
 )]
+[Reflection.AssemblyMetadata("Order",1kb)]
 param(
 # The name of the module containing examples
 $ModuleName = 'PipeScript'
