@@ -27,7 +27,7 @@ function Invoke-Interpreter {
 
         # If the first word is a variable
         if ($MyWords[0] -match '^\$(?<v>\w+)') {            
-            $firstWordVariableValue = $ExecutionContext.SessionState.PSVariable.Get($matches.0 -replace '^\s\$').Value
+            $firstWordVariableValue = $ExecutionContext.SessionState.PSVariable.Get($matches.0 -replace '^\$').Value
             # and it has a value
             if ($firstWordVariableValue) {
                 # use that as the InvocationName.
