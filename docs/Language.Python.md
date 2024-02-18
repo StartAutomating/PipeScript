@@ -37,7 +37,7 @@ print("$msg")
 
 ```PowerShell
 .\HelloWorld.py
-Invoke-PipeScript .\HelloWorld.py # Should -Be 'Hello World'
+Invoke-PipeScript .\HelloWorld.py
 ```
 
 ---
