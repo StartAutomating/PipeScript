@@ -335,12 +335,12 @@ function Export-Pipescript {
             @(if (-not $InputPath) {
                 Get-PipeScript -PipeScriptPath $pwd |
                     Where-Object PipeScriptType -Match '(?>Template|BuildScript)' |
-                    Sort-Object PipeScriptType, Order, Source
+                    Sort-Object Order, PipeScriptType, Source
             } else {
                 foreach ($inPath in $InputPath) {
                     Get-PipeScript -PipeScriptPath $inPath |
                         Where-Object PipeScriptType -Match '(?>Template|BuildScript)' |
-                        Sort-Object PipeScriptType, Order, Source
+                        Sort-Object Order, PipeScriptType, Source
                 }
             })
 
@@ -479,6 +479,9 @@ function Export-Pipescript {
             "$filesToBuildTotal in $($BuildTime)" | Out-Host
             "::endgroup::Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal] : $($buildFile.Source)" | Out-Host
             if ($TotalInputFileLength) {
+                $kbIn  = $([Math]::Round($TotalInputFileLength / 1kb))
+                $kbOut = $([Math]::Round($TotalOutputFileLength / 1kb))
+                $pipeScriptFactor  = $kbIn/$kbOut                
                 "$([Math]::Round($TotalInputFileLength / 1kb)) kb input"
                 "$([Math]::Round($TotalOutputFileLength / 1kb)) kb output",
                 "PipeScript Factor: X$([Math]::round([double]$TotalOutputFileLength/[double]$TotalInputFileLength,4))"
