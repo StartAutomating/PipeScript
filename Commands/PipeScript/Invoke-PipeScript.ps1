@@ -250,54 +250,13 @@
 
                 # If we have an interpreter for that language
                 if ($matchingPipeScriptLanguage.Interpreter -or $matchingPipeScriptLanguage.Runner) {
+                    # we'll want to run it.
 
-                    # Figure out what command or script block we will run instead
-                    $interpreterCommand = $null
-                    $InterpreterOrRunner = if ($matchingPipeScriptLanguage.Interpreter) {
-                        $matchingPipeScriptLanguage.Interpreter
-                    } else {
-                        $matchingPipeScriptLanguage.Runner
-                    }
-                    $interpreterArguments = @(
-                        # and what other arguments we pass positionally
-                        switch ($InterpreterOrRunner) {
-                            { $_ -is [Management.Automation.CommandInfo] -and -not $interpreterCommand} { $interpreterCommand = $_ }
-                            { $_ -is [scriptblock] -and -not $interpreterCommand} { $interpreterCommand = $_ }
-                            default {
-                                # (any other results in a language's Interpreter will be counted as positional arguments)
-                                if (-not $interpreterCommand -and $_ -is [string]) {
-                                    $interpreterCommand = $_
-                                } else {
-                                    $_
-                                }
-                            }
-                        }
-                    )
-
-                    # If we found an interpreter
-                    if ($interpreterCommand) {
-                        # rearrange the arguments
-                        $ArgumentList =
-                            @(
-                                if ($matchingPipeScriptLanguage.Interpreter -isnot [ScriptBlock]) {
-                                    $ArgumentList | 
-                                        . { process { 
-                                            if ($_ -isnot [string]) {
-                                                ConvertTo-Json -InputObject $_ -Depth 100
-                                            } else {
-                                                $_
-                                            }
-                                        } }
-                            } else {
-                                $ArgumentList | . { process { $_ } }
-                            })
-                        $ArgumentList = @($interpreterArguments) + $(
-                            if ($matchingPipeScriptLanguage.Interpreter) {
-                                $command.Source
-                            }) + $ArgumentList
-                        # and change the command we're calling.
-                        $command = $interpreterCommand
-                    }
+                    # Rather than duplicate a lot of code, the easiest way to do this is simply to alias the full path                    
+                    Set-Alias $command.Source Invoke-Interpreter
+                    # and reset the value of $Command
+                    $command = $ExecutionContext.SessionState.InvokeCommand.GetCommand($command.Source, 'Alias')
+                    # (the alias will only exist locally, and not exist when Invoke-PipeScript returns)                    
                 }
                 
                 $CommandStart = [DateTime]::now
