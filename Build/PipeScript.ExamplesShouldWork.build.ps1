@@ -19,7 +19,7 @@
     # Order impacts the order in which commands run.  A lower order will run sooner, a higher order will run later.
     # The default order is 0.
     "Order",
-    1kb # by indicating an Order of 1kb, we are really saying "run later than most things"
+    -1kb # by indicating an Order of -1kb, we are really saying "run before most things"
 )]
 param(
 # The name of the module containing examples
