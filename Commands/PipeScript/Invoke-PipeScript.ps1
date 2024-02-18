@@ -244,19 +244,15 @@
                 }
             })
 
-            # If the command was not a source generator
-            if ($Command.Source -notmatch $IsTemplateFile ) {
-                # we'll try to invoke it.
-
-                # If we have an interpreter for that language
-                if ($matchingPipeScriptLanguage.Interpreter -or $matchingPipeScriptLanguage.Runner) {
-                    # we'll want to run it.
-
+            # If the command was not a source generator we'll try to invoke it.
+            if ($Command.Source -notmatch $IsTemplateFile ) {                
+                # If we have an interpreter for that language we'll want to run it.
+                if ($matchingPipeScriptLanguage.Interpreter -or $matchingPipeScriptLanguage.Runner) {                    
                     # Rather than duplicate a lot of code, the easiest way to do this is simply to alias the full path                    
                     Set-Alias $command.Source Invoke-Interpreter
                     # and reset the value of $Command
                     $command = $ExecutionContext.SessionState.InvokeCommand.GetCommand($command.Source, 'Alias')
-                    # (the alias will only exist locally, and not exist when Invoke-PipeScript returns)                    
+                    # (the alias will only exist locally, and not exist when Invoke-PipeScript returns)
                 }
                 
                 $CommandStart = [DateTime]::now
