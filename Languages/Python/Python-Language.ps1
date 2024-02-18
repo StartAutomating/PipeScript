@@ -9,23 +9,12 @@ function Language.Python {
     Because Python does not support multiline comment blocks, PipeScript can be written inline inside of multiline string
 
     PipeScript can be included in a Python string that starts and ends with ```{}```, for example ```"""{}"""```
-.Example
-    .> {
-       $pythonContent = @'
-"""{
-$msg = "Hello World", "Hey There", "Howdy" | Get-Random
-@"
-print("$msg")
-"@
-}"""
-'@
-        [OutputFile('.\HelloWorld.ps1.py')]$PythonContent
-    }
-
-    .> .\HelloWorld.ps1.py
 .EXAMPLE
     'print("Hello World")' > .\HelloWorld.py
     Invoke-PipeScript .\HelloWorld.py
+.EXAMPLE
+    Template.HelloWorld.py -Message "Hi" | Set-Content ".\Hi.py"
+    Invoke-PipeScript .\Hi.py
 #>
 [ValidatePattern('\.py$')]
 param()
