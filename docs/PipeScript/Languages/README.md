@@ -5,7 +5,7 @@ PipeScript works with a number of Languages.
 
 A Language is defined a function named Language.NameOfLanguage.
 
-PipeScript presently ships with 66 languages:
+PipeScript presently ships with 68 languages:
 
 * ADA
 * Arduino
