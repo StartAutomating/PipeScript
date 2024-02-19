@@ -1,18 +1,18 @@
 <div align='center'>
-<img src='Assets/PipeScript-4-chevron-animated.svg' style='width:80%' />
+<img src='Assets/PipeScript-ouroboros-animated.svg' style='width:80%' />
 </div>
 
 # What Is PipeScript?
 
 PipeScript is a metaprogramming language built in PowerShell.
 
-It lets you compile PowerShell and easily work with 61 other languages (and counting).
+It lets you compile PowerShell and easily work with 64 other languages (and counting).
 
 It is designed to make programming more scriptable and scripting more programmable.
 
 PipeScript can be run interactively, or used to build more with less code.
 
-PipeScript can be used to template 61 languages, and implicitly interpert 16 languages.
+PipeScript can be used to template 64 languages, and implicitly interpert 16 languages.
 
 ## Implicit Interpretation
 
@@ -42,7 +42,7 @@ Often, programming involves implementing small functional changes within a speci
 
 For example, if implementing an interface or subclass, the only things that will change are the class name and method details.
 
-PipeScript can work with 61 languages.
+PipeScript can work with 64 languages.
 
 Embedding PipeScript within any of these languages allows you to generate any of these languages with parameterized scripts, thus removing some of the tedium of programming.
 

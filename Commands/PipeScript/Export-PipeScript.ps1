@@ -1,13 +1,18 @@
 function Export-Pipescript {
     <#
     .Synopsis
-        Builds and Exports using PipeScript
+        Export PipeScript
     .Description
-        Builds and Exports a path, using PipeScript.
+        Builds a path with PipeScript, which exports the outputted files.
         
-        Any Source Generator Files Discovered by PipeScript will be run, which will convert them into source code.
+        Build Scripts (`*.build.ps1`) will run,
+        then all Template Files (`*.ps.*` or `*.ps1.*`) will build.
+
+        Either file can contain a `[ValidatePattern]` or `[ValidateScript]` to make the build conditional.
+        
+        The condition will be validated against the last git commit (if present).    
     .EXAMPLE
-        Export-PipeScript -Serial   # (PipeScript builds in parallel by default)
+        Export-PipeScript # (PipeScript can build in parallel)
     #>
     [Alias('Build-PipeScript','bps','eps','psc')]
     param(
@@ -20,6 +25,10 @@ function Export-Pipescript {
     # If set, will prefer to build in a series, rather than in parallel.
     [switch]
     $Serial,
+
+    # If set, will build in parallel
+    [switch]
+    $Parallel,
 
     # The number of files to build in each batch.
     [int]
@@ -77,6 +86,73 @@ function Export-Pipescript {
             }
         }
 
+        function Test-PipeScript-Build-Condition {
+            param(
+            [Management.Automation.CommandInfo]
+            $CommandInfo,
+
+            [PSObject]
+            $ValidateAgainst
+            )
+
+            #region Build Condition
+            $ValidateAgainstString = 
+                if ($ValidateAgainst.ToString -is [psscriptmethod]) {
+                    $ValidateAgainst.ToString()
+                } else {
+                    "$ValidateAgainst"
+                }
+            if (-not $ValidateAgainst) {
+                $ValidateAgainst = git log -n 1
+                
+                $ValidateAgainstString = 
+                    if ($ValidateAgainst.CommitMessage) {
+                        $ValidateAgainst.CommitMessage
+                    } else {
+                        $ValidateAgainst -join [Environment]::Newline
+                    }
+            }
+                        
+            foreach ($commandAttribute in $CommandInfo.ScriptBlock.Attributes)  {
+                if ($commandAttribute.RegexPattern) {
+                    if ($env:GITHUB_STEP_SUMMARY) {
+                        @(
+                            "* $($CommandInfo) has a Build Validation Pattern: (``$($commandAttribute.RegexPattern)``)."
+                            "* $($CommandInfo) Validating Against: ``$ValidateAgainstString``"
+                        ) -join [Environment]::Newline | Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
+                    }
+                    $validationPattern = [Regex]::new($commandAttribute.RegexPattern, $commandAttribute.Options, '00:00:00.1')
+                    if (-not $validationPattern.IsMatch($ValidateAgainstString)) {
+                        if ($env:GITHUB_STEP_SUMMARY) {
+                            "* 🖐️ Skipping $($CommandInfo) because $ValidateAgainstString did not match ($($commandAttribute.RegexPattern))" | Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
+                        }
+                        Write-Warning "Skipping $($CommandInfo) : Did not match $($validationPattern)"
+                        return $false
+                    } 
+                }
+                elseif ($commandAttribute -is [ValidateScript]) 
+                {
+                    if ($env:GITHUB_STEP_SUMMARY) {                         
+                        @(
+                            "* $($CommandInfo) has a Build Validation Script"
+                        ) -join [Environment]::Newline |
+                                Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
+                    }
+                    $validationOutput = . $commandAttribute.ScriptBlock $ValidateAgainst
+                    if (-not $validationOutput) {
+                        if ($env:GITHUB_STEP_SUMMARY) {
+                            "* 🖐️ Skipping $($CommandInfo) because $($ValidateAgainstString) did not meet the validation criteria:" | Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
+                            
+                        }
+                        Write-Warning "Skipping $($CommandInfo) : The $ValidateAgainstString was not valid"
+                        return $false
+                    }
+                }
+            }
+            return $true
+            #endregion Build Condition
+        }
+
         filter BuildSingleFile {
             param($buildFile)
             if ((-not $PSBoundParameters['BuildFile']) -and $_) { $buildFile = $_}
@@ -86,7 +162,7 @@ function Export-Pipescript {
 
             $buildFileTemplate = $buildFile.Template
             if ($buildFileTemplate -and $buildFile.PipeScriptType -ne 'Template') {
-                AutoRequiresSimple -CommandInfo $buildFileTemplate
+                AutoRequiresSimple -CommandInfo $buildFileTemplate                
                 try {
                     Invoke-PipeScript $buildFileTemplate.Source
                 } catch {
@@ -102,12 +178,15 @@ function Export-Pipescript {
                 if ($alreadyBuilt.Count) {
                     $alreadyBuilt[$buildFileTemplate.Source] = $true
                 }
-            }
+            }            
 
             $EventsFromThisBuild = Get-Event |
                 Where-Object TimeGenerated -gt $ThisBuildStartedAt |
-                Where-Object SourceIdentifier -Like '*PipeScript*'
+                Where-Object SourceIdentifier -Like '*PipeScript*'            
             AutoRequiresSimple -CommandInfo $buildFile
+            if (-not (Test-PipeScript-Build-Condition -CommandInfo $buildFile)) {
+                return
+            }
             $FileBuildStarted = [datetime]::now
             $buildOutput = 
                 try {
@@ -151,43 +230,65 @@ function Export-Pipescript {
 
                 if ($env:GITHUB_WORKSPACE -or ($host.Name -eq 'Default Host')) {
                     $FileBuildEnded = [DateTime]::now
-                    "$($buildFile.Source)", "$('=' * $buildFile.Source.Length)", "Output:" -join [Environment]::newLine | Out-Host
-                    if ($buildOutput -is [Management.Automation.ErrorRecord]) {
+                    
+                    "$($buildFile.Source)" | Out-Host
+                    if ($buildOutput -is [Management.Automation.ErrorRecord] -or $buildOutput -is [Exception]) {
                         $buildOutput | Out-Host
+                        if ($env:GITHUB_STEP_SUMMARY) {
+                            @(
+                                "* ❌ ``$($buildFile.Source | Split-Path -Leaf)`` !!!:"
+                                '~~~'
+                                $($buildOutput | Out-String)
+                                '~~~'
+                            ) -join [Environment]::newLine| Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
+                        }
                     } else {
-                        $buildOutput.FullName | Out-Host
+                        if ($env:GITHUB_STEP_SUMMARY) {
+                            @(
+                                "* ✅ ``$($buildFile.Source | Split-Path -Leaf)`` ⋙ $(if ($buildOutput -is [IO.FileInfo]) { $buildOutput.Name })"
+                                if ($buildOutput -is [object[]]) {
+                                    "  * $(@(
+                                        foreach ($buildOutObject in $buildOutput) {
+                                            $buildOutput.Name
+                                        }
+                                    ) -join ([Environment]::newLine + '  * '))"
+                                }
+                            ) -join [Environment]::newLine | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
+                        }                        
                     }
                     $totalProcessTime = 0 
-                    $timingOfCommands = $EventsFromFileBuild | 
-                        Where-Object { $_.MessageData.Command -and $_.MessageData.Duration} |
-                        Select-Object -ExpandProperty MessageData | 
-                        Group-Object Command |
-                        Select-Object -Property @{
-                            Name = 'Command'
-                            Expression = { $_.Name }
-                        }, Count, @{
-                            Name= 'Duration'
-                            Expression = { 
-                                $totalDuration = 0
-                                foreach ($duration in $_.Group.Duration) { 
-                                    $totalDuration += $duration.TotalMilliseconds
+                    if ($env:ACTIONS_RUNNER_DEBUG) {
+                        $timingOfCommands = $EventsFromFileBuild | 
+                            Where-Object { $_.MessageData.Command -and $_.MessageData.Duration} |
+                            Select-Object -ExpandProperty MessageData | 
+                            Group-Object Command |
+                            Select-Object -Property @{
+                                Name = 'Command'
+                                Expression = { $_.Name }
+                            }, Count, @{
+                                Name= 'Duration'
+                                Expression = { 
+                                    $totalDuration = 0
+                                    foreach ($duration in $_.Group.Duration) { 
+                                        $totalDuration += $duration.TotalMilliseconds
+                                    }
+                                    [timespan]::FromMilliseconds($totalDuration)
                                 }
-                                [timespan]::FromMilliseconds($totalDuration)
-                            }
-                        } | 
-                        Sort-Object Duration -Descending
+                            } | 
+                            Sort-Object Duration -Descending
                         
-                    $postProcessMessage = @(
-                        
-                    foreach ($evt in $completionEvents) {
-                        $totalProcessTime += $evt.MessageData.TotalMilliseconds
-                        $evt.SourceArgs[0]
-                        $evt.MessageData
-                    }) -join ' '
-                    "Built in $($FileBuildEnded - $FileBuildStarted)" | Out-Host
-                    "Commands Run:" | Out-Host
-                    $timingOfCommands | Out-Host
-                    Get-Event -SourceIdentifier PipeScript.PostProcess.Complete -ErrorAction Ignore | Remove-Event
+                        $postProcessMessage = @(
+                            
+                        foreach ($evt in $completionEvents) {
+                            $totalProcessTime += $evt.MessageData.TotalMilliseconds
+                            $evt.SourceArgs[0]
+                            $evt.MessageData
+                        }) -join ' '
+                        "Built in $($FileBuildEnded - $FileBuildStarted)" | Out-Host
+                        "Commands Run:" | Out-Host
+                        $timingOfCommands | Out-Host
+                        Get-Event -SourceIdentifier PipeScript.PostProcess.Complete -ErrorAction Ignore | Remove-Event
+                    }
                 }
 
                 if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('git', 'Alias')) {
@@ -234,12 +335,12 @@ function Export-Pipescript {
             @(if (-not $InputPath) {
                 Get-PipeScript -PipeScriptPath $pwd |
                     Where-Object PipeScriptType -Match '(?>Template|BuildScript)' |
-                    Sort-Object PipeScriptType, Order, Source
+                    Sort-Object Order, PipeScriptType, Source
             } else {
                 foreach ($inPath in $InputPath) {
                     Get-PipeScript -PipeScriptPath $inPath |
                         Where-Object PipeScriptType -Match '(?>Template|BuildScript)' |
-                        Sort-Object PipeScriptType, Order, Source
+                        Sort-Object Order, PipeScriptType, Source
                 }
             })
 
@@ -258,6 +359,12 @@ function Export-Pipescript {
         [long]$TotalInputFileLength  = 0 
         [long]$TotalOutputFileLength = 0 
         
+        if ($Parallel) {
+            $Serial = $false
+        } else {
+            $serial = $true
+        }
+
         # If we're only building one file, there's no point in parallelization.
         if ($filesToBuild.Length -le 1) { $Serial = $true }
 
@@ -372,6 +479,15 @@ function Export-Pipescript {
             "$filesToBuildTotal in $($BuildTime)" | Out-Host
             "::endgroup::Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal] : $($buildFile.Source)" | Out-Host
             if ($TotalInputFileLength) {
+                $kbIn  = [Math]::Round($TotalInputFileLength / 1kb)
+                $kbOut = [Math]::Round($TotalOutputFileLength / 1kb)
+                $pipeScriptFactor  = [Math]::round([double]$TotalOutputFileLength/[double]$TotalInputFileLength,4)
+                
+                if ($env:GITHUB_STEP_SUMMARY) {
+                    "> ${kbOut}kb Output / ${kbIn}kb Input = $pipeScriptFactor PipeScript Factor" |
+                        Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
+                }
+                
                 "$([Math]::Round($TotalInputFileLength / 1kb)) kb input"
                 "$([Math]::Round($TotalOutputFileLength / 1kb)) kb output",
                 "PipeScript Factor: X$([Math]::round([double]$TotalOutputFileLength/[double]$TotalInputFileLength,4))"

@@ -20,24 +20,14 @@ PipeScript can be included in a Python string that starts and ends with ```{}```
 > EXAMPLE 1
 
 ```PowerShell
-{
-   $pythonContent = @'
-"""{
-$msg = "Hello World", "Hey There", "Howdy" | Get-Random
-@"
-print("$msg")
-"@
-}"""
-'@
-    [OutputFile('.\HelloWorld.ps1.py')]$PythonContent
-}
-.> .\HelloWorld.ps1.py
+.\HelloWorld.py
+Invoke-PipeScript .\HelloWorld.py
 ```
 > EXAMPLE 2
 
 ```PowerShell
-.\HelloWorld.py
-Invoke-PipeScript .\HelloWorld.py # Should -Be 'Hello World'
+Template.HelloWorld.py -Message "Hi" | Set-Content ".\Hi.py"
+Invoke-PipeScript .\Hi.py
 ```
 
 ---

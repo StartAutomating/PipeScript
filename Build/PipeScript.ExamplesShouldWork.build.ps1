@@ -5,13 +5,30 @@
     Ensures Examples work by turning each example into a test.
 
     Including a comment followed by 'should' will turn specific lines of the test into Pester should statements.
+.NOTES
+    This build is run condtionally, whenever the word "Example" is used in a commit message.
 #>
+[ValidatePattern(
+    # In a PipeScript *.Build.ps1 file, ValidatePattern will be checked against the last commit message.
+    # This checks for the Pattern:
+    "Example"
+    # If the pattern is found, then the script will run.
+    # If the pattern is not found, then the script will not run (and this will be written as a warning and noted in the build summary)
+)]
+[Reflection.AssemblyMetadata(
+    # Order impacts the order in which commands run.  A lower order will run sooner, a higher order will run later.
+    # The default order is 0.
+    "Order",
+    -1kb # by indicating an Order of -1kb, we are really saying "run before most things"
+)]
 param(
+# The name of the module containing examples
 $ModuleName = 'PipeScript'
 )
 
 $moduleInfo = Get-Module $ModuleName
-$commandsInModule = Get-Command -Module $moduleName 
+
+$commandsInModule = Get-Command -Module $moduleName
 
 $commandsWithExamples = $commandsInModule | Where-Object { $_.Examples }
 

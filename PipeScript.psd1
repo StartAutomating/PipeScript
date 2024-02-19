@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.2.7'
+    ModuleVersion     = '0.2.8'
     Description       = 'Metaprogram PowerShell (and everything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -10,8 +10,8 @@
     CompanyName       = 'Start-Automating'
     Copyright         = '2022-2023 Start-Automating'
     Author            = 'James Brundage'
-    FunctionsToExport = 'Get-Transpiler','Start-PSNode','Import-ModuleMember','Invoke-Interpreter','Route.Uptime','Route.VersionInfo','Export-Pipescript','Get-PipeScript','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript','Out-HTML','Compile.LanguageDefinition','Signal.Nothing','Signal.Out','Parse.CSharp','Parse.PowerShell','PipeScript.Automatic.Variable.IsPipedTo','PipeScript.Automatic.Variable.IsPipedFrom','PipeScript.Automatic.Variable.MyCallstack','PipeScript.Automatic.Variable.MySelf','PipeScript.Automatic.Variable.MyParameters','PipeScript.Automatic.Variable.MyCaller','PipeScript.Automatic.Variable.MyCommandAst','PipeScript.Optimizer.ConsolidateAspects','Protocol.HTTP','Protocol.JSONSchema','Protocol.OpenAPI','Protocol.UDP','ConvertFrom-CliXml','ConvertTo-CliXml','Export-Json','Import-Json','Aspect.DynamicParameter','Aspect.ModuleExtensionType','Aspect.ModuleExtensionPattern','Aspect.ModuleExtensionCommand','Aspect.GroupObjectByTypeName','Aspect.GroupObjectByType','PipeScript.PostProcess.InitializeAutomaticVariables','PipeScript.PostProcess.PartialFunction','Language.Scala','Language.Wren','Template.HelloWorld.wren','Language.PowerShell','Language.PowerShellData','Language.PowerShellXML','Language.Kusto','Language.Racket','Language.BASIC','Language.CPlusPlus','Language.XSD','Language.Java','Language.GLSL','Language.OpenSCAD','Language.BrightScript','Language.FSharp','Language.Dart','Language.PHP','Language.PipeScript','Language.Perl','Language.R','Language.HTML','Language.YAML','Language.Ruby','Template.HelloWorld.rb','Language.XSL','Language.GCode','Language.HCL','Language.Razor','Language.Conf','Language.Go','Language.Bash','Language.Eiffel','Language.ADA','Language.Liquid','Language.XML','Language.Vue','Language.CSS','Language.RSS','Language.Python','Language.Bicep','Language.LaTeX','Language.HLSL','Language.Docker','Language.SVG','Language.JavaScript','Template.Assignment.js','Template.Class.js','Template.DoLoop.js','Template.ForEachLoop.js','Template.ForLoop.js','Template.Function.js','Template.HelloWorld.js','Template.InvokeMethod.js','Template.RegexLiteral.js','Template.TryCatch.js','Template.WhileLoop.js','Language.TOML','Language.Haxe','Language.WebAssembly','Language.Rust','Language.Lua','Language.Markdown','Language.Batch','Language.TypeScript','Template.HelloWorld.ts','Language.ObjectiveC','Language.CSharp','Template.Class.cs','Template.HelloWorld.cs','Template.Method.cs','Template.Namespace.cs','Template.Property.cs','Template.TryCatch.cs','Language.SQL','Language.Arduino','Language.JSON','Language.XAML','Language.TCL','Language.ATOM','Language.Kotlin'
-    PrivateData = @{
+    FunctionsToExport = 'Get-Transpiler','Start-PSNode','PipeScript.Optimizer.ConsolidateAspects','Route.Uptime','Route.VersionInfo','Export-Pipescript','Get-PipeScript','Import-PipeScript','Invoke-PipeScript','Join-PipeScript','New-PipeScript','Search-PipeScript','Update-PipeScript','Use-PipeScript','Import-ModuleMember','Export-Json','Import-Json','ConvertFrom-CliXml','ConvertTo-CliXml','Get-Interpreter','Invoke-Interpreter','Out-Parser','Parse.CSharp','Parse.PowerShell','Protocol.HTTP','Protocol.JSONSchema','Protocol.OpenAPI','Protocol.UDP','Aspect.DynamicParameter','Aspect.ModuleExtensionType','Aspect.ModuleExtensionPattern','Aspect.ModuleExtensionCommand','Aspect.GroupObjectByTypeName','Aspect.GroupObjectByType','Signal.Nothing','Signal.Out','PipeScript.PostProcess.InitializeAutomaticVariables','PipeScript.PostProcess.PartialFunction','Out-HTML','PipeScript.Automatic.Variable.IsPipedTo','PipeScript.Automatic.Variable.IsPipedFrom','PipeScript.Automatic.Variable.MyCallstack','PipeScript.Automatic.Variable.MySelf','PipeScript.Automatic.Variable.MyParameters','PipeScript.Automatic.Variable.MyCaller','PipeScript.Automatic.Variable.MyCommandAst','Compile.LanguageDefinition','Language.JavaScript','Template.Assignment.js','Template.Class.js','Template.DoLoop.js','Template.ForEachLoop.js','Template.ForLoop.js','Template.Function.js','Template.HelloWorld.js','Template.InvokeMethod.js','Template.RegexLiteral.js','Template.TryCatch.js','Template.WhileLoop.js','Language.Rust','Language.Lua','Language.FSharp','Language.GCode','Language.XSD','Language.Ruby','Template.HelloWorld.rb','Language.Haxe','Language.Scala','Language.Racket','Language.SQL','Language.Arduino','Language.PipeScript','Language.Java','Language.Kotlin','Language.Bicep','Language.Markdown','Language.Go','Template.HelloWorld.go','Language.C3','Language.XSL','Language.GLSL','Language.JSON','Language.Batch','Language.TypeScript','Template.HelloWorld.ts','Language.BASIC','Language.XML','Language.CSS','Language.Vue','Language.YAML','Language.TCL','Language.SVG','Language.Docker','Language.CSharp','Template.Class.cs','Template.HelloWorld.cs','Template.Method.cs','Template.Namespace.cs','Template.Property.cs','Template.TryCatch.cs','Language.PowerShell','Language.PowerShellData','Language.PowerShellXML','Language.Conf','Language.Bash','Language.HCL','Language.Razor','Language.OpenSCAD','Language.RSS','Language.ADA','Language.XAML','Language.R','Language.Dart','Language.Crystal','Template.HelloWorld.cr','Language.Perl','Language.BrightScript','Language.Wren','Template.HelloWorld.wren','Language.CPlusPlus','Template.HelloWorld.cpp','Template.Include.cpp','Language.Liquid','Language.Eiffel','Language.Python','Template.Assignment.py','Template.DoLoop.py','Template.HelloWorld.py','Template.Import.py','Template.UntilLoop.py','Template.WhileLoop.py','Language.WebAssembly','Language.HLSL','Language.PHP','Language.Kusto','Language.C','Template.Include.c','Language.TOML','Language.HTML','Language.LaTeX','Language.ATOM','Language.ObjectiveC'
+    PrivateData = @{        
         FunctionTypes = @{
             'Partial' = @{
                 Description = 'A partial function.'
@@ -202,6 +202,10 @@
         Server = 'pipescript.dev', 'pipescript.info', 'pipescript.io'
         Servers = 'pipescript.startautomating.com','pipescript.start-automating.com'
 
+        Videos = @{
+            "Run Anything with PipeScript (from RTPSUG)" = "https://www.youtube.com/watch?v=-PuiNAcvalw"
+        }
+
         PSData = @{
             ProjectURI = 'https://github.com/StartAutomating/PipeScript'
             LicenseURI = 'https://github.com/StartAutomating/PipeScript/blob/main/LICENSE'
@@ -210,28 +214,49 @@
             BuildModule     = @('EZOut','Piecemeal','PipeScript','HelpOut', 'PSDevOps')
             Tags            = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
-## PipeScript 0.2.7:
+## PipeScript 0.2.8:
 
-PipeScript can now easily define any language and you can now interpret Anything with PipeScript!
+More Implicit Interpretation!
 
-* Complete Overhaul of Languages in PipeScript!
-  * Languages are now defined in open-ended psuedo-object
-  * They can define an .Interpreter
-  * If they do, the language can be dynamically interpreted!
-  * Languages can also specify translation methods (.TranslateFromAstType)
-  * More support for the PowerShell Abstract Syntax Tree and Roslyn
-  * New languages supported: Docker, XSL, XSD, BrightScript, Conf, Wren, Vue, F#, GCODE
-* New Commands:
-  * Start-PSNode lets you run PowerShell as a microservice
-  * Import/Export-JSON make JSON easier to work with
-  * Import-ModuleMember lets modules flexibly self-extend
-  * Out-HTML gives formatted HTML output!
-
-... and much, much more
+* Invoke-Interpreter will now JSONify non-string arguments (#896)
+* Invoke-Interpreter will now call Out-Parser (#857, #858)
+* Improved Interpreter exclusions
+    * `.ExcludePath` excludes path wildcards (#875, #877)
+    * `.ExcludePattern` excludes by pattern (#875, #876)
+* Implicit Interpretation Demo (#886)
+* Get-Interpreter (#747)
+* New Languages Supported:
+  * Crystal (#878)
+  * C3 (#870)
+* Export-PipeScript Improvements:
+  * Conditional Build Support (#907)
+  * GitHub Build Summary Support (#914)
+* More Language Support:
+  * More Hello Worlds (#846)
+    * Template.HelloWorld.go
+    * Template.HelloWorld.py
+    * Template.HelloWorld.cpp
+    * Template.HelloWorld.cr
+  * Python Improvements:
+    * Python Keywords map (#872)
+    * Template.Assignment.py (#927)
+    * Template.DoLoop.py (#929)
+    * Template.Import.py (#913)
+    * Template.UntilLoop.py (#939)
+    * Template.WhileLoop.py (#936)
+* New ScriptProperties
+  * Language.HasPowerShellInterpreter (#904)
+  * Language.HasInterpreter (#903)
+  * Language.Alias(es) (#)
+* Adding .Parallel option to GitHub action (defaulting to Serial) (#888)
+* Fixing Alias for Aliases Compiler (thanks @HCRitter ! )
 
 ---
             
 Additional history in [CHANGELOG](https://github.com/StartAutomating/PipeScript/blob/main/CHANGELOG.md)
+
+Like it?  Star It!  Love it?  Support It!
+
 '@
         }
     }

@@ -293,6 +293,11 @@ Add-Member -InputObject $request -MemberType ScriptProperty -Name Params -Value 
         $props.PSNodeAction = $Command
         $props.Remove('Command')
 
+        $myModuleName = $MyInvocation.MyCommand.ScriptBlock.Module.Name
+        if ((-not $props["ImportModule"]) -or ($props["ImportModule"] -notcontains $myModuleName)) {
+            $props["ImportModule"] = @(@("PipeScript") + $props["ImportModule"]) -notmatch '^\s{0,}$'
+        }
+
         if (-not $props.BufferSize) {$props.BufferSize = $BufferSize}
         if (-not $props.CORS) { $props.CORS } 
 

@@ -24,7 +24,7 @@
     } | .>PipeScript
 #>
 [CmdletBinding(DefaultParameterSetName='AliasNames')]
-[Alias('SmartAlias','DynamicAlais')]
+[Alias('SmartAlias','DynamicAlias')]
 param(
 # A list of aliases
 [Parameter(Mandatory,ParameterSetName='AliasNames')]

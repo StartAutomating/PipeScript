@@ -1,5 +1,5 @@
 @{
-    ModuleVersion     = '0.2.7'
+    ModuleVersion     = '0.2.8'
     Description       = 'Metaprogram PowerShell (and everything else)'
     RootModule        = 'PipeScript.psm1'
     PowerShellVersion = '4.0'
@@ -24,7 +24,7 @@
             }
         "'$($exportNames -join "','")'"
     }#>
-    PrivateData = @{
+    PrivateData = @{        
         FunctionTypes = @{
             'Partial' = @{
                 Description = 'A partial function.'
@@ -215,6 +215,10 @@
         Server = 'pipescript.dev', 'pipescript.info', 'pipescript.io'
         Servers = 'pipescript.startautomating.com','pipescript.start-automating.com'
 
+        Videos = @{
+            "Run Anything with PipeScript (from RTPSUG)" = "https://www.youtube.com/watch?v=-PuiNAcvalw"
+        }
+
         PSData = @{
             ProjectURI = 'https://github.com/StartAutomating/PipeScript'
             LicenseURI = 'https://github.com/StartAutomating/PipeScript/blob/main/LICENSE'
@@ -223,28 +227,49 @@
             BuildModule     = @('EZOut','Piecemeal','PipeScript','HelpOut', 'PSDevOps')
             Tags            = 'PipeScript','PowerShell', 'Transpilation', 'Compiler'
             ReleaseNotes = @'
-## PipeScript 0.2.7:
+## PipeScript 0.2.8:
 
-PipeScript can now easily define any language and you can now interpret Anything with PipeScript!
+More Implicit Interpretation!
 
-* Complete Overhaul of Languages in PipeScript!
-  * Languages are now defined in open-ended psuedo-object
-  * They can define an .Interpreter
-  * If they do, the language can be dynamically interpreted!
-  * Languages can also specify translation methods (.TranslateFromAstType)
-  * More support for the PowerShell Abstract Syntax Tree and Roslyn
-  * New languages supported: Docker, XSL, XSD, BrightScript, Conf, Wren, Vue, F#, GCODE
-* New Commands:
-  * Start-PSNode lets you run PowerShell as a microservice
-  * Import/Export-JSON make JSON easier to work with
-  * Import-ModuleMember lets modules flexibly self-extend
-  * Out-HTML gives formatted HTML output!
-
-... and much, much more
+* Invoke-Interpreter will now JSONify non-string arguments (#896)
+* Invoke-Interpreter will now call Out-Parser (#857, #858)
+* Improved Interpreter exclusions
+    * `.ExcludePath` excludes path wildcards (#875, #877)
+    * `.ExcludePattern` excludes by pattern (#875, #876)
+* Implicit Interpretation Demo (#886)
+* Get-Interpreter (#747)
+* New Languages Supported:
+  * Crystal (#878)
+  * C3 (#870)
+* Export-PipeScript Improvements:
+  * Conditional Build Support (#907)
+  * GitHub Build Summary Support (#914)
+* More Language Support:
+  * More Hello Worlds (#846)
+    * Template.HelloWorld.go
+    * Template.HelloWorld.py
+    * Template.HelloWorld.cpp
+    * Template.HelloWorld.cr
+  * Python Improvements:
+    * Python Keywords map (#872)
+    * Template.Assignment.py (#927)
+    * Template.DoLoop.py (#929)
+    * Template.Import.py (#913)
+    * Template.UntilLoop.py (#939)
+    * Template.WhileLoop.py (#936)
+* New ScriptProperties
+  * Language.HasPowerShellInterpreter (#904)
+  * Language.HasInterpreter (#903)
+  * Language.Alias(es) (#)
+* Adding .Parallel option to GitHub action (defaulting to Serial) (#888)
+* Fixing Alias for Aliases Compiler (thanks @HCRitter ! )
 
 ---
             
 Additional history in [CHANGELOG](https://github.com/StartAutomating/PipeScript/blob/main/CHANGELOG.md)
+
+Like it?  Star It!  Love it?  Support It!
+
 '@
         }
     }

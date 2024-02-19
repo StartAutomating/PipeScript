@@ -1,4 +1,4 @@
-<!-- Generated with EZOut 2.0.3: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
+<!-- Generated with EZOut 2.0.4: Install-Module EZOut or https://github.com/StartAutomating/EZOut -->
 <Types>
   <Type>
     <Name>System.Management.Automation.AliasInfo</Name>
@@ -1678,22 +1678,6 @@ return $this.'.CommandMetadata'
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
-        <Name>CommandNamespace</Name>
-        <GetScriptBlock>
-                        $matched = $this.Separator.Match($this.FullyQualifiedName)
-if ($matched.Success -and $matched.Index -gt 0) {
-    $this.FullyQualifiedName.Substring(0,$matched.Index)
-}
-else {
-    ''
-}
-
-
-
-
-                    </GetScriptBlock>
-      </ScriptProperty>
-      <ScriptProperty>
         <Name>Description</Name>
         <GetScriptBlock>
                         if ($this -is [Management.Automation.AliasInfo]) {
@@ -1822,56 +1806,6 @@ if ($this.pstypenames -like '*.Command') {
 }
 return 0
                     </GetScriptBlock>
-      </ScriptProperty>
-      <ScriptProperty>
-        <Name>Segments</Name>
-        <GetScriptBlock>
-                        $allMatches = @($this.Separator.Matches($this.FullyQualifiedName))
-@(
-    # All namespaces are a series of matches
-    foreach ($matched in $allMatches) {
-        $this.FullyQualifiedName.Substring($matched.Index)
-    }
-    if ($matched.Index -gt 0) {
-        $this.FullyQualifiedName
-    }
-) -as [string[]]
-                    </GetScriptBlock>
-      </ScriptProperty>
-      <ScriptProperty>
-        <Name>Separator</Name>
-        <GetScriptBlock>
-                        # Allowing this to be set (caching what what set in .`.NamespaceSeparator`)
-if ($this.'.Separator') {    
-    if ($this.'.Separator' -is [regex]) {
-        $this.'.Separator'
-    } else {
-        [Regex]::new("[" +
-            [Regex]::Escape($this.'.Separator') +
-        "]", 'RightToLeft')
-    }
-}
-# Laying groundwork for some special/automatic variables
-elseif ($psCommandNameSeparator) 
-{
-    if ($psCommandNameSeparator -is [string])  {
-        [Regex]::new("[" +
-            [Regex]::Escape($psCommandNameSeparator) +
-        "]{1,}", 'RightToLeft')
-    } elseif ($psCommandNameSeparator -is [regex]) {
-        $psCommandNameSeparator
-    }
-}
-else
-{
-    [Regex]::new('[\p{P}&lt;&gt;]{1,}','RightToLeft')
-}
-
-                    </GetScriptBlock>
-        <SetScriptBlock>
-                        $this | Add-Member NoteProperty ".Separator" $args -Force
-
-                    </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>StrongPipeType</Name>
@@ -2007,6 +1941,10 @@ $this.'.Root'
     <Name>Language</Name>
     <Members>
       <AliasProperty>
+        <Name>Aliases</Name>
+        <ReferencedMemberName>Alias</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>Functions</Name>
         <ReferencedMemberName>Function</ReferencedMemberName>
       </AliasProperty>
@@ -2014,6 +1952,39 @@ $this.'.Root'
         <Name>Templates</Name>
         <ReferencedMemberName>Template</ReferencedMemberName>
       </AliasProperty>
+      <ScriptProperty>
+        <Name>Alias</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Language Functions
+.DESCRIPTION
+    Gets Functions related to a language.
+
+    These are functions that either match a language's `.FilePattern` or start with a language name, followed by punctuation.
+#&gt;
+if (-not $global:AllFunctionsAndAliases) {
+    $global:AllFunctionsAndAliases = $global:ExecutionContext.SessionState.InvokeCommand.GetCommand('*','Alias,Function',$true)
+}
+$FunctionsForThisLanguage = [Ordered]@{PSTypeName='Language.Functions'}
+if ($this.FilePattern) {    
+    foreach ($FunctionForLanguage in $global:AllFunctionsAndAliases -match $this.FilePattern) {
+        $FunctionsForThisLanguage["$FunctionForLanguage"] = $FunctionForLanguage
+    }    
+}
+if ($this.LanguageName) {
+    foreach ($FunctionForLanguage in $global:AllFunctionsAndAliases -match "(?&lt;=(?&gt;^|[\p{P}-[\\]]))$([Regex]::Escape($this.LanguageName))[\p{P}-[\\]]") {
+        $FunctionsForThisLanguage["$FunctionForLanguage"] = $FunctionForLanguage
+    }
+}
+
+$FunctionsForThisLanguage = [PSCustomObject]$FunctionsForThisLanguage
+$FunctionsForThisLanguage.pstypenames.insert(0,"$($this.LanguageName).Functions")
+$FunctionsForThisLanguage
+
+
+                    </GetScriptBlock>
+      </ScriptProperty>
       <ScriptProperty>
         <Name>Function</Name>
         <GetScriptBlock>
@@ -2044,6 +2015,48 @@ $FunctionsForThisLanguage = [PSCustomObject]$FunctionsForThisLanguage
 $FunctionsForThisLanguage.pstypenames.insert(0,"$($this.LanguageName).Functions")
 $FunctionsForThisLanguage
 
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>HasInterpreter</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Does a Language Have an Interpreter?
+.DESCRIPTION
+    Returns true if a language defined an interpreter.
+#&gt;
+return ($this.Interpreter -as [bool])
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>HasPowerShellInterpreter</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Determines if a language has a PowerShell interpreter
+.DESCRIPTION
+    Determines if a language's interpreter is PowerShell or an external application.
+.NOTES
+    Returns $true is the interpreter is a `[ScriptBlock]`, `[FunctionInfo]`, or `[CmdletInfo]`,
+    or an `[AliasInfo]` that does not point to an application.  Otherwise, returns $false.
+#&gt;
+if ($this.Interpreter -is [scriptblock]) {
+    return $true
+}
+if ($this.Interpreter -is [Management.Automation.FunctionInfo]) {
+    return $true
+}
+if ($this.Interpreter -is [Management.Automation.CmdletInfo]) {
+    return $true
+}
+if ($this.Interpreter -is [Management.Automation.AliasInfo] -and
+    $this.Interpreter.ResolvedCommand -isnot [Management.Automation.ApplicationInfo]) {
+    return $true
+}
+return $false
 
                     </GetScriptBlock>
       </ScriptProperty>
@@ -2108,6 +2121,10 @@ return $false
   <Type>
     <Name>Language.Functions</Name>
     <Members>
+      <AliasProperty>
+        <Name>Distinct</Name>
+        <ReferencedMemberName>Unique</ReferencedMemberName>
+      </AliasProperty>
       <ScriptProperty>
         <Name>All</Name>
         <GetScriptBlock>
@@ -2122,6 +2139,40 @@ return $false
     if ($psProperty.Value -isnot [Management.Automation.CommandInfo]) { continue }
     $psProperty.Value
 })
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ByInputType</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Language Functions by Input Type
+.DESCRIPTION
+    Returns a dictionary of all unique language functions that accept a pipeline parameter.
+
+    The key will be the type of parameter accepted.
+    The value will be a list of commands that accept that parameter from the pipeline. 
+.NOTES
+    Primitive parameter types and string types will be ignored.
+#&gt;
+param()
+# We want the results to be ordered (both the keys and the values)
+$byInputType = [Ordered]@{}
+$uniqueList = @($this.Unique | Sort-Object Order)
+foreach ($uniqueCommand in $uniqueList) {
+    , @(foreach ($parameterSet in $uniqueCommand.ParameterSets) {
+        foreach ($parameterInSet in $parameterSet.Parameters) {
+            if (-not $parameterInSet.ValueFromPipeline) { continue }
+            if ($parameterInSet.ParameterType.IsPrimitive) { continue }
+            if ($parameterInSet.ParameterType -eq [string]) { continue }
+            if (-not $byInputType[$parameterInSet.ParameterType]) {
+                $byInputType[$parameterInSet.ParameterType] = [Collections.Generic.List[PSObject]]::new()                      
+            }
+            $byInputType[$parameterInSet.ParameterType].Add($uniqueCommand)        
+        }
+    })
+}
+$byInputType
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -2140,11 +2191,42 @@ return $false
 }).Length
                     </GetScriptBlock>
       </ScriptProperty>
+      <ScriptProperty>
+        <Name>Unique</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets unique Language Functions
+.DESCRIPTION
+    Gets unique functions related to a language.
+#&gt;
+$distinctCommands = @{}
+,@(foreach ($psProperty in $this.PSObject.properties) {
+    if ($psProperty -isnot [psnoteproperty]) { continue  }    
+    if ($psProperty.Value -isnot [Management.Automation.CommandInfo]) { continue }
+    if (
+        $psProperty.Value -is [Management.Automation.AliasInfo] -and
+        (
+            $distinctCommands[$psProperty.Value.ResolvedCommand] -or
+            $this.PSObject.Properties[$psProperty.Value.ResolvedCommand.Name]
+        )
+    ) {
+        continue
+    }
+    $distinctCommands[$psProperty.Value] = $psProperty.Value
+    $psProperty.Value
+})
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>
     <Name>Language.Templates</Name>
     <Members>
+      <AliasProperty>
+        <Name>Distinct</Name>
+        <ReferencedMemberName>Unique</ReferencedMemberName>
+      </AliasProperty>
       <ScriptProperty>
         <Name>All</Name>
         <GetScriptBlock>
@@ -2162,6 +2244,40 @@ return $false
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>ByInputType</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Language Templates by Input Type
+.DESCRIPTION
+    Returns a dictionary of all unique language templates that accept a pipeline parameter.
+
+    The key will be the type of parameter accepted.
+    The value will be a list of commands that accept that parameter from the pipeline. 
+.NOTES
+    Primitive parameter types and string types will be ignored.
+#&gt;
+param()
+# We want the results to be ordered (both the keys and the values)
+$byInputType = [Ordered]@{}
+$uniqueList = @($this.Unique | Sort-Object Order)
+foreach ($uniqueCommand in $uniqueList) {
+    , @(foreach ($parameterSet in $uniqueCommand.ParameterSets) {
+        foreach ($parameterInSet in $parameterSet.Parameters) {
+            if (-not $parameterInSet.ValueFromPipeline) { continue }
+            if ($parameterInSet.ParameterType.IsPrimitive) { continue }
+            if ($parameterInSet.ParameterType -eq [string]) { continue }
+            if (-not $byInputType[$parameterInSet.ParameterType]) {
+                $byInputType[$parameterInSet.ParameterType] = [Collections.Generic.List[PSObject]]::new()                      
+            }
+            $byInputType[$parameterInSet.ParameterType].Add($uniqueCommand)        
+        }
+    })
+}
+$byInputType
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Count</Name>
         <GetScriptBlock>
                         &lt;#
@@ -2175,6 +2291,35 @@ return $false
     if ($psProperty.Value -isnot [Management.Automation.CommandInfo]) { continue }
     $psProperty.Value
 }).Length
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Unique</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets unique Language Templates
+.DESCRIPTION
+    Gets unique templates related to a language.
+#&gt;
+$distinctCommands = @{}
+$ThisPSObject = $this.PSObject
+$theseProperties = @($this.PSObject.properties)
+foreach ($psProperty in $theseProperties) {
+    if ($psProperty -isnot [psnoteproperty]) { continue  }    
+    if ($psProperty.Value -isnot [Management.Automation.CommandInfo]) { continue }
+    if ($psProperty.Value -is [Management.Automation.AliasInfo]) {            
+        $aliasInfo = $psProperty.Value
+        if (
+            $distinctCommands[$aliasInfo.ResolvedCommand] -or
+            $ThisPSObject.Properties[$aliasInfo.ResolvedCommand.Name -replace 'Template\p{P}']
+        ) {
+            continue
+        }            
+    }
+    $distinctCommands[$psProperty.Value] = $psProperty.Value
+    $psProperty.Value
+}
                     </GetScriptBlock>
       </ScriptProperty>
     </Members>
@@ -2621,6 +2766,18 @@ foreach ($potentialTemplatePath in $potentialTemplatePaths ) {
     <Name>PipeScript.Interpreters</Name>
     <Members>
       <AliasProperty>
+        <Name>ExcludePaths</Name>
+        <ReferencedMemberName>ExcludePaths</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ExcludePatterns</Name>
+        <ReferencedMemberName>ExcludePatterns</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Excludes</Name>
+        <ReferencedMemberName>Exclude</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>LanguageNames</Name>
         <ReferencedMemberName>LanguageName</ReferencedMemberName>
       </AliasProperty>
@@ -2631,21 +2788,29 @@ foreach ($potentialTemplatePath in $potentialTemplatePaths ) {
 .SYNOPSIS
     Gets the language for a file.
 .DESCRIPTION
-    Gets the PipeScript language definitions for a file path.
+    Gets the PipeScript language definitions for a path.
 .EXAMPLE
     $PSLanguage.ForFile("a.xml")
 .EXAMPLE
     $PSInterpreters.ForFile("a.js")
 #&gt;
 param(
+# The path to the file, or the name of the command.
 [string]
 $FilePath
 )
 
-if ($FilePath -match '://') { return }
+foreach ($excludePattern in $this.ExcludePattern) {
+    if ($filePath -match $excludePattern) { return }
+}
+
+foreach ($excludePath in $this.ExcludePath) {
+    if (-not $excludePath) { continue } 
+    if ($filePath -like $excludePath) { return }
+}
 
 foreach ($prop in $this.psobject.properties) {
-    if ($prop -is [psscriptproperty]) { continue }
+    if ($prop -is [psscriptproperty]) { continue }     
     if ($prop.IsInstance -and 
         $prop.Value.LanguageName -and
         $prop.Value.FilePattern -and
@@ -2653,6 +2818,7 @@ foreach ($prop in $this.psobject.properties) {
         $prop.Value
     }
 }
+
 
                     </Script>
       </ScriptMethod>
@@ -2724,6 +2890,123 @@ foreach ($prop in $this.psobject.properties) {
     }
 }
 return $count
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Exclude</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Languages Exclusions
+.DESCRIPTION
+    Gets any excluded patterns and paths for languages in PipeScript.
+
+    If a command matches any of these patterns, it should not be interpreted.
+#&gt;
+param()
+
+
+return @(
+    $this.ExcludePattern
+    $this.ExcludePath
+)
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Languages Exclusions
+.DESCRIPTION
+    Gets any excluded patterns and paths for languages in PipeScript.
+
+    If a command matches any of these patterns, it should not be interpreted.
+#&gt;
+param()
+
+
+return @(
+    $this.ExcludePattern
+    $this.ExcludePath
+)
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ExcludePath</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Excluded Paths for all languages.
+.DESCRIPTION
+    Gets any excluded paths for interpreted languages in PipeScript.
+
+    If a command is like any of these paths, it should not be interpreted.
+#&gt;
+param()
+
+if ($null -eq $this.'.ExcludePath'.Length) {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePath' -Value @()
+}
+
+return $this.'.ExcludePath'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Excluded Paths for all languages.
+.DESCRIPTION
+    Gets any excluded paths for interpreted languages in PipeScript.
+
+    If a command is like any of these paths, it should not be interpreted.
+#&gt;
+param()
+
+if ($null -eq $this.'.ExcludePath'.Length) {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePath' -Value @()
+}
+
+return $this.'.ExcludePath'
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ExcludePattern</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Language Exclusion Patterns
+.DESCRIPTION
+    `$psLanguages.ExcludePattern` and `$psInterpreters.ExcludePattern` contain the patterns excluded from interpretation.
+
+    If a command matches any of these patterns, it should not be interpreted.    
+#&gt;
+param()
+
+if (-not $this.'.ExcludePattern') {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePattern' @(
+        [Regex]::new('\.ps1?\.','IgnoreCase')
+        [Regex]::new('://.')
+    )
+}
+
+return $this.'.ExcludePattern'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Language Exclusion Patterns
+.DESCRIPTION
+    `$psLanguages.ExcludePattern` and `$psInterpreters.ExcludePattern` contain the patterns excluded from interpretation.
+
+    If a command matches any of these patterns, it should not be interpreted.    
+#&gt;
+param()
+
+if (-not $this.'.ExcludePattern') {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePattern' @(
+        [Regex]::new('\.ps1?\.','IgnoreCase')
+        [Regex]::new('://.')
+    )
+}
+
+return $this.'.ExcludePattern'
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -2807,6 +3090,18 @@ Note: Interpreters may require commands to be installed.
     <Name>PipeScript.Languages</Name>
     <Members>
       <AliasProperty>
+        <Name>ExcludePaths</Name>
+        <ReferencedMemberName>ExcludePaths</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ExcludePatterns</Name>
+        <ReferencedMemberName>ExcludePatterns</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Excludes</Name>
+        <ReferencedMemberName>Exclude</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>LanguageNames</Name>
         <ReferencedMemberName>LanguageName</ReferencedMemberName>
       </AliasProperty>
@@ -2817,21 +3112,29 @@ Note: Interpreters may require commands to be installed.
 .SYNOPSIS
     Gets the language for a file.
 .DESCRIPTION
-    Gets the PipeScript language definitions for a file path.
+    Gets the PipeScript language definitions for a path.
 .EXAMPLE
     $PSLanguage.ForFile("a.xml")
 .EXAMPLE
     $PSInterpreters.ForFile("a.js")
 #&gt;
 param(
+# The path to the file, or the name of the command.
 [string]
 $FilePath
 )
 
-if ($FilePath -match '://') { return }
+foreach ($excludePattern in $this.ExcludePattern) {
+    if ($filePath -match $excludePattern) { return }
+}
+
+foreach ($excludePath in $this.ExcludePath) {
+    if (-not $excludePath) { continue } 
+    if ($filePath -like $excludePath) { return }
+}
 
 foreach ($prop in $this.psobject.properties) {
-    if ($prop -is [psscriptproperty]) { continue }
+    if ($prop -is [psscriptproperty]) { continue }     
     if ($prop.IsInstance -and 
         $prop.Value.LanguageName -and
         $prop.Value.FilePattern -and
@@ -2839,6 +3142,7 @@ foreach ($prop in $this.psobject.properties) {
         $prop.Value
     }
 }
+
 
                     </Script>
       </ScriptMethod>
@@ -2881,6 +3185,136 @@ return $count
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Exclude</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Languages Exclusions
+.DESCRIPTION
+    Gets any excluded patterns and paths for languages in PipeScript.
+
+    If a command matches any of these patterns, it should not be interpreted.
+#&gt;
+param()
+
+
+return @(
+    $this.ExcludePattern
+    $this.ExcludePath
+)
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets language exclusions
+.DESCRIPTION
+    Gets any excluded patterns and paths for languages in PipeScript.
+.NOTES
+    If you provide a `[regex]`, it will set `.ExcludePattern`.
+    Otherwise, this will set `.ExcludePath`.
+#&gt;
+$unrolledArgs = $args | . { process {  $_ } }
+$patterns = @()
+$paths = @(
+foreach ($arg in $unrolledArgs) {
+    if ($arg -is [Regex]) {
+        $patterns += $arg
+    } else {
+        "$arg"
+    }
+})
+
+if ($patterns) {
+    $this.ExcludePattern = $patterns
+}
+if ($paths) {
+    $this.ExcludePath = $paths
+}
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ExcludePath</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Excluded Paths for all languages.
+.DESCRIPTION
+    Gets any excluded paths for interpreted languages in PipeScript.
+
+    If a command is like any of these paths, it should not be interpreted.
+#&gt;
+param()
+
+if ($null -eq $this.'.ExcludePath'.Length) {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePath' -Value @()
+}
+
+return $this.'.ExcludePath'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Changes the Exclusion Paths
+.DESCRIPTION
+    Sets any excluded paths for interpreted languages in PipeScript.
+
+    If a command matches any of these patterns, it should not be interpreted.
+.NOTES
+    Excluded paths will be processed as wildcards.
+#&gt;
+$paths = @(foreach ($arg in $args | . { process { $_ }}) {
+    "$arg"
+})
+
+Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePath' -Value $paths
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ExcludePattern</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Language Exclusion Patterns
+.DESCRIPTION
+    `$psLanguages.ExcludePattern` and `$psInterpreters.ExcludePattern` contain the patterns excluded from interpretation.
+
+    If a command matches any of these patterns, it should not be interpreted.    
+#&gt;
+param()
+
+if (-not $this.'.ExcludePattern') {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePattern' @(
+        [Regex]::new('\.ps1?\.','IgnoreCase')
+        [Regex]::new('://.')
+    )
+}
+
+return $this.'.ExcludePattern'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Changes the Exclusion Patterns
+.DESCRIPTION
+    Sets any excluded patterns for interpreted languages in PipeScript.
+
+    If a command matches any of these patterns, it should not be interpreted.
+.NOTES
+    Under most circumstances, this should not be set.
+    
+    Setting this may cause Templates and Protocols to stop working (for interpretable languages)
+#&gt;
+$patterns = @(foreach ($arg in $args | . { process { $_ }}) {
+    [Regex]::new("$arg","IgnoreCase,IgnorePatternWhitespace","00:00:00.1")
+})
+
+Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePattern' -Value $patterns
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>LanguageName</Name>
         <GetScriptBlock>
                         &lt;#
@@ -2906,7 +3340,7 @@ return $count
 
 A Language is defined a function named Language.NameOfLanguage.
 
-PipeScript presently ships with 63 languages:
+PipeScript presently ships with 68 languages:
 
 * ADA
 * Arduino
@@ -2916,8 +3350,11 @@ PipeScript presently ships with 63 languages:
 * Batch
 * Bicep
 * BrightScript
+* C
+* C3
 * Conf
 * CPlusPlus
+* Crystal
 * CSharp
 * CSS
 * Dart

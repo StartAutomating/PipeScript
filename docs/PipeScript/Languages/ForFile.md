@@ -8,7 +8,7 @@ Gets the language for a file.
 
 ### Description
 
-Gets the PipeScript language definitions for a file path.
+Gets the PipeScript language definitions for a path.
 
 ---
 
@@ -28,6 +28,7 @@ $PSInterpreters.ForFile("a.js")
 
 ### Parameters
 #### **FilePath**
+The path to the file, or the name of the command.
 
 |Type      |Required|Position|PipelineInput|
 |----------|--------|--------|-------------|

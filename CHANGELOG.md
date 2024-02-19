@@ -1,3 +1,42 @@
+## PipeScript 0.2.8:
+
+More Implicit Interpretation!
+
+* Invoke-Interpreter will now JSONify non-string arguments (#896)
+* Invoke-Interpreter will now call Out-Parser (#857, #858)
+* Improved Interpreter exclusions
+    * `.ExcludePath` excludes path wildcards (#875, #877)
+    * `.ExcludePattern` excludes by pattern (#875, #876)
+* Implicit Interpretation Demo (#886)
+* Get-Interpreter (#747)
+* New Languages Supported:
+  * Crystal (#878)
+  * C3 (#870)
+* Export-PipeScript Improvements:
+  * Conditional Build Support (#907)
+  * GitHub Build Summary Support (#914)
+* More Language Support:
+  * More Hello Worlds (#846)
+    * Template.HelloWorld.go
+    * Template.HelloWorld.py
+    * Template.HelloWorld.cpp
+    * Template.HelloWorld.cr
+  * Python Improvements:
+    * Python Keywords map (#872)
+    * Template.Assignment.py (#927)
+    * Template.DoLoop.py (#929)
+    * Template.Import.py (#913)
+    * Template.UntilLoop.py (#939)
+    * Template.WhileLoop.py (#936)
+* New ScriptProperties
+  * Language.HasPowerShellInterpreter (#904)
+  * Language.HasInterpreter (#903)
+  * Language.Alias(es) (#)
+* Adding .Parallel option to GitHub action (defaulting to Serial) (#888)
+* Fixing Alias for Aliases Compiler (thanks @HCRitter ! )
+
+---
+
 ## PipeScript 0.2.7:
 
 PipeScript can now easily define any language and you can now interpret Anything with PipeScript!

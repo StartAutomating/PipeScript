@@ -82,9 +82,14 @@ foreach ($typesXmlNoteProperty in $typesXmlNoteProperties){
 $PipeScript.Extensions | 
     . { 
         begin {
+            # Languages will populate `$psLanguage(s)`
             $LanguagesByName = [Ordered]@{}
+
+            # Interpreters will populate `$psInterpreter(s)`
             $InterpretersByName = [Ordered]@{}
-            $ParsersByName = [Ordered]@{}            
+
+            # Parsers will populate `$psParsers`
+            $ParsersByName = [Ordered]@{}           
         }
         process {            
             if ($_.Name -notlike 'Language*') { 
@@ -107,9 +112,10 @@ $PipeScript.Extensions |
             $PSLanguage = $PSLanguages = [PSCustomObject]$LanguagesByName
             $PSLanguage.pstypenames.clear()
             $PSLanguage.pstypenames.insert(0,'PipeScript.Languages')
-            $PSInterpeter = $PSInterpreters = [PSCustomObject]$InterpretersByName
-            $PSInterpeter.pstypenames.clear()
-            $PSInterpeter.pstypenames.insert(0,'PipeScript.Interpreters')
+            
+            $PSInterpreter = $PSInterpreters = [PSCustomObject]$InterpretersByName
+            $PSInterpreter.pstypenames.clear()
+            $PSInterpreter.pstypenames.insert(0,'PipeScript.Interpreters')
 
             $PSParser = $PSParsers = [PSCustomObject]$ParsersByName
             $PSParser.pstypenames.clear()
