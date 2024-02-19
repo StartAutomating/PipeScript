@@ -479,9 +479,17 @@ function Export-Pipescript {
             "$filesToBuildTotal in $($BuildTime)" | Out-Host
             "::endgroup::Building PipeScripts [$FilesToBuildCount / $filesToBuildTotal] : $($buildFile.Source)" | Out-Host
             if ($TotalInputFileLength) {
-                $kbIn  = $([Math]::Round($TotalInputFileLength / 1kb))
-                $kbOut = $([Math]::Round($TotalOutputFileLength / 1kb))
-                $pipeScriptFactor  = $kbIn/$kbOut                
+                $kbIn  = [Math]::Round($TotalInputFileLength / 1kb)
+                $kbOut = [Math]::Round($TotalOutputFileLength / 1kb)
+                $pipeScriptFactor  = [Math]::round([double]$TotalOutputFileLength/[double]$TotalInputFileLength,4)
+                
+                if ($env:GITHUB_STEP_SUMMARY) {
+                    @(
+                        "<span style='font-size:1em'>$kbIn</span> generated <span style='font-size:$($pipeScriptFactor/ 2)em'>"
+                        "<span style='font-size:$($pipeScriptFactor)em'>PipeScript Factor : $pipeScriptFactor</span>"
+                    ) | Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY                    
+                }
+                
                 "$([Math]::Round($TotalInputFileLength / 1kb)) kb input"
                 "$([Math]::Round($TotalOutputFileLength / 1kb)) kb output",
                 "PipeScript Factor: X$([Math]::round([double]$TotalOutputFileLength/[double]$TotalInputFileLength,4))"
