@@ -484,8 +484,8 @@ function Export-Pipescript {
                 $pipeScriptFactor  = [Math]::round([double]$TotalOutputFileLength/[double]$TotalInputFileLength,4)
                 
                 if ($env:GITHUB_STEP_SUMMARY) {
-                    "> ${kbIn}kb Input, ${kbOut}kb : PipeScript Factor: $pipeScriptFactor" |
-                        Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY                    
+                    "> ${kbOut}kb Output / ${kbIn}kb Input = $pipeScriptFactor PipeScript Factor" |
+                        Out-File -Append -FilePath $env:GITHUB_STEP_SUMMARY
                 }
                 
                 "$([Math]::Round($TotalInputFileLength / 1kb)) kb input"
