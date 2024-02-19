@@ -202,6 +202,10 @@
         Server = 'pipescript.dev', 'pipescript.info', 'pipescript.io'
         Servers = 'pipescript.startautomating.com','pipescript.start-automating.com'
 
+        Videos = @{
+            "Run Anything with PipeScript (from RTPSUG)" = "https://www.youtube.com/watch?v=-PuiNAcvalw"
+        }
+
         PSData = @{
             ProjectURI = 'https://github.com/StartAutomating/PipeScript'
             LicenseURI = 'https://github.com/StartAutomating/PipeScript/blob/main/LICENSE'
