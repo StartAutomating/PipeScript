@@ -493,8 +493,19 @@ namespace PipeScript.Net
                     }
                 }
                 #endif
+                // Defaulting several MIME types:
+                // See https://developer.mozilla.org/en-US/docs/Learn/Server-side/Configuring_server_MIME_types
+                if (! MimeTypes.ContainsKey(".md")) {
+                    MimeTypes[".md"] = "text/markdown";
+                }
+                if (! MimeTypes.ContainsKey(".html")) {
+                    MimeTypes[".html"] = "text/html";
+                }
+                if (! MimeTypes.ContainsKey(".htm")) {
+                    MimeTypes[".htm"] = "text/html";
+                }
                 if (! MimeTypes.ContainsKey(".js")) {
-                    MimeTypes[".css"] = "text/javascript";
+                    MimeTypes[".js"] = "text/javascript";
                 }
                 if (! MimeTypes.ContainsKey(".css")) {
                     MimeTypes[".css"] = "text/css";
