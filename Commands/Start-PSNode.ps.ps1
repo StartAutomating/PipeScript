@@ -243,8 +243,9 @@ Add-Member -InputObject $request -MemberType ScriptProperty -Name Params -Value 
 }
         
             $sourceCode = $sourceCode.Replace("<#ScriptPreface#>", $scriptPreface.ToString().Replace('"','""'))
+            
             $addedType = if ($PSVersionTable.Platform -eq 'Unix') {
-
+                
                 $linuxRefs =
                     "System.Web",([IO.Path].Assembly),([PSObject].Assembly),
                     ([Net.HttpListener].Assembly), ([IO.FileInfo].Assembly),
@@ -254,11 +255,17 @@ Add-Member -InputObject $request -MemberType ScriptProperty -Name Params -Value 
                     ([Timers.Timer].Assembly), 'System.ComponentModel.Primitives',
                     ([Collections.Specialized.NameValueCollection].Assembly),
                     ([Regex].Assembly),[Net.WebHeaderCollection].Assembly
-                $linuxRefs += [PSObject].Assembly.GetReferencedAssemblies()
+                    $linuxRefs += [PSObject].Assembly.GetReferencedAssemblies()
+    
 
                 $compilerParams = "-r:$([PSObject].Assembly.Location)", "-r:$([Hashtable].Assembly.Location)"
                 Add-Type -TypeDefinition $sourceCode  -ReferencedAssemblies $linuxRefs  -IgnoreWarnings -CompilerOptions $compilerParams -PassThru
-            } else {
+            } 
+            elseif ($PSVersionTable.PSEdition -eq 'Desktop') {
+                Add-type -AssemblyName System.Web                
+                Add-Type -TypeDefinition $sourceCode -ReferencedAssemblies System.Web -IgnoreWarnings -PassThru
+            }
+            else {
                 Add-Type -TypeDefinition $sourceCode -IgnoreWarnings -PassThru
             }
 
