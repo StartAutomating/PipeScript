@@ -63,6 +63,7 @@ Valid Values:
 * AutomaticVariable
 * BuildScript
 * Compiler
+* ContentType
 * Interface
 * Language
 * Optimizer
