@@ -111,7 +111,7 @@ foreach ($module in $targetModules) {
         $PSTypeName
         )
     
-        process {        
+        process {
             if ($Module -is [string]) {
                 $Module = Get-Module $Module
             }
@@ -296,7 +296,7 @@ foreach ($module in $targetModules) {
                                             
                                             # We'll go thru each pattern in order
                                             $combinedRegex = @(foreach ($categoryExtensionTypeInfo in @($ModuleExtensionTypes.psobject.properties)) {
-                                                $categoryPattern = $categoryExtensionTypeInfo.Value.Pattern                
+                                                $categoryPattern = @($categoryExtensionTypeInfo.Value.Pattern,$categoryExtensionTypeInfo.Value.FilePattern,$categoryExtensionTypeInfo.Value.CommandPattern -ne $null)[0]
                                                 # ( and skip anyone that does not have a pattern)
                                                 if (-not $categoryPattern) { continue } 
                                     
