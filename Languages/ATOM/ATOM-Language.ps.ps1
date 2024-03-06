@@ -1,3 +1,6 @@
+[ValidatePattern("(?>ATOM|Language)")]
+param()
+
 Language function ATOM {
     <#
     .SYNOPSIS

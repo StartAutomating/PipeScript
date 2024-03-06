@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Arduino|Language)")]
+param()
+
 Language function Arduino {
     <#
     .SYNOPSIS

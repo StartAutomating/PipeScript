@@ -1,3 +1,6 @@
+[ValidatePattern("(?>C3|Language)\s")]
+param()
+
 Language function C3 {
     <#
     .SYNOPSIS
@@ -20,6 +23,8 @@ Language function C3 {
     )
 
     $FilePattern = '\.c3$'
+    $Compiler = 'c3c'
+    $ProjectURL = 'https://github.com/c3lang/c3c'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
@@ -31,6 +36,4 @@ Language function C3 {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
-
-    $Compiler = 'c3c'
 }

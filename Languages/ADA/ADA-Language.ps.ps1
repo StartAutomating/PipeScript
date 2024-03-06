@@ -1,3 +1,6 @@
+[ValidatePattern("(?>ADA|Language)")]
+param()
+
 Language function ADA {   
     <#
     .SYNOPSIS

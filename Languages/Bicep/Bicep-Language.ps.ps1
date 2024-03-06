@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Bicep|Language)")]
+param()
+
 Language function Bicep {
     <#
     .SYNOPSIS

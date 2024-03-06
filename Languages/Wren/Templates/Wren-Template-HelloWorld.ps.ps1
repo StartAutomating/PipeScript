@@ -1,3 +1,6 @@
+[ValidatePattern("Wren")]
+param()
+
 Template function HelloWorld.wren {
     <#
     .SYNOPSIS

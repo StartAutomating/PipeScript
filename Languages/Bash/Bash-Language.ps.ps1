@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Bash|Language)")]
+param()
+
 Language function Bash {
     <#
     .SYNOPSIS

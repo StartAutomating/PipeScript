@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Dart|Language)\s")]
+param()
+
 Language function Dart {
     <#
     .SYNOPSIS

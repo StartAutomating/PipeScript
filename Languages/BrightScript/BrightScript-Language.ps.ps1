@@ -1,3 +1,6 @@
+[ValidatePattern("(?>BrightScript|Language)")]
+param()
+
 Language function BrightScript {
     <#
     .SYNOPSIS

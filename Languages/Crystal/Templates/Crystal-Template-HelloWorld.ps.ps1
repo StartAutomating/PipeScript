@@ -1,3 +1,5 @@
+[ValidatePattern("Crystal\s")]
+param()
 Template function HelloWorld.cr {
     <#
     .SYNOPSIS

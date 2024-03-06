@@ -1,3 +1,6 @@
+[ValidatePattern("(?>CSharp|C\#|Language)\s")]
+param()
+
 Language function CSharp {
     <#
     .SYNOPSIS

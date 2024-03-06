@@ -1,3 +1,6 @@
+[ValidatePattern("TypeScript")]
+param()
+
 Template function HelloWorld.ts {
     <#
     .SYNOPSIS

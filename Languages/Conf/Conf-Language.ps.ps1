@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Conf|Language)\s")]
+param()
+
 Language function Conf {
     <#
     .SYNOPSIS

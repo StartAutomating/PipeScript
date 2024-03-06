@@ -1,3 +1,6 @@
+[ValidatePattern("(?>C|Language)\s")]
+param()
+
 Template function Include.c {
     <#
     .SYNOPSIS

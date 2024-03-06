@@ -1,3 +1,5 @@
+[ValidatePattern("(?>C|Language)\s")]
+param()
 Language function C {
     <#
     .SYNOPSIS

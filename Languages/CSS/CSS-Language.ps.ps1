@@ -1,3 +1,6 @@
+[ValidatePattern("(?>CSS|Language)\s")]
+param()
+
 Language function CSS {
     <#
     .SYNOPSIS
