@@ -1,3 +1,6 @@
+[ValidatePattern("JSON")]
+param()
+
 function Import-Json
 {
     <#
