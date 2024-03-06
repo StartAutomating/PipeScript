@@ -1,3 +1,7 @@
+[ValidatePattern("PostProcess")]
+param()
+
+
 PipeScript.PostProcess function InitializeAutomaticVariables {
     <#
     .SYNOPSIS

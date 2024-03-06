@@ -1,3 +1,6 @@
+[ValidatePattern("PostProcess")]
+param()
+
 PipeScript.PostProcess function PartialFunction {
     <#
     .SYNOPSIS
