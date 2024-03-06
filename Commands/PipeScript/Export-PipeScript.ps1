@@ -125,18 +125,11 @@ function Export-Pipescript {
                     } 
                 }
                 elseif ($commandAttribute -is [ValidateScript]) 
-                {
-                    if ($env:GITHUB_STEP_SUMMARY) {                         
-                        @(
-                            "* $($CommandInfo) has a Build Validation Script"
-                        ) -join [Environment]::Newline |
-                                Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
-                    }
+                {                    
                     $validationOutput = . $commandAttribute.ScriptBlock $ValidateAgainst
                     if (-not $validationOutput) {
                         if ($env:GITHUB_STEP_SUMMARY) {
-                            "* 🖐️ Skipping $($CommandInfo) because $($ValidateAgainstString) did not meet the validation criteria:" | Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
-                            
+                            "* ⍻ Skipping $($CommandInfo) because validation script returned false" | Out-File -Path $env:GITHUB_STEP_SUMMARY -Append                            
                         }
                         Write-Warning "Skipping $($CommandInfo) : The $ValidateAgainstString was not valid"
                         return $false

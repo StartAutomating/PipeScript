@@ -1,4 +1,4 @@
-[ValidatePattern("(?>CSharp|Parse)")]
+[ValidatePattern("(?>CSharp|C#|Parse)")]
 param()
 
 Parse function CSharp {

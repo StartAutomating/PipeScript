@@ -1,3 +1,6 @@
+[ValidatePattern("(?>C\+\+|CPlusPlus)\s")]
+param()
+
 Template function Include.cpp {
     <#
     .SYNOPSIS

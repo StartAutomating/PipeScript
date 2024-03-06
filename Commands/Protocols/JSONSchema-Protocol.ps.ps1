@@ -1,3 +1,7 @@
+[ValidatePattern("(?>JSONSchema|Protocol)")]
+param()
+
+
 Protocol function JSONSchema {
     <#
     .SYNOPSIS

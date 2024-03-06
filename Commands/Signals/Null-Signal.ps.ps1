@@ -1,3 +1,6 @@
+[ValidatePattern("Signal")]
+param()
+
 Signal function Nothing {
     <#
     .SYNOPSIS

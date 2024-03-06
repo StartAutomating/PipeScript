@@ -1,3 +1,7 @@
+[ValidatePattern("(?>C\+\+|CPlusPlus)\s")]
+param()
+
+
 Template function HelloWorld.cpp {
     <#
     .SYNOPSIS

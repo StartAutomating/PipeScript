@@ -1,3 +1,6 @@
+[ValidatePattern("(?>PowerShell|Language)")]
+param()
+
 Language function PowerShell {
     <#
     .SYNOPSIS
