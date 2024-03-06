@@ -12,6 +12,11 @@ A Template for an argument in a Dockerfile.
 
 ---
 
+### Related Links
+* [https://docs.docker.com/engine/reference/builder/#arg](https://docs.docker.com/engine/reference/builder/#arg)
+
+---
+
 ### Parameters
 #### **Name**
 The name of the argument.
