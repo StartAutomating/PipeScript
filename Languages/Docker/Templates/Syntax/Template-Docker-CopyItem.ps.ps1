@@ -1,3 +1,6 @@
+[ValidatePattern("docker")]
+param()
+
 Template function Docker.CopyItem {
     <#
     .SYNOPSIS

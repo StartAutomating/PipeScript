@@ -1,9 +1,14 @@
+[ValidatePattern("docker")]
+param()
+
 Template function Docker.Argument {
     <#
     .SYNOPSIS
         Template for an argument in a Dockerfile.
     .DESCRIPTION
         A Template for an argument in a Dockerfile.
+    .LINK
+        https://docs.docker.com/engine/reference/builder/#arg
     #>
     [Alias('Template.Docker.Arg')]
     param(
