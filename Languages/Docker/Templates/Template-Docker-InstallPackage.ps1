@@ -1,3 +1,6 @@
+[ValidatePattern("docker")]
+param()
+
 
 function Template.Docker.InstallPackage {
 
