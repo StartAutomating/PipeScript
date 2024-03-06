@@ -1,3 +1,6 @@
+[ValidatePattern("(?>PowerShell|Parse)")]
+param()
+
 Parse function PowerShell {
     <#
     .SYNOPSIS

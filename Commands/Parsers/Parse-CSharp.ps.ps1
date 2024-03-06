@@ -1,3 +1,6 @@
+[ValidatePattern("(?>CSharp|Parse)")]
+param()
+
 Parse function CSharp {
     <#
     .SYNOPSIS

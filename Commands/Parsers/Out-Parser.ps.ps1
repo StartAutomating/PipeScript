@@ -1,4 +1,7 @@
-﻿function Out-Parser
+﻿[ValidatePattern("Parse")]
+param()
+
+function Out-Parser
 {
     <#
     .Synopsis
@@ -57,7 +60,7 @@
         }
 
         if (-not $script:ParserCommandMappingCache[$ParserCommand]) { # If we don't have a cached Command list
-            $script:ParserCommandMappingCache[$ParserCommand] = $PSParser.ForCommand($ParserCommand)            
+            $script:ParserCommandMappingCache[$ParserCommand] = $PSParser.ForCommand($ParserCommand)
         }
         # If there was already an Command cached, we can skip the previous steps and just reuse the cached Commands.
         $ParserOutputCommands = $script:ParserCommandMappingCache[$ParserCommand]
