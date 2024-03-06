@@ -1,4 +1,5 @@
 @{
+    Containers = 'Container'
     Directories = 'Folders'
     Directory = 'Folder'
     Extensions = 'Extension'
