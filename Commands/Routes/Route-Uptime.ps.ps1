@@ -1,3 +1,6 @@
+[ValidatePattern("Route")]
+param()
+
 Route function Uptime {
     <#
     .SYNOPSIS

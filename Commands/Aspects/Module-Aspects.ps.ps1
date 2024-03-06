@@ -1,3 +1,6 @@
+[ValidatePattern("Module")]
+param()
+
 Aspect function ModuleExtensionType {
     <#
     .SYNOPSIS
@@ -140,7 +143,7 @@ Aspect function ModuleExtensionPattern {
         
         # We'll go thru each pattern in order
         $combinedRegex = @(foreach ($categoryExtensionTypeInfo in @($ModuleExtensionTypes.psobject.properties)) {
-            $categoryPattern = $categoryExtensionTypeInfo.Value.Pattern                
+            $categoryPattern = @($categoryExtensionTypeInfo.Value.Pattern,$categoryExtensionTypeInfo.Value.FilePattern,$categoryExtensionTypeInfo.Value.CommandPattern -ne $null)[0]
             # ( and skip anyone that does not have a pattern)
             continue if -not $categoryPattern
 
@@ -210,7 +213,7 @@ Aspect function ModuleExtensionCommand {
     $PSTypeName
     )
 
-    process {        
+    process {
         if ($Module -is [string]) {
             $Module = Get-Module $Module
         }

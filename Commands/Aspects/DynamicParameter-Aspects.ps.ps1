@@ -1,3 +1,6 @@
+[ValidatePattern("Dynamic\s{0,}Parameter")]
+param()
+
 Aspect function DynamicParameter {
     <#
     .SYNOPSIS
@@ -90,7 +93,7 @@ Aspect function DynamicParameter {
                     $paramName = "$($BlankParameterName[-1])$pos"
                 }
                 # construct a minimal dynamic parameter                
-                $DynamicParameters.Add($paramName, 
+                $DynamicParameters.Add($paramName,
                     [Management.Automation.RuntimeDefinedParameter]::new(
                         $paramName,
                         [PSObject], 

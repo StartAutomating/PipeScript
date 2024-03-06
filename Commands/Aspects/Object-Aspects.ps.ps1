@@ -1,3 +1,6 @@
+[ValidatePattern("Object")]
+param()
+
 Aspect function GroupObjectByTypeName {
     <#
     .SYNOPSIS

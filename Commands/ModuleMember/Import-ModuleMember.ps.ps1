@@ -1,3 +1,6 @@
+[ValidatePattern("Module\s?Member")]
+param()
+
 function Import-ModuleMember
 {
     <#
