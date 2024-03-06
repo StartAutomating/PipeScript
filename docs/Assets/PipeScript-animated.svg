@@ -6,13 +6,10 @@
     <marker id="Head" viewBox="0 0 100 100" markerWidth="75" markerHeight="75" refX="50" refY="50" orient="auto-start-reverse">
       <polygon points="30,0 35,0 60,50 15,100 12.5,100 55,50" fill="#4488ff" class="foreground-fill" />
     </marker>
-    <marker id="Tail" viewBox="0 0 100 100" markerWidth="75" markerHeight="75" refX="50" refY="50" orient="auto">
+    <marker id="Tail" viewBox="0 0 100 100" markerWidth="46.3525491562421" markerHeight="46.3525491562421" refX="50" refY="50" orient="auto-start-reverse">
       <polygon points="30,0 35,0 60,50 15,100 12.5,100 55,50" fill="#4488ff" class="foreground-fill" />
     </marker>
   </defs>
-  <symbol id="psChevron" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="40,20 45,20 60,50 35,80 32.5,80 55,50" />
-  </symbol>
   <text font-size="192" text-anchor="middle" dominant-baseline="middle" x="50%" y="50%" style="font-family: &quot;Roboto&quot;, sans-serif" fill="#4488ff" class="foreground-fill">
     <tspan font-size=".9em">P</tspan>
     <tspan font-size=".6em" dx="-.4em">|</tspan>
