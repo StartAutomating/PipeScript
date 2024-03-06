@@ -8,6 +8,7 @@
         Get-Process -id $pid | Out-HTML
     #>
     [OutputType([string])]
+    [Alias('text.html.out')]
     [CmdletBinding(DefaultParameterSetName='DefaultFormatter')]
     param(
     # The input object
@@ -64,6 +65,163 @@
             }
             
         }
+
+        # We start off by declaring a big Regex to match ANSI Styles.
+        # (thanks [Irregular](https://github.com/StartAutomating/Irregular) ! )
+        ${?<ANSI_Style>} = [Regex]::new(@'
+        (?<ANSI_Style>
+        (?>
+          (?<ANSI_Reset>
+        \e                                                                                     # An Escape
+        \[                                                                                     # Followed by a bracket
+        (?<Reset>0m)                                                                           # 0m indicates reset
+        
+        )
+          |
+          (?<ANSI_Bold>
+        \e                                                                                     # An Escape
+        \[                                                                                     # Followed by a bracket
+        (?>
+          (?<BoldStart>1m)  |
+          (?<BoldEnd>22m))
+        )
+          |
+          (?<ANSI_Blink>
+        \e                                                                                     # An Escape
+        \[                                                                                     # Followed by a bracket
+        (?>
+          (?>
+          (?<BlinkStart>(?<BlinkSlow>5m)                                                       # 5m starts a slow blink
+            |
+            (?<BlinkFast>6m)                                                                   # 6m starts a slow blink
+        ))  |
+          (?<BlinkEnd>25m)                                                                     # 25m stops blinks
+        )
+        )
+          |
+          (?<ANSI_Faint>
+        \e                                                                                     # An Escape
+        \[                                                                                     # Followed by a bracket
+        (?>
+          (?<FaintStart>2m)                                                                    # 2m starts faint
+          |
+          (?<FaintEnd>22m)                                                                     # 22m stops faint
+        )
+        )
+          |
+          (?<ANSI_Italic>
+        \e                                                                                     # An Escape
+        \[                                                                                     # Followed by a bracket
+        (?>
+          (?<ItalicStart>3m)                                                                   # 3m starts italic
+          |
+          (?<ItalicEnd>23m)                                                                    # 23m stops italic
+        )
+        )
+          |
+          (?<ANSI_Invert>
+        \e                                                                                     # An Escape
+        \[                                                                                     # Followed by a bracket
+        (?>
+          (?<InvertStart>7m)                                                                   # 7m starts invert
+          |
+          (?<InvertEnd>27m)                                                                    # 27m stops invert
+        )
+        )
+          |
+          (?<ANSI_Hide>
+        \e                                                                                     # An Escape
+        \[                                                                                     # Followed by a bracket
+        (?>
+          (?<HideStart>8m)                                                                     # 8m starts hide
+          |
+          (?<HideEnd>28m)                                                                      # 28m stops hide
+        )
+        )
+          |
+          (?<ANSI_Strikethrough>
+        \e                                                                                     # An Escape
+        \[                                                                                     # Followed by a bracket
+        (?>
+          (?<StrikethroughStart>9m)                                                            # 9m starts Strikethrough
+          |
+          (?<StrikethroughEnd>29m)                                                             # 29m stops Strikethrough
+        )
+        )
+          |
+          (?<ANSI_Underline>
+        \e                                                                                     # An Escape
+        \[                                                                                     # Followed by a bracket
+        (?>
+          (?<UnderlineStart>4m)                                                                # 4m starts underline
+          |
+          (?<DoubleUnderlineStart>21m)                                                         # 21m start a double underline
+          |
+          (?<UnderlineEnd>24m)                                                                 # 24m stops underline
+        )
+        )
+          |
+          (?<ANSI_24BitColor>
+        (?-i)\e                                                                                # An Escape
+        \[                                                                                     # Followed by a bracket
+        (?>
+          (?<IsForegroundColor>38)  |
+          (?<IsBackgroundColor>48)  |
+          (?<IsUnderlineColor>58));2;(?<Color>(?<Red>(?>[0-2][0-5][0-5]|[0-1]\d\d|\d{1,2}))    # Red is the first 0-255 value
+        ;(?<Green>(?>[0-2][0-5][0-5]|[0-1]\d\d|\d{1,2}))                                       # Green is the second 0-255 value
+        ;(?<Blue>(?>[0-2][0-5][0-5]|[0-1]\d\d|\d{1,2}))                                        # Blue is the third 0-255 value
+        m)
+        )
+          |
+          (?<ANSI_8BitColor>
+        (?-i)\e                                                                                # An Escape
+        \[                                                                                     # Followed by a bracket
+        (?>
+          (?<IsForegroundColor>38)  |
+          (?<IsBackgroundColor>48)  |
+          (?<IsUnderlineColor>58));5;(?<Color>(?>
+          (?<StandardColor>[0-7])                                                              # 0 -7 are standard colors
+        m  |
+          (?<BrightColor>(?>[8-9]|1[0-5]))                                                     # 8-15 are bright colors
+        m  |
+          (?<CubeColor>(?>[0-2][0-3][0-1]|[0-1]\d\d|\d{1,2}))                                  # 16-231  are cubed colors
+        m  |
+          (?<GrayscaleColor>(?>[0-2][0-5][0-5]|[0-1]\d\d|\d{1,2}))                             # 232-255 are grayscales
+        m))
+        )
+          |
+          (?<ANSI_4BitColor>
+        \e                                                                                     # An Escape
+        \[                                                                                     # Followed by a bracket
+        (?<Color>(?>
+          (?<IsBright>1)?\;{0,1}                                                               # A 1 and a semicolon indicate a bright color
+        (?<IsForegroundColor>3)                                                                # A number that starts with 3 indicates foreground color
+          |
+          (?<IsBright>(?<IsForegroundColor>9))                                                 # OR it could be a less common bright foreground color, which starts with 9
+          |
+          (?<IsBright>1)?\;{0,1}                                                               # A 1 and a semicolon indicate a bright color
+        (?<IsBackgroundColor>4)                                                                # A number that starts with 3 indicates foreground color
+          |
+          (?<IsBright>(?<IsBackgroundColor>10))                                                # OR it could be a less common bright foreground color, which starts with 9
+        )(?<ColorNumber>[0-7])                                                                 # The color number will be between 0 and 7
+        (?:\;{0,1}(?<IsBright>1)?)?                                                            # Brightness can also come after a color
+        m)
+        )
+          |
+          (?<ANSI_DefaultColor>
+        (?-i)\e                                                                                # An Escape
+        \[                                                                                     # Followed by a bracket
+        (?<Color>(?>
+          (?<DefaultForeground>39)                                                             # 39 Represents the default foreground color
+        m  |
+          (?<DefaultForeground>49)                                                             # 49 Represents the default background color
+        m))
+        )
+        )
+        )
+'@, 'IgnoreCase,IgnorePatternWhitespace', '00:00:05')
+
+
 
         if (-not $script:QuickRandom) {
             $script:QuickRandom = [Random]::new()
