@@ -78,7 +78,7 @@
             'ContentType' = @{
                 Description = 'A content type command.'
                 Pattern = '
-                    (?<=(?>$|\p{P}))
+                    (?<=(?>^|\p{P}))
                     (?>
                         application|
                         audio|
@@ -90,8 +90,7 @@
                         model|
                         example|
                         font
-                    )
-                    (?=(?>\p{P}))
+                    )(?=(?>\p{P}))
                 '
                 ExcludeCommandType = '(?>Application|Script|Cmdlet)'
             }
