@@ -1,3 +1,6 @@
+[ValidatePattern("(?>GLSL|Language)[\s\p{P}]")]
+param()
+
 Language function GLSL {
     <#
     .SYNOPSIS

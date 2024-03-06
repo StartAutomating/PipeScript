@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Eiffel|Language)[\s\p{P}]")]
+param()
+
 Language function Eiffel {
     <#
     .SYNOPSIS

@@ -1,3 +1,6 @@
+[ValidatePattern("(?>G-?Code|Language)[\s\p{P}]")]
+param()
+
 Language function GCode {
     <#
     .SYNOPSIS
