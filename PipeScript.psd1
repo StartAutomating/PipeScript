@@ -55,6 +55,7 @@
                 '
                 ExcludeCommandType = '(?>Application|Script|Cmdlet)'
             }
+            
             'Analyzer' = @{
                 Description = 'Analyzation Commands'
                 Pattern     = '
@@ -72,6 +73,27 @@
                     (?=[^\p{P}]+$)       # Followed by anything but punctuation.
                 '
                 CommandType = '(?>Function|Alias)'
+            }
+
+            'ContentType' = @{
+                Description = 'A content type command.'
+                Pattern = '
+                    (?<=(?>$|\p{P}))
+                    (?>
+                        application|
+                        audio|
+                        video|
+                        image|
+                        message|
+                        multipart|
+                        text|
+                        model|
+                        example|
+                        font
+                    )
+                    (?=(?>\p{P}))
+                '
+                ExcludeCommandType = '(?>Application|Script|Cmdlet)'
             }
 
             'Language' = @{
