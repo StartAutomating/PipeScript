@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Dart|Language)\s")]
+param()
+
 
 function Language.Dart {
 <#
