@@ -1,9 +1,9 @@
 #requires -Module PSSVG
 
-$psChevron = Invoke-restMethod https://pssvg.start-automating.com/Examples/PowerShellChevron.svg
 $RotateEvery = [Timespan]'00:00:15'
 
 $Variants = '', '4-chevron','ouroboros','animated','4-chevron-animated','ouroboros-animated'
+$ϕ = (1 + [math]::sqrt(5))/2
 
 foreach ($variant in $variants) {
 
@@ -30,10 +30,10 @@ svg -ViewBox 1920,1080 @(
                 "12.5,100"
                 "55,50"
             ) -join ' ') -Fill '#4488ff' -Class 'foreground-fill'
-        ) -MarkerWidth 75 -MarkerHeight 75 -RefX 50 -RefY 50 -Orient 'auto'
+        ) -MarkerWidth (75/$ϕ) -MarkerHeight (75/$ϕ) -RefX 50 -RefY 50 -Orient 'auto-start-reverse'
     )
     
-    $psChevron.svg.symbol.OuterXml
+    # $psChevron.svg.symbol.OuterXml
     
     
     svg.text -FontSize 192 -TextAnchor 'middle' -DominantBaseline 'middle' -X 50% -Y 50% -Content @(
@@ -46,14 +46,27 @@ svg -ViewBox 1920,1080 @(
 
     
     
-    foreach ($circleN in 0..2) {
+    
+    if ($variant -match 'ouroboros') {
+        $numberOfCircles = 1..6
+        $RotateEvery = [timespan]'00:01:00'
+    } else {
+        $numberOfCircles = 0..2
+        $RotateEvery = [timespan]'00:00:15'
+    }
+    foreach ($circleN in $numberOfCircles) {
         $radius = 475 - ($circleN * 5)
         $circleTop    = (1920/2), ((1080/2)-$radius)
         $circleMid    = (1920/2), (1080/2)
         $circleRight  = ((1920/2) + $radius),((1080/2))
         $circleBottom = (1920/2), ((1080/2)+$radius)
         $circleLeft   = ((1920/2) - $radius),((1080/2))
-        $rotateEach   = $RotateEvery * (1 + $circleN)
+        $rotateEach   = 
+            if ($variant -match 'ouroboros') {
+                $RotateEvery / ($circleN)
+            } else {
+                $RotateEvery * (1 + $circleN)
+            }
 
         if ($circleN) { 
             if ($variant -in '', '4-chevron') {
