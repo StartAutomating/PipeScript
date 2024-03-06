@@ -1,4 +1,4 @@
-[ValidatePattern("Crystal\s")]
+[ValidatePattern("Crystal")]
 param()
 Template function HelloWorld.cr {
     <#

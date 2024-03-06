@@ -1,5 +1,6 @@
 [ValidatePattern("Go[\s\p{P}]")]
 param()
+
 Template function HelloWorld.go {
     <#
     .SYNOPSIS
