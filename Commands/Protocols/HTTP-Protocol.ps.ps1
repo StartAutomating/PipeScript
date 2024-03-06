@@ -1,3 +1,6 @@
+[ValidatePattern("(?>HTTP|Protocol)")]
+param()
+
 Protocol function HTTP {
     <#
     .SYNOPSIS
@@ -101,7 +104,15 @@ Protocol function HTTP {
     # The invocation command.  By default, Invoke-RestMethod.
     # Whatever alternative command provided should have a similar signature to Invoke-RestMethod.
     [string]
-    $Invoker = 'Invoke-RestMethod'
+    $Invoker = 'Invoke-RestMethod',
+
+    [Alias('Expand Property')]
+    [string]
+    $ExpandProperty,
+
+    [Alias('Property')]
+    [string[]]
+    $Property
     )
 
     process {
@@ -227,6 +238,15 @@ Protocol function HTTP {
                     }
                     else {
                         $param.Value
+                    }
+                }
+
+
+                if ($ExpandProperty -or $Property) {
+                    if ($property -and -not $ExpandProperty) {
+                        " | Select-Object -Property $(@(
+                            
+                        ) -join ',')"
                     }
                 }
             ) -join ' '

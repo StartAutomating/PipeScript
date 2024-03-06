@@ -1,3 +1,6 @@
+[ValidatePattern("Optimize")]
+param()
+
 PipeScript.Optimizer function ConsolidateAspects {
     <#
     .SYNOPSIS

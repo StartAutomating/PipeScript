@@ -1,3 +1,6 @@
+[ValidatePattern("(?>UDP|Protocol)")]
+param()
+
 Protocol function UDP {
 <#
 .SYNOPSIS

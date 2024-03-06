@@ -1,3 +1,6 @@
+[ValidatePattern("(?>OpenAPI|Protocol)")]
+param()
+
 Protocol function OpenAPI {
     <#
     .SYNOPSIS

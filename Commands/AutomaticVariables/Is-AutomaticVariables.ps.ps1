@@ -1,3 +1,6 @@
+[ValidatePattern("Automatic\s{0,}Variable")]
+param()
+
 PipeScript.Automatic.Variable function IsPipedTo {
     <#
     .SYNOPSIS

@@ -1,3 +1,6 @@
+[ValidatePattern("Automatic\s{0,}Variable")]
+param()
+
 # Declares various 'my' automatic variables
 PipeScript.Automatic.Variable function MyCallstack {
     <#
