@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Docker|Language)\s")]
+param()
+
 
 function Language.Docker {
 <#
