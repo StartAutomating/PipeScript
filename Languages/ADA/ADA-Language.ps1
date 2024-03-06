@@ -1,3 +1,6 @@
+[ValidatePattern("(?>ADA|Language)")]
+param()
+
 
 function Language.ADA {
 <#
