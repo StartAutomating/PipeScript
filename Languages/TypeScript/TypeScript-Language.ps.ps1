@@ -1,3 +1,6 @@
+[ValidatePattern("(?>TypeScript|Language)[\s\p{P}]")]
+param()
+
 Language function TypeScript {
 <#
 .SYNOPSIS

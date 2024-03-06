@@ -1,3 +1,6 @@
+[ValidatePattern("(?>SQL|Language)[\s\p{P}]")]
+param()
+
 Language function SQL {
 <#
 .SYNOPSIS

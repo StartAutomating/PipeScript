@@ -1,3 +1,7 @@
+[ValidatePattern("(?>R|Language)[\s\p{P}]")]
+param()
+
+
 Language function R {
 <#
 .SYNOPSIS

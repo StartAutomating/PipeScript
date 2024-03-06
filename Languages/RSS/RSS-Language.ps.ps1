@@ -1,3 +1,6 @@
+[ValidatePattern("(?>RSS|Language)[\s\p{P}]")]
+param()
+
 Language function RSS {
 <#
 .SYNOPSIS

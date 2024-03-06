@@ -1,3 +1,6 @@
+[ValidatePattern("Ruby")]
+param()
+
 Template function HelloWorld.rb {
     <#
     .SYNOPSIS

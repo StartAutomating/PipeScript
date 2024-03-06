@@ -1,3 +1,6 @@
+[ValidatePattern("(?>XAML|Language)[\s\p{P}]")]
+param()
+
 Language function XAML {
 <#
 .SYNOPSIS

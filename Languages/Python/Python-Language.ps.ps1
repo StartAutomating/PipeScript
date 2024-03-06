@@ -1,3 +1,7 @@
+[ValidatePattern("(?>Python|Language)[\s\p{P}]")]
+param()
+
+
 Language function Python {
 <#
 .SYNOPSIS

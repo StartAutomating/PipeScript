@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Racket|Language)[\s\p{P}]")]
+param()
+
 Language function Racket {
 <#
 .SYNOPSIS

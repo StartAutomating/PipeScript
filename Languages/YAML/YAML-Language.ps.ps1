@@ -1,3 +1,6 @@
+[ValidatePattern("(?>YAML|Language)[\s\p{P}]")]
+param()
+
 Language function YAML {
 <#
 .SYNOPSIS

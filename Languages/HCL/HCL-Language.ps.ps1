@@ -1,3 +1,7 @@
+[ValidatePattern("(?>HCL|Language)[\s\p{P}]")]
+param()
+
+
 Language function HCL {
     <#
     .SYNOPSIS

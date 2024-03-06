@@ -1,3 +1,6 @@
+[ValidatePattern("(?>SVG|Language)[\s\p{P}]")]
+param()
+
 Language function SVG {
 <#
 .SYNOPSIS

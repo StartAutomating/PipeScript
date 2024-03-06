@@ -1,3 +1,6 @@
+[ValidatePattern("(?>XML|Language)[\s\p{P}]")]
+param()
+
 Language function XML {
 <#
 .SYNOPSIS

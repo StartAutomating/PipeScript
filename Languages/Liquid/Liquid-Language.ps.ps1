@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Liquid|Language)[\s\p{P}]")]
+param()
+
 Language function Liquid {
     <#
     .SYNOPSIS

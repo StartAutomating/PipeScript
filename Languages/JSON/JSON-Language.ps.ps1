@@ -1,3 +1,6 @@
+[ValidatePattern("(?>JSON|Language)[\s\p{P}]")]
+param()
+
 Language function JSON {
     <#
     .SYNOPSIS

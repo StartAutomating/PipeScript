@@ -1,3 +1,6 @@
+[ValidatePattern("(?>OpenSCAD|Language)[\s\p{P}]")]
+param()
+
 Language function OpenSCAD {
 <#
 .SYNOPSIS

@@ -1,3 +1,6 @@
+[ValidatePattern("(?>TOML|Language)[\s\p{P}]")]
+param()
+
 Language function TOML {
 <#
 .SYNOPSIS

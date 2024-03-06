@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Rust|Language)[\s\p{P}]")]
+param()
+
 Language function Rust {
     <#
     .SYNOPSIS

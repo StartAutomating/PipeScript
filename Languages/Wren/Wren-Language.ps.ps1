@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Wren|Language)[\s\p{P}]")]
+param()
+
 Language function Wren {
     <#
     .SYNOPSIS

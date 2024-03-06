@@ -1,3 +1,6 @@
+[ValidatePattern("(?>ObjectiveC|Language)[\s\p{P}]")]
+param()
+
 Language function ObjectiveC {
 <#
 .SYNOPSIS

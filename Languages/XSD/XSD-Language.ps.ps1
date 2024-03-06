@@ -1,3 +1,6 @@
+[ValidatePattern("(?>XSD|Language)[\s\p{P}]")]
+param()
+
 Language function XSD {
     <#
     .SYNOPSIS

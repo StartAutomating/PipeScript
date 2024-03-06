@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Markdown|Language)[\s\p{P}]")]
+param()
+
 Language function Markdown {
 <#
 .SYNOPSIS

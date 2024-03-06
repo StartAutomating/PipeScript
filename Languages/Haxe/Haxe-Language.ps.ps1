@@ -1,3 +1,7 @@
+[ValidatePattern("(?>Haxe|Language)[\s\p{P}]")]
+param()
+
+
 Language function Haxe {
     <#
     .SYNOPSIS

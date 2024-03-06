@@ -1,3 +1,6 @@
+[ValidatePattern("(?>LUA|Language)[\s\p{P}]")]
+param()
+
 Language function Lua {
     <#
     .SYNOPSIS

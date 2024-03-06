@@ -1,3 +1,6 @@
+[ValidatePattern("(?>TCL|TK|Language)[\s\p{P}]")]
+param()
+
 Language function TCL {
 <#
 .SYNOPSIS

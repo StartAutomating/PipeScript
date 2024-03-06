@@ -1,3 +1,7 @@
+[ValidatePattern("(?>PHP|Language)[\s\p{P}]")]
+param()
+
+
 Language function PHP {
 <#
 .SYNOPSIS

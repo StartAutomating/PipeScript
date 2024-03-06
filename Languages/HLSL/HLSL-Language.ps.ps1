@@ -1,3 +1,6 @@
+[ValidatePattern("(?>HLSL|Language)[\s\p{P}]")]
+param()
+
 Language function HLSL {
     <#
     .SYNOPSIS

@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Kotlin|Language)[\s\p{P}]")]
+param()
+
 Language function Kotlin {
 <#
 .SYNOPSIS

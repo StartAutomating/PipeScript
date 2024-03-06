@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Ruby|Language)[\s\p{P}]")]
+param()
+
 Language function Ruby {
 <#
 .SYNOPSIS
