@@ -38,7 +38,7 @@ function Get-PipeScript {
 
     # One or more PipeScript Command Types.    
     [Parameter(ValueFromPipelineByPropertyName)]
-    [ValidateSet('Analyzer','Aspect','AutomaticVariable','BuildScript','Compiler','Interface','Language','Optimizer','Parser','Partial','PipeScriptNoun','PostProcessor','PreProcessor','Protocol','Route','Sentence','Template','Transform','Transpiler')]
+    [ValidateSet('Analyzer','Aspect','AutomaticVariable','BuildScript','Compiler','ContentType','Interface','Language','Optimizer','Parser','Partial','PipeScriptNoun','PostProcessor','PreProcessor','Protocol','Route','Sentence','Template','Transform','Transpiler')]
     [string[]]
     $PipeScriptType,
 
