@@ -16,6 +16,8 @@ function Template.Docker.LabelModule {
     )
 
     process {
+        $this = $theModule = $Module
+        
         if ($this.PrivateData.PSData.ProjectURI) {
             Template.Docker.Label -Label "ProjectURI" -Value "$($this.PrivateData.PSData.ProjectURI)"
             Template.Docker.Label -Label "org.opencontainers.image.source" -Value "$($this.PrivateData.PSData.ProjectURI)"
