@@ -1,3 +1,6 @@
+[ValidatePattern("Python")]
+param()
+
 Template function Import.py {
     <#
     .SYNOPSIS
