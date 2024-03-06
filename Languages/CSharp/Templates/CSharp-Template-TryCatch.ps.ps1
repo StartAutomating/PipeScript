@@ -1,3 +1,6 @@
+[ValidatePattern("CSharp")]
+param()
+
 Template function TryCatch.cs {
     <#
     .SYNOPSIS
