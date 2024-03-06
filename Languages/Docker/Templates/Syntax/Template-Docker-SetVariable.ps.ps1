@@ -24,6 +24,6 @@ Template function Docker.SetVariable {
     )
     
     process {
-        "ENV $VariableName $VariableValue"
+        "ENV $Name $Value"
     }
 }
