@@ -1,3 +1,6 @@
+[ValidatePattern("(?>HTML|Language)[\s\p{P}]")]
+param()
+
 
 function Language.HTML {
 <#
