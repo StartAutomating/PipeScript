@@ -1,3 +1,5 @@
+[ValidatePattern("Interpret")]
+param()
 
 function Invoke-Interpreter {
     <#

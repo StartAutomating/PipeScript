@@ -1,3 +1,6 @@
+[ValidatePattern("Interpret")]
+param()
+
 function Get-Interpreter 
 {
     <#
