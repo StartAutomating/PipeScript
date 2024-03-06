@@ -1,3 +1,6 @@
+[ValidatePattern("JavaScript")]
+param()
+
 Template function Function.js {
     <#
     .SYNOPSIS
@@ -5,7 +8,7 @@ Template function Function.js {
     .DESCRIPTION
         Template for a `function` in JavaScript.
     .EXAMPLE
-        Template.Function.js -Name "Hello" -Body "return 'hello'"
+        Template.Function.js -Name "Hello" -Body "return 'hello'"    
     #>
     [Alias('Template.Method.js','Template.Generator.js')]
     param(    

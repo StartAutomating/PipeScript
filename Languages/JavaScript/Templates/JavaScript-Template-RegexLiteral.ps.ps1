@@ -1,3 +1,6 @@
+[ValidatePattern("JavaScript")]
+param()
+
 Template function RegexLiteral.js {
     <#
     .SYNOPSIS

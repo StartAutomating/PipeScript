@@ -1,3 +1,6 @@
+[ValidatePattern("JavaScript")]
+param()
+
 Template function TryCatch.js {
     <#
     .SYNOPSIS

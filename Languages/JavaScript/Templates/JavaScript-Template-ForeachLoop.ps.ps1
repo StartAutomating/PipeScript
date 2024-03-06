@@ -1,3 +1,6 @@
+[ValidatePattern("JavaScript")]
+param()
+
 Template function ForEachLoop.js {
     <#
     .SYNOPSIS
