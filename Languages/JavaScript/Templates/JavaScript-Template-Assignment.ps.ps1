@@ -1,3 +1,6 @@
+[ValidatePattern("JavaScript")]
+param()
+
 Template function Assignment.js {
     <#
     .SYNOPSIS
