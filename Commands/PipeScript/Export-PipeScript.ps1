@@ -117,14 +117,13 @@ function Export-Pipescript {
                 if ($commandAttribute.RegexPattern) {
                     if ($env:GITHUB_STEP_SUMMARY) {
                         @(
-                            "* $($CommandInfo) has a Build Validation Pattern: (``$($commandAttribute.RegexPattern)``)."
-                            "* $($CommandInfo) Validating Against: ``$ValidateAgainstString``"
+                            "* $($CommandInfo) has a Build Validation Pattern: (``$($commandAttribute.RegexPattern)``)."                            
                         ) -join [Environment]::Newline | Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
                     }
                     $validationPattern = [Regex]::new($commandAttribute.RegexPattern, $commandAttribute.Options, '00:00:00.1')
                     if (-not $validationPattern.IsMatch($ValidateAgainstString)) {
                         if ($env:GITHUB_STEP_SUMMARY) {
-                            "* 🖐️ Skipping $($CommandInfo) because $ValidateAgainstString did not match ($($commandAttribute.RegexPattern))" | Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
+                            "* 🖐️ Skipping $($CommandInfo) because commit did not match ($($commandAttribute.RegexPattern))" | Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
                         }
                         Write-Warning "Skipping $($CommandInfo) : Did not match $($validationPattern)"
                         return $false
