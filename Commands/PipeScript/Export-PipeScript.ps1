@@ -123,7 +123,7 @@ function Export-Pipescript {
                     $validationPattern = [Regex]::new($commandAttribute.RegexPattern, $commandAttribute.Options, '00:00:00.1')
                     if (-not $validationPattern.IsMatch($ValidateAgainstString)) {
                         if ($env:GITHUB_STEP_SUMMARY) {
-                            "* 🖐️ Skipping $($CommandInfo) because commit did not match ($($commandAttribute.RegexPattern))" | Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
+                            "* 🖐️ Skipping $($CommandInfo) because commit did not match" | Out-File -Path $env:GITHUB_STEP_SUMMARY -Append
                         }
                         Write-Warning "Skipping $($CommandInfo) : Did not match $($validationPattern)"
                         return $false
