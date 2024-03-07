@@ -21,9 +21,9 @@ function Template.HTML.Element {
     
     # The attributes of the element.
     [Parameter(ValueFromPipelineByPropertyName)]
-    [Alias('Attribute')]
+    [Alias('Attributes')]
     [PSObject]
-    $Attributes,
+    $Attribute,
     
     # The content of the element.
     [Parameter(ValueFromPipelineByPropertyName)]
@@ -39,8 +39,16 @@ function Template.HTML.Element {
             @(foreach ($property in $attributes.PSObject.Properties) {
                 $propertyName = $property.Name -replace '([A-Z])', '-$1' -replace '^-', ''
                 $propertyValue = $property.Value
-                " $propertyName='$propertyValue'"
-            }) -join ''            
+                if ($propertyValue -is [switch]) {
+                    $propertyValue = $propertyValue -as [bool]
+                    " $propertyName=$($propertyValue.ToString().ToLower())"
+                }
+                elseif ($propertyValue -is [int] -or $propertyValue -is [double]) {
+                    " $propertyName='$propertyValue'"
+                } else {
+                    " $propertyName='$propertyValue'"
+                }                
+            }) -join ''
         }
 
         if ($content) {
