@@ -1,3 +1,6 @@
+[ValidatePattern("(?>C3|Language)\s")]
+param()
+
 
 function Language.C3 {
 <#
@@ -25,6 +28,8 @@ $languageDefinition = New-Module {
     )
 
     $FilePattern = '\.c3$'
+    $Compiler = 'c3c'
+    $ProjectURL = 'https://github.com/c3lang/c3c'
 
     # We start off by declaring a number of regular expressions:
     $startComment = '/\*' # * Start Comments ```\*```
@@ -36,8 +41,6 @@ $languageDefinition = New-Module {
     $StartPattern = "(?<PSStart>${IgnoredContext}${startComment}\{$Whitespace)"
     # * EndRegex       ```$whitespace + '}' + $EndComment + $ignoredContext```
     $EndPattern   = "(?<PSEnd>$Whitespace\}${endComment}\s{0,}${IgnoredContext})"
-
-    $Compiler = 'c3c'
     $LanguageName = 'C3'
     Export-ModuleMember -Variable * -Function * -Alias *
 } -AsCustomObject
