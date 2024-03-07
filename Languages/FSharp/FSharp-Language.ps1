@@ -1,3 +1,6 @@
+[ValidatePattern("(?>FSharp|F\#|Language)[\s\p{P}]")]
+param()
+
 
 function Language.FSharp {
 <#
