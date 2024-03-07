@@ -17,7 +17,6 @@ These are all of the transpilers currently included in PipeScript:
 |[Define](Transpilers/Define.psx.ps1)                                                       |Defines a variable                                |
 |[Dot](Transpilers/Syntax/Dot.psx.ps1)                                                      |Dot Notation                                      |
 |[Explicit](Transpilers/Explicit.psx.ps1)                                                   |Makes Output from a PowerShell function Explicit. |
-|[Help](Transpilers/Help.psx.ps1)                                                           |Help Transpiler                                   |
 |[Include](Transpilers/Include.psx.ps1)                                                     |Includes Files                                    |
 |[ModuleExports](Transpilers/Modules/ModuleExports.psx.ps1)                                 |Gets Module Exports                               |
 |[ModuleRelationship](Transpilers/Modules/ModuleRelationship.psx.ps1)                       |Gets Module Relationships                         |
