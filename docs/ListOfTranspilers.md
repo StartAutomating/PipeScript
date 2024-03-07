@@ -16,7 +16,6 @@ These are all of the transpilers currently included in PipeScript:
 |[Decorate](Transpilers/Decorate.psx.ps1)                                                   |decorate transpiler                               |
 |[Define](Transpilers/Define.psx.ps1)                                                       |Defines a variable                                |
 |[Dot](Transpilers/Syntax/Dot.psx.ps1)                                                      |Dot Notation                                      |
-|[EqualityComparison](Transpilers/Syntax/EqualityComparison.psx.ps1)                        |Allows equality comparison.                       |
 |[EqualityTypeComparison](Transpilers/Syntax/EqualityTypeComparison.psx.ps1)                |Allows equality type comparison.                  |
 |[Explicit](Transpilers/Explicit.psx.ps1)                                                   |Makes Output from a PowerShell function Explicit. |
 |[Help](Transpilers/Help.psx.ps1)                                                           |Help Transpiler                                   |
