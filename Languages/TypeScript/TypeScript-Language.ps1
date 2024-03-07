@@ -1,3 +1,6 @@
+[ValidatePattern("(?>TypeScript|Language)[\s\p{P}]")]
+param()
+
 
 function Language.TypeScript {
 <#
