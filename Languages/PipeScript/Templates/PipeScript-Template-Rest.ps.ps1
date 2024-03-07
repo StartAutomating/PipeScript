@@ -1,11 +1,25 @@
-<#
-.SYNOPSIS
-    Generates PowerShell to talk to a REST api.
-.DESCRIPTION
-    Generates PowerShell that communicates with a REST api.
-.EXAMPLE
-    {
-        function Get-Sentiment {
+Template function PipeScript.Rest {
+    <#
+    .SYNOPSIS
+        Generates PowerShell to talk to a REST api.
+    .DESCRIPTION
+        Generates PowerShell that communicates with a REST api.
+    .EXAMPLE
+        {
+            function Get-Sentiment {
+                [Rest("http://text-processing.com/api/sentiment/",
+                    ContentType="application/x-www-form-urlencoded",
+                    Method = "POST",
+                    BodyParameter="Text",
+                    ForeachOutput = {
+                        $_ | Select-Object -ExpandProperty Probability -Property Label
+                    }
+                )]
+                param()
+            } 
+        } | .>PipeScript | Set-Content .\Get-Sentiment.ps1
+    .EXAMPLE
+        Invoke-PipeScript {
             [Rest("http://text-processing.com/api/sentiment/",
                 ContentType="application/x-www-form-urlencoded",
                 Method = "POST",
@@ -15,137 +29,125 @@
                 }
             )]
             param()
-        } 
-    } | .>PipeScript | Set-Content .\Get-Sentiment.ps1
-.EXAMPLE
-    Invoke-PipeScript {
-        [Rest("http://text-processing.com/api/sentiment/",
-            ContentType="application/x-www-form-urlencoded",
-            Method = "POST",
-            BodyParameter="Text",
-            ForeachOutput = {
-                $_ | Select-Object -ExpandProperty Probability -Property Label
-            }
-        )]
-        param()
-    } -Parameter @{Text='wow!'}
-.EXAMPLE
-    {
-        [Rest("https://api.github.com/users/{username}/repos",
-            QueryParameter={"type", "sort", "direction", "page", "per_page"}
-        )]
-        param()
-    } | .>PipeScript
-.EXAMPLE
-    Invoke-PipeScript {
-        [Rest("https://api.github.com/users/{username}/repos",
-            QueryParameter={"type", "sort", "direction", "page", "per_page"}
-        )]
-        param()
-    } -UserName StartAutomating
-.EXAMPLE
-    {
-        [Rest("http://text-processing.com/api/sentiment/",
-            ContentType="application/x-www-form-urlencoded",
-            Method = "POST",
-            BodyParameter={@{
-                Text = '
-                    [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
-                    [string]
-                    $Text
-                '
-            }})]
-        param()
-    } | .>PipeScript
-#>
-param(
-# The ScriptBlock.
-# If not empty, the contents of this ScriptBlock will preceed the REST api call. 
-[Parameter(ValueFromPipeline)]
-[scriptblock]
-$ScriptBlock = {},
+        } -Parameter @{Text='wow!'}
+    .EXAMPLE
+        {
+            [Rest("https://api.github.com/users/{username}/repos",
+                QueryParameter={"type", "sort", "direction", "page", "per_page"}
+            )]
+            param()
+        } | .>PipeScript
+    .EXAMPLE
+        Invoke-PipeScript {
+            [Rest("https://api.github.com/users/{username}/repos",
+                QueryParameter={"type", "sort", "direction", "page", "per_page"}
+            )]
+            param()
+        } -UserName StartAutomating
+    .EXAMPLE
+        {
+            [Rest("http://text-processing.com/api/sentiment/",
+                ContentType="application/x-www-form-urlencoded",
+                Method = "POST",
+                BodyParameter={@{
+                    Text = '
+                        [Parameter(Mandatory,ValueFromPipelineByPropertyName)]
+                        [string]
+                        $Text
+                    '
+                }})]
+            param()
+        } | .>PipeScript
+    #>
+    [Alias('REST')]
+    param(
+    # The ScriptBlock.
+    # If not empty, the contents of this ScriptBlock will preceed the REST api call. 
+    [Parameter(ValueFromPipeline)]
+    [scriptblock]
+    $ScriptBlock = {},
 
-# One or more REST endpoints.  This endpoint will be parsed for REST variables.
-[Parameter(Mandatory,Position=0)]
-[string[]]
-$RESTEndpoint,
+    # One or more REST endpoints.  This endpoint will be parsed for REST variables.
+    [Parameter(Mandatory,Position=0)]
+    [string[]]
+    $RESTEndpoint,
 
-# The content type.  If provided, this parameter will be passed to the -InvokeCommand.
-[string]
-$ContentType,
+    # The content type.  If provided, this parameter will be passed to the -InvokeCommand.
+    [string]
+    $ContentType,
 
-# The method.  If provided, this parameter will be passed to the -InvokeCommand.
-[string]
-$Method,
+    # The method.  If provided, this parameter will be passed to the -InvokeCommand.
+    [string]
+    $Method,
 
-# The invoke command.  This command _must_ have a parameter -URI.
-[Alias('Invoker')]
-[string]
-$InvokeCommand = 'Invoke-RestMethod',
+    # The invoke command.  This command _must_ have a parameter -URI.
+    [Alias('Invoker')]
+    [string]
+    $InvokeCommand = 'Invoke-RestMethod',
 
-# The name of a variable containing additional invoke parameters.
-# By default, this is 'InvokeParams'
-[Alias('InvokerParameters','InvokerParameter')]
-[string]
-$InvokeParameterVariable = 'InvokeParams',
+    # The name of a variable containing additional invoke parameters.
+    # By default, this is 'InvokeParams'
+    [Alias('InvokerParameters','InvokerParameter')]
+    [string]
+    $InvokeParameterVariable = 'InvokeParams',
 
-# A dictionary of help for uri parameters.
-[Alias('UrlParameterHelp')]
-[Collections.IDictionary]
-$UriParameterHelp,
+    # A dictionary of help for uri parameters.
+    [Alias('UrlParameterHelp')]
+    [Collections.IDictionary]
+    $UriParameterHelp,
 
-# A dictionary of URI parameter types.
-[Alias('UrlParameterType')]
-[Collections.IDictionary]
-$UriParameterType,
+    # A dictionary of URI parameter types.
+    [Alias('UrlParameterType')]
+    [Collections.IDictionary]
+    $UriParameterType,
 
-<#
-A dictionary or list of parameters for the body.
+    <#
+    A dictionary or list of parameters for the body.
 
 
-If a parameter has a ```[ComponentModel.DefaultBindingProperty]``` attribute,
-it will be used to rename the body parameter.
+    If a parameter has a ```[ComponentModel.DefaultBindingProperty]``` attribute,
+    it will be used to rename the body parameter.
 
 
-If a parameter has a ```[ComponentModel.AmbientValue]``` attribute with a ```[ScriptBlock]``` value,
-it will be used to redefine the value.
+    If a parameter has a ```[ComponentModel.AmbientValue]``` attribute with a ```[ScriptBlock]``` value,
+    it will be used to redefine the value.
 
 
-If a parameter value is a [DateTime], it will be turned into a [string] using the standard format.
+    If a parameter value is a [DateTime], it will be turned into a [string] using the standard format.
 
-If a parameter is a [switch], it will be turned into a [bool].
-#>
-[PSObject]
-$BodyParameter,
+    If a parameter is a [switch], it will be turned into a [bool].
+    #>
+    [PSObject]
+    $BodyParameter,
 
-<#
-A dictionary or list of query parameters.
-
-
-If a parameter has a ```[ComponentModel.DefaultBindingProperty]``` attribute,
-it will be used to rename the body parameter.
+    <#
+    A dictionary or list of query parameters.
 
 
-If a parameter has a ```[ComponentModel.AmbientValue]``` attribute with a ```[ScriptBlock]``` value,
-it will be used to redefine the value.
+    If a parameter has a ```[ComponentModel.DefaultBindingProperty]``` attribute,
+    it will be used to rename the body parameter.
 
 
-If a parameter value is a [DateTime], it will be turned into a [string] using the standard format.
+    If a parameter has a ```[ComponentModel.AmbientValue]``` attribute with a ```[ScriptBlock]``` value,
+    it will be used to redefine the value.
 
-If a parameter is a [switch], it will be turned into a [bool].
-#>
-[PSObject]
-$QueryParameter,
 
-# If provided, will join multiple values of a query by this string.
-# If the string is '&', each value will be provided as a key-value pair.
-[string]
-$JoinQueryValue,
+    If a parameter value is a [DateTime], it will be turned into a [string] using the standard format.
 
-# A script block to be run on each output.
-[ScriptBlock]
-$ForEachOutput
-)
+    If a parameter is a [switch], it will be turned into a [bool].
+    #>
+    [PSObject]
+    $QueryParameter,
+
+    # If provided, will join multiple values of a query by this string.
+    # If the string is '&', each value will be provided as a key-value pair.
+    [string]
+    $JoinQueryValue,
+
+    # A script block to be run on each output.
+    [ScriptBlock]
+    $ForEachOutput
+    )
 
 begin {
     # Declare a Regular Expression to match URL variables. 
@@ -577,4 +579,6 @@ process {
     # Join all of the parts together and you've got yourself a RESTful function.
     $RestScript | 
         Join-PipeScript
+}
+
 }
