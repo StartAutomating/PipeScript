@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Crystal|Language)\s")]
+param()
+
 
 function Language.Crystal {
 <#
