@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Conf|Language)\s")]
+param()
+
 
 function Language.Conf {
 <#
