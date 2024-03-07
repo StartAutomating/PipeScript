@@ -25,7 +25,6 @@ These are all of the transpilers currently included in PipeScript:
 |[New](Transpilers/Keywords/New.psx.ps1)                                                    |'new' keyword                                     |
 |[Object](Transpilers/Keywords/Object.psx.ps1)                                              |Object Keyword                                    |
 |[OutputFile](Transpilers/OutputFile.psx.ps1)                                               |Outputs to a File                                 |
-|[PipedAssignment](Transpilers/Syntax/PipedAssignment.psx.ps1)                              |Piped Assignment Transpiler                       |
 |[PipeScript.Aspect](Transpilers/Core/PipeScript.Aspect.psx.ps1)                            |Aspect Transpiler                                 |
 |[PipeScript.AttributedExpression](Transpilers/Core/PipeScript.AttributedExpression.psx.ps1)|The PipeScript AttributedExpression Transpiler    |
 |[Pipescript.FunctionDefinition](Transpilers/Core/Pipescript.FunctionDefinition.psx.ps1)    |PipeScript Function Transpiler                    |
