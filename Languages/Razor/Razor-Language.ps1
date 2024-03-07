@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Razor|Language)[\s\p{P}]")]
+param()
+
 
 function Language.Razor {
 <#
