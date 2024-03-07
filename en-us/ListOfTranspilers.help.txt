@@ -22,7 +22,6 @@ These are all of the transpilers currently included in PipeScript:
 |[Explicit](Transpilers/Explicit.psx.ps1)                                                   |Makes Output from a PowerShell function Explicit. |
 |[Help](Transpilers/Help.psx.ps1)                                                           |Help Transpiler                                   |
 |[Include](Transpilers/Include.psx.ps1)                                                     |Includes Files                                    |
-|[Inherit](Transpilers/Inherit.psx.ps1)                                                     |Inherits a Command                                |
 |[ModuleExports](Transpilers/Modules/ModuleExports.psx.ps1)                                 |Gets Module Exports                               |
 |[ModuleRelationship](Transpilers/Modules/ModuleRelationship.psx.ps1)                       |Gets Module Relationships                         |
 |[NamespacedAlias](Transpilers/Syntax/NamespacedAlias.psx.ps1)                              |Declares a namespaced alias                       |
