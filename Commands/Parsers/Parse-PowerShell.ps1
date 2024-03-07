@@ -1,3 +1,6 @@
+[ValidatePattern("(?>PowerShell|Parse)")]
+param()
+
 
 function Parse.PowerShell {
 
