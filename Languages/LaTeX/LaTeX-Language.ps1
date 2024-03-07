@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Latex|Language)[\s\p{P}]")]
+param()
+
 
 function Language.LaTeX {
 <#
