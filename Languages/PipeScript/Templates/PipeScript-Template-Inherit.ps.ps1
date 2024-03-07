@@ -1,149 +1,154 @@
-<#
-.SYNOPSIS
-    Inherits a Command
-.DESCRIPTION
-    Inherits a given command.  
-    
-    This acts similarily to inheritance in Object Oriented programming.
+[ValidatePattern('Inherit')]
+param()
 
-    By default, inheriting a function will join the contents of that function with the -ScriptBlock.
+Template function PipeScript.Inherit {
+    <#
+    .SYNOPSIS
+        Inherits a Command
+    .DESCRIPTION
+        Inherits a given command.  
+        
+        This acts similarily to inheritance in Object Oriented programming.
 
-    Your ScriptBlock will come first, so you can override any of the behavior of the underlying command.    
+        By default, inheriting a function will join the contents of that function with the -ScriptBlock.
 
-    You can "abstractly" inherit a command, that is, inherit only the command's parameters.
-    
-    Inheritance can also be -Abstract.
-    
-    When you use Abstract inheritance, you get only the function definition and header from the inherited command.
+        Your ScriptBlock will come first, so you can override any of the behavior of the underlying command.    
 
-    You can also -Override the command you are inheriting.
+        You can "abstractly" inherit a command, that is, inherit only the command's parameters.
+        
+        Inheritance can also be -Abstract.
+        
+        When you use Abstract inheritance, you get only the function definition and header from the inherited command.
 
-    This will add an [Alias()] attribute containing the original command name.
+        You can also -Override the command you are inheriting.
 
-    One interesting example is overriding an application
+        This will add an [Alias()] attribute containing the original command name.
+
+        One interesting example is overriding an application
 
 
-.EXAMPLE
-    Invoke-PipeScript {
-        [inherit("Get-Command")]
-        param()
-    } 
-.EXAMPLE
-    {
-        [inherit("gh",Overload)]
-        param()
-        begin { "ABOUT TO CALL GH"}
-        end { "JUST CALLED GH" }
-    }.Transpile()
-.EXAMPLE
-    # Inherit Get-Transpiler abstractly and make it output the parameters passed in.
-    {
-        [inherit("Get-Transpiler", Abstract)]
-        param() process { $psBoundParameters }
-    }.Transpile()
-.EXAMPLE
-    {
-        [inherit("Get-Transpiler", Dynamic, Abstract)]
-        param()
-    } | .>PipeScript
-#>
-param(
-# The command that will be inherited.
-[Parameter(Mandatory,Position=0)]
-[Alias('CommandName')]
-[string]
-$Command,
+    .EXAMPLE
+        Invoke-PipeScript {
+            [inherit("Get-Command")]
+            param()
+        } 
+    .EXAMPLE
+        {
+            [inherit("gh",Overload)]
+            param()
+            begin { "ABOUT TO CALL GH"}
+            end { "JUST CALLED GH" }
+        }.Transpile()
+    .EXAMPLE
+        # Inherit Get-Transpiler abstractly and make it output the parameters passed in.
+        {
+            [inherit("Get-Transpiler", Abstract)]
+            param() process { $psBoundParameters }
+        }.Transpile()
+    .EXAMPLE
+        {
+            [inherit("Get-Transpiler", Dynamic, Abstract)]
+            param()
+        } | .>PipeScript
+    #>
+    [Alias('Inherit')]
+    param(
+    # The command that will be inherited.
+    [Parameter(Mandatory,Position=0)]
+    [Alias('CommandName')]
+    [string]
+    $Command,
 
-# If provided, will abstractly inherit a function.
-# This include the function's parameters, but not it's content
-# It will also define a variable within a dynamicParam {} block that contains the base command.
-[switch]
-$Abstract,
+    # If provided, will abstractly inherit a function.
+    # This include the function's parameters, but not it's content
+    # It will also define a variable within a dynamicParam {} block that contains the base command.
+    [switch]
+    $Abstract,
 
-# If provided, will set an alias on the function to replace the original command.
-[Alias('Overload')]
-[switch]
-$Override,
+    # If provided, will set an alias on the function to replace the original command.
+    [Alias('Overload')]
+    [switch]
+    $Override,
 
-# If set, will dynamic overload commands.
-# This will use dynamic parameters instead of static parameters, and will use a proxy command to invoke the inherited command.
-[switch]
-$Dynamic,
+    # If set, will dynamic overload commands.
+    # This will use dynamic parameters instead of static parameters, and will use a proxy command to invoke the inherited command.
+    [switch]
+    $Dynamic,
 
-# If set, will not generate a dynamic parameter block.  This is primarily present so Abstract inheritance has a small change footprint. 
-[switch]
-$NoDynamic,
+    # If set, will not generate a dynamic parameter block.  This is primarily present so Abstract inheritance has a small change footprint. 
+    [switch]
+    $NoDynamic,
 
-# If set, will always inherit commands as proxy commands.
-# This is implied by -Dynamic.
-[switch]
-$Proxy,
+    # If set, will always inherit commands as proxy commands.
+    # This is implied by -Dynamic.
+    [switch]
+    $Proxy,
 
-# The Command Type.  This can allow you to specify the type of command you are overloading.
-# If the -CommandType includes aliases, and another command is also found, that command will be used.
-# (this ensures you can continue to overload commands)
-[Alias('CommandTypes')]
-[string[]]
-$CommandType = 'All',
+    # The Command Type.  This can allow you to specify the type of command you are overloading.
+    # If the -CommandType includes aliases, and another command is also found, that command will be used.
+    # (this ensures you can continue to overload commands)
+    [Alias('CommandTypes')]
+    [string[]]
+    $CommandType = 'All',
 
-# A list of block types to be excluded during a merge of script blocks.
-# By default, no blocks will be excluded.
-[ValidateSet('using', 'requires', 'help','header','param','dynamicParam','begin','process','end')]
-[Alias('SkipBlockType','SkipBlockTypes','ExcludeBlockTypes')]
-[string[]]
-$ExcludeBlockType,
+    # A list of block types to be excluded during a merge of script blocks.
+    # By default, no blocks will be excluded.
+    [ValidateSet('using', 'requires', 'help','header','param','dynamicParam','begin','process','end')]
+    [Alias('SkipBlockType','SkipBlockTypes','ExcludeBlockTypes')]
+    [string[]]
+    $ExcludeBlockType,
 
-# A list of block types to include during a merge of script blocks.
-[ValidateSet('using', 'requires', 'help','header','param','dynamicParam','begin','process','end')]
-[Alias('BlockType','BlockTypes','IncludeBlockTypes')]
-[string[]]
-$IncludeBlockType = @('using', 'requires', 'help','header','param','dynamicParam','begin','process','end'),
+    # A list of block types to include during a merge of script blocks.
+    [ValidateSet('using', 'requires', 'help','header','param','dynamicParam','begin','process','end')]
+    [Alias('BlockType','BlockTypes','IncludeBlockTypes')]
+    [string[]]
+    $IncludeBlockType = @('using', 'requires', 'help','header','param','dynamicParam','begin','process','end'),
 
-# A list of parameters to include.  Can contain wildcards.
-# If -IncludeParameter is provided without -ExcludeParameter, all other parameters will be excluded.
-[string[]]
-$IncludeParameter,
+    # A list of parameters to include.  Can contain wildcards.
+    # If -IncludeParameter is provided without -ExcludeParameter, all other parameters will be excluded.
+    [string[]]
+    $IncludeParameter,
 
-# A list of parameters to exclude.  Can contain wildcards.
-# Excluded parameters with default values will declare the default value at the beginnning of the command.
-[string[]]
-$ExcludeParameter,
+    # A list of parameters to exclude.  Can contain wildcards.
+    # Excluded parameters with default values will declare the default value at the beginnning of the command.
+    [string[]]
+    $ExcludeParameter,
 
-# The ArgumentList parameter name
-# When inheriting an application, a parameter is created to accept any remaining arguments.
-# This is the name of that parameter (by default, 'ArgumentList')
-# This parameter is ignored when inheriting from anything other than an application.
-[Alias('ArgumentListParameter')]
-[string]
-$ArgumentListParameterName = 'ArgumentList',
+    # The ArgumentList parameter name
+    # When inheriting an application, a parameter is created to accept any remaining arguments.
+    # This is the name of that parameter (by default, 'ArgumentList')
+    # This parameter is ignored when inheriting from anything other than an application.
+    [Alias('ArgumentListParameter')]
+    [string]
+    $ArgumentListParameterName = 'ArgumentList',
 
-# The ArgumentList parameter aliases
-# When inheriting an application, a parameter is created to accept any remaining arguments.
-# These are the aliases for that parameter (by default, 'Arguments' and 'Args')
-# This parameter is ignored when inheriting from anything other than an application.
-[Alias('ArgumentListParameters','ArgumentListParameterNames')]
-[string[]]
-$ArgumentListParameterAlias = @('Arguments', 'Args'),
+    # The ArgumentList parameter aliases
+    # When inheriting an application, a parameter is created to accept any remaining arguments.
+    # These are the aliases for that parameter (by default, 'Arguments' and 'Args')
+    # This parameter is ignored when inheriting from anything other than an application.
+    [Alias('ArgumentListParameters','ArgumentListParameterNames')]
+    [string[]]
+    $ArgumentListParameterAlias = @('Arguments', 'Args'),
 
-# The ArgumentList parameter type
-# When inheriting an application, a parameter is created to accept any remaining arguments.
-# This is the type of that parameter (by default, '[string[]]')
-# This parameter is ignored when inheriting from anything other than an application.
-[type]
-$ArgumentListParameterType = [string[]],
+    # The ArgumentList parameter type
+    # When inheriting an application, a parameter is created to accept any remaining arguments.
+    # This is the type of that parameter (by default, '[string[]]')
+    # This parameter is ignored when inheriting from anything other than an application.
+    [type]
+    $ArgumentListParameterType = [string[]],
 
-# The help for the argument list parameter.
-# When inheriting an application, a parameter is created to accept any remaining arguments.
-# This is the help of that parameter (by default, 'Arguments to $($InhertedApplication.Name)')
-# This parameter is ignored when inheriting from anything other than an application.
-[Alias('ArgumentListParameterDescription')]
-[string]
-$ArgumentListParameterHelp = 'Arguments to $($InhertedApplication.Name)',
+    # The help for the argument list parameter.
+    # When inheriting an application, a parameter is created to accept any remaining arguments.
+    # This is the help of that parameter (by default, 'Arguments to $($InhertedApplication.Name)')
+    # This parameter is ignored when inheriting from anything other than an application.
+    [Alias('ArgumentListParameterDescription')]
+    [string]
+    $ArgumentListParameterHelp = 'Arguments to $($InhertedApplication.Name)',
 
-[Parameter(ValueFromPipeline,ParameterSetName='ScriptBlock')]
-[scriptblock]
-$ScriptBlock = {}
-)
+    [Parameter(ValueFromPipeline,ParameterSetName='ScriptBlock')]
+    [scriptblock]
+    $ScriptBlock = {}
+    )
 
 process {
     # To start off with, let's resolve the command we're inheriting.
@@ -388,9 +393,6 @@ dynamicParam {
     }
 ) |
     Join-PipeScript @joinSplat # join the scripts together and return one [ScriptBlock]
-
-
 }
 
-
-
+}
