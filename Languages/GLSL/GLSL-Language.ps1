@@ -1,3 +1,6 @@
+[ValidatePattern("(?>GLSL|Language)[\s\p{P}]")]
+param()
+
 
 function Language.GLSL {
 <#
