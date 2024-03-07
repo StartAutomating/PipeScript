@@ -1,57 +1,58 @@
-<#
-.SYNOPSIS
-    Namespaced functions
-.DESCRIPTION
-    Allows the declaration of a object or singleton in a namespace.
-    
-    Namespaces are used to logically group functionality and imply standardized behavior.    
-.EXAMPLE
-    Invoke-PipeScript {
-        My Object Precious { $IsARing = $true; $BindsThemAll = $true }
-        My.Precious
-    }
-#>
-[Reflection.AssemblyMetaData('Order', -10)]
-[ValidateScript({
-    # This only applies to a command AST
-    $cmdAst = $_ -as [Management.Automation.Language.CommandAst]
-    if (-not $cmdAst) { return $false }
-    # It must have at 4-5 elements.
-    if ($cmdAst.CommandElements.Count -lt 4 -or $cmdAst.CommandElements.Count -gt 5) {
-        return $false
-    }
-    # The second element must be a function or filter.
-    if ($cmdAst.CommandElements[1].Value -notin 'object', 'singleton') {
-        return $false
-    }
-    # The third element must be a bareword
-    if ($cmdAst.CommandElements[1].StringConstantType -ne 'Bareword') {
-        return $false
-    }
+Template function NamespacedObject {
+    <#
+    .SYNOPSIS
+        Namespaced functions
+    .DESCRIPTION
+        Allows the declaration of a object or singleton in a namespace.
+        
+        Namespaces are used to logically group functionality and imply standardized behavior.    
+    .EXAMPLE
+        Invoke-PipeScript {
+            My Object Precious { $IsARing = $true; $BindsThemAll = $true }
+            My.Precious
+        }
+    #>
+    [Reflection.AssemblyMetaData('Order', -10)]
+    [ValidateScript({
+        # This only applies to a command AST
+        $cmdAst = $_ -as [Management.Automation.Language.CommandAst]
+        if (-not $cmdAst) { return $false }
+        # It must have at 4-5 elements.
+        if ($cmdAst.CommandElements.Count -lt 4 -or $cmdAst.CommandElements.Count -gt 5) {
+            return $false
+        }
+        # The second element must be a function or filter.
+        if ($cmdAst.CommandElements[1].Value -notin 'object', 'singleton') {
+            return $false
+        }
+        # The third element must be a bareword
+        if ($cmdAst.CommandElements[1].StringConstantType -ne 'Bareword') {
+            return $false
+        }
 
-    # The last element must be a ScriptBlock or HashtableAst
-    if (
-        $cmdAst.CommandElements[-1] -isnot [Management.Automation.Language.ScriptBlockExpressionAst] -and
-        $cmdAst.CommandElements[-1] -isnot [Management.Automation.Language.HashtableAst]
-    ) {
-        return $false
-    }
+        # The last element must be a ScriptBlock or HashtableAst
+        if (
+            $cmdAst.CommandElements[-1] -isnot [Management.Automation.Language.ScriptBlockExpressionAst] -and
+            $cmdAst.CommandElements[-1] -isnot [Management.Automation.Language.HashtableAst]
+        ) {
+            return $false
+        }
 
-    # Attempt to resolve the command
-    if (-not $global:AllCommands) {
-        $global:AllCommands = $executionContext.SessionState.InvokeCommand.GetCommands('*','Alias,Function,Cmdlet', $true)
-    }
-    $potentialCmdName = "$($cmdAst.CommandElements[0])"
-    return -not ($global:AllCommands.Name -eq $potentialCmdName)    
-})]
-param(
-# The CommandAST that will be transformed.    
-[Parameter(Mandatory,ValueFromPipeline)]
-[Management.Automation.Language.CommandAst]
-$CommandAst
-)
+        # Attempt to resolve the command
+        if (-not $global:AllCommands) {
+            $global:AllCommands = $executionContext.SessionState.InvokeCommand.GetCommands('*','Alias,Function,Cmdlet', $true)
+        }
+        $potentialCmdName = "$($cmdAst.CommandElements[0])"
+        return -not ($global:AllCommands.Name -eq $potentialCmdName)    
+    })]
+    param(
+    # The CommandAST that will be transformed.    
+    [Parameter(Mandatory,ValueFromPipeline)]
+    [Management.Automation.Language.CommandAst]
+    $CommandAst
+    )
 
-process {
+    process {
     # Namespaced functions are really simple:
 
     # We use multiple assignment to pick out the parts of the function
@@ -135,10 +136,12 @@ $(if ($blockComments) {$blockComments})
         }
     
 
-    # Redefine the function
-    $redefined = [ScriptBlock]::Create("
+        # Redefine the function
+        $redefined = [ScriptBlock]::Create("
 function $NewFunctionName $objectDefinition
 ")
-    # Return the transpiled redefinition.
-    $redefined | .>Pipescript
+        # Return the transpiled redefinition.
+        $redefined | .>Pipescript
+    }
+
 }
