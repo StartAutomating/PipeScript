@@ -1,3 +1,6 @@
+[ValidatePattern("Object")]
+param()
+
 
 function Aspect.GroupObjectByTypeName {
 
@@ -57,5 +60,4 @@ function Aspect.GroupObjectByType {
     }        
 
 }
-
 
