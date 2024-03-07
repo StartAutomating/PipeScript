@@ -1,3 +1,6 @@
+[ValidatePattern("(?>C\+\+|CPlusPlus|Language)\s")]
+param()
+
 
 function Language.CPlusPlus {
 <#
