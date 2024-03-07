@@ -1,3 +1,6 @@
+[ValidatePattern("(?>WebAssembly|Language)[\s\p{P}]")]
+param()
+
 
 function Language.WebAssembly {
 <#
