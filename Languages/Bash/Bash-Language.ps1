@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Bash|Language)")]
+param()
+
 
 function Language.Bash {
 <#
