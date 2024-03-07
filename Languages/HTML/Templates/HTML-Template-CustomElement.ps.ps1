@@ -34,10 +34,14 @@ Template function HTML.CustomElement {
     $ExtendClass = 'HTMLElement',
 
     # The base HTML element that is being extended.
+    # If a specific element is extended, you can create a control in form:
+    # ~~~html
+    # <ElementName is="custom-element"></ElementName>
+    # ~~~
     [vbn()]
     [Alias('ExtendElements')]
     [string]
-    $ExtendElement = 'div',
+    $ExtendElement,
 
     # The parameters to any template.
     [vbn()]
@@ -100,11 +104,11 @@ class $ClassName extends $ExtendClass {
     constructor() {
         super();
         const shadow = this.attachShadow({mode: 'open'});        
-        $(
+        let shadowTemplate = $(
             if ($template -match '[\r\n]') {
-                "shadow.innerHTML = ``$Template``;"
+                "document.createRange().createContextualFragment(``$Template``);"
             } elseif ($template -match '^\#') {
-                "shadow.innerHTML = document.getElementById(``$Template``).innerHTML;"
+                "document.getElementById(``$Template``);"
             } elseif ($(
                 $templateCommand = $ExecutionContext.SessionState.InvokeCommand.GetCommand($Template,'Function,Alias')
                 $templateCommand
@@ -117,47 +121,57 @@ class $ClassName extends $ExtendClass {
                 }
 
                 $TemplateOutput = & $TemplateCommand @TemplateSplat
-                "shadow.innerHTML = ``$TemplateOutput``;"                
+                "document.createRange().createContextualFragment(``$TemplateOutput``);"
             } elseif (Test-Path $template) {
-                "shadow.innerHTML = ``$(Get-Content $Template -Raw)``;"
+                "document.createRange().createContextualFragment(``$(Get-Content $Template -Raw)``);"
+            } else {
+                "document.createRange().createContextualFragment(``$Template``);"
             }
-        )$(@(
-            if ($OnConnected) {
-                "connectedCallback() { $OnConnected }"
+        )
+        shadow.appendChild(shadowTemplate.cloneNode(true));
+    }
+    $(@(
+        if ($OnConnected) {
+            "connectedCallback() { $OnConnected }"
+        }
+        if ($OnDisconnected) {
+            "disconnectedCallback() { $OnDisconnected }"
+        }            
+        if ($OnAdopted) {
+            "adoptedCallback() { $OnAdopted }"
+        }
+        if ($OnAttributeChange) {
+            "attributeChangedCallback(name, oldValue, newValue) { $OnAttributeChange }"
+        }            
+        if ($ObservableAttribute) {
+            "static get observedAttributes() { return [`$($ObservableAttribute -join '`,`')`]; }"
+        }
+        if ($property) {
+            if ($property -is [Collections.IDictionary]) {
+                $property = [PSCustomObject]$property
             }
-            if ($OnDisconnected) {
-                "disconnectedCallback() { $OnDisconnected }"
-            }            
-            if ($OnAdopted) {
-                "adoptedCallback() { $OnAdopted }"
-            }
-            if ($OnAttributeChange) {
-                "attributeChangedCallback(name, oldValue, newValue) { $OnAttributeChange }"
-            }            
-            if ($ObservableAttribute) {
-                "static get observedAttributes() { return [`$($ObservableAttribute -join '`,`')`]; }"
-            }
-            if ($property) {
-                if ($property -is [Collections.IDictionary]) {
-                    $property = [PSCustomObject]$property
+            foreach ($prop in $property.PSObject.properties) {
+                $propName = $prop.Name                    
+                $propGet, $propSet = $prop.Value
+                if ($propGet) {
+                    "get $propName() { $propGet }"
                 }
-                foreach ($prop in $property.PSObject.properties) {
-                    $propName = $prop.Name                    
-                    $propGet, $propSet = $prop.Value
-                    if ($propGet) {
-                        "get $propName() { $propGet }"
-                    }
-                    if ($propSet) {
-                        "set $propName(value) { $propSet }"
-                    }
+                if ($propSet) {
+                    "set $propName(value) { $propSet }"
                 }
             }
-        ) -join ([Environment]::NewLine * 2))
-    }    
+        }
+    ) -join ([Environment]::NewLine * 2))
 }
 
-if (!customElements.get(`$ElementName`)) {
-    customElements.define(`$ElementName`, $ClassName, { extends: `$ExtendElement` });
+if (customElements.define != null) {
+    $(
+        if ($ExtendElement) {
+            "customElements.define(`"$ElementName`", $ClassName, {extends: `"$ExtendElement`"});"
+        } else {
+            "customElements.define(`"$ElementName`", $ClassName);"
+        }
+    )    
 }
 /*]]>*/
 </script>
