@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Vue|Language)[\s\p{P}]")]
+param()
+
 
 function Language.Vue {
 <#
