@@ -1,3 +1,6 @@
+[ValidatePattern("HTML")]
+param()
+
 Template function HTML.Script {
     <#
     .SYNOPSIS
