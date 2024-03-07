@@ -1,3 +1,6 @@
+[ValidatePattern("(?>HLSL|Language)[\s\p{P}]")]
+param()
+
 
 function Language.HLSL {
 <#
