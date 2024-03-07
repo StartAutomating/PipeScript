@@ -1,4 +1,4 @@
-﻿[VallidatePattern("Pipescript")]
+﻿[ValidatePattern("Pipescript")]
 param()
 
 Template function PipeScript.ExplicitOutput {
