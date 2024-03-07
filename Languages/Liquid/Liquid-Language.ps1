@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Liquid|Language)[\s\p{P}]")]
+param()
+
 
 function Language.Liquid {
 <#
