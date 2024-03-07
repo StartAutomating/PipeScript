@@ -1,3 +1,6 @@
+[ValidatePattern("HTML")]
+param()
+
 
 function Template.HTML.Script {
 
