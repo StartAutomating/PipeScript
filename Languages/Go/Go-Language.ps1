@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Go|Language)[\s\p{P}]")]
+param()
+
 
 function Language.Go {
 <#
