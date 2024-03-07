@@ -15,7 +15,6 @@ These are all of the transpilers currently included in PipeScript:
 |[ConditionalKeyword](Transpilers/Syntax/ConditionalKeyword.psx.ps1)                        |Conditional Keyword Expansion                     |
 |[Decorate](Transpilers/Decorate.psx.ps1)                                                   |decorate transpiler                               |
 |[Define](Transpilers/Define.psx.ps1)                                                       |Defines a variable                                |
-|[Dot](Transpilers/Syntax/Dot.psx.ps1)                                                      |Dot Notation                                      |
 |[Explicit](Transpilers/Explicit.psx.ps1)                                                   |Makes Output from a PowerShell function Explicit. |
 |[Include](Transpilers/Include.psx.ps1)                                                     |Includes Files                                    |
 |[ModuleExports](Transpilers/Modules/ModuleExports.psx.ps1)                                 |Gets Module Exports                               |
