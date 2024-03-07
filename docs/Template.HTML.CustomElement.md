@@ -19,6 +19,16 @@ Creates the JavaScript for a custom HTML element.
 
 ---
 
+### Examples
+> EXAMPLE 1
+
+Hello, World!</p>"  -OnConnected "
+    console.log('Hello, World!')
+"
+Template.HTML.Element -Name "hello-world"
+
+---
+
 ### Parameters
 #### **ElementName**
 The name of the element.  By default, custom-element.

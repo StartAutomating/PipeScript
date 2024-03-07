@@ -13,6 +13,11 @@ function Template.HTML.CustomElement {
         Creates the JavaScript for a custom HTML element.
     .LINK
         https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements
+    .EXAMPLE
+        Template.HTML.CustomElement -ElementName hello-world -Template "<p>Hello, World!</p>"  -OnConnected "
+            console.log('Hello, World!')
+        "
+        Template.HTML.Element -Name "hello-world"
     #>
     [Alias('Template.HTML.Control','Template.Control.html','Template.CustomElement.html')]
     param(
