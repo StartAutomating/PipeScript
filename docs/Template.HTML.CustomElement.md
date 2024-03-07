@@ -44,6 +44,10 @@ The class that the element extends.  By default, HTMLElement.
 
 #### **ExtendElement**
 The base HTML element that is being extended.
+If a specific element is extended, you can create a control in form:
+~~~html
+<ElementName is="custom-element"></ElementName>
+~~~
 
 |Type      |Required|Position|PipelineInput        |Aliases       |
 |----------|--------|--------|---------------------|--------------|
