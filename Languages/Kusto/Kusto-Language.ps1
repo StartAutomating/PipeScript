@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Kusto|Language)[\s\p{P}]")]
+param()
+
 
 function Language.Kusto {
 <#
