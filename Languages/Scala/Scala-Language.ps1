@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Scala|Language)[\s\p{P}]")]
+param()
+
 
 function Language.Scala {
 <#
