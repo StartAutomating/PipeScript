@@ -25,12 +25,12 @@ The name of the element.
 |----------|--------|--------|---------------------|
 |`[String]`|false   |1       |true (ByPropertyName)|
 
-#### **Attributes**
+#### **Attribute**
 The attributes of the element.
 
-|Type        |Required|Position|PipelineInput        |Aliases  |
-|------------|--------|--------|---------------------|---------|
-|`[PSObject]`|false   |2       |true (ByPropertyName)|Attribute|
+|Type        |Required|Position|PipelineInput        |Aliases   |
+|------------|--------|--------|---------------------|----------|
+|`[PSObject]`|false   |2       |true (ByPropertyName)|Attributes|
 
 #### **Content**
 The content of the element.
@@ -43,5 +43,5 @@ The content of the element.
 
 ### Syntax
 ```PowerShell
-Template.HTML.Element [[-Name] <String>] [[-Attributes] <PSObject>] [[-Content] <String>] [<CommonParameters>]
+Template.HTML.Element [[-Name] <String>] [[-Attribute] <PSObject>] [[-Content] <String>] [<CommonParameters>]
 ```
