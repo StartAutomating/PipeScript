@@ -1,3 +1,4 @@
+Template function PowerShell.Help {
 <#
 .SYNOPSIS
     Help Transpiler
@@ -87,4 +88,6 @@ process {
 
         $helpScriptBlock, $scriptBlock | Join-PipeScript
     }   
+}
+
 }
