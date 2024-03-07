@@ -1,3 +1,6 @@
+[ValidatePattern("(?>C|Language)\s")]
+param()
+
 
 function Template.Include.c {
 
