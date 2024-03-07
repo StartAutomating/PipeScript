@@ -1,3 +1,6 @@
+[ValidatePattern("HTML")]
+param()
+
 
 function Template.HTML.Element {
 
@@ -8,7 +11,8 @@ function Template.HTML.Element {
         A Template for an HTML element.
     .LINK
         https://developer.mozilla.org/en-US/docs/Web/HTML/Element
-    #>    
+    #>
+    [Alias('Template.Element.html')]
     param(
     # The name of the element.
     [Parameter(ValueFromPipelineByPropertyName)]
