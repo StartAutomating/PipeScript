@@ -1,3 +1,7 @@
+[ValidatePattern("(?>Perl|Language)[\s\p{P}]")]
+param()
+
+
 
 function Language.Perl {
 <#
