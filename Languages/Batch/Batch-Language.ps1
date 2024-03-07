@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Batch|Language)")]
+param()
+
 
 function Language.Batch {
 <#
