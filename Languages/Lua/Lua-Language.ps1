@@ -1,3 +1,6 @@
+[ValidatePattern("(?>LUA|Language)[\s\p{P}]")]
+param()
+
 
 function Language.Lua {
 <#
