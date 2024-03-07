@@ -1,3 +1,6 @@
+[ValidatePattern("(?>BrightScript|Language)")]
+param()
+
 
 function Language.BrightScript {
 <#
