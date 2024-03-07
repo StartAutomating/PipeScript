@@ -1,3 +1,6 @@
+[ValidatePattern("(?>JavaScript|Language)[\s\p{P}]")]
+param()
+
 
 function Language.JavaScript {
 <#
