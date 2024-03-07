@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Ruby|Language)[\s\p{P}]")]
+param()
+
 
 function Language.Ruby {
 <#
