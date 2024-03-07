@@ -1,3 +1,6 @@
+[ValidatePattern("HTML")]
+param()
+
 Template function HTML.Element {
     <#
     .SYNOPSIS
@@ -6,7 +9,8 @@ Template function HTML.Element {
         A Template for an HTML element.
     .LINK
         https://developer.mozilla.org/en-US/docs/Web/HTML/Element
-    #>    
+    #>
+    [Alias('Template.Element.html')]
     param(
     # The name of the element.
     [vbn()]
