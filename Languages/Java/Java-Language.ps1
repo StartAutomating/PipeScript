@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Java|Language)[\s\p{P}]")]
+param()
+
 
 function Language.Java {
 <#
