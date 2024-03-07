@@ -1,3 +1,6 @@
+[ValidatePattern("(?>PowerShell|Language)")]
+param()
+
 
 function Language.PowerShell {
 <#
