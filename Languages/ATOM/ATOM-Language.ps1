@@ -1,3 +1,6 @@
+[ValidatePattern("(?>ATOM|Language)")]
+param()
+
 
 function Language.ATOM {
 <#
