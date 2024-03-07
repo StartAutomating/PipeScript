@@ -1,3 +1,6 @@
+[ValidatePattern("(?>Basic|Language)")]
+param()
+
 
 function Language.BASIC {
 <#
