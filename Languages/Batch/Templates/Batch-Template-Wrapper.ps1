@@ -10,6 +10,7 @@ function Template.Batch.Wrapper {
     .Description
         Wraps PowerShell in a Windows Batch Script
     #>
+    [Alias('Batch')]
     param(
     [Parameter(Mandatory,ValueFromPipeline,ParameterSetName='ScriptInfo')]
     [Management.Automation.ExternalScriptInfo]
