@@ -23,6 +23,10 @@ begin {
         $script:TypeAcceleratorsList = [PSObject].Assembly.GetType("System.Management.Automation.TypeAccelerators")::Get.Keys
     }
 
+    if (-not $script:AllFunctionsAndAliases) {
+        $script:AllFunctionsAndAliases = $global:ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function, Alias', $true)
+    }
+
     function TypeConstraintToArguments {
         param (
             [Parameter(ValueFromPipeline)]
@@ -107,11 +111,30 @@ process {
             } else {
                 $TypeConstraint.TypeName.Name
             }
+
+        $potentialCommands = @(
+            Get-Transpiler -TranspilerName "$transpilerStepName" |
+                Select-Object -ExpandProperty ExtensionCommand
+            $script:AllFunctionsAndAliases -match ($transpilerStepName -replace '-','_')
+        )
         $foundTranspiler =
             if ($currentInput -isnot [string]) {
-                Get-Transpiler -CouldPipe $currentInput -TranspilerName "$transpilerStepName"
-            } else {
-                Get-Transpiler -TranspilerName "$transpilerStepName"
+                foreach  ($potentialCommand in $potentialCommands) {
+                    if ($potentialCommand.CouldPipe($currentInput)) {
+                        $potentialCommand
+                    }
+                }                    
+                Get-Transpiler -CouldPipe $currentInput -TranspilerName "$transpilerStepName" |
+                    Select-Object -ExpandProperty ExtensionCommand
+            } 
+            elseif ($(
+                $matchingCommands = $script:AllFunctionsAndAliases -match ($transpilerStepName -replace '-','_')
+                $matchingCommands
+            )) {
+                $matchingCommands
+            }                
+            else {
+                $potentialCommands
             }
 
         $argList = @()
@@ -130,14 +153,20 @@ process {
                 }
         }
         
-            
-        if ($foundTranspiler -and $currentInput -isnot [string]) {
-            $currentInput | Invoke-PipeScript -CommandInfo $foundTranspiler.ExtensionCommand  -ArgumentList $arglist -Parameter $parameters                                          
-        } elseif ($foundTranspiler -and $currentInput -is [string]) {
-            Invoke-PipeScript -CommandInfo $foundTranspiler.ExtensionCommand -ArgumentList @(@($currentInput) + $arglist) -Parameter $parameters
-        } elseif ($script:TypeAcceleratorsList -notcontains $transpilerStepName -and $transpilerStepName -notin 'Ordered') {
+        :TransformingTheAttribue do {
+            foreach ($commandToRun in $foundTranspiler) {                
+                if ($commandToRun -and $currentInput -isnot [string]) {
+                    $currentInput | Invoke-PipeScript -CommandInfo $commandToRun -ArgumentList $arglist -Parameter $parameters
+                    if ($?) { break TransformingTheAttribue }
+                } elseif ($commandToRun -and $currentInput -is [string]) {
+                    Invoke-PipeScript -CommandInfo $commandToRun -ArgumentList @(@($currentInput) + $arglist) -Parameter $parameters
+                    if ($?) { break TransformingTheAttribue }
+                }
+            }
+
             Write-Error "Could not find a Transpiler or Type for [$TranspilerStepName]" -Category ParserError -ErrorId 'Transpiler.Not.Found'
-        }
+            return
+        } while ($false)                            
     } else {
         if ($currentInput -isnot [string]) {
             $currentInput | Invoke-PipeScript -AttributeSyntaxTree $AttributedExpressionAst.Attribute
