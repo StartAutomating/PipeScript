@@ -62,6 +62,9 @@ $EndPattern   = "(?<PSEnd>${endComment})"
 # Using -LinePattern will skip any inline code not starting with :: or rem.
 $LinePattern   = "^\s{0,}(?>\:\:|rem)\s{0,}"
 
+# One or more wrappers can be used to create a wrapper of a PowerShell script.
+$Wrapper       = 'Template.Batch.Wrapper'
+
 # If we're on windows, we can run cmd as the batch interpreter
 $interpreter   = if ($IsWindows) {
     @($ExecutionContext.SessionState.InvokeCommand.GetCommand('cmd', 'Application'))[0], "/c"
