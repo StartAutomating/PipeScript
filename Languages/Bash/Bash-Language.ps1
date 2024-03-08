@@ -51,6 +51,9 @@ $languageDefinition = New-Module {
     
     $EndPattern   = "(?<PSEnd>${endComment})"
 
+    # One or more wrappers can be used to create a wrapper of a PowerShell script.
+    $Wrapper       = 'Template.Bash.Wrapper'
+
     $Interpreter = $ExecutionContext.SessionState.InvokeCommand.GetCommand('bash','Application')
     $LanguageName = 'Bash'
     Export-ModuleMember -Variable * -Function * -Alias *
