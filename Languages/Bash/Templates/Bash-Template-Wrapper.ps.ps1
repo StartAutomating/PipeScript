@@ -8,6 +8,7 @@ Template function Bash.Wrapper {
     .Description
         Wraps PowerShell in a Bash Script
     #>
+    [Alias('Bash')]
     param(
     [Parameter(Mandatory,ValueFromPipeline,ParameterSetName='ScriptInfo')]
     [Management.Automation.ExternalScriptInfo]
