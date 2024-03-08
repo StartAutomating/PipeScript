@@ -9,7 +9,6 @@ These are all of the transpilers currently included in PipeScript:
 |[ArrowOperator](Transpilers/Syntax/ArrowOperator.psx.ps1)                                  |Arrow Operator                                    |
 |[Assert](Transpilers/Keywords/Assert.psx.ps1)                                              |Assert keyword                                    |
 |[Await](Transpilers/Keywords/Await.psx.ps1)                                                |awaits asynchronous operations                    |
-|[Bash](Transpilers/Wrappers/Bash.psx.ps1)                                                  |Wraps PowerShell in a Bash Script                 |
 |[Batch](Transpilers/Wrappers/Batch.psx.ps1)                                                |Wraps PowerShell in a Windows Batch Script        |
 |[BatchPowerShell](Transpilers/Wrappers/BatchPowerShell.psx.ps1)                            |Wraps PowerShell in a Windows Batch Script        |
 |[ConditionalKeyword](Transpilers/Syntax/ConditionalKeyword.psx.ps1)                        |Conditional Keyword Expansion                     |
