@@ -1,3 +1,6 @@
+[ValidatePattern("Python")]
+param()
+
 
 function Template.WhileLoop.py {
 
