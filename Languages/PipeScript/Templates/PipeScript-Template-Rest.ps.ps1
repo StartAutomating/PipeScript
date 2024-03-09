@@ -4,9 +4,9 @@ param()
 Template function PipeScript.Rest {
     <#
     .SYNOPSIS
-        Generates PowerShell to talk to a REST api.
+        Template for simple REST in PipeScript
     .DESCRIPTION
-        Generates PowerShell that communicates with a REST api.
+        Template for a Restful function in PipeScript.
     .EXAMPLE
         {
             function Get-Sentiment {
