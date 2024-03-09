@@ -522,7 +522,7 @@ namespace PipeScript.Net
             int max = runspacePool.GetMaxRunspaces();
             runspacePool.SetMaxRunspaces(max + 1);
             powerShellCommand = PowerShell.Create();
-            powerShellCommand.RunspacePool = runspacePool;
+            powerShellCommand.RunspacePool = PSNodePool;
 
             powerShellCommand.Streams.Error = this.Error;
             powerShellCommand.Streams.Warning = this.Warning;
