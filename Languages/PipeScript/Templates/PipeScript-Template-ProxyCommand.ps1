@@ -1,4 +1,4 @@
-[ValidatePattern('ProxyCommand')]
+[ValidatePattern('(?>PipeScript|ProxyCommand)')]
 param()
 
 
