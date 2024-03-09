@@ -1,4 +1,4 @@
-Template function NamespacedObject {
+Template function PipeScript.NamespacedObject {
     <#
     .SYNOPSIS
         Namespaced functions
