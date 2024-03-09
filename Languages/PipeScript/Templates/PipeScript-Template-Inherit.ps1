@@ -282,6 +282,11 @@ process {
         Write-Error "Could not resolve [ScriptBlock] to inheirt from Command: '$Command'"
         return
     }
+
+    if ($Abstract -and -not $Dynamic) {
+        $NotDynamic = $true
+    }
+    
     # Now we're passing a series of script blocks to Join-PipeScript
 
 $(
