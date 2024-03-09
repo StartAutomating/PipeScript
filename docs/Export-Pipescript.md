@@ -64,9 +64,16 @@ The throttle limit for parallel jobs.
 |---------|--------|--------|-------------|
 |`[Int32]`|false   |3       |false        |
 
+#### **Force**
+If set, will ignore validation when building.
+
+|Type      |Required|Position|PipelineInput|
+|----------|--------|--------|-------------|
+|`[Switch]`|false   |named   |false        |
+
 ---
 
 ### Syntax
 ```PowerShell
-Export-Pipescript [[-InputPath] <String[]>] [-Serial] [-Parallel] [[-BatchSize] <Int32>] [[-ThrottleLimit] <Int32>] [<CommonParameters>]
+Export-Pipescript [[-InputPath] <String[]>] [-Serial] [-Parallel] [[-BatchSize] <Int32>] [[-ThrottleLimit] <Int32>] [-Force] [<CommonParameters>]
 ```
