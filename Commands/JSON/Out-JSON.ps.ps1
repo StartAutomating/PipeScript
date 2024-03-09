@@ -6,7 +6,14 @@ function Out-JSON {
     .SYNOPSIS
         Outputs objects as JSON
     .DESCRIPTION
-        Outputs objects in JSON.    
+        Outputs objects in JSON.
+
+        If only one object is outputted, it will not be in a list.
+        If multiple objects are outputted, they will be in a list.
+    .LINK
+        @{
+            a = 'b'
+        } | Out-JSON
     #>
     [CmdletBinding(PositionalBinding=$false)]
     [Alias('text.json.out')]
