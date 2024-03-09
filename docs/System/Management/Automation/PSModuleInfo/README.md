@@ -12,6 +12,7 @@
 * [get_Asset](get_Asset.md)
 * [get_CommandType](get_CommandType.md)
 * [get_Container](get_Container.md)
+* [get_EntryPoint](get_EntryPoint.md)
 * [get_Export](get_Export.md)
 * [get_Extension](get_Extension.md)
 * [get_Files](get_Files.md)
