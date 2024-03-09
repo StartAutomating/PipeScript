@@ -1,4 +1,4 @@
-[ValidatePattern('Inherit')]
+[ValidatePattern('(?>PipeScript|Inherit)')]
 param()
 
 
@@ -286,7 +286,7 @@ process {
     if ($Abstract -and -not $Dynamic) {
         $NotDynamic = $true
     }
-    
+
     # Now we're passing a series of script blocks to Join-PipeScript
 
 $(
