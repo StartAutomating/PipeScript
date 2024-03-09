@@ -1,3 +1,6 @@
+[ValidatePattern('PipeScript')]
+param()
+
 
 function Template.PipeScript.NamespacedAlias {
 
