@@ -252,7 +252,7 @@ process {
             $applicationWrapper
         } elseif ($resolvedCommand -is [Management.Automation.CmdletInfo] -or $Proxy) {
             # If we're inheriting a Cmdlet or -Proxy was passed, inherit from a proxy command.
-            .>ProxyCommand -CommandName $Command
+            Template.PipeScript.ProxyCommand -CommandName $Command
         } 
         elseif (
             # If it's a function or script
