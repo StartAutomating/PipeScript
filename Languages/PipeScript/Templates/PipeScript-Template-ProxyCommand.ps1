@@ -8,11 +8,7 @@ function Template.PipeScript.ProxyCommand {
     .SYNOPSIS
         Creates Proxy Commands
     .DESCRIPTION
-        Generates a Proxy Command for an underlying PowerShell or PipeScript command.
-    .EXAMPLE
-        {
-            function [ProxyCommand<'Get-Process'>]GetProcessProxy {}
-        } | .>PipeScript
+        Generates a Proxy Command for an underlying PowerShell or PipeScript command.    
     .EXAMPLE
         ProxyCommand -CommandName Get-Process -RemoveParameter *
     .EXAMPLE
