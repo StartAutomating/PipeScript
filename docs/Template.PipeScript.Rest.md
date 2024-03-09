@@ -2,13 +2,13 @@ Template.PipeScript.Rest
 ------------------------
 
 ### Synopsis
-Generates PowerShell to talk to a REST api.
+Template for simple REST in PipeScript
 
 ---
 
 ### Description
 
-Generates PowerShell that communicates with a REST api.
+Template for a Restful function in PipeScript.
 
 ---
 
