@@ -63,7 +63,7 @@ Invoke-PipeScript {
         QueryParameter={"type", "sort", "direction", "page", "per_page"}
     )]
     param()
-} -UserName StartAutomating
+} -Parameter @{UserName='StartAutomating'}
 ```
 > EXAMPLE 5
 
