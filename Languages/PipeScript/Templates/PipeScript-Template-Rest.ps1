@@ -1,3 +1,6 @@
+[ValidatePattern('REST')]
+param()
+
 
 function Template.PipeScript.Rest {
 
@@ -265,7 +268,11 @@ process {
         # If we used any URI parameters
         if ($uriParamBlock.Ast.ParamBlock.Parameters) {
             # Carry on the begin block from this command (this is a neat trick)
-            [scriptblock]::Create($MyInvocation.MyCommand.ScriptBlock.Ast.BeginBlock.Extent.ToString())
+            if ($MyInvocation.MyCommand.ScriptBlock.Ast.BeginBlock) {
+                [scriptblock]::Create($MyInvocation.MyCommand.ScriptBlock.Ast.BeginBlock.Extent.ToString())
+            } elseif ($MyInvocation.MyCommand.ScriptBlock.Ast.Body.BeginBlock) {
+                [scriptblock]::Create($MyInvocation.MyCommand.ScriptBlock.Ast.Body.BeginBlock.Extent.ToString())
+            }
         } else { { } }
 
         $foundAttributesOfInterest = 
