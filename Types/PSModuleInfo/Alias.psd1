@@ -2,6 +2,7 @@
     Containers = 'Container'
     Directories = 'Folders'
     Directory = 'Folder'
+    EntryPoints = 'EntryPoint'
     Extensions = 'Extension'
     Exports = 'Export'
     ExtendedCommand = 'Extension'
