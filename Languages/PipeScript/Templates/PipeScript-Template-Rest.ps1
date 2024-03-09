@@ -48,7 +48,7 @@ function Template.PipeScript.Rest {
                 QueryParameter={"type", "sort", "direction", "page", "per_page"}
             )]
             param()
-        } -UserName StartAutomating
+        } -Parameter @{UserName='StartAutomating'}
     .EXAMPLE
         {
             [Rest("http://text-processing.com/api/sentiment/",
