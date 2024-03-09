@@ -68,6 +68,9 @@ Template function PipeScript.SwitchAsIs {
                     $clause.Item2.ToString()
                 }
             }
+            if ($switchStatementAst.Default) {
+                "default { $($switchStatementAst.Default.ToString()) }"
+            }
             "}") -join [Environment]::newLine
         )
     }
