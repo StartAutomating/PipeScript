@@ -478,7 +478,32 @@
                     $AttributeSyntaxTree.TypeName.Name
                 }
 
-            # See if we could find a transpiler that fits.
+            $foundTranspiler = :FoundCommand do {
+                $foundIt = Get-Transpiler -TranspilerName "$transpilerStepName"
+                if ($foundIt) {
+                    $foundIt; break FindingTranspiler
+                }
+                foreach ($langName in 'PipeScript','PowerShell') {
+                    if ($PSLanguage.$langName.Templates.$transpilerStepName) {
+                        $PSLanguage.$langName.Templates.$transpilerStepName; break FoundCommand
+                    }
+                    if ($PSLanguage.$langName.Templates.("$langName.$transpilerStepName")) {
+                        $PSLanguage.$langName.Templates.("$langName.$transpilerStepName"); break FoundCommand
+                    }    
+                }                
+                $realCommandExists = $ExecutionContext.SessionState.InvokeCommand.GetCommand(($transpilerStepName -replace '_','-'), 'Function,Cmdlet,Alias')
+                if ($realCommandExists) {
+                    $realCommandExists; break FoundCommand
+                }
+            } while ($false)
+
+            if ($InputObject) {
+                if ($foundTranspiler -and -not $foundTranspiler.CouldPipe($InputObject)) {
+                    $foundTranspiler = $null
+                }
+            }
+                
+            <## See if we could find a transpiler that fits.
             $foundTranspiler  =
                 if ($InputObject) {
                     Get-Transpiler -TranspilerName "$transpilerStepName" -CouldPipe $InputObject |
@@ -486,7 +511,7 @@
                 } else {
                     Get-Transpiler -TranspilerName "$transpilerStepName"
                 }
-
+            #>
             # Collect all of the arguments of the attribute, in the order they were specified.
             $argsInOrder = @(
                 @($AttributeSyntaxTree.PositionalArguments) + @($AttributeSyntaxTree.NamedArguments) | Sort-Object { $_.Extent.StartOffset})
@@ -562,31 +587,7 @@
                 } else {
                     & $foundTranspiler @ArgumentList @Parameter
                 }
-            }
-            elseif ($(
-                $realCommandExists = $ExecutionContext.SessionState.InvokeCommand.GetCommand(($transpilerStepName -replace '_','-'), 'All')
-                $realCommandExists
-            )) {
-                if ($positionalArguments) {
-                    $ArgumentList += $positionalArguments
-                }
-                if ($inputObject) {
-                    $canPipe = foreach ($param in $realCommandExists.Parameters.Values) {
-                        if ($param.Attributes.ValueFromPipeline -and $inputObject -is $param.ParameterType) {
-                            $true
-                            break
-                        }
-                    }
-                    if ($canPipe) {
-                        $inputObject |
-                            & $realCommandExists @Parameter @ArgumentList
-                    } else {
-                        & $realCommandExists @Parameter @ArgumentList
-                    }
-                } else {
-                    & $realCommandExists @Parameter @ArgumentList
-                }
-            }
+            }            
             elseif ($script:TypeAcceleratorsList -notcontains $transpilerStepName -and $transpilerStepName -notin 'Ordered') {
                 $psCmdlet.WriteError(
                     [Management.Automation.ErrorRecord]::new(
