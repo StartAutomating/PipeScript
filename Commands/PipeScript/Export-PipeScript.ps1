@@ -36,7 +36,11 @@ function Export-Pipescript {
 
     # The throttle limit for parallel jobs.
     [int]
-    $ThrottleLimit = 7
+    $ThrottleLimit = 7,
+
+    # If set, will ignore validation when building.
+    [switch]
+    $Force
     )
 
     begin {
@@ -94,6 +98,10 @@ function Export-Pipescript {
             [PSObject]
             $ValidateAgainst
             )
+
+            if ($force) {
+                return $true
+            }
 
             #region Build Condition
             $ValidateAgainstString = 
