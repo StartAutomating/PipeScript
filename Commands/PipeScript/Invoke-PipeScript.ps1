@@ -481,7 +481,7 @@
             $foundTranspiler = :FoundCommand do {
                 $foundIt = Get-Transpiler -TranspilerName "$transpilerStepName"
                 if ($foundIt) {
-                    $foundIt; break FindingTranspiler
+                    $foundIt; break FoundCommand
                 }
                 foreach ($langName in 'PipeScript','PowerShell') {
                     if ($PSLanguage.$langName.Templates.$transpilerStepName) {
