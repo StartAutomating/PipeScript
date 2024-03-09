@@ -1,4 +1,4 @@
-[ValidatePattern('REST')]
+[ValidatePattern('(?>PipeScript|REST)')]
 param()
 
 Template function PipeScript.Rest {
