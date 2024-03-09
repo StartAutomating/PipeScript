@@ -1,3 +1,7 @@
+[ValidatePattern("JSON")]
+param()
+
+
 function Export-Json {
     <#
     
