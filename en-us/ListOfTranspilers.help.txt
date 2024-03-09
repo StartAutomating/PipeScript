@@ -28,7 +28,6 @@ These are all of the transpilers currently included in PipeScript:
 |[PipeScript.Translator](Transpilers/Core/PipeScript.Translator.psx.ps1)                    |PipeScript Translator                             |
 |[PipeScript.TypeConstraint](Transpilers/Core/PipeScript.TypeConstraint.psx.ps1)            |Transpiles Type Constraints                       |
 |[PipeScript.TypeExpression](Transpilers/Core/PipeScript.TypeExpression.psx.ps1)            |The PipeScript TypeExpression Transpiler          |
-|[RemoveParameter](Transpilers/Parameters/RemoveParameter.psx.ps1)                          |Removes Parameters from a ScriptBlock             |
 |[Requires](Transpilers/Keywords/Requires.psx.ps1)                                          |requires one or more modules, variables, or types.|
 |[Until](Transpilers/Keywords/Until.psx.ps1)                                                |until keyword                                     |
 |[ValidateExtension](Transpilers/Parameters/ValidateExtension.psx.ps1)                      |Validates Extensions                              |
