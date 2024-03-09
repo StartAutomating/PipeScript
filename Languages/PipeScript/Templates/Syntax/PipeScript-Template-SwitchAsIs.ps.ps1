@@ -69,7 +69,7 @@ Template function PipeScript.SwitchAsIs {
                 }
             }
             if ($switchStatementAst.Default) {
-                "default { $($switchStatementAst.Default.ToString()) }"
+                "default $($switchStatementAst.Default.ToString())"
             }
             "}") -join [Environment]::newLine
         )
