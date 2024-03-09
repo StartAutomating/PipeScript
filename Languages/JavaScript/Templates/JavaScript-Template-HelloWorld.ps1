@@ -1,3 +1,6 @@
+[ValidatePattern("JavaScript")]
+param()
+
 
 function Template.HelloWorld.js {
 
