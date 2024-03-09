@@ -138,6 +138,10 @@ Template function PowerShell.Parameter {
         # Presort the attributes
         $attribute = @(foreach ($attr in $Attribute) {            
             switch ($attr) {
+                [ValidateSet] {
+                    $ValidateSet += $attr.ValidValues
+                    continue
+                }
                 [Management.Automation.ParameterAttribute] {
                     $ParameterAttribute += $attr
                     continue
@@ -240,10 +244,12 @@ Template function PowerShell.Parameter {
                 $attrs += "[ComponentModel.AmbientValue({$ambient})]"
             }
         }
-                                    
+ 
+        $alreadyIncludedAttributes = @()
         foreach ($attr in $attrs) {
             if ($attr -is [Attribute]) {
                 $attrType = $attr.GetType()
+                if ($alreadyIncludedAttributes -contains $attr) { continue }
                 if ($attr -is [Parameter]) {
                     $ParameterOtherAttributes += "[Parameter($(@(
                         if ($attr.Mandatory) { 'Mandatory' }
@@ -259,6 +265,7 @@ Template function PowerShell.Parameter {
                 } else {
                     $attr | Template.PowerShell.Attribute
                 }
+                $alreadyIncludedAttributes += $attr
                 continue
             }
             if ($attr -notmatch '^\[') {
@@ -353,7 +360,7 @@ Template function PowerShell.Parameter {
     }
 
     end {
-        $generatedParameters.ToArray() -join ([Environment]::newLine + ',')
+        $generatedParameters.ToArray() -join (',' + [Environment]::newLine + [Environment]::newLine)
     }
 }
 
