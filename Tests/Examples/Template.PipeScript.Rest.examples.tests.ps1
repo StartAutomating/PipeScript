@@ -42,7 +42,7 @@ describe 'Template.PipeScript.Rest' {
                 QueryParameter={"type", "sort", "direction", "page", "per_page"}
             )]
             param()
-        } -UserName StartAutomating
+        } -Parameter @{UserName='StartAutomating'}
     }
     it 'Template.PipeScript.Rest Example 5' {
         {
