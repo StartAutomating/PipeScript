@@ -1,3 +1,6 @@
+[ValidatePattern('PipeScript')]
+param()
+
 Template function PipeScript.PipedAssignment {
     <#
     .SYNOPSIS
