@@ -1,3 +1,6 @@
+[ValidatePattern('ProxyCommand')]
+param()
+
 Template function PipeScript.ProxyCommand {
     <#
     .SYNOPSIS
@@ -5,13 +8,11 @@ Template function PipeScript.ProxyCommand {
     .DESCRIPTION
         Generates a Proxy Command for an underlying PowerShell or PipeScript command.
     .EXAMPLE
-        .\ProxyCommand.psx.ps1 -CommandName Get-Process
-    .EXAMPLE
         {
             function [ProxyCommand<'Get-Process'>]GetProcessProxy {}
         } | .>PipeScript
     .EXAMPLE
-        .>ProxyCommand -CommandName Get-Process -RemoveParameter *
+        ProxyCommand -CommandName Get-Process -RemoveParameter *
     .EXAMPLE
         Invoke-PipeScript -ScriptBlock {[ProxyCommand('Get-Process')]param()}
     .EXAMPLE
