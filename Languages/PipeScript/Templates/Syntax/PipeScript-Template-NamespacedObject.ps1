@@ -1,5 +1,5 @@
 
-function Template.NamespacedObject {
+function Template.PipeScript.NamespacedObject {
 
     <#
     .SYNOPSIS
