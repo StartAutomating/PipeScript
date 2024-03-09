@@ -16,26 +16,21 @@ Generates a Proxy Command for an underlying PowerShell or PipeScript command.
 > EXAMPLE 1
 
 ```PowerShell
-.\ProxyCommand.psx.ps1 -CommandName Get-Process
-```
-> EXAMPLE 2
-
-```PowerShell
 {
     function [ProxyCommand<'Get-Process'>]GetProcessProxy {}
 } | .>PipeScript
 ```
-> EXAMPLE 3
+> EXAMPLE 2
 
 ```PowerShell
 ProxyCommand -CommandName Get-Process -RemoveParameter *
 ```
-> EXAMPLE 4
+> EXAMPLE 3
 
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {[ProxyCommand('Get-Process')]param()}
 ```
-> EXAMPLE 5
+> EXAMPLE 4
 
 ```PowerShell
 Invoke-PipeScript -ScriptBlock {
@@ -47,7 +42,7 @@ Invoke-PipeScript -ScriptBlock {
         param()
 }
 ```
-> EXAMPLE 6
+> EXAMPLE 5
 
 ```PowerShell
 { 
