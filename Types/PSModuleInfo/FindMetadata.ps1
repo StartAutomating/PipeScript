@@ -28,8 +28,8 @@ foreach ($place in $this.PrivateData, $this.PrivateData.PSData) {
             }
             [PSCustomObject]$propertyBag
         } 
-        elseif (Test-Path (Join-Path $ThisRoot $potentialEntryPoint)) {
-            $fileItem = Get-Item -LiteralPath (Join-Path $ThisRoot $potentialEntryPoint)
+        elseif (Test-Path (Join-Path $ThisRoot $somethingThere)) {
+            $fileItem = Get-Item -LiteralPath (Join-Path $ThisRoot $somethingThere)
             $importer = @(
                 $ExecutionContext.SessionState.InvokeCommand.GetCommands(
                     "Import-$($fileItem.Extension)",
@@ -42,8 +42,8 @@ foreach ($place in $this.PrivateData, $this.PrivateData.PSData) {
                 $fileItem
             }
         }
-        elseif ($potentialEntryPoint) {                    
-            [PSObject]::new($potentialEntryPoint)
+        elseif ($somethingThere) {
+            [PSObject]::new($somethingThere)
         }
     }
 }
