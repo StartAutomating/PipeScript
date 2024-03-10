@@ -225,6 +225,20 @@
                 '
                 ExcludeCommandType = '(?>Application|Cmdlet)'
             }
+
+            'Service' = @{
+                Pattern = '
+                (?>
+                    (?>^|[\p{P}-[\-]])      # After non-dash punctuation or the start of a string
+                    Se?rv[ie]?c?s?          # Various forms of the word service
+                    (?>                     # Followed by either
+                        \.\w$               # any extension and end of string
+                        |                   # or 
+                        \p{P}               # any other punctuation.
+                    )
+                )
+                '
+            }
               
             'Template'     = 
                 @{
@@ -235,6 +249,16 @@
 
         Server = 'pipescript.dev', 'pipescript.info', 'pipescript.io'
         Servers = 'pipescript.startautomating.com','pipescript.start-automating.com'
+        Services = @{
+            Name = 'Markdown Service'
+            Command = 'ConvertFrom-Markdown'
+        }, @{
+            Name = 'Math Service'
+            Type = 'Math'
+        }, @{
+            Name = 'Pid Service'
+            Variable = 'pid' 
+        }
 
         Videos = @{
             "Run Anything with PipeScript (from RTPSUG)" = "https://www.youtube.com/watch?v=-PuiNAcvalw"
