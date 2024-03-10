@@ -5220,6 +5220,60 @@ foreach ($module in $targetModules) {
                     </Script>
       </ScriptMethod>
       <ScriptMethod>
+        <Name>FindMetadata</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Finds metadata for a module
+.DESCRIPTION
+    Finds metadata for a module.
+
+    This searches the `.PrivateData` and `.PrivateData.PSData` for keywords, and returns the values.
+.NOTES
+    If the value points to a `[Hashtable]`, it will return a `[PSCustomObject]` with the keys sorted.
+    If the value points to a file, it will attempt to load it or return the file object.
+    If the value is a string, it will return the string as a `[PSObject]`.
+.EXAMPLE
+    (Get-Module PipeScript).FindExtensions((Get-Module PipeScript | Split-Path))
+#&gt;
+param()
+
+$unrolledArgs = $args | . { process { $_ }}
+
+foreach ($place in $this.PrivateData, $this.PrivateData.PSData) {
+    foreach ($potentialName in $unrolledArgs) {        
+        if (-not $place.$potentialName) { continue }
+        $somethingThere = $place.$potentialName
+        if ($somethingThere -is [hashtable]) {                
+            $propertyBag = [Ordered]@{}
+            foreach ($sortedKeyValue in $place.$potentialName.GetEnumerator() | Sort-Object Key) {
+                $propertyBag[$sortedKeyValue.Key]= $sortedKeyValue.Value
+            }
+            [PSCustomObject]$propertyBag
+        } 
+        elseif (Test-Path (Join-Path $ThisRoot $potentialEntryPoint)) {
+            $fileItem = Get-Item -LiteralPath (Join-Path $ThisRoot $potentialEntryPoint)
+            $importer = @(
+                $ExecutionContext.SessionState.InvokeCommand.GetCommands(
+                    "Import-$($fileItem.Extension)",
+                    'Alias,Function,Cmdlet', $true
+                )
+            )[0]
+            if ($importer) {
+                &amp; $importer $fileItem.FullName
+            } else {
+                $fileItem
+            }
+        }
+        elseif ($potentialEntryPoint) {                    
+            [PSObject]::new($potentialEntryPoint)
+        }
+    }
+}
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptMethod>
         <Name>Folder</Name>
         <Script>
                         &lt;#
