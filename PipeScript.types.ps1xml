@@ -4673,6 +4673,26 @@ else {
         <Name>Servers</Name>
         <ReferencedMemberName>Server</ReferencedMemberName>
       </AliasProperty>
+      <AliasProperty>
+        <Name>Services</Name>
+        <ReferencedMemberName>Service</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>WebCommand</Name>
+        <ReferencedMemberName>Service</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>WebCommands</Name>
+        <ReferencedMemberName>Service</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>WebService</Name>
+        <ReferencedMemberName>Service</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>WebServices</Name>
+        <ReferencedMemberName>Service</ReferencedMemberName>
+      </AliasProperty>
       <ScriptMethod>
         <Name>ExtensionsForName</Name>
         <Script>
@@ -5987,6 +6007,46 @@ param()
     $potentialServer.pstypenames.add('PipeScript.Module.Server')
     $potentialServer
 })
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Service</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Module Services
+.DESCRIPTION
+    Gets any services associated with a module.
+
+    Services can be defined within a module's metadata (`.PrivateData` or `.PrivateData.PSData`)
+
+    Services are defined within the `.Service','.Services','.WebService','.WebServices','.WebCommand','.WebCommands' sections of the manifest metadata.
+#&gt;
+param()
+
+
+if (-not $this.'.Services') {
+    $this | Add-Member NoteProperty '.Services' (
+        [PSCustomObject][Ordered]@{
+            PSTypeName = 'PipeScript.Module.Services'
+            List = @(foreach ($potentialServer in $this.FindMetadata(
+                'Service', 'Services',
+                'WebService', 'WebServices', 
+                'WebCommand', 'WebCommands'
+            )) {
+            $potentialServer.pstypenames.clear()
+            $potentialServer.pstypenames.add("$this.Service")
+            $potentialServer.pstypenames.add('PipeScript.Module.Service')
+            $potentialServer
+        })
+        }        
+    ) -Force
+}
+
+$this.'.Services'
+
+
+
                     </GetScriptBlock>
       </ScriptProperty>
     </Members>
