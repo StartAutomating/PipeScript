@@ -15,6 +15,7 @@
 param()
 
 $unrolledArgs = $args | . { process { $_ }}
+$thisRoot = $this | Split-Path
 
 foreach ($place in $this.PrivateData, $this.PrivateData.PSData) {
     foreach ($potentialName in $unrolledArgs) {        
