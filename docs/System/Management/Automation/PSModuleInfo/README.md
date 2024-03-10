@@ -7,6 +7,7 @@
 * [ExtensionsForName](ExtensionsForName.md)
 * [File](File.md)
 * [FindExtensions](FindExtensions.md)
+* [FindMetadata](FindMetadata.md)
 * [Folder](Folder.md)
 * [GetDynamicParameters](GetDynamicParameters.md)
 * [get_Asset](get_Asset.md)
