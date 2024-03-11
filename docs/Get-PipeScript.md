@@ -75,6 +75,7 @@ Valid Values:
 * Protocol
 * Route
 * Sentence
+* Service
 * Template
 * Transform
 * Transpiler
