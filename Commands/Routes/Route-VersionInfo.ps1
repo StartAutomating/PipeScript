@@ -1,3 +1,6 @@
+[ValidatePattern("Route")]
+param()
+
 
 function Route.VersionInfo {
 
