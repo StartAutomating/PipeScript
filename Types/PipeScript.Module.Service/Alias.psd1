@@ -1,3 +1,4 @@
 @{
+    GetServiceParameters = 'GetServiceParameter'
     GetServiceCommands = 'GetServiceCommand'
 }
