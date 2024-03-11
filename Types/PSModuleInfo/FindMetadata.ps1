@@ -21,12 +21,14 @@ foreach ($place in $this.PrivateData, $this.PrivateData.PSData) {
     foreach ($potentialName in $unrolledArgs) {        
         if (-not $place.$potentialName) { continue }
         $somethingThere = $place.$potentialName
-        if ($somethingThere -is [hashtable]) {                
-            $propertyBag = [Ordered]@{}
-            foreach ($sortedKeyValue in $place.$potentialName.GetEnumerator() | Sort-Object Key) {
-                $propertyBag[$sortedKeyValue.Key]= $sortedKeyValue.Value
+        if ($somethingThere -as [hashtable[]]) {
+            foreach ($hashtable in $somethingThere) {
+                $propertyBag = [Ordered]@{}
+                foreach ($sortedKeyValue in $hashtable.GetEnumerator() | Sort-Object Key) {
+                    $propertyBag[$sortedKeyValue.Key]= $sortedKeyValue.Value
+                }
+                [PSCustomObject]$propertyBag
             }
-            [PSCustomObject]$propertyBag
         } 
         elseif (Test-Path (Join-Path $ThisRoot "$somethingThere")) {
             $fileItem = Get-Item -LiteralPath (Join-Path $ThisRoot "$somethingThere")
