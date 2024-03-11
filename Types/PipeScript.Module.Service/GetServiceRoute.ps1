@@ -8,14 +8,14 @@
     
     If the attribute is found, the function will return a regular expression describing the route.
 #>
+param()
+
 foreach ($routePropertyName in 'Route', 'Routes','Router','Routers') {
     if ($this.$routePropertyName) {
         return $this.$routePropertyName
     }
 }
 
-
-param()
 
 $setsOfServiceParameters = $this.GetServiceParameters()
 foreach ($setOfServiceParameters in $setsOfServiceParameters) {
