@@ -3473,12 +3473,24 @@ if ($this.Module) {
     <Name>PipeScript.Module.Service</Name>
     <Members>
       <AliasProperty>
+        <Name>GetRoute</Name>
+        <ReferencedMemberName>GetServiceRoute</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>GetRoutes</Name>
+        <ReferencedMemberName>GetServiceRoute</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>GetServiceCommands</Name>
         <ReferencedMemberName>GetServiceCommand</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
         <Name>GetServiceParameters</Name>
         <ReferencedMemberName>GetServiceParameter</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>GetServiceRoutes</Name>
+        <ReferencedMemberName>GetServiceRoute</ReferencedMemberName>
       </AliasProperty>
       <ScriptMethod>
         <Name>GetServiceCommand</Name>
