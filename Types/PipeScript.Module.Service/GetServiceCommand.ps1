@@ -13,11 +13,16 @@ $allServiceCommands =
     }
 
 $ThisSplat = [Ordered]@{}
-foreach ($prop in $this.psobject.properties) {
-    $ThisSplat[$prop.Name] = $prop.Value
+if ($this -is [Collections.IDictionary]) {
+    $ThisSplat += $this
+} else {
+    foreach ($prop in $this.psobject.properties) {
+        $ThisSplat[$prop.Name] = $prop.Value
+    }
 }
 
 foreach ($serviceCommand in $allServiceCommands) {
+    if (-not $serviceCommand.Parameters.Count) { continue }
     if ($serviceCommand.CouldRun($ThisSplat)) {
         $serviceCommand
     }    
