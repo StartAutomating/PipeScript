@@ -8,7 +8,7 @@ Write-FormatView -TypeName PipeScript.Module.Services -Action {
         [Environment]::NewLine + 
         ("* ") + (
             $_.Commands -join ([Environment]::NewLine + ("* "))
-        ) + [Environment]::NewLine
+        ) + ([Environment]::NewLine * 2)
     } -ForegroundColor Cyan
 
     Write-FormatViewExpression -If { $_.Commands } -ScriptBlock {
@@ -16,7 +16,7 @@ Write-FormatView -TypeName PipeScript.Module.Services -Action {
         [Environment]::NewLine + 
         ("* ") + (
             $_.Type -join ([Environment]::NewLine + ("* "))
-        ) + [Environment]::NewLine
+        ) + ([Environment]::NewLine * 2)
     } -ForegroundColor Green    
     
     Write-FormatViewExpression -If { $_.Variable } -ScriptBlock {
@@ -24,6 +24,6 @@ Write-FormatView -TypeName PipeScript.Module.Services -Action {
         [Environment]::NewLine + 
         ("* ") + (
             $_.Variable -join ([Environment]::NewLine + ("* "))
-        ) + [Environment]::NewLine
+        ) + ([Environment]::NewLine * 2)
     } -ForegroundColor Blue
 }
