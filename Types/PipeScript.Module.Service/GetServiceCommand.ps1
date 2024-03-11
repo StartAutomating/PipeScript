@@ -1,3 +1,10 @@
+<#
+.SYNOPSIS
+    Gets the service command
+.DESCRIPTION
+    Gets the command or commands that a service can use to run.
+#>
+param()
 $allServiceCommands = 
     foreach ($ext in $PipeScript.Extensions) {
         if ($ext.pstypenames -contains 'Service.Command') {
