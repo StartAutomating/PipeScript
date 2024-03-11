@@ -3498,6 +3498,25 @@ $CmdPatternRegex = [Regex]::new("(?&gt;$($cmdPatternList -join '|'))", 'IgnoreCa
 $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function,Cmdlet,Alias', $true) -match $CmdPatternRegex
                     </GetScriptBlock>
       </ScriptProperty>
+      <ScriptProperty>
+        <Name>Type</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the types a module serves
+.DESCRIPTION
+    Gets the types served by the module.
+#&gt;
+
+@(foreach ($serviceInfo in $this.List) {
+    if ($serviceInfo.Type) {
+        $serviceInfo.Type -as [type]
+    }
+})
+
+
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>
