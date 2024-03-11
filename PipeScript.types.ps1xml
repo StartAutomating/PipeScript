@@ -3477,6 +3477,10 @@ if ($this.Module) {
         <ReferencedMemberName>Command</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>HasServices</Name>
+        <ReferencedMemberName>HasService</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>Types</Name>
         <ReferencedMemberName>Type</ReferencedMemberName>
       </AliasProperty>
@@ -3504,6 +3508,13 @@ $cmdPatternList = @(foreach ($serviceInfo in $this.List) {
 $CmdPatternRegex = [Regex]::new("(?&gt;$($cmdPatternList -join '|'))", 'IgnoreCase,IgnorePatternWhitespace','00:00:00.1')
 
 $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function,Cmdlet,Alias', $true) -match $CmdPatternRegex
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>HasService</Name>
+        <GetScriptBlock>
+                        $this.List.Length -as [bool]
+
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
