@@ -2225,7 +2225,7 @@ $BackgroundColor
         [Environment]::NewLine + 
         ("* ") + (
             $_.Commands -join ([Environment]::NewLine + ("* "))
-        ) + [Environment]::NewLine
+        ) + ([Environment]::NewLine * 2)
     </ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
@@ -2249,7 +2249,7 @@ $BackgroundColor
         [Environment]::NewLine + 
         ("* ") + (
             $_.Type -join ([Environment]::NewLine + ("* "))
-        ) + [Environment]::NewLine
+        ) + ([Environment]::NewLine * 2)
     </ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
@@ -2273,7 +2273,7 @@ $BackgroundColor
         [Environment]::NewLine + 
         ("* ") + (
             $_.Variable -join ([Environment]::NewLine + ("* "))
-        ) + [Environment]::NewLine
+        ) + ([Environment]::NewLine * 2)
     </ScriptBlock>
               </ExpressionBinding>
               <ExpressionBinding>
