@@ -3476,6 +3476,14 @@ if ($this.Module) {
         <Name>Commands</Name>
         <ReferencedMemberName>Command</ReferencedMemberName>
       </AliasProperty>
+      <AliasProperty>
+        <Name>Types</Name>
+        <ReferencedMemberName>Type</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Variables</Name>
+        <ReferencedMemberName>Variable</ReferencedMemberName>
+      </AliasProperty>
       <ScriptProperty>
         <Name>Command</Name>
         <GetScriptBlock>
@@ -3515,6 +3523,25 @@ $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function,Cmdlet,Al
 })
 
 
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Variable</Name>
+        <GetScriptBlock>
+                        $variablePatternList = @(foreach ($serviceInfo in $this.List) {
+    if ($serviceInfo.Variable) {
+        [Regex]::Escape($serviceInfo.Variable)
+    } elseif ($serviceInfo.VariablePattern) {
+        $serviceInfo.VariablePattern
+    }
+})
+$variablePatternRegex = [Regex]::new("(?&gt;$($variablePatternList -join '|'))", 'IgnoreCase,IgnorePatternWhitespace','00:00:00.1')
+
+foreach ($var in Get-Variable) {
+    if ($var.Name -match $variablePatternRegex) {
+        $var
+    }
+}
                     </GetScriptBlock>
       </ScriptProperty>
     </Members>
