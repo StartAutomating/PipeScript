@@ -1,0 +1,3 @@
+@{
+    GetServiceCommands = 'GetServiceCommand'
+}
