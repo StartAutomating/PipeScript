@@ -3470,6 +3470,37 @@ if ($this.Module) {
     </Members>
   </Type>
   <Type>
+    <Name>PipeScript.Module.Service</Name>
+    <Members>
+      <AliasProperty>
+        <Name>GetServiceCommands</Name>
+        <ReferencedMemberName>GetServiceCommand</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptMethod>
+        <Name>GetServiceCommand</Name>
+        <Script>
+                        $allServiceCommands = 
+    foreach ($ext in $PipeScript.Extensions) {
+        if ($ext.pstypenames -contains 'Service.Command') {
+            $ext
+        }
+    }
+
+$ThisSplat = [Ordered]@{}
+foreach ($prop in $this.psobject.properties) {
+    $ThisSplat[$prop.Name] = $prop.Value
+}
+
+foreach ($serviceCommand in $allServiceCommands) {
+    if ($serviceCommand.CouldRun($ThisSplat)) {
+        $serviceCommand
+    }    
+}
+                    </Script>
+      </ScriptMethod>
+    </Members>
+  </Type>
+  <Type>
     <Name>PipeScript.Module.Services</Name>
     <Members>
       <AliasProperty>
