@@ -230,7 +230,7 @@
                 Pattern = '
                 (?>
                     (?>^|[\p{P}-[\-]])      # After non-dash punctuation or the start of a string
-                    Se?rv[ie]?c?s?          # Various forms of the word service
+                    Se?rv[ie]?c?e?s?        # Various forms of the word service
                     (?>                     # Followed by either
                         \.\w$               # any extension and end of string
                         |                   # or 
