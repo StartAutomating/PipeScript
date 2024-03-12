@@ -12,4 +12,5 @@ Services can be defined in the `.PrivateData` or `.PrivateData.PSData` sections 
 
 
 * [get_Command](get_Command.md)
+* [get_Route](get_Route.md)
 * [get_Type](get_Type.md)
