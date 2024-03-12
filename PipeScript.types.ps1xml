@@ -3622,6 +3622,10 @@ foreach ($setOfServiceParameters in $setsOfServiceParameters) {
         <ReferencedMemberName>HasService</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>Routes</Name>
+        <ReferencedMemberName>Route</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>Types</Name>
         <ReferencedMemberName>Type</ReferencedMemberName>
       </AliasProperty>
@@ -3656,6 +3660,33 @@ $ExecutionContext.SessionState.InvokeCommand.GetCommands('*','Function,Cmdlet,Al
         <GetScriptBlock>
                         $this.List.Length -as [bool]
 
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Route</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets all routes a module serves
+.DESCRIPTION
+    Gets all routes served by any of the module services.
+
+    (additional routes can also be declared in the module manifest)    
+#&gt;
+param()
+
+$serviceRoutes = [Ordered]@{PSTypeName='PipeScript.Module.Route'}
+
+foreach ($serviceInfo in $this.List) {
+    if ($serviceInfo.GetServiceRoute) {
+        $serviceRouteInfo = $serviceInfo.GetServiceRoute()
+        if ($serviceRouteInfo) {
+            $serviceRoutes[$serviceRouteInfo] = $serviceInfo
+        }
+    }
+}
+
+return [PSCustomObject]$serviceRoutes
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
