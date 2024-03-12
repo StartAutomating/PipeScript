@@ -6231,33 +6231,25 @@ $this | Split-Path | Get-ChildItem -Directory -Recurse
 .SYNOPSIS
     Gets module routes
 .DESCRIPTION
-    Gets information about potential module routes
+    Gets routes declared by a module.
+    
+    A module can define routes within it's module manifest (in `.PrivateData` or `.PrivateData.PSData`)
+
+    Routes can be declared in a property named `.Route`,'.Routes','.Router','.Routers'.
+
+    Routes can also be declared by a service's metadata.
 #&gt;
 param()
 
-foreach ($place in $this.PrivateData, $this.PrivateData.PSData) {
-    foreach ($potentialName in 'Route', 'Routes','Router','Routers') {
-        $potentialRoutes = $place.$potentialName
-        if (-not $potentialRoutes) { continue }
 
-        foreach ($potentialRoute in $potentialRoutes) {
-            $potentialRoute = 
-                if ($potentialRoute -is [hashtable]) {                
-                    $RouteObject = [Ordered]@{}
-                    foreach ($sortedKeyValue in $place.$potentialName.GetEnumerator() | Sort-Object Key) {
-                        $RouteObject[$sortedKeyValue.Key]= $sortedKeyValue.Value
-                    }
-                    $RouteObject = [PSCustomObject]$RouteObject                    
-                } elseif ($potentialRoute) {
-                    [PSObject]::new($potentialRoute)
-                }
-            $potentialRoute.pstypenames.clear()
-            $potentialRoute.pstypenames.add("$this.Route")
-            $potentialRoute.pstypenames.add('PipeScript.Module.Route')
-            $potentialRoute
-        }
-    }
+foreach ($routeInfo in $this.FindMetadata('Route', 'Routes', 'Router', 'Routers')) {
+    $routeInfo.pstypenames.clear()
+    $routeInfo.pstypenames.add("$this.Route")
+    $routeInfo.pstypenames.add('PipeScript.Module.Route')
+    $routeInfo
 }
+
+$this.Service.Route
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
