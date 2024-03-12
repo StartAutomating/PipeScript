@@ -3512,6 +3512,47 @@ if ($this.Module) {
     </Members>
   </Type>
   <Type>
+    <Name>PipeScript.Module.Route</Name>
+    <Members>
+      <AliasProperty>
+        <Name>ForUri</Name>
+        <ReferencedMemberName>ForURL</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptMethod>
+        <Name>ForURL</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Gets the route for a URL
+.DESCRIPTION
+    Gets the route for a given URL
+#&gt;
+param(
+# The URL.
+[Alias('URL')]
+[uri]
+$Uri
+)
+
+foreach ($property in $this.psobject.properties) {
+    if (-not $property.IsInstance) { continue }
+    if ($property -isnot [psnoteproperty]) { continue }
+    $propertyPattern = 
+        try {
+            [Regex]::new($property.Name, 'IgnoreCase,IgnorePatternWhitespace', '00:00:00.01') 
+        } catch {
+            continue
+        }
+    if ($propertyPattern.IsMatch("$Uri")) {
+        $property.Value
+    }
+}
+
+                    </Script>
+      </ScriptMethod>
+    </Members>
+  </Type>
+  <Type>
     <Name>PipeScript.Module.Service</Name>
     <Members>
       <AliasProperty>
