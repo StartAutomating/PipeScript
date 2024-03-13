@@ -5067,6 +5067,10 @@ else {
         <ReferencedMemberName>Service</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>Sites</Name>
+        <ReferencedMemberName>Site</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>WebCommand</Name>
         <ReferencedMemberName>Service</ReferencedMemberName>
       </AliasProperty>
@@ -5081,6 +5085,14 @@ else {
       <AliasProperty>
         <Name>WebServices</Name>
         <ReferencedMemberName>Service</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Website</Name>
+        <ReferencedMemberName>Site</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Websites</Name>
+        <ReferencedMemberName>Site</ReferencedMemberName>
       </AliasProperty>
       <ScriptMethod>
         <Name>ExtensionsForName</Name>
@@ -6430,6 +6442,29 @@ $this.'.Services'
 
 
 
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Site</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Module Websites
+.DESCRIPTION
+    Gets any websites associated with a module.
+
+    Websites can be defined within a module's `.PrivateData` or `.PrivateData.PSData`
+
+    Websites are defined within the `.Site`,`.Sites`,`.Website`,`.Websites` sections of the manifest.    
+#&gt;
+param()
+
+, @(foreach ($potentialServer in $this.FindMetadata('Site', 'Sites', 'Website', 'Websites')) {
+    $potentialServer.pstypenames.clear()
+    $potentialServer.pstypenames.add("$this.Website")
+    $potentialServer.pstypenames.add('PipeScript.Module.Website')
+    $potentialServer
+})
                     </GetScriptBlock>
       </ScriptProperty>
     </Members>
