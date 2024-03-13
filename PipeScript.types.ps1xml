@@ -3929,6 +3929,17 @@ $this | Add-Member NoteProperty _CachedMetadata $topicData -Force
 return $topicData
                     </GetScriptBlock>
       </ScriptProperty>
+      <ScriptProperty>
+        <Name>TopicName</Name>
+        <GetScriptBlock>
+                        if ($this.Name -match '^(?&gt;README|INDEX|HOME|DEFAULT)') {
+    $this.Directory.Name -replace '[_-]', ' '
+} else {
+    $this.Name -replace '[_-]', ' ' -replace '\.md$'
+}
+
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>
