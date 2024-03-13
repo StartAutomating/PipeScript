@@ -1,5 +1,7 @@
 @{
+    Assets = 'Asset'
     Containers = 'Container'
+
     Directories = 'Folders'
     Directory = 'Folder'
     EntryPoints = 'EntryPoint'
@@ -21,5 +23,6 @@
     Routes  = 'Route'
     Router  = 'Route'    
     Routers = 'Route'
-    Assets = 'Asset'
+    
+    Topics = 'Topic'
 }
