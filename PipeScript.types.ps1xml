@@ -3859,6 +3859,32 @@ Services can be defined in the `.PrivateData` or `.PrivateData.PSData` sections 
     </Members>
   </Type>
   <Type>
+    <Name>PipeScript.Module.Topic</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>Content</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets a topic's content.
+.DESCRIPTION
+    Gets a topic's content.
+
+    The content is cached for performance reasons.
+.EXAMPLE
+    $PipeScript.Topics.AllTopics.Content # This will be a bunch of markdown content
+#&gt;
+param()
+if (-not $this.'.CachedContent') {
+    $this | Add-Member NoteProperty '.CachedContent' ([IO.File]::ReadAllText($this.Fullname)) -Force
+}
+$this.'.CachedContent'
+
+                    </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
     <Name>PipeScript.net</Name>
     <Members>
       <NoteProperty>
