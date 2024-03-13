@@ -5071,6 +5071,10 @@ else {
         <ReferencedMemberName>Site</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
+        <Name>Topics</Name>
+        <ReferencedMemberName>Topic</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
         <Name>WebCommand</Name>
         <ReferencedMemberName>Service</ReferencedMemberName>
       </AliasProperty>
@@ -6465,6 +6469,29 @@ param()
     $potentialServer.pstypenames.add('PipeScript.Module.Website')
     $potentialServer
 })
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Topic</Name>
+        <GetScriptBlock>
+                        if (-not $this.'.Topics') {
+    $this | Add-Member -MemberType NoteProperty -Name '.Topics' -Value @(
+        [PSCustomObject][Ordered]@{
+            PSTypeName = 'PipeScript.Module.Topics'
+            AllTopics = @(
+                foreach ($matchingFile in $this.Files -match '\.(?&gt;md|markdown|help\.txt|topic)$' -notmatch '\.ps1?\.') {
+                    $matchingFile.pstypenames.insert(0, 'PipeScript.Module.Topic')
+                    $matchingFile.pstypenames.insert(0, "$this.Topic")
+                    $matchingFile | Add-Member NoteProperty Module $this -Force -PassThru
+                }
+            )
+            Module = $this
+        }        
+    ) -Force
+}
+
+
+$this.'.Topics'
                     </GetScriptBlock>
       </ScriptProperty>
     </Members>
