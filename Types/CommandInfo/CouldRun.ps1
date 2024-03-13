@@ -23,6 +23,8 @@ if ($Parameter -isnot [Collections.IDictionary]) {
     $parameter = $parameterDictionary
 }
 
+$CouldRunOnEmpty = [Collections.Generic.List[PSObject]]::new()
+
 :nextParameterSet foreach ($paramSet in $this.ParameterSets) {
     if ($ParameterSetName -and $paramSet.Name -ne $ParameterSetName) { continue }
     $mappedParams = [Ordered]@{} # Create a collection of mapped parameters
@@ -55,6 +57,15 @@ if ($Parameter -isnot [Collections.IDictionary]) {
             continue nextParameterSet
         }
     }
+    if (-not $mappedParams.Count) {
+        $CouldRunOnEmpty.Add($paramSet)
+        continue
+    }
+
     return $mappedParams
+}
+
+if ($CouldRunOnEmpty) {
+    return @{}
 }
 return $false
