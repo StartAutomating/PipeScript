@@ -14,7 +14,7 @@ function Serve.Variable {
         Additionally, it will not allow the variable to be changed (only viewed)
     #>
     [ValidatePattern(        
-        '/\$?$($this.Variable)/?', Options ='IgnoreCase,IgnorePatternWhitespace'
+        '/\${0,1}$($this.Variable)/?', Options ='IgnoreCase,IgnorePatternWhitespace'
     )]
     param(
     # The list of variables to serve
