@@ -8,7 +8,7 @@
     TypesToProcess    = 'PipeScript.types.ps1xml'
     Guid              = 'fc054786-b1ce-4ed8-a90f-7cc9c27edb06'
     CompanyName       = 'Start-Automating'
-    Copyright         = '2022-2023 Start-Automating'
+    Copyright         = '2022-2024 Start-Automating'
     Author            = 'James Brundage'
     FunctionsToExport = '*' <#{
         $exportNames = Get-ChildItem -Recurse -Filter '*-*.ps1' |
@@ -258,6 +258,9 @@
         }, @{
             Name = 'Pid Service'
             Variable = 'pid' 
+        }, @{
+            Name = 'Asset Service'
+            Extension = '.svg','.png','.js','.css'
         }
 
         Videos = @{
