@@ -32,23 +32,23 @@ The input object
 #### **Id**
 The desired identifier for the output.
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[String]`|false   |2       |false        |
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[String]`|false   |2       |true (ByPropertyName)|
 
 #### **CssClass**
 The CSS class for the output.  This will be inferred from the .pstypenames
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[String]`|false   |3       |false        |
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[String]`|false   |3       |true (ByPropertyName)|
 
 #### **Style**
 A CSS Style
 
-|Type           |Required|Position|PipelineInput|
-|---------------|--------|--------|-------------|
-|`[IDictionary]`|false   |4       |false        |
+|Type           |Required|Position|PipelineInput        |
+|---------------|--------|--------|---------------------|
+|`[IDictionary]`|false   |4       |true (ByPropertyName)|
 
 #### **ItemType**
 If set, will enclose the output in a div with an itemscope and itemtype attribute
@@ -60,9 +60,9 @@ If set, will enclose the output in a div with an itemscope and itemtype attribut
 #### **ViewName**
 If more than one view is available, this view will be used
 
-|Type      |Required|Position|PipelineInput|
-|----------|--------|--------|-------------|
-|`[String]`|false   |6       |false        |
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[String]`|false   |6       |true (ByPropertyName)|
 
 ---
 
