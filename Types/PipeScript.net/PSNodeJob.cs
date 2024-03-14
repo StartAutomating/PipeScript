@@ -492,24 +492,37 @@ namespace PipeScript.Net
                         MimeTypes[extension.ToString().ToLower()]= ctName;
                     }
                 }
-                #endif
-                // Defaulting several MIME types:
-                // See https://developer.mozilla.org/en-US/docs/Learn/Server-side/Configuring_server_MIME_types
-                if (! MimeTypes.ContainsKey(".md")) {
-                    MimeTypes[".md"] = "text/markdown";
-                }
-                if (! MimeTypes.ContainsKey(".html")) {
-                    MimeTypes[".html"] = "text/html";
-                }
-                if (! MimeTypes.ContainsKey(".htm")) {
-                    MimeTypes[".htm"] = "text/html";
-                }
-                if (! MimeTypes.ContainsKey(".js")) {
-                    MimeTypes[".js"] = "text/javascript";
-                }
-                if (! MimeTypes.ContainsKey(".css")) {
-                    MimeTypes[".css"] = "text/css";
-                }
+                #endif                
+            }
+
+            // Defaulting several MIME types:
+            // See https://developer.mozilla.org/en-US/docs/Learn/Server-side/Configuring_server_MIME_types
+            if (! MimeTypes.ContainsKey(".md")) {
+                MimeTypes[".md"] = "text/markdown";
+            }
+            if (! MimeTypes.ContainsKey(".html")) {
+                MimeTypes[".html"] = "text/html";
+            }
+            if (! MimeTypes.ContainsKey(".htm")) {
+                MimeTypes[".htm"] = "text/html";
+            }
+            if (! MimeTypes.ContainsKey(".js")) {
+                MimeTypes[".js"] = "text/javascript";
+            }
+            if (! MimeTypes.ContainsKey(".css")) {
+                MimeTypes[".css"] = "text/css";
+            }
+            if (! MimeTypes.ContainsKey(".svg")) {
+                MimeTypes[".svg"] = "image/svg+xml";
+            }
+            if (! MimeTypes.ContainsKey(".png")) {
+                MimeTypes[".png"] = "image/png";
+            }
+            if (! MimeTypes.ContainsKey(".jpg")) {
+                MimeTypes[".jpg"] = "image/jpeg";
+            }
+            if (! MimeTypes.ContainsKey(".jpeg")) {
+                MimeTypes[".jpg"] = "image/jpeg";
             }
 
             Listener = new HttpListener();
