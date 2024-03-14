@@ -3913,6 +3913,14 @@ $LinkUri   = '[^\)\r\n]+'
 "@, 'IgnoreCase, IgnorePatternWhitespace').Matches($this.Content)
                     </Script>
       </ScriptMethod>
+      <ScriptMethod>
+        <Name>ToHTML</Name>
+        <Script>
+                        param()
+
+(ConvertFrom-Markdown -InputObject $this.Content).Html
+                    </Script>
+      </ScriptMethod>
       <ScriptProperty>
         <Name>Aliases</Name>
         <GetScriptBlock>
