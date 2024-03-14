@@ -3970,6 +3970,13 @@ foreach ($topic in $this.AllTopics) {
 
                     </Script>
       </ScriptMethod>
+      <ScriptProperty>
+        <Name>TopicCount</Name>
+        <GetScriptBlock>
+                        $this.AllTopics.Length
+
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>
