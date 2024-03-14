@@ -3862,6 +3862,20 @@ Services can be defined in the `.PrivateData` or `.PrivateData.PSData` sections 
     <Name>PipeScript.Module.Topic</Name>
     <Members>
       <ScriptProperty>
+        <Name>Aliases</Name>
+        <GetScriptBlock>
+                        @(
+    ($this.Name -replace '[_-]', ' ' -replace '\.md$')
+    if ($this.Metadata.Alias) {
+        $this.Metadata.Alias -replace '[_-]', ' '
+    }    
+    if ($this.Metadata.Aliases) {
+        $this.Metadata.Aliases -replace '[_-]', ' '
+    }    
+)
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Content</Name>
         <GetScriptBlock>
                         &lt;#
