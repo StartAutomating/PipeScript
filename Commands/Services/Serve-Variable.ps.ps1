@@ -12,7 +12,7 @@ Serve function Variable {
         Additionally, it will not allow the variable to be changed (only viewed)
     #>
     [ValidatePattern(        
-        '/$($this.Variable -replace "^","`$?")/?', Options ='IgnoreCase,IgnorePatternWhitespace'
+        '/$($this.Variable -replace "^","\`$?")/?', Options ='IgnoreCase,IgnorePatternWhitespace'
     )]
     param(
     # The list of variables to serve
