@@ -43,6 +43,6 @@ Serve function Variable {
 
         return if -not $gotVariable
         
-        $gotVariable        
+        $gotVariable.Value        
     }
 }
