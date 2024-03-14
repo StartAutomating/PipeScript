@@ -45,7 +45,7 @@ function Serve.Variable {
 
         if (-not $gotVariable) { return }
         
-        $gotVariable        
+        $gotVariable.Value        
     }
 
 }
