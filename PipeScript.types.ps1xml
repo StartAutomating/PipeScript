@@ -3918,7 +3918,9 @@ $LinkUri   = '[^\)\r\n]+'
         <Script>
                         param()
 
+@("&lt;article&gt;"
 (ConvertFrom-Markdown -InputObject $this.Content).Html
+"&lt;/article&gt;") -join ''
                     </Script>
       </ScriptMethod>
       <ScriptProperty>
