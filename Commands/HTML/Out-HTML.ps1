@@ -17,14 +17,17 @@
     $InputObject,
     
     # The desired identifier for the output.
+    [Parameter(ValueFromPipelineByPropertyName)]
     [string]
     $Id,
     
     # The CSS class for the output.  This will be inferred from the .pstypenames 
+    [Parameter(ValueFromPipelineByPropertyName)]
     [string]
     $CssClass,        
     
     # A CSS Style 
+    [Parameter(ValueFromPipelineByPropertyName)]
     [Collections.IDictionary]
     $Style,        
     
@@ -33,6 +36,7 @@
     [string[]]$ItemType,
     
     # If more than one view is available, this view will be used
+    [Parameter(ValueFromPipelineByPropertyName)]
     [string]$ViewName)
         
     begin {
@@ -447,6 +451,8 @@ $($inputObject | Out-String)
                         $_
                     } } | Out-HTML @psboundParameters
             }
+        } elseif ($inputObject.ToHTML.Invoke) {
+            $null = $htmlOut.Append($inputObject.ToHTML())
         } else {
             $matchingTypeName = $null
             #region Match TypeName to Formatter
