@@ -451,8 +451,10 @@ namespace PipeScript.Net
                 this.ServeScript(_FullPSNodeAction.ToString(), context);                                                
             }
             catch (Exception e)
-            {   
-                this.Error.Add(new ErrorRecord(e, e.Message, ErrorCategory.NotSpecified, e));
+            {
+                if (e.HResult != -2146232798) {
+                    this.Error.Add(new ErrorRecord(e, e.Message, ErrorCategory.NotSpecified, e));
+                }                
             }
         }
         
