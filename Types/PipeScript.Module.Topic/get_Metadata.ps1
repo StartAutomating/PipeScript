@@ -3,7 +3,7 @@ if ($this.psobject.properties['_CachedMetadata']) {
 }
 
 
-$topicData = foreach ($potentialExtension in '.psd1','.json','.csv') {
+$topicData = :FindingMetadata foreach ($potentialExtension in '.psd1','.json','.csv') {
     $potentialFileName = $this.Name + $potentialExtension    
     $potentialFullName = $this.Fullname + $potentialExtension
     if (Test-Path $potentialFullName) {
@@ -20,6 +20,7 @@ $topicData = foreach ($potentialExtension in '.psd1','.json','.csv') {
                         } }
                     }
                     $importedData
+                    break FindingMetadata
                 } catch {
                     Write-Warning "$_"
                     @{}
@@ -28,14 +29,23 @@ $topicData = foreach ($potentialExtension in '.psd1','.json','.csv') {
             }
             '.json' {
                 Get-Content $potentialFullName -Raw | ConvertFrom-Json
-                break
+                break FindingMetadata                
             }
             '.csv' {
                 Import-Csv $potentialFullName
-                break
+                break FindingMetadata
             }
         }
     }
+}
+
+if (-not $topicData) { $topicData = [Ordered]@{} }
+if ($topicData -isnot [Collections.IDictionary]) {
+    $topicDataDictionary = [Ordered]@{}
+    foreach ($property in $topicData.psobject.properties) {
+        $topicDataDictionary[$property.Name] = $property.Value
+    }
+    $topicData = $topicDataDictionary
 }
 
 $this | Add-Member NoteProperty _CachedMetadata $topicData -Force
