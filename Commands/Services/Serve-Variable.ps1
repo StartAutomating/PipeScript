@@ -40,7 +40,7 @@ function Serve.Variable {
         if (-not $Request) { return }        
 
         $segments = @($Request.Url.Segments -replace '^/' -replace '/$' -ne '')
-        $variableName = $segments[0]
+        $variableName = $segments[0] -replace '^\$'
         $gotVariable = $module.SessionState.PSVariable.Get($variableName)
 
         if (-not $gotVariable) { return }
