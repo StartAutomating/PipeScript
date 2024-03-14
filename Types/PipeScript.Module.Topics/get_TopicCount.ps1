@@ -1,0 +1,1 @@
+$this.AllTopics.Length
