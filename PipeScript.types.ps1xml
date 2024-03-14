@@ -3861,6 +3861,27 @@ Services can be defined in the `.PrivateData` or `.PrivateData.PSData` sections 
   <Type>
     <Name>PipeScript.Module.Topic</Name>
     <Members>
+      <ScriptMethod>
+        <Name>FindCodeBlocks</Name>
+        <Script>
+                        $codeFenceRegex = [Regex]::new(@'
+(?&gt;
+    (?&lt;FenceChar&gt;[`\~]){3}    # Code fences start with tildas or backticks, repeated at least 3 times
+(?&lt;Language&gt;                  # Match a specific language
+PowerShell
+)
+[\s-[\r\n]]{0,}               # Match but do not capture initial whitespace.
+(?&lt;Code&gt;                      # Capture the &lt;Code&gt; block
+    (?:.|\s){0,}?             # This is anything until
+    (?=\z|\k&lt;FenceChar&gt;{3})   # the end of the string or the same matching fence chars
+)
+(?&gt;\z|\k&lt;FenceChar&gt;{3})
+)
+'@, 'IgnoreCase,IgnorePatternWhitespace,Singleline')
+
+$codeFenceRegex.Matches($this.Content)
+                    </Script>
+      </ScriptMethod>
       <ScriptProperty>
         <Name>Aliases</Name>
         <GetScriptBlock>
