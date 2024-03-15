@@ -4066,6 +4066,29 @@ foreach ($topic in $this.AllTopics) {
     </Members>
   </Type>
   <Type>
+    <Name>PipeScript.Module.Website</Name>
+    <Members>
+      <ScriptMethod>
+        <Name>GetDefaultLayout</Name>
+        <Script>
+                        param()
+
+$this | . {
+    param(
+    [Parameter(ValueFromPipelineByPropertyName)]
+    [Alias('Layout','DefaultLayout','BaseLayout')]
+    [string]
+    $Layout = 'Default'
+    )
+
+    process { $Layout }
+}
+
+                    </Script>
+      </ScriptMethod>
+    </Members>
+  </Type>
+  <Type>
     <Name>PipeScript.net</Name>
     <Members>
       <NoteProperty>
