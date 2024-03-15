@@ -3,7 +3,7 @@ param()
 $this | . {
     param(
     [Parameter(ValueFromPipelineByPropertyName)]
-    [Alias('Layout','DefaultLayout','BaseLayout')]
+    [Alias('DefaultLayout','BaseLayout')]
     [string]
     $Layout = 'Default'
     )
