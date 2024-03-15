@@ -24,14 +24,19 @@ Template function PipeScript.NamespacedObject {
         if ($cmdAst.CommandElements.Count -lt 4 -or $cmdAst.CommandElements.Count -gt 5) {
             return $false
         }
-        # The second element must be a function or filter.
-        if ($cmdAst.CommandElements[1].Value -notin 'object', 'singleton') {
-            return $false
-        }
-        # The third element must be a bareword
+
+        # The second element must be a bareword
         if ($cmdAst.CommandElements[1].StringConstantType -ne 'Bareword') {
             return $false
         }
+
+        # The second element must the name of the object type.
+        if ($cmdAst.CommandElements[1].Value -notin 
+            'object', 'instance','factory','an','a','f','o','i',
+            'singleton','single','constant','const','the','c','s','t'
+        ) {
+            return $false
+        }        
 
         # The last element must be a ScriptBlock or HashtableAst
         if (
@@ -75,6 +80,9 @@ Template function PipeScript.NamespacedObject {
     $namespace = $namespace -replace "$namespaceSeparatorPattern$"
 
     $blockComments = ''
+
+    $SingletonForms = 'singleton','single','constant','const','the','c','s','t'
+    $singletonPattern = "(?>$($SingletonForms -join '|'))"
     
     $defineInstance = 
         if ($objectDefinition -is [Management.Automation.Language.HashtableAst]) {
@@ -111,7 +119,7 @@ Export-ModuleMember -Function * -Alias * -Cmdlet * -Variable *
 }"
 
     $objectDefinition = 
-        if ($objectType -eq "singleton") {
+        if ($objectType -match $singletonPattern) {
             "{$(if ($blockComments) {$blockComments})
 $(
     @('$this = $myInvocation.MyCommand'
