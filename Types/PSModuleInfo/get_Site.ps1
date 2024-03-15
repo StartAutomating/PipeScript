@@ -10,9 +10,30 @@
 #>
 param()
 
-, @(foreach ($potentialServer in $this.FindMetadata('Site', 'Sites', 'Website', 'Websites')) {
-    $potentialServer.pstypenames.clear()
-    $potentialServer.pstypenames.add("$this.Website")
-    $potentialServer.pstypenames.add('PipeScript.Module.Website')
-    $potentialServer
-})
+if (-not $this.'.Website') { 
+    $CombinedSiteData = [Ordered]@{PSTypeName='PipeScript.Module.Website';BaseUrl='';Mirrors=@()}
+    
+    $firstPropertyBag = $true
+    foreach ($potentialSite in $this.FindMetadata('Site', 'Sites', 'Website', 'Websites')) {
+        if ($potentialSite -is [string]) {
+            if (-not $CombinedSiteData.BaseUrl) {
+                $CombinedSiteData.BaseUrl = $potentialSite
+            } else {
+                $CombinedSiteData.Mirrors += $potentialSite                
+            }
+        } else {
+            if (-not $firstPropertyBag) {
+                $CombinedSiteData.Mirrors += $potentialSite
+            } else {
+                foreach ($prop in $potentialSite.psobject.properties) {
+                    $CombinedSiteData[$prop.Name] = $prop.Value
+                }
+            }
+        }
+    }
+    $CombinedSiteData = [PSCustomObject]$CombinedSiteData
+    $CombinedSiteData.pstypenames.insert(0, "$this.Website")
+    $this | Add-Member NoteProperty '.Website' $CombinedSiteData -Force    
+}
+
+return $this.'.Website'
