@@ -4076,7 +4076,7 @@ foreach ($topic in $this.AllTopics) {
 $this | . {
     param(
     [Parameter(ValueFromPipelineByPropertyName)]
-    [Alias('Layout','DefaultLayout','BaseLayout')]
+    [Alias('DefaultLayout','BaseLayout')]
     [string]
     $Layout = 'Default'
     )
