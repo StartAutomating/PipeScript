@@ -130,7 +130,7 @@ $(
             '$singletonInstance.pstypenames.clear()'            
             "`$singletonInstance.pstypenames.add('$($NewFunctionName -replace "'","''")')"
             "`$singletonInstance.pstypenames.add('$($namespace -replace $namespaceSeparatorPattern -replace "'","''")')"
-            'Add-Member -InputObject `$this -MemberType NoteProperty -Name Instance -Value $singletonInstance -Force'
+            'Add-Member -InputObject $this -MemberType NoteProperty -Name Instance -Value $singletonInstance -Force'
         '}'
         '$this.Instance'
     ) -join [Environment]::newLine
