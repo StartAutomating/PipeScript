@@ -61,66 +61,66 @@ Template function PipeScript.NamespacedObject {
     )
 
     process {
-    # Namespaced functions are really simple:
+        # Namespaced functions are really simple:
 
-    # We use multiple assignment to pick out the parts of the function
-    $namespace, $objectType, $functionName, $objectDefinition = $CommandAst.CommandElements    
+        # We use multiple assignment to pick out the parts of the function
+        $namespace, $objectType, $functionName, $objectDefinition = $CommandAst.CommandElements    
 
-    # Then, we determine the last punctuation.
-    $namespaceSeparatorPattern = [Regex]::new('[\p{P}<>]{1,}','RightToLeft')    
-    $namespaceSeparator = $namespaceSeparatorPattern.Match($namespace).Value
-    # If there was no punctuation, the namespace separator will be a '.'
-    if (-not $namespaceSeparator) {$namespaceSeparator = '.'}
-    # If the pattern was empty brackets `[]`, make the separator `[`.
-    elseif ($namespaceSeparator -eq '[]') { $namespaceSeparator = '[' }
-    # If the pattern was `<>`, make the separator `<`.
-    elseif ($namespaceSeparator -eq '<>') { $namespaceSeparator = '<' }
+        # Then, we determine the last punctuation.
+        $namespaceSeparatorPattern = [Regex]::new('[\p{P}<>]{1,}','RightToLeft')    
+        $namespaceSeparator = $namespaceSeparatorPattern.Match($namespace).Value
+        # If there was no punctuation, the namespace separator will be a '.'
+        if (-not $namespaceSeparator) {$namespaceSeparator = '.'}
+        # If the pattern was empty brackets `[]`, make the separator `[`.
+        elseif ($namespaceSeparator -eq '[]') { $namespaceSeparator = '[' }
+        # If the pattern was `<>`, make the separator `<`.
+        elseif ($namespaceSeparator -eq '<>') { $namespaceSeparator = '<' }
 
-    # Replace any trailing separators from the namespace.
-    $namespace = $namespace -replace "$namespaceSeparatorPattern$"
+        # Replace any trailing separators from the namespace.
+        $namespace = $namespace -replace "$namespaceSeparatorPattern$"
 
-    $blockComments = ''
+        $blockComments = ''
 
-    $SingletonForms = 'singleton','single','constant','const','the','c','s','t'
-    $singletonPattern = "(?>$($SingletonForms -join '|'))"
-    
-    $defineInstance = 
-        if ($objectDefinition -is [Management.Automation.Language.HashtableAst]) {
-            "[PSCustomObject][Ordered]$($objectDefinition)"
-        }
-        elseif ($objectDefinition -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
-            $findBlockComments = [Regex]::New("
+        $SingletonForms = 'singleton','single','constant','const','the','c','s','t'
+        $singletonPattern = "(?>$($SingletonForms -join '|'))"
+        
+        $defineInstance = 
+            if ($objectDefinition -is [Management.Automation.Language.HashtableAst]) {
+                "[PSCustomObject][Ordered]$($objectDefinition)"
+            }
+            elseif ($objectDefinition -is [Management.Automation.Language.ScriptBlockExpressionAst]) {
+                $findBlockComments = [Regex]::New("
             \<\# # The opening tag
             (?<Block>
                 (?:.|\s)+?(?=\z|\#>) # anything until the closing tag
             )
             \#\> # the closing tag
             ", 'IgnoreCase,IgnorePatternWhitespace', '00:00:01')
-            $foundBlockComments = $objectDefinition -match $findBlockComments
-            if ($foundBlockComments -and $matches.Block) {
-                $blockComments = $null,"<#",$($matches.Block),"#>",$null -join [Environment]::Newline
+                $foundBlockComments = $objectDefinition -match $findBlockComments
+                if ($foundBlockComments -and $matches.Block) {
+                    $blockComments = $null,"<#",$($matches.Block),"#>",$null -join [Environment]::Newline
+                }
+                "New-Module -ArgumentList @(@(`$input) + @(`$args)) -AsCustomObject $objectDefinition"
             }
-            "New-Module -ArgumentList @(@(`$input) + @(`$args)) -AsCustomObject $objectDefinition"
-        }
 
     
-    # Join the parts back together to get the new function name.
-    $NewFunctionName = $namespace,$namespaceSeparator,$functionName,$(
-        # If the namespace separator ends with `[` or `<`, try to close it
-        if ($namespaceSeparator -match '[\[\<]$') {
-            if ($matches.0 -eq '[') { ']' }
-            elseif ($matches.0 -eq '<') { '>' }
-        }
-    ) -ne '' -join ''
+        # Join the parts back together to get the new function name.
+        $NewFunctionName = $namespace,$namespaceSeparator,$functionName,$(
+            # If the namespace separator ends with `[` or `<`, try to close it
+            if ($namespaceSeparator -match '[\[\<]$') {
+                if ($matches.0 -eq '[') { ']' }
+                elseif ($matches.0 -eq '<') { '>' }
+            }
+        ) -ne '' -join ''
 
-    $objectDefinition = "{
+        $objectDefinition = "{
 $($objectDefinition -replace '^\{' -replace '\}$')
 Export-ModuleMember -Function * -Alias * -Cmdlet * -Variable *
 }"
 
-    $objectDefinition = 
-        if ($objectType -match $singletonPattern) {
-            "{$(if ($blockComments) {$blockComments})
+        $objectDefinition = 
+            if ($objectType -match $singletonPattern) {
+                "{$(if ($blockComments) {$blockComments})
 $(
     @('$this = $myInvocation.MyCommand'
         'if (-not $this.Instance) {'
@@ -135,8 +135,8 @@ $(
 )
     
 }"
-        } else {
-            "{
+            } else {
+                "{
 $(if ($blockComments) {$blockComments})
 `$Instance = $defineInstance
 `$Instance.pstypenames.clear()
@@ -144,7 +144,7 @@ $(if ($blockComments) {$blockComments})
 `$Instance.pstypenames.add('$($namespace -replace $namespaceSeparatorPattern -replace "'","''")')
 `$Instance
 }"
-        }
+            }
     
 
         # Redefine the function
@@ -154,5 +154,4 @@ function $NewFunctionName $objectDefinition
         # Return the transpiled redefinition.
         $redefined | .>Pipescript
     }
-
 }
