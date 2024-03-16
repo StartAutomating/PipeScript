@@ -77,7 +77,9 @@ PipeScript presently ships with 69 languages:
 
 * [ForFile](ForFile.md)
 * [get_All](get_All.md)
+* [set_All](set_All.md)
 * [get_Count](get_Count.md)
+* [set_Count](set_Count.md)
 * [get_Exclude](get_Exclude.md)
 * [set_Exclude](set_Exclude.md)
 * [get_ExcludePath](get_ExcludePath.md)
@@ -85,3 +87,4 @@ PipeScript presently ships with 69 languages:
 * [get_ExcludePattern](get_ExcludePattern.md)
 * [set_ExcludePattern](set_ExcludePattern.md)
 * [get_LanguageName](get_LanguageName.md)
+* [set_LanguageName](set_LanguageName.md)
