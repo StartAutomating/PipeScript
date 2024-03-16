@@ -1,3 +1,6 @@
+[ValidatePattern('(^|\s)(?>Tech(?:nology)?|Hugo)')]
+param()
+
 Tech Constant Hugo {
     <#
     .SYNOPSIS
