@@ -239,6 +239,28 @@
                 )
                 '
             }
+
+            'Technology' = @{
+                Pattern = '
+                (?>
+                    (?>^|[\p{P}-[\-]])          # After non-dash punctuation or the start of a string
+                    (?>
+                        Tech(?>s|nology)?       # Various forms of the word technology
+                        |                       # or
+                        Engines?                # Engine or Engines
+                        |
+                        Frameworks?             # Framework or Frameworks
+                        |
+                        Platforms?              # Platform or Platforms
+                    )
+                    (?>                     # Followed by either
+                        \.\w$               # any extension and end of string
+                        |                   # or 
+                        \p{P}               # any other punctuation.
+                    )
+                )
+                '
+            }
               
             'Template'     = 
                 @{
@@ -261,6 +283,17 @@
         }, @{
             Name = 'Asset Service'
             Extension = '.svg','.png','.js','.css'
+        }
+        
+        Site = "https://pipescript.dev", @{
+            Name = 'GitHub Page'
+            Url = 'https://pipescript.startautomating.com'
+            Tech = 'Jekyll'
+            Root = '/docs'
+        }, @{
+            Name = 'Backend'
+            Url  ='https://api.pipescript.startautomating.com'
+            Tech = 'AzureKubernetesService'
         }
 
         Videos = @{
