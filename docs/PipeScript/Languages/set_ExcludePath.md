@@ -2,19 +2,14 @@ PipeScript.Languages.set_ExcludePath()
 --------------------------------------
 
 ### Synopsis
-Changes the Exclusion Paths
+Gets Excluded Paths for all languages.
 
 ---
 
 ### Description
 
-Sets any excluded paths for interpreted languages in PipeScript.
+Gets any excluded paths for interpreted languages in PipeScript.
 
-If a command matches any of these patterns, it should not be interpreted.
-
----
-
-### Notes
-Excluded paths will be processed as wildcards.
+If a command is like any of these paths, it should not be interpreted.
 
 ---
