@@ -2124,52 +2124,6 @@ $BackgroundColor
       </TableControl>
     </View>
     <View>
-      <Name>PipeScript.Interpreters</Name>
-      <ViewSelectedBy>
-        <TypeName>PipeScript.Interpreters</TypeName>
-      </ViewSelectedBy>
-      <CustomControl>
-        <CustomEntries>
-          <CustomEntry>
-            <CustomItem>
-              <ExpressionBinding>
-                <ScriptBlock>
-    if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('Show-Markdown', 'Cmdlet')) {
-        Show-Markdown -InputObject $_.'README'
-    } else {
-        $_.'README'
-    }   
-</ScriptBlock>
-              </ExpressionBinding>
-            </CustomItem>
-          </CustomEntry>
-        </CustomEntries>
-      </CustomControl>
-    </View>
-    <View>
-      <Name>PipeScript.Languages</Name>
-      <ViewSelectedBy>
-        <TypeName>PipeScript.Languages</TypeName>
-      </ViewSelectedBy>
-      <CustomControl>
-        <CustomEntries>
-          <CustomEntry>
-            <CustomItem>
-              <ExpressionBinding>
-                <ScriptBlock>
-    if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('Show-Markdown', 'Cmdlet')) {
-        Show-Markdown -InputObject $_.'README'
-    } else {
-        $_.'README'
-    }   
-</ScriptBlock>
-              </ExpressionBinding>
-            </CustomItem>
-          </CustomEntry>
-        </CustomEntries>
-      </CustomControl>
-    </View>
-    <View>
       <Name>PipeScript.Module.Services</Name>
       <ViewSelectedBy>
         <TypeName>PipeScript.Module.Services</TypeName>
@@ -2408,6 +2362,52 @@ $BackgroundColor
                   <ScriptBlock> $_.Arguments -and -not $_.Clauses </ScriptBlock>
                 </ItemSelectionCondition>
                 <ScriptBlock>@(&amp; ${PipeScript_Format-RichText} -ForegroundColor 'Magenta' ) -join ''</ScriptBlock>
+              </ExpressionBinding>
+            </CustomItem>
+          </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </View>
+    <View>
+      <Name>PipeScript.Interpreters</Name>
+      <ViewSelectedBy>
+        <TypeName>PipeScript.Interpreters</TypeName>
+      </ViewSelectedBy>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+            <CustomItem>
+              <ExpressionBinding>
+                <ScriptBlock>
+    if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('Show-Markdown', 'Cmdlet')) {
+        Show-Markdown -InputObject $_.'README'
+    } else {
+        $_.'README'
+    }   
+</ScriptBlock>
+              </ExpressionBinding>
+            </CustomItem>
+          </CustomEntry>
+        </CustomEntries>
+      </CustomControl>
+    </View>
+    <View>
+      <Name>PipeScript.Languages</Name>
+      <ViewSelectedBy>
+        <TypeName>PipeScript.Languages</TypeName>
+      </ViewSelectedBy>
+      <CustomControl>
+        <CustomEntries>
+          <CustomEntry>
+            <CustomItem>
+              <ExpressionBinding>
+                <ScriptBlock>
+    if ($ExecutionContext.SessionState.InvokeCommand.GetCommand('Show-Markdown', 'Cmdlet')) {
+        Show-Markdown -InputObject $_.'README'
+    } else {
+        $_.'README'
+    }   
+</ScriptBlock>
               </ExpressionBinding>
             </CustomItem>
           </CustomEntry>
