@@ -117,12 +117,76 @@ function Template.HTML.CustomElement {
             $ClassName = $ElementName -replace '-','_'
         }
 
+        $Field += @{"#shadow" = "this.attachShadow({mode: 'open'});"}        
+
+        $allMembers = @(
+            if ($field) {
+                foreach ($PropertyBag in @($Field)) {
+                    if ($PropertyBag -is [Collections.IDictionary]) {
+                        $PropertyBag = [PSCustomObject]$PropertyBag
+                    }
+                    foreach ($prop in $PropertyBag.PSObject.properties) {
+                        "$($prop.Name) = $($prop.Value)"
+                    }
+                }
+            }
+    
+            if ($OnConnected) {
+                "connectedCallback() { $OnConnected }"
+            }
+            if ($OnDisconnected) {
+                "disconnectedCallback() { $OnDisconnected }"
+            }            
+            if ($OnAdopted) {
+                "adoptedCallback() { $OnAdopted }"
+            }
+            if ($OnAttributeChange) {
+                "attributeChangedCallback(name, oldValue, newValue) { $OnAttributeChange }"
+            }            
+            if ($ObservableAttribute) {
+                "static get observedAttributes() { return [`$($ObservableAttribute -join '`,`')`]; }"
+            }
+            if ($property) {
+                foreach ($PropertyBag in @($Property)) {
+                    if ($PropertyBag -is [Collections.IDictionary]) {
+                        $PropertyBag = [PSCustomObject]$PropertyBag
+                    }
+                    foreach ($prop in $PropertyBag.PSObject.properties) {
+                        $propName = $prop.Name                    
+                        $propGet, $propSet = $prop.Value
+                        if ($propGet) {
+                            "get $propName() { $propGet }"
+                        }
+                        if ($propSet) {
+                            "set $propName(value) { $propSet }"
+                        }
+                    }
+                }            
+            }
+    
+            if ($method) {
+                foreach ($MemberBag in @($method)) {
+                    if ($MemberBag -is [Collections.IDictionary]) {
+                        $MemberBag = [PSCustomObject]$MemberBag
+                    }
+                    foreach ($member in $MemberBag.PSObject.properties) {
+                        $memberName = $member.Name
+                        $memberValue = $member.Value
+                        if ($memberValue -notmatch '\s{0,}\{') {
+                            $memberValue = "{ $memberValue }"
+                        }
+                        "$memberName $memberValue"
+                    }
+                }
+            }    
+        )
+
         @"
 <script type="module">/*<![CDATA[*/
 class $ClassName extends $ExtendClass {
     constructor() {
         super();
-        const shadow = this.attachShadow({mode: 'open'});        
+        
         let shadowTemplate = $(
             if ($template -match '[\r\n]') {
                 "document.createRange().createContextualFragment(``$Template``);"
@@ -147,70 +211,9 @@ class $ClassName extends $ExtendClass {
                 "document.createRange().createContextualFragment(``$Template``);"
             }
         )
-        shadow.appendChild(shadowTemplate.cloneNode(true));
+        this.#shadow.appendChild(shadowTemplate.cloneNode(true));
     }
-    $(@(
-        if ($field) {
-            foreach ($PropertyBag in @($Field)) {
-                if ($PropertyBag -is [Collections.IDictionary]) {
-                    $PropertyBag = [PSCustomObject]$PropertyBag
-                }
-                foreach ($prop in $PropertyBag.PSObject.properties) {
-                    "$($prop.Name) = $($prop.Value)"
-                }
-            }
-        }
-
-        if ($OnConnected) {
-            "connectedCallback() { $OnConnected }"
-        }
-        if ($OnDisconnected) {
-            "disconnectedCallback() { $OnDisconnected }"
-        }            
-        if ($OnAdopted) {
-            "adoptedCallback() { $OnAdopted }"
-        }
-        if ($OnAttributeChange) {
-            "attributeChangedCallback(name, oldValue, newValue) { $OnAttributeChange }"
-        }            
-        if ($ObservableAttribute) {
-            "static get observedAttributes() { return [`$($ObservableAttribute -join '`,`')`]; }"
-        }
-        if ($property) {
-            foreach ($PropertyBag in @($Property)) {
-                if ($PropertyBag -is [Collections.IDictionary]) {
-                    $PropertyBag = [PSCustomObject]$PropertyBag
-                }
-                foreach ($prop in $PropertyBag.PSObject.properties) {
-                    $propName = $prop.Name                    
-                    $propGet, $propSet = $prop.Value
-                    if ($propGet) {
-                        "get $propName() { $propGet }"
-                    }
-                    if ($propSet) {
-                        "set $propName(value) { $propSet }"
-                    }
-                }
-            }            
-        }
-
-        if ($method) {
-            foreach ($MemberBag in @($method)) {
-                if ($MemberBag -is [Collections.IDictionary]) {
-                    $MemberBag = [PSCustomObject]$MemberBag
-                }
-                foreach ($member in $MemberBag.PSObject.properties) {
-                    $memberName = $member.Name
-                    $memberValue = $member.Value
-                    if ($memberValue -notmatch '\s{0,}\{') {
-                        $memberValue = "{ $memberValue }"
-                    }
-                    "$memberName $memberValue"
-                }
-            }
-        }
-
-    ) -join ([Environment]::NewLine * 2))
+    $($allMembers -join ([Environment]::NewLine * 2))
 }
 
 if (customElements.define != null) {
