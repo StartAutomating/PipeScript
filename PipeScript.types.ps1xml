@@ -3238,6 +3238,20 @@ foreach ($prop in $this.psobject.properties) {
     }    
 })
                     </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets all Languages
+.DESCRIPTION
+    Gets all currently loaded language definitions in PipeScript.
+#&gt;
+,@(foreach ($psProperty in $this.PSObject.properties) {
+    if ($psProperty -isnot [psnoteproperty]) { continue  }
+    if ($psProperty.IsInstance -and $psProperty.Value.LanguageName) {
+        $psProperty.Value
+    }    
+})
+                    </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>Count</Name>
@@ -3259,6 +3273,24 @@ foreach ($prop in $this.psobject.properties) {
 }
 return $count
                     </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the number of loaded languages.
+.DESCRIPTION
+    Gets the number of language definitions loaded by PipeScript.
+.EXAMPLE
+    $PSLanguage.Count
+#&gt;
+$count= 0
+foreach ($prop in $this.psobject.properties) {
+    if ($prop -is [psscriptproperty]) { continue }
+    if ($prop.IsInstance -and $prop.Value.LanguageName) {
+        $count++
+    }
+}
+return $count
+                    </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>Exclude</Name>
@@ -3282,31 +3314,19 @@ return @(
         <SetScriptBlock>
                         &lt;#
 .SYNOPSIS
-    Sets language exclusions
+    Gets Languages Exclusions
 .DESCRIPTION
     Gets any excluded patterns and paths for languages in PipeScript.
-.NOTES
-    If you provide a `[regex]`, it will set `.ExcludePattern`.
-    Otherwise, this will set `.ExcludePath`.
+
+    If a command matches any of these patterns, it should not be interpreted.
 #&gt;
-$unrolledArgs = $args | . { process {  $_ } }
-$patterns = @()
-$paths = @(
-foreach ($arg in $unrolledArgs) {
-    if ($arg -is [Regex]) {
-        $patterns += $arg
-    } else {
-        "$arg"
-    }
-})
+param()
 
-if ($patterns) {
-    $this.ExcludePattern = $patterns
-}
-if ($paths) {
-    $this.ExcludePath = $paths
-}
 
+return @(
+    $this.ExcludePattern
+    $this.ExcludePath
+)
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -3331,20 +3351,19 @@ return $this.'.ExcludePath'
         <SetScriptBlock>
                         &lt;#
 .SYNOPSIS
-    Changes the Exclusion Paths
+    Gets Excluded Paths for all languages.
 .DESCRIPTION
-    Sets any excluded paths for interpreted languages in PipeScript.
+    Gets any excluded paths for interpreted languages in PipeScript.
 
-    If a command matches any of these patterns, it should not be interpreted.
-.NOTES
-    Excluded paths will be processed as wildcards.
+    If a command is like any of these paths, it should not be interpreted.
 #&gt;
-$paths = @(foreach ($arg in $args | . { process { $_ }}) {
-    "$arg"
-})
+param()
 
-Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePath' -Value $paths
+if ($null -eq $this.'.ExcludePath'.Length) {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePath' -Value @()
+}
 
+return $this.'.ExcludePath'
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -3372,22 +3391,22 @@ return $this.'.ExcludePattern'
         <SetScriptBlock>
                         &lt;#
 .SYNOPSIS
-    Changes the Exclusion Patterns
+    Gets Language Exclusion Patterns
 .DESCRIPTION
-    Sets any excluded patterns for interpreted languages in PipeScript.
+    `$psLanguages.ExcludePattern` and `$psInterpreters.ExcludePattern` contain the patterns excluded from interpretation.
 
-    If a command matches any of these patterns, it should not be interpreted.
-.NOTES
-    Under most circumstances, this should not be set.
-    
-    Setting this may cause Templates and Protocols to stop working (for interpretable languages)
+    If a command matches any of these patterns, it should not be interpreted.    
 #&gt;
-$patterns = @(foreach ($arg in $args | . { process { $_ }}) {
-    [Regex]::new("$arg","IgnoreCase,IgnorePatternWhitespace","00:00:00.1")
-})
+param()
 
-Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePattern' -Value $patterns
+if (-not $this.'.ExcludePattern') {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePattern' @(
+        [Regex]::new('\.ps1?\.','IgnoreCase')
+        [Regex]::new('://.')
+    )
+}
 
+return $this.'.ExcludePattern'
                     </SetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
@@ -3409,6 +3428,23 @@ Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePat
     }
 })
                     </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the loaded language names.
+.DESCRIPTION
+    Gets the names of language definitions loaded by PipeScript.
+.EXAMPLE
+    $PSLanguage.LanguageName
+#&gt;
+
+,@(foreach ($prop in $this.psobject.properties) {
+    if ($prop -is [psscriptproperty]) { continue }
+    if ($prop.IsInstance -and $prop.Value.LanguageName) {
+        $prop.Value.LanguageName
+    }
+})
+                    </SetScriptBlock>
       </ScriptProperty>
       <NoteProperty>
         <Name>README</Name>
@@ -5069,6 +5105,256 @@ else {
 
                     </Script>
       </ScriptMethod>
+    </Members>
+  </Type>
+  <Type>
+    <Name>PipeScript.Techs</Name>
+    <Members>
+      <AliasProperty>
+        <Name>ExcludePaths</Name>
+        <ReferencedMemberName>ExcludePaths</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>ExcludePatterns</Name>
+        <ReferencedMemberName>ExcludePatterns</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Excludes</Name>
+        <ReferencedMemberName>Exclude</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>LanguageNames</Name>
+        <ReferencedMemberName>LanguageName</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptMethod>
+        <Name>ForFile</Name>
+        <Script>
+                        &lt;#
+.SYNOPSIS
+    Gets the language for a file.
+.DESCRIPTION
+    Gets the PipeScript language definitions for a path.
+.EXAMPLE
+    $PSLanguage.ForFile("a.xml")
+.EXAMPLE
+    $PSInterpreters.ForFile("a.js")
+#&gt;
+param(
+# The path to the file, or the name of the command.
+[string]
+$FilePath
+)
+
+foreach ($excludePattern in $this.ExcludePattern) {
+    if ($filePath -match $excludePattern) { return }
+}
+
+foreach ($excludePath in $this.ExcludePath) {
+    if (-not $excludePath) { continue } 
+    if ($filePath -like $excludePath) { return }
+}
+
+foreach ($prop in $this.psobject.properties) {
+    if ($prop -is [psscriptproperty]) { continue }     
+    if ($prop.IsInstance -and 
+        $prop.Value.LanguageName -and
+        $prop.Value.FilePattern -and
+        $filePath -match $prop.Value.FilePattern) {
+        $prop.Value
+    }
+}
+
+
+                    </Script>
+      </ScriptMethod>
+      <ScriptProperty>
+        <Name>All</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets all Languages
+.DESCRIPTION
+    Gets all currently loaded language definitions in PipeScript.
+#&gt;
+,@(foreach ($psProperty in $this.PSObject.properties) {
+    if ($psProperty -isnot [psnoteproperty]) { continue  }
+    if ($psProperty.IsInstance -and $psProperty.Value.LanguageName) {
+        $psProperty.Value
+    }    
+})
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Count</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the number of loaded languages.
+.DESCRIPTION
+    Gets the number of language definitions loaded by PipeScript.
+.EXAMPLE
+    $PSLanguage.Count
+#&gt;
+$count= 0
+foreach ($prop in $this.psobject.properties) {
+    if ($prop -is [psscriptproperty]) { continue }
+    if ($prop.IsInstance -and $prop.Value.LanguageName) {
+        $count++
+    }
+}
+return $count
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Exclude</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Languages Exclusions
+.DESCRIPTION
+    Gets any excluded patterns and paths for languages in PipeScript.
+
+    If a command matches any of these patterns, it should not be interpreted.
+#&gt;
+param()
+
+
+return @(
+    $this.ExcludePattern
+    $this.ExcludePath
+)
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Sets language exclusions
+.DESCRIPTION
+    Gets any excluded patterns and paths for languages in PipeScript.
+.NOTES
+    If you provide a `[regex]`, it will set `.ExcludePattern`.
+    Otherwise, this will set `.ExcludePath`.
+#&gt;
+$unrolledArgs = $args | . { process {  $_ } }
+$patterns = @()
+$paths = @(
+foreach ($arg in $unrolledArgs) {
+    if ($arg -is [Regex]) {
+        $patterns += $arg
+    } else {
+        "$arg"
+    }
+})
+
+if ($patterns) {
+    $this.ExcludePattern = $patterns
+}
+if ($paths) {
+    $this.ExcludePath = $paths
+}
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ExcludePath</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Excluded Paths for all languages.
+.DESCRIPTION
+    Gets any excluded paths for interpreted languages in PipeScript.
+
+    If a command is like any of these paths, it should not be interpreted.
+#&gt;
+param()
+
+if ($null -eq $this.'.ExcludePath'.Length) {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePath' -Value @()
+}
+
+return $this.'.ExcludePath'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Changes the Exclusion Paths
+.DESCRIPTION
+    Sets any excluded paths for interpreted languages in PipeScript.
+
+    If a command matches any of these patterns, it should not be interpreted.
+.NOTES
+    Excluded paths will be processed as wildcards.
+#&gt;
+$paths = @(foreach ($arg in $args | . { process { $_ }}) {
+    "$arg"
+})
+
+Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePath' -Value $paths
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ExcludePattern</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets Language Exclusion Patterns
+.DESCRIPTION
+    `$psLanguages.ExcludePattern` and `$psInterpreters.ExcludePattern` contain the patterns excluded from interpretation.
+
+    If a command matches any of these patterns, it should not be interpreted.    
+#&gt;
+param()
+
+if (-not $this.'.ExcludePattern') {
+    Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePattern' @(
+        [Regex]::new('\.ps1?\.','IgnoreCase')
+        [Regex]::new('://.')
+    )
+}
+
+return $this.'.ExcludePattern'
+                    </GetScriptBlock>
+        <SetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Changes the Exclusion Patterns
+.DESCRIPTION
+    Sets any excluded patterns for interpreted languages in PipeScript.
+
+    If a command matches any of these patterns, it should not be interpreted.
+.NOTES
+    Under most circumstances, this should not be set.
+    
+    Setting this may cause Templates and Protocols to stop working (for interpretable languages)
+#&gt;
+$patterns = @(foreach ($arg in $args | . { process { $_ }}) {
+    [Regex]::new("$arg","IgnoreCase,IgnorePatternWhitespace","00:00:00.1")
+})
+
+Add-Member -InputObject $this -Force -MemberType NoteProperty -Name '.ExcludePattern' -Value $patterns
+
+                    </SetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>LanguageName</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets the loaded language names.
+.DESCRIPTION
+    Gets the names of language definitions loaded by PipeScript.
+.EXAMPLE
+    $PSLanguage.LanguageName
+#&gt;
+
+,@(foreach ($prop in $this.psobject.properties) {
+    if ($prop -is [psscriptproperty]) { continue }
+    if ($prop.IsInstance -and $prop.Value.LanguageName) {
+        $prop.Value.LanguageName
+    }
+})
+                    </GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>
