@@ -144,7 +144,7 @@ function Template.HTML.CustomElement {
                 "attributeChangedCallback(name, oldValue, newValue) { $OnAttributeChange }"
             }            
             if ($ObservableAttribute) {
-                "static get observedAttributes() { return [`$($ObservableAttribute -join '`,`')`]; }"
+                "static get observedAttributes() { return $(ConvertTo-Json -InputObject $ObservableAttribute -Compress) }"
             }
             if ($property) {
                 foreach ($PropertyBag in @($Property)) {
