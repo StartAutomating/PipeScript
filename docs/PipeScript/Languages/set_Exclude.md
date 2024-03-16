@@ -2,7 +2,7 @@ PipeScript.Languages.set_Exclude()
 ----------------------------------
 
 ### Synopsis
-Sets language exclusions
+Gets Languages Exclusions
 
 ---
 
@@ -10,10 +10,6 @@ Sets language exclusions
 
 Gets any excluded patterns and paths for languages in PipeScript.
 
----
-
-### Notes
-If you provide a `[regex]`, it will set `.ExcludePattern`.
-Otherwise, this will set `.ExcludePath`.
+If a command matches any of these patterns, it should not be interpreted.
 
 ---
