@@ -58,8 +58,20 @@ Template function HTML.CustomElement {
     # If multiple values are provided, the property will be gettable and settable.
     [vbn()]
     [Alias('Properties')]
-    [PSObject]
+    [PSObject[]]
     $Property,
+
+    # Any additional members for the element.    
+    [vbn()]
+    [Alias('Methods')]
+    [PSObject[]]
+    $Method,
+
+    # Any additional fields for the element.
+    [vbn()]
+    [Alias('Fields')]
+    [PSObject[]]
+    $Field,
 
     # The template content, or the ID of a template.
     [vbn()]
@@ -136,6 +148,17 @@ class $ClassName extends $ExtendClass {
         shadow.appendChild(shadowTemplate.cloneNode(true));
     }
     $(@(
+        if ($field) {
+            foreach ($PropertyBag in @($Field)) {
+                if ($PropertyBag -is [Collections.IDictionary]) {
+                    $PropertyBag = [PSCustomObject]$PropertyBag
+                }
+                foreach ($prop in $PropertyBag.PSObject.properties) {
+                    "$($prop.Name) = $($prop.Value)"
+                }
+            }
+        }
+
         if ($OnConnected) {
             "connectedCallback() { $OnConnected }"
         }
@@ -152,20 +175,39 @@ class $ClassName extends $ExtendClass {
             "static get observedAttributes() { return [`$($ObservableAttribute -join '`,`')`]; }"
         }
         if ($property) {
-            if ($property -is [Collections.IDictionary]) {
-                $property = [PSCustomObject]$property
-            }
-            foreach ($prop in $property.PSObject.properties) {
-                $propName = $prop.Name                    
-                $propGet, $propSet = $prop.Value
-                if ($propGet) {
-                    "get $propName() { $propGet }"
+            foreach ($PropertyBag in @($Property)) {
+                if ($PropertyBag -is [Collections.IDictionary]) {
+                    $PropertyBag = [PSCustomObject]$PropertyBag
                 }
-                if ($propSet) {
-                    "set $propName(value) { $propSet }"
+                foreach ($prop in $PropertyBag.PSObject.properties) {
+                    $propName = $prop.Name                    
+                    $propGet, $propSet = $prop.Value
+                    if ($propGet) {
+                        "get $propName() { $propGet }"
+                    }
+                    if ($propSet) {
+                        "set $propName(value) { $propSet }"
+                    }
+                }
+            }            
+        }
+
+        if ($method) {
+            foreach ($MemberBag in @($method)) {
+                if ($MemberBag -is [Collections.IDictionary]) {
+                    $MemberBag = [PSCustomObject]$MemberBag
+                }
+                foreach ($member in $MemberBag.PSObject.properties) {
+                    $memberName = $member.Name
+                    $memberValue = $member.Value
+                    if ($memberValue -notmatch '\s{0,}\{') {
+                        $memberValue = "{ $memberValue }"
+                    }
+                    "$memberName $memberValue"
                 }
             }
         }
+
     ) -join ([Environment]::NewLine * 2))
 }
 
