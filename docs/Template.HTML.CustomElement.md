@@ -74,55 +74,69 @@ The parameters to any template.
 The properties for the element.
 If multiple values are provided, the property will be gettable and settable.
 
-|Type        |Required|Position|PipelineInput        |Aliases   |
-|------------|--------|--------|---------------------|----------|
-|`[PSObject]`|false   |6       |true (ByPropertyName)|Properties|
+|Type          |Required|Position|PipelineInput        |Aliases   |
+|--------------|--------|--------|---------------------|----------|
+|`[PSObject[]]`|false   |6       |true (ByPropertyName)|Properties|
+
+#### **Method**
+Any additional members for the element.
+
+|Type          |Required|Position|PipelineInput        |Aliases|
+|--------------|--------|--------|---------------------|-------|
+|`[PSObject[]]`|false   |7       |true (ByPropertyName)|Methods|
+
+#### **Field**
+Any additional fields for the element.
+
+|Type          |Required|Position|PipelineInput        |Aliases|
+|--------------|--------|--------|---------------------|-------|
+|`[PSObject[]]`|false   |8       |true (ByPropertyName)|Fields |
 
 #### **Template**
 The template content, or the ID of a template.
 
 |Type      |Required|Position|PipelineInput        |Aliases                                   |
 |----------|--------|--------|---------------------|------------------------------------------|
-|`[String]`|false   |7       |true (ByPropertyName)|TemplateID<br/>TemplateContent<br/>Content|
+|`[String]`|false   |9       |true (ByPropertyName)|TemplateID<br/>TemplateContent<br/>Content|
 
 #### **OnConnected**
 The JavaScript to run when the element is connected.
 
 |Type      |Required|Position|PipelineInput        |Aliases                                                  |
 |----------|--------|--------|---------------------|---------------------------------------------------------|
-|`[String]`|false   |8       |true (ByPropertyName)|OnConnection<br/>ConnectedCallback<br/>ConnectionCallback|
+|`[String]`|false   |10      |true (ByPropertyName)|OnConnection<br/>ConnectedCallback<br/>ConnectionCallback|
 
 #### **OnDisconnected**
 The JavaScript to run when the element is disconnected.
 
 |Type      |Required|Position|PipelineInput        |Aliases                                                           |
 |----------|--------|--------|---------------------|------------------------------------------------------------------|
-|`[String]`|false   |9       |true (ByPropertyName)|OnDisconnection<br/>DisconnectedCallback<br/>DisconnectionCallback|
+|`[String]`|false   |11      |true (ByPropertyName)|OnDisconnection<br/>DisconnectedCallback<br/>DisconnectionCallback|
 
 #### **OnAdopted**
 The JavaScript to run when the element is adopted.
 
 |Type      |Required|Position|PipelineInput        |Aliases                                            |
 |----------|--------|--------|---------------------|---------------------------------------------------|
-|`[String]`|false   |10      |true (ByPropertyName)|OnAdoption<br/>AdoptedCallback<br/>AdoptionCallback|
+|`[String]`|false   |12      |true (ByPropertyName)|OnAdoption<br/>AdoptedCallback<br/>AdoptionCallback|
 
 #### **OnAttributeChange**
 The JavaScript to run when attributes are updated.
 
 |Type      |Required|Position|PipelineInput        |Aliases                                                                    |
 |----------|--------|--------|---------------------|---------------------------------------------------------------------------|
-|`[String]`|false   |11      |true (ByPropertyName)|OnAttributeChanged<br/>AttributeChangeCallback<br/>AttributeChangedCallback|
+|`[String]`|false   |13      |true (ByPropertyName)|OnAttributeChanged<br/>AttributeChangeCallback<br/>AttributeChangedCallback|
 
 #### **ObservableAttribute**
 The list of observable attributes.
 
 |Type        |Required|Position|PipelineInput        |Aliases                            |
 |------------|--------|--------|---------------------|-----------------------------------|
-|`[String[]]`|false   |12      |true (ByPropertyName)|ObservableAttributes<br/>Observable|
+|`[String[]]`|false   |14      |true (ByPropertyName)|ObservableAttributes<br/>Observable|
 
 ---
 
 ### Syntax
 ```PowerShell
-Template.HTML.CustomElement [[-ElementName] <String>] [[-ClassName] <String>] [[-ExtendClass] <String>] [[-ExtendElement] <String>] [[-Parameter] <PSObject>] [[-Property] <PSObject>] [[-Template] <String>] [[-OnConnected] <String>] [[-OnDisconnected] <String>] [[-OnAdopted] <String>] [[-OnAttributeChange] <String>] [[-ObservableAttribute] <String[]>] [<CommonParameters>]
+Template.HTML.CustomElement [[-ElementName] <String>] [[-ClassName] <String>] [[-ExtendClass] <String>] [[-ExtendElement] <String>] [[-Parameter] <PSObject>] [[-Property] <PSObject[]>] [[-Method] <PSObject[]>] [[-Field] <PSObject[]>] [[-Template] <String>] [[-OnConnected] <String>] [[-OnDisconnected] <String>] [[-OnAdopted] <String>] [[-OnAttributeChange] <String>] [[-ObservableAttribute] <String[]>] [<CommonParameters>]
 ```
