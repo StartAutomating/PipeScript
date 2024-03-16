@@ -1,3 +1,6 @@
+[ValidatePattern("Go[\s\p{P}]")]
+param()
+
 
 function Template.HelloWorld.go {
 
