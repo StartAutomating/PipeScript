@@ -83,6 +83,8 @@ Template function PipeScript.NamespacedObject {
 
         $SingletonForms = 'singleton','single','constant','const','the','c','s','t'
         $singletonPattern = "(?>$($SingletonForms -join '|'))"
+
+
         
         $defineInstance = 
             if ($objectDefinition -is [Management.Automation.Language.HashtableAst]) {
@@ -97,6 +99,11 @@ Template function PipeScript.NamespacedObject {
             \#\> # the closing tag
             ", 'IgnoreCase,IgnorePatternWhitespace', '00:00:01')
                 $foundBlockComments = $objectDefinition -match $findBlockComments
+                $objectDefinition = "{
+$($objectDefinition -replace '^\{' -replace '\}$')
+Export-ModuleMember -Function * -Alias * -Cmdlet * -Variable *
+}"
+                    
                 if ($foundBlockComments -and $matches.Block) {
                     $blockComments = $null,"<#",$($matches.Block),"#>",$null -join [Environment]::Newline
                 }
@@ -112,12 +119,7 @@ Template function PipeScript.NamespacedObject {
                 elseif ($matches.0 -eq '<') { '>' }
             }
         ) -ne '' -join ''
-
-        $objectDefinition = "{
-$($objectDefinition -replace '^\{' -replace '\}$')
-Export-ModuleMember -Function * -Alias * -Cmdlet * -Variable *
-}"
-
+        
         $objectDefinition = 
             if ($objectType -match $singletonPattern) {
                 "{$(if ($blockComments) {$blockComments})
