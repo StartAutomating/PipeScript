@@ -1,12 +1,22 @@
 <#
 .SYNOPSIS
-    Gets all Languages
+    Gets all items in the collection
 .DESCRIPTION
-    Gets all currently loaded language definitions in PipeScript.
+    Gets all items in the object.
+
+    This would be all Technologies, Languages, or Interpreters.
+.NOTES
+    Any noteproperties that are instance properties will be returned.
+.EXAMPLE
+    $PsLanguages.All
+.EXAMPLE
+    $PSInterpreters.All
+.EXAMPLE
+    $PSTechs.All
 #>
 ,@(foreach ($psProperty in $this.PSObject.properties) {
     if ($psProperty -isnot [psnoteproperty]) { continue  }
-    if ($psProperty.IsInstance -and $psProperty.Value.LanguageName) {
+    if ($psProperty.IsInstance) {
         $psProperty.Value
     }    
 })
