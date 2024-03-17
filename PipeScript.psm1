@@ -139,7 +139,7 @@ $PipeScript.Extensions |
     . {         
         process {            
             if ($_.Name -notlike 'Language*') {
-                if ($_.pstypenames -contains 'Tech.Command') {
+                if ($_.pstypenames -contains 'Technology.Command') {
                     $TechsByName[$_.Name] = $_
                 }
                 if ($_.pstypenames -contains 'Parser.Command') {
