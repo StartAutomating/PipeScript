@@ -1,4 +1,4 @@
-[ValidatePattern("(?>^|[\s\p{P}])(?>Python|Language)[\s\p{P}]")]
+[ValidatePattern("(?>^|[\s\p{P}])(?>Pug|Language)[\s\p{P}]")]
 param()
 
 
@@ -23,6 +23,5 @@ Language function Pug {
     $endComment   = '--\>'    
     $startPattern = "(?<PSStart>$StartComment\{)"    
     $endPattern   = "(?<PSEnd>\}${endComment})"
-
 }
 
