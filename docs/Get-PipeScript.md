@@ -76,6 +76,7 @@ Valid Values:
 * Route
 * Sentence
 * Service
+* Technology
 * Template
 * Transform
 * Transpiler
