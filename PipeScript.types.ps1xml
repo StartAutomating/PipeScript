@@ -2370,6 +2370,12 @@ $byInputType
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Layout</Name>
+        <GetScriptBlock>
+                        $this.All -match 'Layout'
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Unique</Name>
         <GetScriptBlock>
                         &lt;#
