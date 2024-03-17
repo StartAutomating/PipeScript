@@ -13,7 +13,7 @@ Any command with any of these keywords in it's name will be considered a Technol
 
 All languages are also considered technology.
 
-PipeScript presently ships with 5 technologies:
+PipeScript presently ships with 6 technologies:
 
 * Language.ADA
 * Language.Arduino
@@ -81,6 +81,7 @@ PipeScript presently ships with 5 technologies:
 * Language.XSD
 * Language.XSL
 * Language.YAML
+* PipeScript.Techs.format.ps1
 * Tech.Hugo
 * Tech.Hugo.md
 * Tech.Jekyll
