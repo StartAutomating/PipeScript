@@ -103,10 +103,12 @@ $PipeScript.Extensions |
                 }
                 return
             }
-            $languageObject = & $_
+            $languageCommand = $_
+            $languageObject = & $languageCommand
             if (-not $languageObject.LanguageName) {
                 return
             }
+            $TechsByName[$languageCommand.Name] = $languageObject
             $LanguagesByName[$languageObject.LanguageName] = $languageObject
             if ($languageObject.Interpreter) {
                 $InterpretersByName[$languageObject.LanguageName] = $languageObject
