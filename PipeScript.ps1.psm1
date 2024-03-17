@@ -78,21 +78,26 @@ foreach ($typesXmlNoteProperty in $typesXmlNoteProperties){
     }    
 }
 
+# Languages will populate `$psLanguage(s)`
+$LanguagesByName = [Ordered]@{}
+
+# Interpreters will populate `$psInterpreter(s)`
+$InterpretersByName = [Ordered]@{}
+
+# Technologies will populate `$psTech(s)`
+$TechsByName = [Ordered]@{}
+
+# Parsers will populate `$psParser(s)`
+$ParsersByName = [Ordered]@{}
+
 # A few extension types we want to publish as variables
 $PipeScript.Extensions | 
-    . { 
-        begin {
-            # Languages will populate `$psLanguage(s)`
-            $LanguagesByName = [Ordered]@{}
-
-            # Interpreters will populate `$psInterpreter(s)`
-            $InterpretersByName = [Ordered]@{}
-
-            # Parsers will populate `$psParsers`
-            $ParsersByName = [Ordered]@{}           
-        }
+    . {         
         process {            
-            if ($_.Name -notlike 'Language*') { 
+            if ($_.Name -notlike 'Language*') {
+                if ($_.pstypenames -contains 'Tech.Command') {
+                    $TechsByName[$_.Name] = $_
+                }
                 if ($_.pstypenames -contains 'Parser.Command') {
                     $ParsersByName[$_.Name] = $_
                 }
@@ -106,27 +111,30 @@ $PipeScript.Extensions |
             if ($languageObject.Interpreter) {
                 $InterpretersByName[$languageObject.LanguageName] = $languageObject
             }
-        }
-
-        end {        
-            $PSLanguage = $PSLanguages = [PSCustomObject]$LanguagesByName
-            $PSLanguage.pstypenames.clear()
-            $PSLanguage.pstypenames.insert(0,'PipeScript.Languages')
-            
-            $PSInterpreter = $PSInterpreters = [PSCustomObject]$InterpretersByName
-            $PSInterpreter.pstypenames.clear()
-            $PSInterpreter.pstypenames.insert(0,'PipeScript.Interpreters')
-
-            $PSParser = $PSParsers = [PSCustomObject]$ParsersByName
-            $PSParser.pstypenames.clear()
-            $PSParser.pstypenames.insert(0,'PipeScript.Parsers')
-        }
+        }        
     }
+
+$PSLanguage = $PSLanguages = [PSCustomObject]$LanguagesByName
+$PSLanguage.pstypenames.clear()
+$PSLanguage.pstypenames.insert(0,'PipeScript.Languages')
+
+$PSInterpreter = $PSInterpreters = [PSCustomObject]$InterpretersByName
+$PSInterpreter.pstypenames.clear()
+$PSInterpreter.pstypenames.insert(0,'PipeScript.Interpreters')
+
+$PSTech = $PSTechs = $PSTechnology = $PSTechnologies =  [PSCustomObject]$TechsByName
+$PSTech.pstypenames.clear()
+$PSTech.pstypenames.insert(0,'PipeScript.Techs')
+
+$PSParser = $PSParsers = [PSCustomObject]$ParsersByName
+$PSParser.pstypenames.clear()
+$PSParser.pstypenames.insert(0,'PipeScript.Parsers')
 
 Export-ModuleMember -Function * -Alias * -Variable $MyInvocation.MyCommand.ScriptBlock.Module.Name, 
     'PSLanguage', 'PSLanguages', 
     'PSInterpreter', 'PSInterpreters',
-    'PSParser','PSParsers'
+    'PSParser','PSParsers',
+    'PSTech', 'PSTechs', 'PSTechnology', 'PSTechnologies'
 
 $PreCommandAction = {
     param($LookupArgs)
