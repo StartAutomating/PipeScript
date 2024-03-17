@@ -2303,6 +2303,18 @@ $distinctCommands = @{}
         <Name>Distinct</Name>
         <ReferencedMemberName>Unique</ReferencedMemberName>
       </AliasProperty>
+      <AliasProperty>
+        <Name>Inputs</Name>
+        <ReferencedMemberName>Input</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Layouts</Name>
+        <ReferencedMemberName>Layout</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Outputs</Name>
+        <ReferencedMemberName>Output</ReferencedMemberName>
+      </AliasProperty>
       <ScriptProperty>
         <Name>All</Name>
         <GetScriptBlock>
@@ -2370,9 +2382,42 @@ $byInputType
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
+        <Name>Input</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets all input templates
+.DESCRIPTION
+    Gets all templates that are inputs.
+#&gt;
+param()
+$this.All -match 'Input'
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
         <Name>Layout</Name>
         <GetScriptBlock>
-                        $this.All -match 'Layout'
+                        &lt;#
+.SYNOPSIS
+    Gets all layout templates
+.DESCRIPTION
+    Gets all templates that are layouts.
+#&gt;
+param()
+$this.All -match 'Layout'
+                    </GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Output</Name>
+        <GetScriptBlock>
+                        &lt;#
+.SYNOPSIS
+    Gets all output templates
+.DESCRIPTION
+    Gets all templates that are output.
+#&gt;
+param()
+$this.All -match 'Output'
                     </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
