@@ -1,4 +1,4 @@
-[ValidatePattern("(?>^|[\s\p{P}])(?>Pug|Language)[\s\p{P}]")]
+[ValidatePattern("(?>Pug|Language)[\s\p{P}]")]
 param()
 
 
@@ -11,7 +11,7 @@ Language function Pug {
 
         Pug is a high-performance template engine heavily influenced by Haml and implemented with JavaScript for Node.js and browsers.
     #>
-    [ValidatePatern('\.pug$')]
+    [ValidatePattern('\.pug$')]
     param()    
     $LanguageName = 'Pug'
     $FilePattern = '\.pug$'
