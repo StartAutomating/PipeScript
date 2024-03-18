@@ -5,4 +5,5 @@
 
 
 * [FindHyperlinks](FindHyperlinks.md)
+* [FindReferences](FindReferences.md)
 * [get_Content](get_Content.md)
