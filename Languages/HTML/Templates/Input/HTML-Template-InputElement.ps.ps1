@@ -1,9 +1,7 @@
 [ValidatePattern('HTML')]
 param()
 
-
-function Template.HTML.Input {
-
+Template function HTML.InputElement {
     <#
     .SYNOPSIS
         Template for an HTML input.
@@ -14,164 +12,164 @@ function Template.HTML.Input {
     #>
     [CmdletBinding(PositionalBinding=$false)]
     param(
+    # The name of the input.    
+    [vbn()]
+    [Alias('InputName')]
+    [string]
+    $Name,
+
     # The type of input.
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [ValidateSet("button","checkbox","color","date","datetime-local","email","file","hidden","image","month","number","password","radio","range","reset","search","submit","tel","text","time","url","week")]
+    [vbn()]
+    [alias('type')]
+    [ValidateSet("button","checkbox","color","date","datetime-local",
+        "email","file","hidden","image","month","number",
+        "password","radio","range","reset","search","submit",
+        "tel","text","time","url","week")]
     [string]
     $InputType,
 
     # The ID of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
-    $ID,
-
-    # The name of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [string]
-    $Name,
+    $ID,    
 
     # The value of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $Value,
 
     # The placeholder of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $Placeholder,
 
     # If the input is required.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [switch]
     $Required,
 
     # If the input is disabled.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [switch]
     $Disabled,
 
     # If the input is readonly.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [switch]
     $ReadOnly,
 
     # If the input is checked.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [switch]
     $Checked,
 
     # The minimum value of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $Min,
 
     # The maximum value of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $Max,
 
     # The step value of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $Step,
 
     # The pattern of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $Pattern,
 
     # The autocomplete of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [ValidateSet("on","off")]
     [string]
     $AutoComplete,
 
     # The form that the input is associated with.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $Form,
 
     # The formaction of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $FormAction,
 
     # The formenctype of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [Alias('FormEnc','FormEncType')]
     [ValidateSet("application/x-www-form-urlencoded","multipart/form-data","text/plain")]
     [string]
     $FormEncodingType,
 
     # The formmethod of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [Alias('FormMeth')]
     [ValidateSet("get","post")]
     [string]
     $FormMethod,
 
     # The formnovalidate of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [switch]
     $FormNoValidate,
 
     # The formtarget of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [Alias('FormTarg')]
     [ValidateSet("_blank","_self","_parent","_top")]
     [string]
     $FormTarget,
 
     # The height of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $Height,
 
     # The width of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $Width,
 
     # The list of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $List,
 
     # The minimum length of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [Alias('MinimumLength')]
     [int]
     $MinLength,
 
     # If set, an email input can accept multiple emails, or a file input can accept multiple files.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [switch]
     $Multiple,
 
     # The size of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $Size,
 
     # The accept of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $Accept,
 
     # The accept-charset of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [string]
     $AcceptCharset,
     
     # The autofocus of the input.
-    [Parameter(ValueFromPipelineByPropertyName)]
+    [vbn()]
     [switch]
-    $AutoFocus,
-
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [Alias('Alt')]
-    [string]
-    $AlternateText
+    $AutoFocus
     )
 
     process {
@@ -208,6 +206,4 @@ function Template.HTML.Input {
 
         "<input$(if ($InputAttributes) { " $InputAttributes" }) />"
     }
-
 }
-
