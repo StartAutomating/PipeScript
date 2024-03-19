@@ -51,7 +51,7 @@ function Template.HTML.Element {
             }) -join ''
         }
 
-        if ($content) {
+        if (-not $content) {
             "<${Name}${AttributeString} />" -replace "\s{1,}\/\>$", "/>"
         } else {
             "<${Name}${attributesString}>$Content</$Name>"
