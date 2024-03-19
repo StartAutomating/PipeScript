@@ -63,6 +63,20 @@ The ID of the input.
 |----------|--------|--------|---------------------|
 |`[String]`|false   |named   |true (ByPropertyName)|
 
+#### **Class**
+The class of the input.
+
+|Type        |Required|Position|PipelineInput        |Aliases |
+|------------|--------|--------|---------------------|--------|
+|`[String[]]`|false   |named   |true (ByPropertyName)|CssClass|
+
+#### **Label**
+The label of the input.
+
+|Type      |Required|Position|PipelineInput        |
+|----------|--------|--------|---------------------|
+|`[String]`|false   |named   |true (ByPropertyName)|
+
 #### **Value**
 The value of the input.
 
@@ -268,5 +282,5 @@ The autofocus of the input.
 
 ### Syntax
 ```PowerShell
-Template.HTML.InputElement [-Name <String>] [-InputType <String>] [-ID <String>] [-Value <String>] [-Placeholder <String>] [-Required] [-Disabled] [-ReadOnly] [-Checked] [-Min <String>] [-Max <String>] [-Step <String>] [-Pattern <String>] [-AutoComplete <String>] [-Form <String>] [-FormAction <String>] [-FormEncodingType <String>] [-FormMethod <String>] [-FormNoValidate] [-FormTarget <String>] [-Height <String>] [-Width <String>] [-List <String>] [-MinLength <Int32>] [-Multiple] [-Size <String>] [-Accept <String>] [-AcceptCharset <String>] [-AutoFocus] [<CommonParameters>]
+Template.HTML.InputElement [-Name <String>] [-InputType <String>] [-ID <String>] [-Class <String[]>] [-Label <String>] [-Value <String>] [-Placeholder <String>] [-Required] [-Disabled] [-ReadOnly] [-Checked] [-Min <String>] [-Max <String>] [-Step <String>] [-Pattern <String>] [-AutoComplete <String>] [-Form <String>] [-FormAction <String>] [-FormEncodingType <String>] [-FormMethod <String>] [-FormNoValidate] [-FormTarget <String>] [-Height <String>] [-Width <String>] [-List <String>] [-MinLength <Int32>] [-Multiple] [-Size <String>] [-Accept <String>] [-AcceptCharset <String>] [-AutoFocus] [<CommonParameters>]
 ```
