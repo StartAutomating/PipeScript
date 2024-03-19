@@ -57,9 +57,9 @@ The description of the page.  If set, it will include the og:description meta ta
 #### **StyleSheet**
 One or more stylesheets.  If this ends in .CSS, it will be included as a link tag.  Otherwise, it will be included as a style tag.
 
-|Type        |Required|Position|PipelineInput        |Aliases|
-|------------|--------|--------|---------------------|-------|
-|`[String[]]`|false   |named   |true (ByPropertyName)|CSS    |
+|Type          |Required|Position|PipelineInput        |Aliases|
+|--------------|--------|--------|---------------------|-------|
+|`[PSObject[]]`|false   |named   |true (ByPropertyName)|CSS    |
 
 #### **RSS**
 One or more RSS feeds to include in the page.  If set, it will automatically include the link tag.
@@ -78,9 +78,9 @@ One or more Atom feeds to include in the page.  If set, it will automatically in
 #### **JavaScript**
 Any JavaScripts to include in the page.  If set, it will include the script tag.
 
-|Type     |Required|Position|PipelineInput        |Aliases           |
-|---------|--------|--------|---------------------|------------------|
-|`[Uri[]]`|false   |named   |true (ByPropertyName)|JavaScripts<br/>JS|
+|Type          |Required|Position|PipelineInput        |Aliases           |
+|--------------|--------|--------|---------------------|------------------|
+|`[PSObject[]]`|false   |named   |true (ByPropertyName)|JavaScripts<br/>JS|
 
 #### **PaletteName**
 The name of the palette to use.  If set, it will include the 4bitcss link tag.
@@ -199,5 +199,5 @@ One or more CSS classes to apply to the body.
 
 ### Syntax
 ```PowerShell
-Template.HTML.Default.Layout [[-Name] <String>] [[-Content] <String>] [-SiteName <String>] [-PageType <String>] [-Description <String>] [-StyleSheet <String[]>] [-RSS <PSObject>] [-Atom <PSObject>] [-JavaScript <Uri[]>] [-PaletteName <String>] [-GoogleFont <String[]>] [-AbsolutePath <Uri>] [-Image <Uri>] [-Language <CultureInfo>] [-PublishTime <DateTime>] [-AnalyticsID <String>] [-Viewport <String>] [-Width <String>] [-Height <String>] [-FontSize <String>] [-FontFamily <String>] [-Margin <String>] [-Padding <String>] [-Head <String>] [-Class <String[]>] [<CommonParameters>]
+Template.HTML.Default.Layout [[-Name] <String>] [[-Content] <String>] [-SiteName <String>] [-PageType <String>] [-Description <String>] [-StyleSheet <PSObject[]>] [-RSS <PSObject>] [-Atom <PSObject>] [-JavaScript <PSObject[]>] [-PaletteName <String>] [-GoogleFont <String[]>] [-AbsolutePath <Uri>] [-Image <Uri>] [-Language <CultureInfo>] [-PublishTime <DateTime>] [-AnalyticsID <String>] [-Viewport <String>] [-Width <String>] [-Height <String>] [-FontSize <String>] [-FontFamily <String>] [-Margin <String>] [-Padding <String>] [-Head <String>] [-Class <String[]>] [<CommonParameters>]
 ```
