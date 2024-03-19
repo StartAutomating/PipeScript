@@ -49,7 +49,7 @@ Template function HTML.Default.Layout {
     # One or more stylesheets.  If this ends in .CSS, it will be included as a link tag.  Otherwise, it will be included as a style tag.
     [vbn()]
     [Alias('CSS')]    
-    [string[]]
+    [psobject[]]
     $StyleSheet,
 
     # One or more RSS feeds to include in the page.  If set, it will automatically include the link tag.
@@ -67,7 +67,7 @@ Template function HTML.Default.Layout {
     # Any JavaScripts to include in the page.  If set, it will include the script tag.
     [vbn()]
     [Alias('JavaScripts','JS')]
-    [uri[]]
+    [psobject[]]
     $JavaScript,
 
     # The name of the palette to use.  If set, it will include the 4bitcss link tag.
@@ -239,9 +239,9 @@ Template function HTML.Default.Layout {
                     
             foreach ($css in $StyleSheet) {
                 if ($css -match '\.css$') {
-                  "<link rel='stylesheet' type='text/css' href='$css' />"
+                    "<link rel='stylesheet' type='text/css' href='$css' />"
                 } else {
-                  "<style>$css</style>"
+                    "<style>$css</style>"
                 }              
             }
 
@@ -259,7 +259,15 @@ Template function HTML.Default.Layout {
             }
 
             foreach ($js in $JavaScript) {
-                "<script type='text/javascript' src='$js'></script>"
+                if ($js -notmatch '\n' -and $js -match '\.js$') {
+                    "<script type='text/javascript' src='$js'></script>"
+                }
+                elseif ($js -notmatch '^\s{0,}<script') {
+                    "<script type='text/javascript'>$js</script>"
+                }
+                else {
+                    $js
+                }
             }
 
             if ($Head) {              
