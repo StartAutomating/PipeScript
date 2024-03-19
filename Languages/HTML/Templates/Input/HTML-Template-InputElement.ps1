@@ -33,7 +33,18 @@ function Template.HTML.InputElement {
     # The ID of the input.
     [Parameter(ValueFromPipelineByPropertyName)]
     [string]
-    $ID,    
+    $ID,
+
+    # The class of the input.
+    [Parameter(ValueFromPipelineByPropertyName)]
+    [Alias('CssClass')]
+    [string[]]
+    $Class,
+
+    # The label of the input.
+    [Parameter(ValueFromPipelineByPropertyName)]
+    [string]
+    $Label,
 
     # The value of the input.
     [Parameter(ValueFromPipelineByPropertyName)]
@@ -177,6 +188,7 @@ function Template.HTML.InputElement {
     process {
         $InputAttributes = @(
             if ($ID) { "id='$ID'" }
+            if ($Class) { "class='$($Class -join ' ')'" }
             if ($inputType) { "type='$inputType'" }
             if ($name) { "name='$name'" }
             if ($value) { "value='$value'" }
@@ -206,7 +218,16 @@ function Template.HTML.InputElement {
             if ($autoFocus) { "autofocus" }            
         ) -join ' '
 
-        "<input$(if ($InputAttributes) { " $InputAttributes" }) />"
+
+        @(
+            if ($Label -and $ID) {
+                if ($label -notmatch '<label') {
+                    $Label = "<label for='$ID'>$Label</label>"
+                }
+                $label
+            }
+            "<input$(if ($InputAttributes) { " $InputAttributes" }) />"
+        ) -join [Environment]::newLine
     }
 
 }
