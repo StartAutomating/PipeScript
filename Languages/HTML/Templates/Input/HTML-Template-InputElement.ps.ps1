@@ -31,7 +31,18 @@ Template function HTML.InputElement {
     # The ID of the input.
     [vbn()]
     [string]
-    $ID,    
+    $ID,
+
+    # The class of the input.
+    [vbn()]
+    [Alias('CssClass')]
+    [string[]]
+    $Class,
+
+    # The label of the input.
+    [vbn()]
+    [string]
+    $Label,
 
     # The value of the input.
     [vbn()]
@@ -175,6 +186,7 @@ Template function HTML.InputElement {
     process {
         $InputAttributes = @(
             if ($ID) { "id='$ID'" }
+            if ($Class) { "class='$($Class -join ' ')'" }
             if ($inputType) { "type='$inputType'" }
             if ($name) { "name='$name'" }
             if ($value) { "value='$value'" }
@@ -204,6 +216,15 @@ Template function HTML.InputElement {
             if ($autoFocus) { "autofocus" }            
         ) -join ' '
 
-        "<input$(if ($InputAttributes) { " $InputAttributes" }) />"
+
+        @(
+            if ($Label -and $ID) {
+                if ($label -notmatch '<label') {
+                    $Label = "<label for='$ID'>$Label</label>"
+                }
+                $label
+            }
+            "<input$(if ($InputAttributes) { " $InputAttributes" }) />"
+        ) -join [Environment]::newLine
     }
 }
