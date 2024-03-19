@@ -115,8 +115,8 @@ Template function HTML.CustomElement {
             $ClassName = $ElementName -replace '-','_'
         }
 
-        $Field += @{"#shadow" = "this.attachShadow({mode: 'open'});"}        
-
+        $Field += @{"#shadow" = "this.attachShadow({mode: 'open'});"}
+        
         $allMembers = @(
             if ($field) {
                 foreach ($PropertyBag in @($Field)) {
@@ -138,12 +138,20 @@ Template function HTML.CustomElement {
             if ($OnAdopted) {
                 "adoptedCallback() { $OnAdopted }"
             }
-            if ($OnAttributeChange) {
-                "attributeChangedCallback(name, oldValue, newValue) { $OnAttributeChange }"
-            }            
             if ($ObservableAttribute) {
                 "static get observedAttributes() { return $(ConvertTo-Json -InputObject $ObservableAttribute -Compress) }"
             }
+            if ($OnAttributeChange) {
+                "attributeChangedCallback(name, oldValue, newValue) { $OnAttributeChange }"
+            } elseif ($ObservableAttribute) {
+                "attributeChangedCallback(name, oldValue, newValue) { 
+                    this.setAttribute(name, newValue);
+                    if (this[name.replace('-','_')] && this[name.replace('-','_')] != newValue) {
+                        this[name.replace('-','_')] = newValue;
+                    }
+                }"
+            }
+            
             if ($property) {
                 foreach ($PropertyBag in @($Property)) {
                     if ($PropertyBag -is [Collections.IDictionary]) {
