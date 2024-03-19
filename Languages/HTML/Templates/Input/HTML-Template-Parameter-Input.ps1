@@ -75,6 +75,12 @@ function Template.HTML.Parameter.Input {
             Name = $ParameterName
         }
 
+        if ($CommandName) {
+            $htmlInputParameters.id = "$CommandName-$ParameterName" -replace '\p{P}', '-' -replace "\s", '_'
+        } else {
+            $htmlInputParameters.id = $ParameterName -replace '\p{P}', '-' -replace "\s", '_'
+        }
+
         $validValuesList = @()
 
         :PickingInputType switch ($ParameterType) {
@@ -147,6 +153,7 @@ function Template.HTML.Parameter.Input {
             }
             "</select>"
         } else {
+            $htmlInputParameters.Label = $ParameterName
             Template.HTML.InputElement @htmlInputParameters
         }                
     }
