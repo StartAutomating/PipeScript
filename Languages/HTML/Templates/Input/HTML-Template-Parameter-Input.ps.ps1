@@ -90,6 +90,10 @@ Template function HTML.Parameter.Input {
                 $htmlInputParameters.type = 'datetime-local'
                 break
             }
+            { $_ -eq [bool] -or $_ -eq [switch]} {
+                $htmlInputParameters.type = 'checkbox'
+                break
+            }
             { $_.IsSubclassOf([Enum]) } {
                 $validValuesList += [Enum]::GetNames($ParameterType)                
             }
