@@ -30,11 +30,11 @@ Template function HTML.Element {
     )
     
     process {
-        $attributesString = if ($Attributes) {
-            if ($attributes -is [Collections.IDictionary]) {
-                $attributes = [PSCustomObject]$attributes
+        $attributesString = if ($Attribute) {
+            if ($attribute -is [Collections.IDictionary]) {
+                $attribute = [PSCustomObject]$attribute
             }
-            @(foreach ($property in $attributes.PSObject.Properties) {
+            @(foreach ($property in $attribute.PSObject.Properties) {
                 $propertyName = $property.Name -replace '([A-Z])', '-$1' -replace '^-', ''
                 $propertyValue = $property.Value
                 if ($propertyValue -is [switch]) {
