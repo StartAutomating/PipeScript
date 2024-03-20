@@ -1,13 +1,13 @@
 <#
 .SYNOPSIS
-    Gets Language Functions
+    Gets Language Aliases
 .DESCRIPTION
-    Gets Functions related to a language.
+    Gets Aliases related to a language.
 
     These are functions that either match a language's `.FilePattern` or start with a language name, followed by punctuation.
 #>
 if (-not $global:AllFunctionsAndAliases) {
-    $global:AllFunctionsAndAliases = $global:ExecutionContext.SessionState.InvokeCommand.GetCommand('*','Alias,Function',$true)
+    $global:AllFunctionsAndAliases = $global:ExecutionContext.SessionState.InvokeCommand.GetCommand('*','Alias',$true)
 }
 $FunctionsForThisLanguage = [Ordered]@{PSTypeName='Language.Functions'}
 if ($this.FilePattern) {    
