@@ -1,0 +1,3 @@
+@{
+    "GetCollectionAndIndex" = "GetRelativeIndex"
+}
