@@ -14,13 +14,13 @@ if (-not $global:AllFunctionsAndAliases) {
 $FunctionsForThisLanguage = [Ordered]@{PSTypeName='Language.Functions'}
 if ($this.FilePattern) {    
     foreach ($FunctionForLanguage in $global:AllFunctionsAndAliases -match $this.FilePattern) {
-        if (-not $FunctionsForThisLanguage.IsFilter) {continue }
+        if ($FunctionForLanguage -isnot [Management.Automation.FilterInfo]) {continue }
         $FunctionsForThisLanguage["$FunctionForLanguage"] = $FunctionForLanguage
     }    
 }
 if ($this.LanguageName) {
     foreach ($FunctionForLanguage in $global:AllFunctionsAndAliases -match "(?<=(?>^|[\p{P}-[\\]]))$([Regex]::Escape($this.LanguageName))[\p{P}-[\\]]") {
-        if (-not $FunctionsForThisLanguage.IsFilter) {continue }
+        if ($FunctionForLanguage -isnot [Management.Automation.FilterInfo]) {continue }
         $FunctionsForThisLanguage["$FunctionForLanguage"] = $FunctionForLanguage
     }
 }
