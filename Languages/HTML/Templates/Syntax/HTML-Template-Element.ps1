@@ -37,7 +37,7 @@ function Template.HTML.Element {
                 $attribute = [PSCustomObject]$attribute
             }
             @(foreach ($property in $attribute.PSObject.Properties) {
-                $propertyName = $property.Name -replace '([A-Z])', '-$1' -replace '^-', ''
+                $propertyName = $property.Name -replace '\p{P}','-' -replace '\s','_'
                 $propertyValue = $property.Value
                 if ($propertyValue -is [switch]) {
                     $propertyValue = $propertyValue -as [bool]
