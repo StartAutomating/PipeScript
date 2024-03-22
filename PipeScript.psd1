@@ -272,14 +272,12 @@
             Extension = '.svg','.png','.js','.css'
         }
         
-        Site = "https://pipescript.dev", @{
-            Name = 'GitHub Page'
-            Url = 'https://pipescript.startautomating.com'
+        Site = 'https://pipescript.startautomating.com', @{
             Tech = 'Jekyll'
             Root = '/docs'
         }, @{
-            Name = 'Backend'
             Url  ='https://api.pipescript.startautomating.com'
+            Mirror = 'https://pipescript.dev/','https://pipescript.io/', 'https://pipescript.info/'
             Tech = 'AzureKubernetesService'
         }
 
