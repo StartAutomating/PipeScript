@@ -7452,14 +7452,18 @@ if (-not $this.'.Website') {
     foreach ($potentialSite in $this.FindMetadata('Site', 'Sites', 'Website', 'Websites')) {
         if ($potentialSite -is [string]) {
             if (-not $CombinedSiteData.BaseUrl) {
-                $CombinedSiteData.BaseUrl = $potentialSite
+                $CombinedSiteData.Url = $potentialSite
             } else {
                 $CombinedSiteData.Mirrors += $potentialSite                
             }
         } else {
+            if ($potentialSite -is [Collections.IDictionary]) {
+                $potentialSite = [PSCustomObject]$potentialSite
+            }
             if (-not $firstPropertyBag) {
                 $CombinedSiteData.Mirrors += $potentialSite
             } else {
+                $firstPropertyBag = $false
                 foreach ($prop in $potentialSite.psobject.properties) {
                     $CombinedSiteData[$prop.Name] = $prop.Value
                 }
