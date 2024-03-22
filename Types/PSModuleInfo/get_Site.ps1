@@ -56,7 +56,7 @@ if (-not $this.'.Website') {
                 $DefaultSiteData.Mirrors = $allOtherUrls
             }
         }
-        $theseWebsites = $DefaultSiteData
+        $theseWebsites = [PSCustomObject]$DefaultSiteData
     }
     
     $this | Add-Member NoteProperty ".Website" $theseWebsites -Force
