@@ -11,7 +11,7 @@
 param()
 
 if (-not $this.'.Website') { 
-    $CombinedSiteData = [Ordered]@{PSTypeName='PipeScript.Module.Website';BaseUrl='';Mirrors=@()}
+    $CombinedSiteData = [Ordered]@{PSTypeName='PipeScript.Module.Website';Mirrors=@()}
     
     $firstPropertyBag = $true
     foreach ($potentialSite in $this.FindMetadata('Site', 'Sites', 'Website', 'Websites')) {
@@ -24,6 +24,8 @@ if (-not $this.'.Website') {
         } else {
             if ($potentialSite -is [Collections.IDictionary]) {
                 $potentialSite = [PSCustomObject]$potentialSite
+                $potentialSite.pstypenames.insert(0, 'PipeScript.Module.Website')
+                $potentialSite.pstypenames.insert(0, "$this.Website")
             }
             if (-not $firstPropertyBag) {
                 $CombinedSiteData.Mirrors += $potentialSite
