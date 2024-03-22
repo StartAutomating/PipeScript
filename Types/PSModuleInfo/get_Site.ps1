@@ -11,7 +11,7 @@
 param()
 
 if (-not $this.'.Website') { 
-    $CombinedSiteData = [Ordered]@{PSTypeName='PipeScript.Module.Website';Mirrors=@()}
+    $DefaultSiteData = [Ordered]@{PSTypeName='PipeScript.Module.Website';Mirrors=@()}
     
     $firstPropertyBag = $true
     $listOfUrls = @()
@@ -48,6 +48,17 @@ if (-not $this.'.Website') {
         }
     }
 
+    if (-not $theseWebsites) {
+        if ($listOfUrls) {
+            $firstUrl, $allOtherUrls = $listOfUrls
+            $DefaultSiteData.Url = $firstUrl
+            if ($allOtherUrls) {
+                $DefaultSiteData.Mirrors = $allOtherUrls
+            }
+        }
+        $theseWebsites = $DefaultSiteData
+    }
+    
     $this | Add-Member NoteProperty ".Website" $theseWebsites -Force
 }
 
