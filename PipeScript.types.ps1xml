@@ -3850,6 +3850,10 @@ if ($this.Dockerfile) {
 
 if ($this.Module) {
     $theModule = $this.Module
+    $theModuleDefaultDockerPath = Join-Path ($theModule | Split-Path) 'Dockerfile'
+    if (Test-Path $theModuleDefaultDockerPath) {
+        return (Get-Content -Raw $theModuleDefaultDockerPath)
+    }
     return @(
         Template.Docker.From -BaseImage "mcr.microsoft.com/powershell:latest"    
         Template.Docker.SetVariable -Name PSModulePath -Value ./Modules
