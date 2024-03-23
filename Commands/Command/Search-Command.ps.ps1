@@ -1,3 +1,6 @@
+[ValidatePattern('Search-Command')]
+param()
+
 function Search-Command {
     <#
     .SYNOPSIS
@@ -60,13 +63,6 @@ function Search-Command {
     [vbn()]
     [PSObject[]]
     $OutputType,
-
-    # A pattern for the input type.
-    # Only commands that have an input type matching this will be returned.
-    # (only pipeline parameters are considered as input types)
-    [vbn()]
-    [PSObject[]]
-    $InputType,
     
     # The type of command to search for.
     [vbn()]
