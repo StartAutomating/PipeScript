@@ -75,15 +75,6 @@ Only commands that have an output type matching this will be returned.
 |--------------|--------|--------|---------------------|
 |`[PSObject[]]`|false   |8       |true (ByPropertyName)|
 
-#### **InputType**
-A pattern for the input type.
-Only commands that have an input type matching this will be returned.
-(only pipeline parameters are considered as input types)
-
-|Type          |Required|Position|PipelineInput        |
-|--------------|--------|--------|---------------------|
-|`[PSObject[]]`|false   |9       |true (ByPropertyName)|
-
 #### **CommandType**
 The type of command to search for.
 Valid Values:
@@ -100,7 +91,7 @@ Valid Values:
 
 |Type            |Required|Position|PipelineInput        |Aliases     |
 |----------------|--------|--------|---------------------|------------|
-|`[CommandTypes]`|false   |10      |true (ByPropertyName)|CommandTypes|
+|`[CommandTypes]`|false   |9       |true (ByPropertyName)|CommandTypes|
 
 ---
 
@@ -120,5 +111,5 @@ Because Search-Command is built for speed, it will _not_ autodiscover commands.
 
 ### Syntax
 ```PowerShell
-Search-Command [[-Name] <String[]>] [[-Pattern] <PSObject[]>] [[-Module] <PSObject[]>] [[-Verb] <String[]>] [[-Noun] <String[]>] [[-ParameterName] <String[]>] [[-ParameterType] <PSObject[]>] [[-OutputType] <PSObject[]>] [[-InputType] <PSObject[]>] [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScript | Application | Script | Configuration | All}] [<CommonParameters>]
+Search-Command [[-Name] <String[]>] [[-Pattern] <PSObject[]>] [[-Module] <PSObject[]>] [[-Verb] <String[]>] [[-Noun] <String[]>] [[-ParameterName] <String[]>] [[-ParameterType] <PSObject[]>] [[-OutputType] <PSObject[]>] [[-CommandType] {Alias | Function | Filter | Cmdlet | ExternalScript | Application | Script | Configuration | All}] [<CommonParameters>]
 ```
