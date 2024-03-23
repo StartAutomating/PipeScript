@@ -3838,11 +3838,11 @@ if ($this -is [string]) {
 }
 
 if ($this.Dockerfile) {
-    if (@($this.Dockerfile -split '[\r\n]+').Length -gt 1) {
+    if (@($this.Dockerfile -split '[\r\n]+' -ne '').Length -gt 1) {
         return $this.Dockerfile
     }
 
-    $dockerFilePath = (Join-Path $this.Module $this.Dockerfile)
+    $dockerFilePath = (Join-Path ($this.Module | Split-Path) $this.Dockerfile)
     if (Test-Path $dockerFilePath) {
         return (Get-Content -Raw $dockerFilePath)
     }        
@@ -3863,6 +3863,24 @@ if ($this.Module) {
         Template.Docker.LabelModule -Module $theModule
 
         Template.Docker.Label -label "org.opencontainers.image.created" -Value "$([DateTime]::Now.ToString('o'))"
+
+        if ($this.EntryPoint) {
+            Template.Docker.SetEntryPoint -EntryPoint $this.EntryPoint
+        } else {
+            $importSequence = @(
+                "PipeScript"
+                if ($theModule.RequiredModules) {
+                    foreach ($requiredModule in $theModule.RequiredModules) {
+                        "'$($requiredModule.Name)'"
+                    }
+                }
+                "'$($theModule.Name)'"
+            ) -join ', '
+            $CommandLine = @(
+                "Import-Module $importSequence -Force -PassThru | Out-Host"                
+            ) -join ';'
+            Template.Docker.SetEntryPoint -EntryPoint "pwsh -noexit -Command ;"
+        }
 
     ) -join [Environment]::NewLine
 }
