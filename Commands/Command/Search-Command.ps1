@@ -1,3 +1,6 @@
+[ValidatePattern('Search-Command')]
+param()
+
 function Search-Command {
 
     <#
@@ -61,13 +64,6 @@ function Search-Command {
     [Parameter(ValueFromPipelineByPropertyName)]
     [PSObject[]]
     $OutputType,
-
-    # A pattern for the input type.
-    # Only commands that have an input type matching this will be returned.
-    # (only pipeline parameters are considered as input types)
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [PSObject[]]
-    $InputType,
     
     # The type of command to search for.
     [Parameter(ValueFromPipelineByPropertyName)]
