@@ -88,7 +88,7 @@ function Search-Command {
                 # check each pattern
                 foreach ($searchPattern in $PatternList) {
                     # against the cache command pointer
-                    $script:CommandLookupCache[$lookupKeys] -match $searchPattern
+                    @($script:CommandLookupCache[$lookupKeys] | . $UnrollValues) -match $searchPattern
                 }
             } else {
                 # otherwise, get all the commands
