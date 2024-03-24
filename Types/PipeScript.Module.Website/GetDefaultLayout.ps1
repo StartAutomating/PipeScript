@@ -1,12 +1,9 @@
 param()
 
-$this | . {
-    param(
-    [Parameter(ValueFromPipelineByPropertyName)]
-    [Alias('DefaultLayout','BaseLayout')]
-    [string]
-    $Layout = 'Default'
-    )
-
-    process { $Layout }
+foreach ($potentialPropertyName in 'DefaultLayout','BaseLayout','Layout','Type') {
+    if ($this.$potentialPropertyName) {
+        return $this.$potentialPropertyName
+    }
 }
+
+return $null
