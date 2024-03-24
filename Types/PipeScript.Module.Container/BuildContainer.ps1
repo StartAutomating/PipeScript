@@ -35,7 +35,15 @@ $dockerFilePath =
     }
 
 $ProgressId = Get-Random
-foreach ($lineOut in docker build --tag $buildTag --file $dockerFilePath ($this.Module | Split-Path) *>&1) {
+Push-Location ($this.Module | Split-Path)
+$dockerArgs = @( 
+    "build",
+    "--tag",
+    "$buildTag".ToLower(),
+    "--file=$dockerFilePath",
+    '.'
+)
+foreach ($lineOut in docker @dockerArgs *>&1) {
     if ($lineOut -isnot [string] -and $lineOut -isnot [Management.Automation.ErrorRecord]) {
         $lineOut
         continue
@@ -56,3 +64,4 @@ foreach ($lineOut in docker build --tag $buildTag --file $dockerFilePath ($this.
 }
 
 Write-Progress -Activity "Docker Build" -Status "Complete" -id $ProgressId -Completed
+Pop-Location
