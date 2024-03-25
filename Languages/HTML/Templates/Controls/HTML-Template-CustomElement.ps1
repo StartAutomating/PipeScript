@@ -168,7 +168,7 @@ function Template.HTML.CustomElement {
                     if ($prop.Name -notmatch '\.') { continue }
                     $propNameSegements = $prop.Name -split '\.'
                     if ($propNameSegements.Count -lt 2) { continue }
-                    $elementId = $propNameSegements[0..($propNameSegements.Count - 1)] -join '.'
+                    $elementId = $propNameSegements[0..($propNameSegements.Count - 2)] -join '.'
                     $eventNames = $propNameSegements[-1] -split '\s{0,},\s{0,}'
                     $eventHandlerScript = $prop.Value
                     if ($eventHandlerScript -notmatch 'function') {
