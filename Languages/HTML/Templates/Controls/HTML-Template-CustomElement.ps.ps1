@@ -171,12 +171,15 @@ Template function HTML.CustomElement {
                     $eventHandlerScript = $prop.Value
                     if ($eventHandlerScript -notmatch 'function') {
                         $eventHandlerScript = "function(event) { $eventHandlerScript }"
+                        if ($eventHandlerScript -notmatch '.bind(this)\s{0,}$') {
+                            $eventHandlerScript = "$eventHandlerScript.bind(this)"                        
+                        }
                     }
                     foreach ($eventName in $eventnames) {
                         @("this.#shadow.getElementById(`"$elementId`").addEventListener("
                         "    `"$eventName`","
                         "    $eventHandlerScript"
-                        ").bind(this);") -join [Environment]::NewLine
+                        ");") -join [Environment]::NewLine
                     }                    
                 }
                 if ($OnConnected) {
