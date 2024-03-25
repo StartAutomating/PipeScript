@@ -117,6 +117,7 @@ function Template.HTML.CustomElement {
     # Each key or property will be the element ID (followed by a period) and the event name.
     # Multiple event names can be separated by commas.
     [Parameter(ValueFromPipelineByPropertyName)]
+    [Alias('EventHandlers')]
     [PSObject]
     $EventHandler,
 
@@ -168,15 +169,17 @@ function Template.HTML.CustomElement {
                     $propNameSegements = $prop.Name -split '\.'
                     if ($propNameSegements.Count -lt 2) { continue }
                     $elementId = $propNameSegements[0..($propNameSegements.Count - 1)] -join '.'
-                    $eventName = $propNameSegements[-1]
+                    $eventNames = $propNameSegements[-1] -split '\s{0,},\s{0,}'
                     $eventHandlerScript = $prop.Value
                     if ($eventHandlerScript -notmatch 'function') {
                         $eventHandlerScript = "function(event) { $eventHandlerScript }"
                     }
-                    @("this.#shadow.getElementById(`"$elementId`").addEventListener("
-                    "    `"$eventName``,"
-                    "    $eventHandlerScript"
-                    ").bind(this);") -join [Environment]::NewLine
+                    foreach ($eventName in $eventnames) {
+                        @("this.#shadow.getElementById(`"$elementId`").addEventListener("
+                        "    `"$eventName``,"
+                        "    $eventHandlerScript"
+                        ").bind(this);") -join [Environment]::NewLine
+                    }                    
                 }
                 if ($OnConnected) {
                     $OnConnected = $wireEventHandlers, $OnConnected -join [Environment]::NewLine
