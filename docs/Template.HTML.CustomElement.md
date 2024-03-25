@@ -127,16 +127,25 @@ The JavaScript to run when attributes are updated.
 |----------|--------|--------|---------------------|---------------------------------------------------------------------------|
 |`[String]`|false   |13      |true (ByPropertyName)|OnAttributeChanged<br/>AttributeChangeCallback<br/>AttributeChangedCallback|
 
+#### **EventHandler**
+A collection of event handlers.
+Each key or property will be the element ID (followed by a period) and the event name.
+Multiple event names can be separated by commas.
+
+|Type        |Required|Position|PipelineInput        |
+|------------|--------|--------|---------------------|
+|`[PSObject]`|false   |14      |true (ByPropertyName)|
+
 #### **ObservableAttribute**
 The list of observable attributes.
 
 |Type        |Required|Position|PipelineInput        |Aliases                            |
 |------------|--------|--------|---------------------|-----------------------------------|
-|`[String[]]`|false   |14      |true (ByPropertyName)|ObservableAttributes<br/>Observable|
+|`[String[]]`|false   |15      |true (ByPropertyName)|ObservableAttributes<br/>Observable|
 
 ---
 
 ### Syntax
 ```PowerShell
-Template.HTML.CustomElement [[-ElementName] <String>] [[-ClassName] <String>] [[-ExtendClass] <String>] [[-ExtendElement] <String>] [[-Parameter] <PSObject>] [[-Property] <PSObject[]>] [[-Method] <PSObject[]>] [[-Field] <PSObject[]>] [[-Template] <String>] [[-OnConnected] <String>] [[-OnDisconnected] <String>] [[-OnAdopted] <String>] [[-OnAttributeChange] <String>] [[-ObservableAttribute] <String[]>] [<CommonParameters>]
+Template.HTML.CustomElement [[-ElementName] <String>] [[-ClassName] <String>] [[-ExtendClass] <String>] [[-ExtendElement] <String>] [[-Parameter] <PSObject>] [[-Property] <PSObject[]>] [[-Method] <PSObject[]>] [[-Field] <PSObject[]>] [[-Template] <String>] [[-OnConnected] <String>] [[-OnDisconnected] <String>] [[-OnAdopted] <String>] [[-OnAttributeChange] <String>] [[-EventHandler] <PSObject>] [[-ObservableAttribute] <String[]>] [<CommonParameters>]
 ```
