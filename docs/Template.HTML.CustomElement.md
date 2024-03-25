@@ -132,9 +132,9 @@ A collection of event handlers.
 Each key or property will be the element ID (followed by a period) and the event name.
 Multiple event names can be separated by commas.
 
-|Type        |Required|Position|PipelineInput        |
-|------------|--------|--------|---------------------|
-|`[PSObject]`|false   |14      |true (ByPropertyName)|
+|Type        |Required|Position|PipelineInput        |Aliases      |
+|------------|--------|--------|---------------------|-------------|
+|`[PSObject]`|false   |14      |true (ByPropertyName)|EventHandlers|
 
 #### **ObservableAttribute**
 The list of observable attributes.
