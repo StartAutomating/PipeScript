@@ -176,7 +176,7 @@ function Template.HTML.CustomElement {
                     }
                     foreach ($eventName in $eventnames) {
                         @("this.#shadow.getElementById(`"$elementId`").addEventListener("
-                        "    `"$eventName``,"
+                        "    `"$eventName`","
                         "    $eventHandlerScript"
                         ").bind(this);") -join [Environment]::NewLine
                     }                    
