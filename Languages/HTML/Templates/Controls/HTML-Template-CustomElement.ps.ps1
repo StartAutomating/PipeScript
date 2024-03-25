@@ -1,4 +1,4 @@
-[ValidatePattern("HTML")]
+[ValidatePattern("(?>HTML|JavaScript)")]
 param()
 
 Template function HTML.CustomElement {
@@ -17,7 +17,15 @@ Template function HTML.CustomElement {
         "
         Template.HTML.Element -Name "hello-world"
     #>
-    [Alias('Template.HTML.Control','Template.Control.html','Template.CustomElement.html')]
+    [Alias(
+        'Template.HTML.Control',
+        'Template.Control.html',
+        'Template.CustomElement.html',
+        'Template.JavaScript.Control',
+        'Template.JavaScript.CustomElement',
+        'Template.Control.js',        
+        'Template.CustomElement.js'
+    )]
     param(
     # The name of the element.  By default, custom-element.
     [vbn()]
@@ -116,6 +124,19 @@ Template function HTML.CustomElement {
         }
 
         $Field += @{"#shadow" = "this.attachShadow({mode: 'open'});"}
+        if ($ObservableAttribute -and -not $OnAttributeChange) {
+            foreach ($observerableAttr in $ObservableAttribute) {
+                $defaultFieldName = "#$($observerableAttr -replace "-","_")"
+                if (-not @($field.$defaultFieldName)) {
+                    $Field += @{$defaultFieldName = "null"}    
+                }
+                $defaultPropertyName = "$($observerableAttr -replace "-","_")"
+                if (-not @($Property.$defaultPropertyName)) {
+                    $Property += @{$defaultPropertyName = @("return this.$defaultFieldName","this.$defaultFieldName = value") }
+                }
+            }
+        }
+                
         
         $allMembers = @(
             if ($field) {
@@ -188,7 +209,7 @@ Template function HTML.CustomElement {
         )
 
         @"
-<script type="module">/*<![CDATA[*/
+$(if ($MyInvocation.InvocationName -match 'HTML') {'<script type="module">/*<![CDATA[*/'})
 class $ClassName extends $ExtendClass {
     constructor() {
         super();
@@ -231,7 +252,7 @@ if (customElements.define != null) {
         }
     )    
 }
-/*]]>*/
+$(if ($MyInvocation.InvocationName -match 'HTML') {'/*]]>*/'})
 </script>
 "@
     }
