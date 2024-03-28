@@ -18,7 +18,7 @@ function Template.HTML.Command.Input {
     [CmdletBinding(DefaultParameterSetName='None')]
     param(
     # The Command Metadata.  This can be provided via the pipeline from Get-Command.
-    [Parameter(Mandatory,ParameterSetName='ParameterMetadata',ValueFromPipeline)]
+    [Parameter(Mandatory,ParameterSetName='CommandMetadata',ValueFromPipeline)]
     [Management.Automation.CommandMetadata]
     $CommandMetadata,
 
@@ -97,7 +97,7 @@ function Template.HTML.Command.Input {
     $ElementMap = [Ordered]@{
         'Name' = 'h2'
         'Synopsis' = 'p'
-        'Description' = 'p'        
+        'Description' = 'p'
         'Example' = 'code'
         'Link' = 'p'
         'Notes' = 'p'        
@@ -170,6 +170,7 @@ function Template.HTML.Command.Input {
         }
 
 
+        # Then copy the parameters
         $myParameterCopy = [Ordered]@{} + $PSBoundParameters
         $elementOrder    = 
             @(if ($elementMap -is [Collections.IDictionary]) {
@@ -179,8 +180,10 @@ function Template.HTML.Command.Input {
             })
 
 
-
+        
         $ItemsInContainer = @(
+            # Many parameters will be turned directly into elements,
+            # using the -ElementMap and -ElementAttributeMap
             foreach ($potentialElement in $elementOrder) {
                 if ($myParameterCopy.($potentialElement)) {
                     $ElementSplat = [Ordered]@{
@@ -194,25 +197,30 @@ function Template.HTML.Command.Input {
                 }
             }        
 
-            if ($parameter -is [Collections.IDictionary]) {
+            # Any parameters should be turned into input elements.
+            if ($parameter -is [Collections.IDictionary]) {                
                 $parameter.Values | Template.HTML.Parameter.Input
             } elseif ($Parameter) {
                 $Parameter | Template.HTML.Parameter.Input
-            })
+            }
+        )
             
+        # Now we want to put all of the items into a container.
         $ContainerContent = 
             @(foreach ($itemInContainer in $ItemsInContainer) {
+                # If we have an item element, wrap it in that element.
                 if ($ItemElement) {
                     Template.HTML.Element -Name $ItemElement -Content $itemInContainer -Attribute $ItemAttribute
                 } else {
                     $itemInContainer
                 }                       
-            }) -join $ItemSeparator
+            }) -join $ItemSeparator # If we have an item separator, join the items with it.
 
+        # If we have a container element, wrap the all the items in that element.
         if ($ContainerElement) {
             Template.HTML.Element -Name $ContainerElement -Content $ContainerContent -Attribute $ContainerAttribute
         } else {
-            $ContainerContent
+            $ContainerContent # Otherwise, return the items directly.
         }
     }
 
